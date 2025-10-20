@@ -249,6 +249,7 @@ class StudyDetailsPage extends StatelessWidget {
 
   Widget _buildSectionCard(BuildContext context, List<Widget> children) {
     return Card(
+      margin: EdgeInsets.zero,
       color: Theme.of(context).extension<RPColors>()!.white,
       shape: RoundedRectangleBorder(
         borderRadius: BorderRadius.circular(8.0),

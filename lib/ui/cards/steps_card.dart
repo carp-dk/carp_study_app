@@ -37,7 +37,7 @@ class StepsCardWidgetState extends State<StepsCardWidget> {
             Row(
               children: [
                 Text(
-                  '$_step',
+                  _step > 0 ? '$_step' : '0',
                   style: dataVizCardTitleNumber.copyWith(
                     color: Theme.of(context).extension<RPColors>()!.grey900!,
                   ),
