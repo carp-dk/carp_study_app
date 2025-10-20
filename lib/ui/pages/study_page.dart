@@ -68,9 +68,9 @@ class StudyPageState extends State<StudyPage> {
     if (LocalSettings().isAnonymous) {
       items.add(AnonymousCard());
     }
-    if (bloc.messages.isNotEmpty) {
+    if (widget.model.messages.isEmpty) {
       items.add(_buildAnnouncementsTitle(context));
-      items.addAll(bloc.messages.map((message) {
+      items.addAll(widget.model.messages.map((message) {
         return _announcementCard(context, message);
       }).toList());
     }
