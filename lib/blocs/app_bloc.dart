@@ -380,6 +380,7 @@ class StudyAppBLoC extends ChangeNotifier {
   /// the Study Page of the app.
   Future<void> refreshMessages() async {
     try {
+      _messages.clear();
       _messages = await messageManager.getMessages();
       _messages.sort((m1, m2) => m2.timestamp.compareTo(m1.timestamp));
       info('Message list refreshed - count: ${_messages.length}');

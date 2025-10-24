@@ -41,16 +41,20 @@ class _BluetoothConnectionPageState extends State<BluetoothConnectionPage> {
   BluetoothDevice? selectedDevice;
   int selected = 40;
 
+  /// Set of normalized UUIDs (no dashes, lower-case) to filter discovered devices by
+  /// If empty, no UUID filtering is applied.
+  final Set<String> _filterUuids = <String>{};
+
   @override
   Widget build(BuildContext context) {
     RPLocalizations locale = RPLocalizations.of(context)!;
 
     return Scaffold(
+      backgroundColor: Theme.of(context).extension<RPColors>()!.backgroundGray,
       body: SafeArea(
         child: Stack(
           children: [
             Container(
-              color: Theme.of(context).colorScheme.secondary,
               child: Column(
                 children: [
                   Padding(
@@ -312,34 +316,48 @@ class _BluetoothConnectionPageState extends State<BluetoothConnectionPage> {
             child: StreamBuilder<List<ScanResult>>(
               stream: FlutterBluePlus.scanResults,
               initialData: const [],
-              builder: (context, snapshot) => SingleChildScrollView(
-                padding: const EdgeInsets.only(top: 16),
-                child: Column(
-                  children: snapshot.data!
-                      .where(
-                          (element) => element.device.platformName.isNotEmpty)
-                      .toList()
-                      .asMap()
-                      .entries
-                      .map(
-                        (bluetoothDevice) => ListTile(
-                          selected: bluetoothDevice.key == selected,
-                          title: Text(
-                            bluetoothDevice.value.device.platformName,
-                            style: healthServiceConnectMessageStyle,
+              builder: (context, snapshot) => Scrollbar(
+                thumbVisibility: true,
+                child: SingleChildScrollView(
+                  padding: const EdgeInsets.only(top: 16),
+                  child: Column(
+                    children: snapshot.data!
+                        .where((element) =>
+                            element.device.platformName.isNotEmpty &&
+                            _matchesUuid(element, _filterUuids))
+                        .toList()
+                        .asMap()
+                        .entries
+                        .map(
+                          (bluetoothDevice) => StudiesMaterial(
+                            // hasBorder: true,
+                            backgroundColor:
+                                Theme.of(context).extension<RPColors>()!.grey50!,
+                            child: InkWell(
+                              child: ListTile(
+                                selected: bluetoothDevice.key == selected,
+                                title: Text(
+                                  bluetoothDevice.value.device.platformName,
+                                  style:
+                                      healthServiceConnectMessageStyle.copyWith(
+                                    fontSize: 20,
+                                  ),
+                                ),
+                                selectedTileColor: Theme.of(context)
+                                    .primaryColor
+                                    .withValues(alpha: 0.2),
+                              ),
+                              onTap: () {
+                                selectedDevice = bluetoothDevice.value.device;
+                                setState(() {
+                                  selected = bluetoothDevice.key;
+                                });
+                              },
+                            ),
                           ),
-                          selectedTileColor: Theme.of(context)
-                              .primaryColor
-                              .withValues(alpha: 0.2),
-                          onTap: () {
-                            selectedDevice = bluetoothDevice.value.device;
-                            setState(() {
-                              selected = bluetoothDevice.key;
-                            });
-                          },
-                        ),
-                      )
-                      .toList(),
+                        )
+                        .toList(),
+                  ),
                 ),
               ),
             ),
@@ -383,6 +401,34 @@ class _BluetoothConnectionPageState extends State<BluetoothConnectionPage> {
     );
   }
 
+  /// Returns true if [scanResult] advertises any UUID present in [filterUuids].
+  /// If [filterUuids] is empty, always returns true.
+  bool _matchesUuid(ScanResult scanResult, Set<String> filterUuids) {
+    if (filterUuids.isEmpty) return true;
+
+    // Normalize helper: remove dashes and lowercase
+    String normalize(String u) => u.replaceAll('-', '').toLowerCase();
+
+    try {
+      // FlutterBluePlus ScanResult contains advertisementData with serviceUuids
+      final adv = scanResult.advertisementData;
+      final serviceUuids = adv.serviceUuids;
+      for (var u in serviceUuids) {
+        final us = u.toString();
+        if (filterUuids.contains(normalize(us))) return true;
+      }
+
+      // Also check device id (remoteId) as fallback
+      final devId = scanResult.device.remoteId.id;
+      if (filterUuids.contains(normalize(devId))) return true;
+    } catch (_) {
+      // If structure differs, fall back to allowing the device
+      return true;
+    }
+
+    return false;
+  }
+
   Widget connectionInstructions(DeviceViewModel device, BuildContext context) {
     RPLocalizations locale = RPLocalizations.of(context)!;
     AssetImage? assetImage;
@@ -420,8 +466,8 @@ class _BluetoothConnectionPageState extends State<BluetoothConnectionPage> {
 
     Image connectionImage = Image(
       image: assetImage,
-      width: MediaQuery.of(context).size.height * 0.5,
-      height: MediaQuery.of(context).size.height * 0.5,
+      width: MediaQuery.of(context).size.height * 0.3,
+      height: MediaQuery.of(context).size.height * 0.3,
     );
     return Column(
       children: [

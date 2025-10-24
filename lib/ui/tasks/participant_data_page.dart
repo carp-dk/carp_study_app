@@ -774,7 +774,6 @@ class ParticipantDataPageState extends State<ParticipantDataPage> {
       participantData,
       bloc.study!.participantRoleName,
     );
-    LocalSettings().hasSeenConnectionInstructions = true;
   }
 
   Future<void> _showCancelConfirmationDialog() {

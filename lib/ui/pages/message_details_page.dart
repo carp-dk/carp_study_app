@@ -52,19 +52,32 @@ class MessageDetailsPage extends StatelessWidget {
                       }
                     },
                   ),
-                  Material(
-                    color: CACHET.DEPLOYMENT_DEPLOYING,
-                    borderRadius: BorderRadius.circular(100.0),
-                    child: Padding(
-                      padding: const EdgeInsets.all(12.0),
-                      child: Text(
-                          locale.translate(message.type
-                              .toString()
-                              .split('.')
-                              .last
-                              .toLowerCase()),
-                          style: aboutCardSubtitleStyle.copyWith(
-                              color: Colors.white)),
+                  Padding(
+                    padding: const EdgeInsets.symmetric(vertical: 10.0),
+                    child: Text(locale.translate(message.title!),
+                        style: aboutCardTitleStyle.copyWith(
+                            color: Theme.of(context)
+                                .extension<RPColors>()!
+                                .grey900)),
+                  ),
+                  Spacer(),
+                  Padding(
+                    padding: const EdgeInsets.only(right: 24),
+                    child: Material(
+                      color: CACHET.DEPLOYMENT_DEPLOYING,
+                      borderRadius: BorderRadius.circular(100.0),
+                      child: Padding(
+                        padding: const EdgeInsets.symmetric(
+                            horizontal: 12.0, vertical: 6.0),
+                        child: Text(
+                            locale.translate(message.type
+                                .toString()
+                                .split('.')
+                                .last
+                                .toLowerCase()),
+                            style: aboutCardSubtitleStyle.copyWith(
+                                color: Colors.white)),
+                      ),
                     ),
                   ),
                 ],
@@ -74,14 +87,6 @@ class MessageDetailsPage extends StatelessWidget {
                   padding:
                       const EdgeInsets.symmetric(horizontal: 24, vertical: 16),
                   children: [
-                    Padding(
-                      padding: const EdgeInsets.symmetric(vertical: 10.0),
-                      child: Text(locale.translate(message.title!),
-                          style: aboutCardTitleStyle.copyWith(
-                              color: Theme.of(context)
-                                  .extension<RPColors>()!
-                                  .grey900)),
-                    ),
                     message.subTitle != null
                         ? Padding(
                             padding: const EdgeInsets.symmetric(

@@ -96,7 +96,9 @@ class HomePageState extends State<HomePage> {
     AppTaskController().userTaskEvents.listen((userTask) {
       if (userTask.state == UserTaskState.notified) {
         userTask.onStart();
-        if (userTask.hasWidget) context.push('/task/${userTask.id}');
+        if (userTask.hasWidget) {
+          _rootNavigatorKey.currentContext?.push('/task/${userTask.id}');
+        }
       }
     });
 

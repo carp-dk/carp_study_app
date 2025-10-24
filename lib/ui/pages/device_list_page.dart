@@ -356,7 +356,7 @@ class DeviceListPageState extends State<DeviceListPage> {
           if (disconnect) await device.disconnectFromDevice();
         } else {
           final hasSeenInstructions =
-              LocalSettings().hasSeenConnectionInstructions;
+              LocalSettings().hasSeenBluetoothConnectionInstructions;
           Navigator.push(
             context,
             MaterialPageRoute<void>(

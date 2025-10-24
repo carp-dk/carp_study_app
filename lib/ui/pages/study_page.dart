@@ -68,9 +68,12 @@ class StudyPageState extends State<StudyPage> {
     if (LocalSettings().isAnonymous) {
       items.add(AnonymousCard());
     }
-    if (widget.model.messages.isEmpty) {
+    if (widget.model.messages.isNotEmpty) {
       items.add(_buildAnnouncementsTitle(context));
-      items.addAll(widget.model.messages.map((message) {
+      // Show newest announcements first: sort by timestamp descending
+      final messages = List<Message>.from(widget.model.messages)
+        ..sort((a, b) => b.timestamp.compareTo(a.timestamp));
+      items.addAll(messages.map((message) {
         return _announcementCard(context, message);
       }).toList());
     }
@@ -215,15 +218,27 @@ class StudyPageState extends State<StudyPage> {
       future: bloc.studyDeploymentStatus,
       builder: (context, snapshot) {
         if (snapshot.connectionState == ConnectionState.waiting) {
-          return Container();
+          return StudiesMaterial(
+            child: Padding(
+              padding: const EdgeInsets.symmetric(vertical: 28),
+              child: Center(
+                child: CircularProgressIndicator(),
+              ),
+            ),
+          );
         } else if (snapshot.hasError) {
-          return Padding(
-            padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 22),
-            child: Text('Error: ${snapshot.error}'),
+          return StudiesMaterial(
+            child: Padding(
+              padding: const EdgeInsets.symmetric(vertical: 28),
+              child: Text(
+                'Error: ${snapshot.error}',
+                textAlign: TextAlign.center,
+              ),
+            ),
           ); // Show an error message if the future fails
         } else if (!snapshot.hasData || snapshot.data == null) {
           return Padding(
-            padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 22),
+            padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 28),
             child: Center(
               child: CircularProgressIndicator(),
             ),
