@@ -128,7 +128,7 @@ abstract class SerializableViewModel<D extends DataModel> extends ViewModel {
     return success;
   }
 
-  /// Permanently delete the [model].
+  /// Permanently delete the cached [model].
   /// Returns true if successful, false otherwise.
   bool delete() {
     bool success = true;
