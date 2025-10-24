@@ -15,11 +15,12 @@ abstract class ViewModel extends ChangeNotifier {
     _controller = ctrl;
   }
 
-  /// Called when this view model is to clear its state (e.g., cached data).
+  /// Clear this view model, i.e. delete all data incl. cached data.
   @mustCallSuper
   void clear() {}
 
-  /// Called when this view model is disposed and no longer used.
+  /// Called when this view model is disposed. Typically on app exit, incl. when
+  /// closed by the OS.
   @override
   @mustCallSuper
   void dispose() {
@@ -92,7 +93,7 @@ abstract class SerializableViewModel<D extends DataModel> extends ViewModel {
     _filename = null;
     _persistenceTimer?.cancel();
     _persistenceTimer = null;
-    save();
+    delete();
   }
 
   @override
