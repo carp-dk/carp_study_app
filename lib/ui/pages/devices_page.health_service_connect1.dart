@@ -38,8 +38,8 @@ class HealthServiceConnectPage1 extends StatelessWidget {
                         ),
                         child: Image.asset(
                           Platform.isAndroid
-                              ? 'assets/instructions/google_health_connect_icon.png'
-                              : 'assets/instructions/apple_health_icon.png',
+                              ? 'assets/instructions/google_health_connect_preview.png'
+                              : 'assets/instructions/apple_health_preview.png',
                           height: 250,
                           width: 250,
                         ),
