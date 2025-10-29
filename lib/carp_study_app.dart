@@ -184,6 +184,13 @@ class CarpStudyAppState extends State<CarpStudyApp> {
   @override
   Widget build(BuildContext context) {
     final carpColors = Theme.of(context).extension<CarpColors>();
+
+    // Apply system overlay style after frame so Theme.of(context) is ready
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      SystemChrome.setSystemUIOverlayStyle(SystemUiOverlayStyle(
+        statusBarColor: Colors.transparent,
+      ));
+    });
     return MaterialApp.router(
       scaffoldMessengerKey: bloc.scaffoldKey,
       supportedLocales: const [

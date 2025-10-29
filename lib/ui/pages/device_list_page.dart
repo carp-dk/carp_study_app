@@ -320,7 +320,7 @@ class DeviceListPageState extends State<DeviceListPage> {
         Navigator.push(
           context,
           MaterialPageRoute<void>(
-              builder: (context) => HealthServiceConnectPage1()),
+              builder: (context) => HealthServiceConnectPage()),
         );
       } else {
         await service.deviceManager.requestPermissions();
