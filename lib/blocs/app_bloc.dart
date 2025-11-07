@@ -352,7 +352,9 @@ class StudyAppBLoC extends ChangeNotifier {
 
   /// Has the informed consent been accepted by the user?
   bool get hasInformedConsentBeenAccepted =>
-      LocalSettings().participant?.hasInformedConsentBeenAccepted ?? false;
+      backend.getInformedConsentByRole(
+          study!.studyDeploymentId, study!.participantRoleName) !=
+      null;
 
   set hasInformedConsentBeenAccepted(bool accepted) {
     var participant = LocalSettings().participant;

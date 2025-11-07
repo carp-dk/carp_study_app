@@ -419,7 +419,7 @@ class _BluetoothConnectionPageState extends State<BluetoothConnectionPage> {
       }
 
       // Also check device id (remoteId) as fallback
-      final devId = scanResult.device.remoteId.id;
+      final devId = scanResult.device.remoteId.str;
       if (filterUuids.contains(normalize(devId))) return true;
     } catch (_) {
       // If structure differs, fall back to allowing the device

@@ -108,15 +108,6 @@ class CarpStudyAppState extends State<CarpStudyApp> {
               transitionsBuilder: bottomNavigationBarAnimation,
             ),
           ),
-          GoRoute(
-            path: '/task/:taskId',
-            parentNavigatorKey: _shellNavigatorKey,
-            builder: (context, state) {
-              final taskId = state.pathParameters['taskId'] ?? '';
-              final task = AppTaskController().getUserTask(taskId);
-              return task?.widget ?? const ErrorPage();
-            },
-          ),
         ],
       ),
       GoRoute(
@@ -131,6 +122,15 @@ class CarpStudyAppState extends State<CarpStudyApp> {
         parentNavigatorKey: _rootNavigatorKey,
         builder: (context, state) => ParticipantDataPage(
             model: bloc.appViewModel.participantDataPageViewModel),
+      ),
+      GoRoute(
+        path: '/task/:taskId',
+        parentNavigatorKey: _rootNavigatorKey,
+        builder: (context, state) {
+          final taskId = state.pathParameters['taskId'] ?? '';
+          final task = AppTaskController().getUserTask(taskId);
+          return task?.widget ?? const ErrorPage();
+        },
       ),
       GoRoute(
         path: InformedConsentPage.route,

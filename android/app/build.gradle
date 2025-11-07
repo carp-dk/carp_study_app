@@ -81,10 +81,10 @@ android {
                 debugSymbolLevel 'SYMBOL_TABLE'
             }
             if (signingConfigExists) {
-                logger.error('storeFile found, signing with release build.')
+                logger.info('storeFile found, signing with release build.')
                 signingConfig signingConfigs.release
             } else {
-                logger.error('No storeFile found or null. Skipping signing of release build.')
+                logger.info('No storeFile found or null. Skipping signing of release build.')
                 signingConfig signingConfigs.debug
             }
         }

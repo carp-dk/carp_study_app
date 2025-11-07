@@ -232,4 +232,11 @@ class CarpBackend {
 
     return uploadedConsent;
   }
+
+  Future<InformedConsentInput?>? getInformedConsentByRole(
+      String studyDeploymentId, String? role) async {
+    return await CarpParticipationService()
+        .participation(studyDeploymentId)
+        .getInformedConsentByRole(role);
+  }
 }
