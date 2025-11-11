@@ -330,9 +330,9 @@ class _BluetoothConnectionPageState extends State<BluetoothConnectionPage> {
                         .entries
                         .map(
                           (bluetoothDevice) => StudiesMaterial(
-                            // hasBorder: true,
-                            backgroundColor:
-                                Theme.of(context).extension<RPColors>()!.grey50!,
+                            backgroundColor: Theme.of(context)
+                                .extension<RPColors>()!
+                                .grey50!,
                             child: InkWell(
                               child: ListTile(
                                 selected: bluetoothDevice.key == selected,

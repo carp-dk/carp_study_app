@@ -45,7 +45,7 @@ class TaskListPageState extends State<TaskListPage>
     with TickerProviderStateMixin {
   late TabController _tabController;
 
-  bool? showParticipantDataCard = false;
+  bool showParticipantDataCard = false;
 
   @override
   void initState() {
@@ -159,7 +159,7 @@ class TaskListPageState extends State<TaskListPage>
                               ),
                             ),
                           ),
-                          if (showParticipantDataCard!)
+                          if (showParticipantDataCard)
                             SliverToBoxAdapter(
                               child: _buildParticipantDataCard(),
                             ),
