@@ -56,9 +56,7 @@ class ScoreboardPersistentHeaderDelegate
       Text(model.daysInStudy.toString(),
           style: fs36fw800.copyWith(
               fontSize: calculateScrollAwareSizing(
-                  shrinkOffset,
-                  fs20fw800.fontSize!,
-                  fs36fw800.fontSize!),
+                  shrinkOffset, fs20fw800.fontSize!, fs36fw800.fontSize!),
               color: Theme.of(context).extension<CarpColors>()!.grey900)),
       if (shrinkOffset < offsetForShrink)
         Text(locale.translate('cards.scoreboard.days'),
@@ -77,9 +75,7 @@ class ScoreboardPersistentHeaderDelegate
       Text(model.taskCompleted.toString(),
           style: fs36fw800.copyWith(
               fontSize: calculateScrollAwareSizing(
-                  shrinkOffset,
-                  fs20fw800.fontSize!,
-                  fs36fw800.fontSize!),
+                  shrinkOffset, fs20fw800.fontSize!, fs36fw800.fontSize!),
               color: Theme.of(context).extension<CarpColors>()!.primary)),
       if (shrinkOffset < offsetForShrink)
         Text(locale.translate('cards.scoreboard.tasks'),
