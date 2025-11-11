@@ -26,7 +26,7 @@ class ProfilePageState extends State<ProfilePage> {
     RPLocalizations locale = RPLocalizations.of(context)!;
 
     return Scaffold(
-      backgroundColor: Theme.of(context).colorScheme.secondary,
+      backgroundColor: Theme.of(context).extension<RPColors>()!.grey100,
       body: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         mainAxisAlignment: MainAxisAlignment.start,
@@ -104,7 +104,7 @@ class ProfilePageState extends State<ProfilePage> {
                       ),
                       _buildListTile(
                         locale.translate('pages.profile.study_name'),
-                        widget.model.studyDeploymentTitle,
+                        locale.translate(widget.model.studyDeploymentTitle),
                       ),
                       _buildListTile(
                         locale.translate('pages.profile.participant_id'),
@@ -215,6 +215,7 @@ class ProfilePageState extends State<ProfilePage> {
 
   Widget _buildSectionCard(BuildContext context, List<Widget> children) {
     return Card(
+      color: Theme.of(context).extension<RPColors>()!.grey50,
       shape: RoundedRectangleBorder(
         borderRadius: BorderRadius.circular(8.0),
       ),
@@ -224,7 +225,7 @@ class ProfilePageState extends State<ProfilePage> {
           children: ListTile.divideTiles(
             context: context,
             tiles: children,
-            color: Theme.of(context).extension<RPColors>()!.grey300,
+            color: Theme.of(context).extension<RPColors>()!.grey400,
           ).toList(),
         ),
       ),

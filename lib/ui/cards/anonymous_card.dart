@@ -8,6 +8,7 @@ class AnonymousCard extends StatelessWidget {
     RPLocalizations locale = RPLocalizations.of(context)!;
 
     return Card(
+      color: Theme.of(context).extension<RPColors>()!.grey50,
       elevation: 0,
       margin: const EdgeInsets.all(16.0),
       shape: RoundedRectangleBorder(
