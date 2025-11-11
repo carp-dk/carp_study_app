@@ -2,6 +2,10 @@
 
 * moving to carp_themes_package instead of research package themes
 
+## 4.1.1
+
+- small visual fixes
+
 ## 4.1.0
 
 - Now supporting anonymous user authentication
