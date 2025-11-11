@@ -17,7 +17,8 @@ class InvitationDetailsPage extends StatelessWidget {
     var invitation = model.getInvitation(invitationId);
 
     return Scaffold(
-      backgroundColor: Theme.of(context).extension<RPColors>()!.backgroundGray,
+      backgroundColor:
+          Theme.of(context).extension<CarpColors>()!.backgroundGray,
       body: Padding(
         padding: const EdgeInsets.symmetric(vertical: 16.0),
         child: SafeArea(
@@ -59,7 +60,7 @@ class InvitationDetailsPage extends StatelessWidget {
                 padding: const EdgeInsets.only(top: 16.0),
                 child: StudiesMaterial(
                   backgroundColor:
-                      Theme.of(context).extension<RPColors>()!.white!,
+                      Theme.of(context).extension<CarpColors>()!.white!,
                   shape: RoundedRectangleBorder(
                     borderRadius: BorderRadius.circular(12.0),
                   ),
@@ -93,7 +94,7 @@ class InvitationDetailsPage extends StatelessWidget {
                   padding: const EdgeInsets.only(top: 16.0),
                   child: StudiesMaterial(
                     backgroundColor:
-                        Theme.of(context).extension<RPColors>()!.white!,
+                        Theme.of(context).extension<CarpColors>()!.white!,
                     shape: RoundedRectangleBorder(
                       borderRadius: BorderRadius.circular(12.0),
                     ),
@@ -118,7 +119,7 @@ class InvitationDetailsPage extends StatelessWidget {
                                       fontWeight: FontWeight.bold,
                                       fontSize: 22.0,
                                       color: Theme.of(context)
-                                          .extension<RPColors>()!
+                                          .extension<CarpColors>()!
                                           .primary,
                                     ),
                                   ),
@@ -133,7 +134,7 @@ class InvitationDetailsPage extends StatelessWidget {
                                           fontWeight: FontWeight.bold,
                                           fontSize: 14,
                                           color: Theme.of(context)
-                                              .extension<RPColors>()!
+                                              .extension<CarpColors>()!
                                               .grey600,
                                         ),
                                         maxLines: 1,

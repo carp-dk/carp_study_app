@@ -149,10 +149,10 @@ packages:
     dependency: transitive
     description:
       name: build_daemon
-      sha256: "409002f1adeea601018715d613115cfaf0e31f512cb80ae4534c79867ae2363d"
+      sha256: bf05f6e12cfea92d3c09308d7bcdab1906cd8a179b023269eed00c071004b957
       url: "https://pub.dev"
     source: hosted
-    version: "4.1.0"
+    version: "4.1.1"
   build_resolvers:
     dependency: transitive
     description:
@@ -205,10 +205,10 @@ packages:
     dependency: "direct main"
     description:
       name: camera_android_camerax
-      sha256: b68b638e5e0ede21155e670493ac568981a8f56c5f636d720935a916a1c5a0ef
+      sha256: d5256612833f9169c1698599a87370490622a188c5a7fb601169bb7b2f41f22b
       url: "https://pub.dev"
     source: hosted
-    version: "0.6.24"
+    version: "0.6.24+1"
   camera_avfoundation:
     dependency: transitive
     description:
@@ -321,6 +321,14 @@ packages:
       url: "https://pub.dev"
     source: hosted
     version: "1.9.1"
+  carp_themes_package:
+    dependency: "direct main"
+    description:
+      name: carp_themes_package
+      sha256: "48e747c82392db406531289828b4143275b28736354fb9e7bc62cfe1a189d675"
+      url: "https://pub.dev"
+    source: hosted
+    version: "0.0.3"
   carp_webservices:
     dependency: "direct main"
     description:

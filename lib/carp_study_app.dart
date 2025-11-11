@@ -183,7 +183,7 @@ class CarpStudyAppState extends State<CarpStudyApp> {
 
   @override
   Widget build(BuildContext context) {
-    final carpColors = Theme.of(context).extension<CarpColors>();
+    final studyAppColors = Theme.of(context).extension<StudyAppColors>();
 
     // Apply system overlay style after frame so Theme.of(context) is ready
     WidgetsBinding.instance.addPostFrameCallback((_) {
@@ -218,14 +218,14 @@ class CarpStudyAppState extends State<CarpStudyApp> {
         return supportedLocales.first; // default to EN
       },
       locale: bloc.localization?.locale,
-      theme: researchPackageTheme.copyWith(
+      theme: carpTheme.copyWith(
         extensions: [
-          researchPackageTheme.extension<RPColors>()!.copyWith(
-                primary: carpColors?.primary,
+          carpTheme.extension<CarpColors>()!.copyWith(
+                primary: studyAppColors?.primary,
               ),
         ],
       ),
-      darkTheme: researchPackageDarkTheme,
+      darkTheme: carpDarkTheme,
       debugShowCheckedModeBanner: true,
       routerConfig: _router,
     );

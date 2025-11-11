@@ -50,7 +50,8 @@ class _BluetoothConnectionPageState extends State<BluetoothConnectionPage> {
     RPLocalizations locale = RPLocalizations.of(context)!;
 
     return Scaffold(
-      backgroundColor: Theme.of(context).extension<RPColors>()!.backgroundGray,
+      backgroundColor:
+          Theme.of(context).extension<CarpColors>()!.backgroundGray,
       body: SafeArea(
         child: Stack(
           children: [
@@ -124,7 +125,7 @@ class _BluetoothConnectionPageState extends State<BluetoothConnectionPage> {
             Flexible(
               child: Text(
                 stepTitleMap[currentStep] ?? '',
-                style: healthServiceConnectMessageStyle.copyWith(
+                style: fs22fw700.copyWith(
                   color: Theme.of(context).primaryColor,
                 ),
                 textAlign: TextAlign.center,
@@ -169,7 +170,7 @@ class _BluetoothConnectionPageState extends State<BluetoothConnectionPage> {
           _connectDevice(),
           selectedDevice != null,
           ElevatedButton.styleFrom(
-            backgroundColor: Theme.of(context).extension<RPColors>()!.primary,
+            backgroundColor: Theme.of(context).extension<CarpColors>()!.primary,
             padding: const EdgeInsets.symmetric(horizontal: 30, vertical: 12),
           ),
           TextStyle(
@@ -190,7 +191,7 @@ class _BluetoothConnectionPageState extends State<BluetoothConnectionPage> {
           },
           true,
           ElevatedButton.styleFrom(
-            backgroundColor: Theme.of(context).extension<RPColors>()!.primary,
+            backgroundColor: Theme.of(context).extension<CarpColors>()!.primary,
             padding: const EdgeInsets.symmetric(horizontal: 30, vertical: 12),
           ),
           TextStyle(
@@ -210,7 +211,7 @@ class _BluetoothConnectionPageState extends State<BluetoothConnectionPage> {
           },
           true,
           ElevatedButton.styleFrom(
-            backgroundColor: Theme.of(context).extension<RPColors>()!.primary,
+            backgroundColor: Theme.of(context).extension<CarpColors>()!.primary,
             padding: const EdgeInsets.symmetric(horizontal: 30, vertical: 12),
           ),
           TextStyle(
@@ -309,7 +310,7 @@ class _BluetoothConnectionPageState extends State<BluetoothConnectionPage> {
             "${locale.translate("pages.devices.connection.step.scan.1")} "
             "${locale.translate(device.typeName)} "
             "${locale.translate("pages.devices.connection.step.scan.2")}",
-            style: healthServiceConnectMessageStyle,
+            style: fs22fw700,
             textAlign: TextAlign.justify,
           ),
           Expanded(
@@ -331,15 +332,15 @@ class _BluetoothConnectionPageState extends State<BluetoothConnectionPage> {
                         .map(
                           (bluetoothDevice) => StudiesMaterial(
                             // hasBorder: true,
-                            backgroundColor:
-                                Theme.of(context).extension<RPColors>()!.grey50!,
+                            backgroundColor: Theme.of(context)
+                                .extension<CarpColors>()!
+                                .grey50!,
                             child: InkWell(
                               child: ListTile(
                                 selected: bluetoothDevice.key == selected,
                                 title: Text(
                                   bluetoothDevice.value.device.platformName,
-                                  style:
-                                      healthServiceConnectMessageStyle.copyWith(
+                                  style: fs22fw700.copyWith(
                                     fontSize: 20,
                                   ),
                                 ),
@@ -375,7 +376,7 @@ class _BluetoothConnectionPageState extends State<BluetoothConnectionPage> {
                     text: locale
                         .translate("pages.devices.connection.instructions"),
                     style: TextStyle(
-                      color: Theme.of(context).extension<RPColors>()!.primary,
+                      color: Theme.of(context).extension<CarpColors>()!.primary,
                       decoration: TextDecoration.underline,
                       fontWeight: FontWeight.bold,
                     ),
@@ -391,8 +392,8 @@ class _BluetoothConnectionPageState extends State<BluetoothConnectionPage> {
                   ),
                 ],
               ),
-              style: healthServiceConnectMessageStyle.copyWith(
-                  color: Theme.of(context).extension<RPColors>()!.grey900),
+              style: fs22fw700.copyWith(
+                  color: Theme.of(context).extension<CarpColors>()!.grey900),
               textAlign: TextAlign.center,
             ),
           )
@@ -482,7 +483,7 @@ class _BluetoothConnectionPageState extends State<BluetoothConnectionPage> {
                     padding: const EdgeInsets.only(bottom: 20.0),
                     child: Text(
                       locale.translate(device.connectionInstructions!),
-                      style: aboutCardContentStyle,
+                      style: fs16fw400,
                       textAlign: TextAlign.justify,
                     ),
                   ),
@@ -513,7 +514,7 @@ class _BluetoothConnectionPageState extends State<BluetoothConnectionPage> {
                   child: Text(
                     ("${locale.translate("pages.devices.connection.step.confirm.1")} '${device?.platformName}' ${locale.translate("pages.devices.connection.step.confirm.2")}")
                         .trim(),
-                    style: aboutCardContentStyle,
+                    style: fs16fw400,
                     textAlign: TextAlign.justify,
                   ),
                 ),

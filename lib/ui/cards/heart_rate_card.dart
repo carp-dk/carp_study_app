@@ -42,7 +42,7 @@ class HeartRateCardWidgetState extends State<HeartRateCardWidget>
   @override
   Widget build(BuildContext context) {
     return StudiesMaterial(
-      backgroundColor: Theme.of(context).extension<RPColors>()!.white!,
+      backgroundColor: Theme.of(context).extension<CarpColors>()!.white!,
       child: Padding(
         padding: const EdgeInsets.all(8.0),
         child: Column(
@@ -86,7 +86,7 @@ class HeartRateCardWidgetState extends State<HeartRateCardWidget>
             min == null || max == null
                 ? '-'
                 : '${(min.toInt())} - ${(max.toInt())}',
-            style: heartRateNumberStyle,
+            style: fs28fw700,
           ),
         ),
         Padding(
@@ -95,9 +95,9 @@ class HeartRateCardWidgetState extends State<HeartRateCardWidget>
             min == null || max == null
                 ? ''
                 : locale.translate('cards.heartrate.bpm'),
-            style: heartRateBPMTextStyle.copyWith(
+            style: fs10fw700.copyWith(
               fontSize: 12,
-              color: Theme.of(context).extension<RPColors>()!.grey600,
+              color: Theme.of(context).extension<CarpColors>()!.grey600,
             ),
           ),
         ),
@@ -122,9 +122,9 @@ class HeartRateCardWidgetState extends State<HeartRateCardWidget>
                 child: currentHeartRate != null
                     ? Text(
                         currentHeartRate.toStringAsFixed(0),
-                        style: heartRateNumberStyle,
+                        style: fs28fw700,
                       )
-                    : Text('-', style: heartRateNumberStyle),
+                    : Text('-', style: fs28fw700),
               ),
               Padding(
                 padding: const EdgeInsets.only(bottom: 14),
@@ -145,8 +145,9 @@ class HeartRateCardWidgetState extends State<HeartRateCardWidget>
                     ),
                     Text(
                       locale.translate('cards.heartrate.bpm'),
-                      style: heartRateBPMTextStyle.copyWith(
-                        color: Theme.of(context).extension<RPColors>()!.grey600,
+                      style: fs10fw700.copyWith(
+                        color:
+                            Theme.of(context).extension<CarpColors>()!.grey600,
                       ),
                     ),
                   ],
@@ -210,7 +211,7 @@ class HeartRateCardWidgetState extends State<HeartRateCardWidget>
                     ),
                   ),
                 ],
-                heartRateNumberStyle,
+                fs28fw700,
               );
             },
           ),
@@ -310,8 +311,8 @@ class HeartRateCardWidgetState extends State<HeartRateCardWidget>
         value.toInt() % meta.appliedInterval == 0
             ? value.toInt().toString()
             : '',
-        style: dataCardRightTitleStyle.copyWith(
-          color: Theme.of(context).extension<RPColors>()!.grey600,
+        style: fs14ls1.copyWith(
+          color: Theme.of(context).extension<CarpColors>()!.grey600,
         ),
         maxLines: 1,
       ),

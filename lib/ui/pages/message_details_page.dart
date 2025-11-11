@@ -42,7 +42,7 @@ class MessageDetailsPage extends StatelessWidget {
                         left: 26, right: 10, top: 16, bottom: 16),
                     icon: Icon(
                       Icons.arrow_back_ios,
-                      color: Theme.of(context).extension<RPColors>()!.grey600,
+                      color: Theme.of(context).extension<CarpColors>()!.grey600,
                     ),
                     onPressed: () {
                       if (context.canPop()) {
@@ -55,9 +55,9 @@ class MessageDetailsPage extends StatelessWidget {
                   Padding(
                     padding: const EdgeInsets.symmetric(vertical: 10.0),
                     child: Text(locale.translate(message.title!),
-                        style: aboutCardTitleStyle.copyWith(
+                        style: fs20fw700.copyWith(
                             color: Theme.of(context)
-                                .extension<RPColors>()!
+                                .extension<CarpColors>()!
                                 .grey900)),
                   ),
                   Spacer(),
@@ -75,8 +75,7 @@ class MessageDetailsPage extends StatelessWidget {
                                 .split('.')
                                 .last
                                 .toLowerCase()),
-                            style: aboutCardSubtitleStyle.copyWith(
-                                color: Colors.white)),
+                            style: fs16fw600.copyWith(color: Colors.white)),
                       ),
                     ),
                   ),
@@ -92,9 +91,9 @@ class MessageDetailsPage extends StatelessWidget {
                             padding: const EdgeInsets.symmetric(
                                 horizontal: 10.0, vertical: 6.0),
                             child: Text(locale.translate(message.subTitle!),
-                                style: aboutCardContentStyle.copyWith(
+                                style: fs16fw400.copyWith(
                                     color: Theme.of(context)
-                                        .extension<RPColors>()!
+                                        .extension<CarpColors>()!
                                         .grey700)),
                           )
                         : const SizedBox.shrink(),
@@ -123,9 +122,9 @@ class MessageDetailsPage extends StatelessWidget {
                           if (message.message != null)
                             Text(
                               locale.translate(message.message!),
-                              style: aboutCardContentStyle.copyWith(
+                              style: fs16fw400.copyWith(
                                   color: Theme.of(context)
-                                      .extension<RPColors>()!
+                                      .extension<CarpColors>()!
                                       .grey900),
                               textAlign: TextAlign.justify,
                             )

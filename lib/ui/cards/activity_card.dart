@@ -63,7 +63,7 @@ class ActivityCardState extends State<ActivityCard> {
     RPLocalizations locale = RPLocalizations.of(context)!;
 
     return StudiesMaterial(
-      backgroundColor: Theme.of(context).extension<RPColors>()!.white!,
+      backgroundColor: Theme.of(context).extension<CarpColors>()!.white!,
       child: Padding(
         padding: const EdgeInsets.all(8.0),
         child: Column(
@@ -72,16 +72,16 @@ class ActivityCardState extends State<ActivityCard> {
               children: [
                 Text(
                   '${_walk! + _run! + _cycle!}',
-                  style: dataVizCardTitleNumber.copyWith(
-                    color: Theme.of(context).extension<RPColors>()!.grey900!,
+                  style: fs28fw700.copyWith(
+                    color: Theme.of(context).extension<CarpColors>()!.grey900!,
                   ),
                 ),
                 Padding(
                   padding: const EdgeInsets.only(left: 4.0),
                   child: Text(
                     '${locale.translate('cards.activity.total.min')} ${_getDayName(touchedIndex)}',
-                    style: dataVizCardTitleText.copyWith(
-                      color: Theme.of(context).extension<RPColors>()!.grey600,
+                    style: fs12fw700.copyWith(
+                      color: Theme.of(context).extension<CarpColors>()!.grey600,
                     ),
                   ),
                 ),
@@ -91,8 +91,8 @@ class ActivityCardState extends State<ActivityCard> {
               children: [
                 Text(
                   "${widget.model.currentMonth} ${widget.model.startOfWeek} - ${int.parse(widget.model.endOfWeek) < int.parse(widget.model.startOfWeek) ? widget.model.nextMonth : widget.model.currentMonth} ${widget.model.endOfWeek}, ${widget.model.currentYear}",
-                  style: dataVizCardTitleText.copyWith(
-                    color: Theme.of(context).extension<RPColors>()!.grey600,
+                  style: fs12fw700.copyWith(
+                    color: Theme.of(context).extension<CarpColors>()!.grey600,
                   ),
                 ),
                 Spacer(),
@@ -117,7 +117,7 @@ class ActivityCardState extends State<ActivityCard> {
                         children: [
                           Text(
                             '$_walk',
-                            style: dataVizCardBottomNumber.copyWith(
+                            style: fs22fw700.copyWith(
                               color: widget.colors[0],
                             ),
                           ),
@@ -125,9 +125,9 @@ class ActivityCardState extends State<ActivityCard> {
                             padding: const EdgeInsets.all(4.0),
                             child: Text(
                               locale.translate('cards.activity.walking'),
-                              style: dataVizCardBottomText.copyWith(
+                              style: fs12fw700.copyWith(
                                   color: Theme.of(context)
-                                      .extension<RPColors>()!
+                                      .extension<CarpColors>()!
                                       .grey800),
                             ),
                           ),
@@ -141,7 +141,7 @@ class ActivityCardState extends State<ActivityCard> {
                             padding: const EdgeInsets.only(left: 8.0),
                             child: Text(
                               '$_run',
-                              style: dataVizCardBottomNumber.copyWith(
+                              style: fs12fw700.copyWith(
                                 color: widget.colors[1],
                               ),
                             ),
@@ -150,9 +150,9 @@ class ActivityCardState extends State<ActivityCard> {
                             padding: const EdgeInsets.all(4.0),
                             child: Text(
                               locale.translate('cards.activity.running'),
-                              style: dataVizCardBottomText.copyWith(
+                              style: fs12fw700.copyWith(
                                   color: Theme.of(context)
-                                      .extension<RPColors>()!
+                                      .extension<CarpColors>()!
                                       .grey800),
                             ),
                           ),
@@ -165,7 +165,7 @@ class ActivityCardState extends State<ActivityCard> {
                   children: [
                     Text(
                       '$_cycle',
-                      style: dataVizCardBottomNumber.copyWith(
+                      style: fs22fw700.copyWith(
                         color: widget.colors[2],
                       ),
                     ),
@@ -173,9 +173,10 @@ class ActivityCardState extends State<ActivityCard> {
                       padding: const EdgeInsets.only(left: 4.0),
                       child: Text(
                         locale.translate('cards.activity.cycling'),
-                        style: dataVizCardBottomText.copyWith(
-                          color:
-                              Theme.of(context).extension<RPColors>()!.grey800,
+                        style: fs12fw700.copyWith(
+                          color: Theme.of(context)
+                              .extension<CarpColors>()!
+                              .grey800,
                         ),
                       ),
                     ),
@@ -303,8 +304,8 @@ class ActivityCardState extends State<ActivityCard> {
         value.toInt() % meta.appliedInterval == 0
             ? value.toInt().toString()
             : '',
-        style: dataCardRightTitleStyle.copyWith(
-          color: Theme.of(context).extension<RPColors>()!.grey600,
+        style: fs14ls1.copyWith(
+          color: Theme.of(context).extension<CarpColors>()!.grey600,
         ),
       ),
     );

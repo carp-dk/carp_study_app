@@ -70,11 +70,9 @@ class ProcessMessagePage extends StatelessWidget {
                 const SizedBox(height: 40),
                 messageImage(),
                 const SizedBox(height: 20),
-                Center(
-                    child:
-                        Text(locale.translate(title), style: audioTitleStyle)),
+                Center(child: Text(locale.translate(title), style: fs22fw700)),
                 const SizedBox(height: 10),
-                Text(locale.translate(description), style: audioContentStyle),
+                Text(locale.translate(description), style: fs16fw600),
               ]),
         ),
         bottomSheet: Row(

@@ -29,7 +29,7 @@ class StepsCardWidgetState extends State<StepsCardWidget> {
     RPLocalizations locale = RPLocalizations.of(context)!;
 
     return StudiesMaterial(
-      backgroundColor: Theme.of(context).extension<RPColors>()!.white!,
+      backgroundColor: Theme.of(context).extension<CarpColors>()!.white!,
       child: Padding(
         padding: const EdgeInsets.all(8.0),
         child: Column(
@@ -38,16 +38,16 @@ class StepsCardWidgetState extends State<StepsCardWidget> {
               children: [
                 Text(
                   _step > 0 ? '$_step' : '0',
-                  style: dataVizCardTitleNumber.copyWith(
-                    color: Theme.of(context).extension<RPColors>()!.grey900!,
+                  style: fs28fw700.copyWith(
+                    color: Theme.of(context).extension<CarpColors>()!.grey900!,
                   ),
                 ),
                 Padding(
                   padding: const EdgeInsets.only(left: 4.0),
                   child: Text(
                     '${locale.translate('cards.steps.steps')} ${_getDayName(touchedIndex)}',
-                    style: dataVizCardTitleText.copyWith(
-                      color: Theme.of(context).extension<RPColors>()!.grey600,
+                    style: fs12fw700.copyWith(
+                      color: Theme.of(context).extension<CarpColors>()!.grey600,
                     ),
                   ),
                 ),
@@ -57,8 +57,8 @@ class StepsCardWidgetState extends State<StepsCardWidget> {
               children: [
                 Text(
                   "${widget.model.currentMonth} ${widget.model.startOfWeek} - ${int.parse(widget.model.endOfWeek) < int.parse(widget.model.startOfWeek) ? widget.model.nextMonth : widget.model.currentMonth} ${widget.model.endOfWeek}, ${widget.model.currentYear}",
-                  style: dataVizCardTitleText.copyWith(
-                    color: Theme.of(context).extension<RPColors>()!.grey600,
+                  style: fs12fw700.copyWith(
+                    color: Theme.of(context).extension<CarpColors>()!.grey600,
                   ),
                 ),
                 Spacer(),
@@ -172,8 +172,8 @@ class StepsCardWidgetState extends State<StepsCardWidget> {
         value.toInt() % meta.appliedInterval == 0
             ? value.toInt().toString()
             : '',
-        style: dataCardRightTitleStyle.copyWith(
-          color: Theme.of(context).extension<RPColors>()!.grey600,
+        style: fs14ls1.copyWith(
+          color: Theme.of(context).extension<CarpColors>()!.grey600,
         ),
       ),
     );

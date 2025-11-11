@@ -103,14 +103,15 @@ class HomePageState extends State<HomePage> {
     });
 
     return Scaffold(
-      backgroundColor: Theme.of(context).extension<RPColors>()!.backgroundGray,
+      backgroundColor:
+          Theme.of(context).extension<CarpColors>()!.backgroundGray,
       body: SafeArea(
         child: widget.child,
       ),
       bottomNavigationBar: BottomNavigationBar(
-        backgroundColor: Theme.of(context).extension<RPColors>()!.white,
+        backgroundColor: Theme.of(context).extension<CarpColors>()!.white,
         type: BottomNavigationBarType.fixed,
-        selectedItemColor: Theme.of(context).extension<RPColors>()!.primary,
+        selectedItemColor: Theme.of(context).extension<CarpColors>()!.primary,
         //unselectedItemColor: Theme.of(context).primaryColor.withOpacity(0.8),
         items: <BottomNavigationBarItem>[
           BottomNavigationBarItem(

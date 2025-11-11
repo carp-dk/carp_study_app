@@ -158,7 +158,7 @@ class MyAssetsBar extends StatelessWidget {
                     children: [
                       Icon(Icons.circle, color: entry.value.color, size: 12.0),
                       Text(' ${entry.value.name!} ${entry.value.size}',
-                          style: legendStyle, textAlign: TextAlign.right),
+                          style: fs12fw400, textAlign: TextAlign.right),
                     ],
                   )),
             )
@@ -187,10 +187,10 @@ class MyAssetsBar extends StatelessWidget {
                     children: [
                       Icon(Icons.circle, color: entry.value.color, size: 12.0),
                       Text(' ${entry.value.size}',
-                          style: legendStyle, textAlign: TextAlign.left),
+                          style: fs12fw400, textAlign: TextAlign.left),
                       Expanded(
                           child: Text(' ${entry.value.name!}',
-                              style: legendStyle,
+                              style: fs12fw400,
                               textAlign: TextAlign.left,
                               overflow: TextOverflow.ellipsis)),
                     ],

@@ -14,7 +14,7 @@ class HealthServiceConnectPage extends StatelessWidget {
         .first;
 
     return Scaffold(
-      backgroundColor: Theme.of(context).extension<RPColors>()!.grey100,
+      backgroundColor: Theme.of(context).extension<CarpColors>()!.grey100,
       body: SafeArea(
         child: Container(
           child: Column(
@@ -48,36 +48,36 @@ class HealthServiceConnectPage extends StatelessWidget {
                             TextSpan(
                               text:
                                   "${locale.translate("pages.devices.type.health.instructions.page2.part1")} ",
-                              style: healthServiceConnectMessageStyle.copyWith(
+                              style: fs22fw700.copyWith(
                                 color: Theme.of(context)
-                                    .extension<RPColors>()!
+                                    .extension<CarpColors>()!
                                     .grey900,
                               ),
                             ),
                             TextSpan(
                               text:
                                   "${Platform.isAndroid ? locale.translate("pages.devices.type.health.instructions.page2.android.allow_all") : locale.translate("pages.devices.type.health.instructions.page2.ios.turn_on_all")} ",
-                              style: healthServiceConnectMessageStyle.copyWith(
+                              style: fs22fw700.copyWith(
                                 color: Theme.of(context)
-                                    .extension<RPColors>()!
+                                    .extension<CarpColors>()!
                                     .primary, // Change to desired color
                               ),
                             ),
                             TextSpan(
                               text:
                                   "${locale.translate("pages.devices.type.health.instructions.page2.part2")} ",
-                              style: healthServiceConnectMessageStyle.copyWith(
+                              style: fs22fw700.copyWith(
                                 color: Theme.of(context)
-                                    .extension<RPColors>()!
+                                    .extension<CarpColors>()!
                                     .grey900,
                               ),
                             ),
                             TextSpan(
                               text:
                                   "${locale.translate("pages.devices.type.health.instructions.page2.allow")} ",
-                              style: healthServiceConnectMessageStyle.copyWith(
+                              style: fs22fw700.copyWith(
                                 color: Theme.of(context)
-                                    .extension<RPColors>()!
+                                    .extension<CarpColors>()!
                                     .primary, // Change to desired color
                               ),
                             ),
@@ -87,9 +87,9 @@ class HealthServiceConnectPage extends StatelessWidget {
                                       "pages.devices.type.health.instructions.page2.part3.android")
                                   : locale.translate(
                                       "pages.devices.type.health.instructions.page2.part3.ios"),
-                              style: healthServiceConnectMessageStyle.copyWith(
+                              style: fs22fw700.copyWith(
                                 color: Theme.of(context)
-                                    .extension<RPColors>()!
+                                    .extension<CarpColors>()!
                                     .grey900,
                               ),
                             ),
@@ -126,7 +126,7 @@ class HealthServiceConnectPage extends StatelessWidget {
               ),
               style: ElevatedButton.styleFrom(
                 backgroundColor:
-                    Theme.of(context).extension<RPColors>()!.primary,
+                    Theme.of(context).extension<CarpColors>()!.primary,
                 padding:
                     const EdgeInsets.symmetric(horizontal: 30, vertical: 12),
               ),

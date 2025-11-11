@@ -48,7 +48,7 @@ class DialogTitle extends StatelessWidget {
                         (titleEnd != null
                             ? ' ${locale.translate(titleEnd!)}'
                             : ""),
-                    style: sectionTitleStyle.copyWith(
+                    style: fs18fw700.copyWith(
                       color: Theme.of(context).primaryColor,
                     ),
                     textAlign: TextAlign.center,
