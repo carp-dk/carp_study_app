@@ -42,7 +42,7 @@ class MessageDetailsPage extends StatelessWidget {
                         left: 26, right: 10, top: 16, bottom: 16),
                     icon: Icon(
                       Icons.arrow_back_ios,
-                      color: Theme.of(context).extension<RPColors>()!.grey600,
+                      color: Theme.of(context).extension<CarpColors>()!.grey600,
                     ),
                     onPressed: () {
                       if (context.canPop()) {
@@ -52,19 +52,31 @@ class MessageDetailsPage extends StatelessWidget {
                       }
                     },
                   ),
-                  Material(
-                    color: CACHET.DEPLOYMENT_DEPLOYING,
-                    borderRadius: BorderRadius.circular(100.0),
-                    child: Padding(
-                      padding: const EdgeInsets.all(12.0),
-                      child: Text(
-                          locale.translate(message.type
-                              .toString()
-                              .split('.')
-                              .last
-                              .toLowerCase()),
-                          style: aboutCardSubtitleStyle.copyWith(
-                              color: Colors.white)),
+                  Padding(
+                    padding: const EdgeInsets.symmetric(vertical: 10.0),
+                    child: Text(locale.translate(message.title!),
+                        style: fs20fw700.copyWith(
+                            color: Theme.of(context)
+                                .extension<CarpColors>()!
+                                .grey900)),
+                  ),
+                  Spacer(),
+                  Padding(
+                    padding: const EdgeInsets.only(right: 24),
+                    child: Material(
+                      color: CACHET.DEPLOYMENT_DEPLOYING,
+                      borderRadius: BorderRadius.circular(100.0),
+                      child: Padding(
+                        padding: const EdgeInsets.symmetric(
+                            horizontal: 12.0, vertical: 6.0),
+                        child: Text(
+                            locale.translate(message.type
+                                .toString()
+                                .split('.')
+                                .last
+                                .toLowerCase()),
+                            style: fs16fw600.copyWith(color: Colors.white)),
+                      ),
                     ),
                   ),
                 ],
@@ -74,22 +86,14 @@ class MessageDetailsPage extends StatelessWidget {
                   padding:
                       const EdgeInsets.symmetric(horizontal: 24, vertical: 16),
                   children: [
-                    Padding(
-                      padding: const EdgeInsets.symmetric(vertical: 10.0),
-                      child: Text(locale.translate(message.title!),
-                          style: aboutCardTitleStyle.copyWith(
-                              color: Theme.of(context)
-                                  .extension<RPColors>()!
-                                  .grey900)),
-                    ),
                     message.subTitle != null
                         ? Padding(
                             padding: const EdgeInsets.symmetric(
                                 horizontal: 10.0, vertical: 6.0),
                             child: Text(locale.translate(message.subTitle!),
-                                style: aboutCardContentStyle.copyWith(
+                                style: fs16fw400.copyWith(
                                     color: Theme.of(context)
-                                        .extension<RPColors>()!
+                                        .extension<CarpColors>()!
                                         .grey700)),
                           )
                         : const SizedBox.shrink(),
@@ -118,9 +122,9 @@ class MessageDetailsPage extends StatelessWidget {
                           if (message.message != null)
                             Text(
                               locale.translate(message.message!),
-                              style: aboutCardContentStyle.copyWith(
+                              style: fs16fw400.copyWith(
                                   color: Theme.of(context)
-                                      .extension<RPColors>()!
+                                      .extension<CarpColors>()!
                                       .grey900),
                               textAlign: TextAlign.justify,
                             )

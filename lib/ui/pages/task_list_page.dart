@@ -29,7 +29,7 @@ class _SliverAppBarDelegate extends SliverPersistentHeaderDelegate {
       padding: const EdgeInsets.symmetric(vertical: 4),
       decoration: BoxDecoration(
         borderRadius: BorderRadius.circular(8),
-        color: Theme.of(context).extension<RPColors>()!.grey200,
+        color: Theme.of(context).extension<CarpColors>()!.grey200,
       ),
       child: _tabBar,
     );
@@ -45,7 +45,7 @@ class TaskListPageState extends State<TaskListPage>
     with TickerProviderStateMixin {
   late TabController _tabController;
 
-  bool? showParticipantDataCard = false;
+  bool showParticipantDataCard = false;
 
   @override
   void initState() {
@@ -69,7 +69,7 @@ class TaskListPageState extends State<TaskListPage>
       length: 2,
       child: Scaffold(
         backgroundColor:
-            Theme.of(context).extension<RPColors>()!.backgroundGray,
+            Theme.of(context).extension<CarpColors>()!.backgroundGray,
         body: SafeArea(
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.center,
@@ -97,9 +97,9 @@ class TaskListPageState extends State<TaskListPage>
                                 alignment: Alignment.centerLeft,
                                 child: Text(
                                   locale.translate('pages.task_list.title'),
-                                  style: aboutStudyCardTitleStyle.copyWith(
+                                  style: fs24fw700.copyWith(
                                     color: Theme.of(context)
-                                        .extension<RPColors>()!
+                                        .extension<CarpColors>()!
                                         .grey900,
                                     fontWeight: FontWeight.bold,
                                   ),
@@ -125,10 +125,10 @@ class TaskListPageState extends State<TaskListPage>
                                   labelPadding: const EdgeInsets.only(
                                       top: 4, bottom: 4, left: 4, right: 4),
                                   labelColor: Theme.of(context)
-                                      .extension<RPColors>()!
+                                      .extension<CarpColors>()!
                                       .grey900,
                                   unselectedLabelColor: Theme.of(context)
-                                      .extension<RPColors>()!
+                                      .extension<CarpColors>()!
                                       .grey900,
                                   dividerColor: Colors.transparent,
                                   indicator: ShapeDecoration(
@@ -136,7 +136,7 @@ class TaskListPageState extends State<TaskListPage>
                                       borderRadius: BorderRadius.circular(8),
                                     ),
                                     color: Theme.of(context)
-                                        .extension<RPColors>()!
+                                        .extension<CarpColors>()!
                                         .white,
                                   ),
                                   tabs: [
@@ -159,7 +159,7 @@ class TaskListPageState extends State<TaskListPage>
                               ),
                             ),
                           ),
-                          if (showParticipantDataCard!)
+                          if (showParticipantDataCard)
                             SliverToBoxAdapter(
                               child: _buildParticipantDataCard(),
                             ),
@@ -208,7 +208,7 @@ class TaskListPageState extends State<TaskListPage>
             right: Radius.circular(8.0),
           ),
         ),
-        backgroundColor: Theme.of(context).extension<RPColors>()!.grey50!,
+        backgroundColor: Theme.of(context).extension<CarpColors>()!.grey50!,
         child: Padding(
           padding: const EdgeInsets.symmetric(vertical: 16),
           child: IntrinsicHeight(
@@ -291,7 +291,7 @@ class TaskListPageState extends State<TaskListPage>
           backgroundColor:
               userTask.expiresIn != null && userTask.expiresIn!.inHours < 24
                   ? CACHET.TASK_TO_EXPIRE_BACKGROUND
-                  : Theme.of(context).extension<RPColors>()!.grey50!,
+                  : Theme.of(context).extension<CarpColors>()!.grey50!,
           child: Padding(
             padding: const EdgeInsets.symmetric(vertical: 16),
             child: IntrinsicHeight(
@@ -328,7 +328,7 @@ class TaskListPageState extends State<TaskListPage>
                                 color: userTask.expiresIn != null &&
                                         userTask.expiresIn!.inHours < 24
                                     ? Theme.of(context)
-                                        .extension<RPColors>()!
+                                        .extension<CarpColors>()!
                                         .warningColor
                                     : Colors.grey,
                               ),
@@ -341,7 +341,7 @@ class TaskListPageState extends State<TaskListPage>
                                   color: userTask.expiresIn != null &&
                                           userTask.expiresIn!.inHours < 24
                                       ? Theme.of(context)
-                                          .extension<RPColors>()!
+                                          .extension<CarpColors>()!
                                           .warningColor
                                       : Colors.grey,
                                   fontSize: 12.0,
@@ -411,7 +411,7 @@ class TaskListPageState extends State<TaskListPage>
                 userTask.onDone();
                 ScaffoldMessenger.of(context).showSnackBar(SnackBar(
                     backgroundColor:
-                        Theme.of(context).extension<RPColors>()!.grey700,
+                        Theme.of(context).extension<CarpColors>()!.grey700,
                     content: Text(locale.translate('Done!')),
                     shape: RoundedRectangleBorder(
                       borderRadius: BorderRadius.circular(4),
@@ -453,7 +453,7 @@ class TaskListPageState extends State<TaskListPage>
           return Icon(originalIcon.icon, color: CACHET.TASK_COMPLETED_BLUE);
         } else {
           return Icon(originalIcon.icon,
-              color: Theme.of(context).extension<RPColors>()!.grey600);
+              color: Theme.of(context).extension<CarpColors>()!.grey600);
         }
       },
     );
@@ -493,7 +493,7 @@ class TaskListPageState extends State<TaskListPage>
     return Center(
       child: GestureDetector(
         child: StudiesMaterial(
-          backgroundColor: Theme.of(context).extension<RPColors>()!.grey50!,
+          backgroundColor: Theme.of(context).extension<CarpColors>()!.grey50!,
           hasBorder: true,
           shape: RoundedRectangleBorder(
             borderRadius: BorderRadius.horizontal(
@@ -541,7 +541,7 @@ class TaskListPageState extends State<TaskListPage>
                                 color: userTask.expiresIn != null &&
                                         userTask.expiresIn!.inHours < 24
                                     ? Theme.of(context)
-                                        .extension<RPColors>()!
+                                        .extension<CarpColors>()!
                                         .warningColor
                                     : Colors.grey,
                                 fontSize: 12.0,
@@ -600,7 +600,7 @@ class TaskListPageState extends State<TaskListPage>
             padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 5),
             child: Text(
               locale.translate("pages.task_list.no_tasks"),
-              style: aboutCardSubtitleStyle,
+              style: fs16fw600,
               textAlign: TextAlign.center,
             ))
       ],

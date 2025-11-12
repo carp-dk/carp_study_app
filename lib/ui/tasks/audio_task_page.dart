@@ -33,8 +33,9 @@ class AudioTaskPageState extends State<AudioTaskPage> {
                         ),
                         Spacer(),
                         IconButton(
-                          color:
-                              Theme.of(context).extension<RPColors>()!.grey900!,
+                          color: Theme.of(context)
+                              .extension<CarpColors>()!
+                              .grey900!,
                           onPressed: () {
                             _showCancelConfirmationDialog();
                           },
@@ -55,7 +56,7 @@ class AudioTaskPageState extends State<AudioTaskPage> {
                     Padding(
                       padding: const EdgeInsets.symmetric(vertical: 12),
                       child: Text(locale.translate(widget.audioUserTask!.title),
-                          style: audioTitleStyle),
+                          style: fs22fw700),
                     ),
                     Padding(
                       padding: const EdgeInsets.symmetric(
@@ -63,7 +64,7 @@ class AudioTaskPageState extends State<AudioTaskPage> {
                       child: Text(
                         '${locale.translate(widget.audioUserTask!.description)}\n\n'
                         '${locale.translate('pages.audio_task.play')}',
-                        style: audioContentStyle,
+                        style: fs16fw600,
                       ),
                     ),
                     Padding(
@@ -89,7 +90,7 @@ class AudioTaskPageState extends State<AudioTaskPage> {
                             ),
                             style: ElevatedButton.styleFrom(
                               backgroundColor: Theme.of(context)
-                                  .extension<RPColors>()!
+                                  .extension<CarpColors>()!
                                   .primary,
                               padding: const EdgeInsets.symmetric(
                                 horizontal: 30,

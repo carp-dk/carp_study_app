@@ -14,9 +14,6 @@ class LocalSettings {
   /// See https://developer.android.com/health-and-fitness/guides/health-connect/develop/get-started#get-client
   static const healthConnectPackageName = 'com.google.android.apps.healthdata';
 
-  bool isExpectedParticipantDataSet = false;
-  bool hasUserSeenDeviceConnectionInstructions = false;
-
   // Keys for storing in shared preferences
   static const String userKey = 'user';
   static const String participantKey = 'participant';
@@ -25,8 +22,6 @@ class LocalSettings {
   CarpUser? _user;
   Participant? _participant;
   SmartphoneStudy? _study;
-
-  bool hasSeenBluetoothConnectionInstructions = false;
 
   static final LocalSettings _instance = LocalSettings._();
   factory LocalSettings() => _instance;
@@ -109,11 +104,13 @@ class LocalSettings {
         );
   }
 
-  bool get hasSeenConnectionInstructions =>
-      hasSeenBluetoothConnectionInstructions;
+  bool get hasSeenBluetoothConnectionInstructions =>
+      Settings()
+          .preferences
+          ?.getBool('hasSeenBluetoothConnectionInstructions') ??
+      false;
 
-  set hasSeenConnectionInstructions(bool seen) {
-    hasSeenBluetoothConnectionInstructions = seen;
+  set hasSeenBluetoothConnectionInstructions(bool seen) {
     Settings().preferences?.setBool(
           'hasSeenBluetoothConnectionInstructions',
           seen,

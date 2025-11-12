@@ -60,7 +60,7 @@ class DisplayPicturePageState extends State<DisplayPicturePage> {
                 ),
                 Spacer(),
                 IconButton(
-                  color: Theme.of(context).extension<RPColors>()!.grey900!,
+                  color: Theme.of(context).extension<CarpColors>()!.grey900!,
                   onPressed: () {
                     _showCancelConfirmationDialog();
                   },
@@ -97,14 +97,14 @@ class DisplayPicturePageState extends State<DisplayPicturePage> {
                   Padding(
                     padding: const EdgeInsets.symmetric(horizontal: 10),
                     child: Text(locale.translate('pages.audio_task.done'),
-                        style: audioTitleStyle),
+                        style: fs22fw700),
                   ),
                   const SizedBox(height: 40),
                   Padding(
                     padding: const EdgeInsets.symmetric(horizontal: 10),
                     child: Text(
                       locale.translate('pages.audio_task.recording_completed'),
-                      style: audioContentStyle,
+                      style: fs16fw600,
                     ),
                   ),
                   const SizedBox(height: 20),

@@ -19,7 +19,7 @@ class StudyProgressCardWidgetState extends State<StudyProgressCardWidget> {
 
     widget.model.updateProgress();
     return StudiesMaterial(
-      backgroundColor: Theme.of(context).extension<RPColors>()!.white!,
+      backgroundColor: Theme.of(context).extension<CarpColors>()!.white!,
       child: Padding(
         padding: const EdgeInsets.all(8.0),
         child: StreamBuilder(
@@ -33,7 +33,7 @@ class StudyProgressCardWidgetState extends State<StudyProgressCardWidget> {
                     mainAxisAlignment: MainAxisAlignment.start,
                     children: <Widget>[
                       Text(locale.translate('cards.study_progress.title'),
-                          style: dataCardTitleStyle),
+                          style: fs16fw400ls1),
                     ],
                   ),
                 ),

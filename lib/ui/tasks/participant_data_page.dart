@@ -266,7 +266,8 @@ class ParticipantDataPageState extends State<ParticipantDataPage> {
   Widget build(BuildContext context) {
     RPLocalizations locale = RPLocalizations.of(context)!;
     return Scaffold(
-      backgroundColor: Theme.of(context).extension<RPColors>()!.backgroundGray!,
+      backgroundColor:
+          Theme.of(context).extension<CarpColors>()!.backgroundGray!,
       body: SafeArea(
         child: Container(
           padding: const EdgeInsets.all(16.0),
@@ -283,7 +284,7 @@ class ParticipantDataPageState extends State<ParticipantDataPage> {
                   ),
                   Spacer(),
                   IconButton(
-                    color: Theme.of(context).extension<RPColors>()!.grey900!,
+                    color: Theme.of(context).extension<CarpColors>()!.grey900!,
                     onPressed: () {
                       _showCancelConfirmationDialog();
                     },
@@ -357,7 +358,7 @@ class ParticipantDataPageState extends State<ParticipantDataPage> {
             Flexible(
               child: Text(
                 stepTitleMap[currentStep] ?? '',
-                style: healthServiceConnectMessageStyle.copyWith(
+                style: fs22fw700.copyWith(
                   color: Theme.of(context).primaryColor,
                 ),
                 textAlign: TextAlign.center,
@@ -548,7 +549,8 @@ class ParticipantDataPageState extends State<ParticipantDataPage> {
                 child: Container(
                   decoration: BoxDecoration(
                     border: Border.all(
-                      color: Theme.of(context).extension<RPColors>()!.grey600!,
+                      color:
+                          Theme.of(context).extension<CarpColors>()!.grey600!,
                       width: 1.0,
                     ),
                     borderRadius: BorderRadius.circular(16.0),
@@ -564,8 +566,9 @@ class ParticipantDataPageState extends State<ParticipantDataPage> {
                     showCountryOnly: true,
                     showOnlyCountryWhenClosed: true,
                     alignLeft: false,
-                    textStyle: audioContentStyle.copyWith(
-                      color: Theme.of(context).extension<RPColors>()!.grey900!,
+                    textStyle: fs16fw600.copyWith(
+                      color:
+                          Theme.of(context).extension<CarpColors>()!.grey900!,
                     ),
                   ),
                 ),
@@ -681,7 +684,7 @@ class ParticipantDataPageState extends State<ParticipantDataPage> {
               _nextEnabled,
               ElevatedButton.styleFrom(
                 backgroundColor:
-                    Theme.of(context).extension<RPColors>()!.primary,
+                    Theme.of(context).extension<CarpColors>()!.primary,
                 padding:
                     const EdgeInsets.symmetric(horizontal: 30, vertical: 12),
               ),
@@ -702,7 +705,7 @@ class ParticipantDataPageState extends State<ParticipantDataPage> {
               currentStep == ParticipantStep.presentTypes ? true : _nextEnabled,
               ElevatedButton.styleFrom(
                 backgroundColor:
-                    Theme.of(context).extension<RPColors>()!.primary,
+                    Theme.of(context).extension<CarpColors>()!.primary,
                 padding:
                     const EdgeInsets.symmetric(horizontal: 30, vertical: 12),
               ),
@@ -774,7 +777,6 @@ class ParticipantDataPageState extends State<ParticipantDataPage> {
       participantData,
       bloc.study!.participantRoleName,
     );
-    LocalSettings().hasSeenConnectionInstructions = true;
   }
 
   Future<void> _showCancelConfirmationDialog() {

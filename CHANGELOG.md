@@ -1,3 +1,7 @@
+## 4.2.0
+
+* moving to carp_themes_package instead of research package themes
+
 ## 4.1.1
 
 - small visual fixes

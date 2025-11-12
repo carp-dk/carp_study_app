@@ -45,7 +45,7 @@ class CameraTaskPageState extends State<CameraTaskPage> {
                                   Spacer(),
                                   IconButton(
                                     color: Theme.of(context)
-                                        .extension<RPColors>()!
+                                        .extension<CarpColors>()!
                                         .grey900!,
                                     onPressed: () {
                                       _showCancelConfirmationDialog();
@@ -74,7 +74,7 @@ class CameraTaskPageState extends State<CameraTaskPage> {
                                     child: Text(
                                       locale.translate(
                                           widget.mediaUserTask.title),
-                                      style: audioTitleStyle,
+                                      style: fs22fw700,
                                     ),
                                   ),
                                   Padding(
@@ -83,7 +83,7 @@ class CameraTaskPageState extends State<CameraTaskPage> {
                                     child: Text(
                                       locale.translate(
                                           widget.mediaUserTask.description),
-                                      style: audioContentStyle,
+                                      style: fs16fw600,
                                     ),
                                   ),
                                   Padding(
@@ -112,7 +112,7 @@ class CameraTaskPageState extends State<CameraTaskPage> {
                                           ),
                                           style: ElevatedButton.styleFrom(
                                             backgroundColor: Theme.of(context)
-                                                .extension<RPColors>()!
+                                                .extension<CarpColors>()!
                                                 .primary,
                                             padding: const EdgeInsets.symmetric(
                                               horizontal: 30,

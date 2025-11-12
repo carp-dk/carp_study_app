@@ -352,7 +352,9 @@ class StudyAppBLoC extends ChangeNotifier {
 
   /// Has the informed consent been accepted by the user?
   bool get hasInformedConsentBeenAccepted =>
-      LocalSettings().participant?.hasInformedConsentBeenAccepted ?? false;
+      backend.getInformedConsentByRole(
+          study!.studyDeploymentId, study!.participantRoleName) !=
+      null;
 
   set hasInformedConsentBeenAccepted(bool accepted) {
     var participant = LocalSettings().participant;
@@ -380,6 +382,7 @@ class StudyAppBLoC extends ChangeNotifier {
   /// the Study Page of the app.
   Future<void> refreshMessages() async {
     try {
+      _messages.clear();
       _messages = await messageManager.getMessages();
       _messages.sort((m1, m2) => m2.timestamp.compareTo(m1.timestamp));
       info('Message list refreshed - count: ${_messages.length}');
@@ -478,14 +481,13 @@ class StudyAppBLoC extends ChangeNotifier {
   ///  * resetting the informed consent flow
   ///  * returning the user to select an invitation for another study
   ///
-  /// Note that study deployment information and data is not removed from the
-  /// phone. This is stored for later access. Or if the same deployment is
-  /// re-deployed on the phone, data from the previous deployment will be
-  /// available.
+  /// Note that study deployment information and data is removed from the
+  /// phone. If the same deployment is re-deployed on the phone, data from the
+  /// previous deployment will NOT be available.
   Future<void> leaveStudy() async {
-    debug('$runtimeType --------- LEAVING STUDY ------------');
+    info('Leaving study $study');
 
-    // save and clear the UI data models
+    // clear the UI data models
     appViewModel.clear();
 
     // stop sensing and remove all deployment info

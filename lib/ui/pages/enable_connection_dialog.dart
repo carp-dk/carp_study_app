@@ -37,7 +37,7 @@ class EnableInternetConnectionDialog extends StatelessWidget {
                 Text(
                   locale.translate(
                       "pages.login.internet_connection.enable_internet_connections.general_message"),
-                  style: aboutCardContentStyle,
+                  style: fs16fw400,
                   textAlign: TextAlign.justify,
                 ),
                 Padding(
@@ -45,7 +45,7 @@ class EnableInternetConnectionDialog extends StatelessWidget {
                     child: Text(
                       locale.translate(
                           "pages.login.internet_connection.enable_internet_connections.wifi_message"),
-                      style: aboutCardContentStyle,
+                      style: fs16fw400,
                       textAlign: TextAlign.justify,
                     )),
                 Padding(
@@ -60,7 +60,7 @@ class EnableInternetConnectionDialog extends StatelessWidget {
                   child: Text(
                     locale.translate(
                         "pages.login.internet_connection.enable_internet_connections.mobile_data_message"),
-                    style: aboutCardContentStyle,
+                    style: fs16fw400,
                     textAlign: TextAlign.justify,
                   ),
                 ),
@@ -111,7 +111,7 @@ class EnableInternetConnectionDialog extends StatelessWidget {
                 Text(
                   locale.translate(
                       "pages.login.internet_connection.enable_internet_connections.general_message"),
-                  style: aboutCardContentStyle,
+                  style: fs16fw400,
                   textAlign: TextAlign.justify,
                 ),
                 Padding(
@@ -119,7 +119,7 @@ class EnableInternetConnectionDialog extends StatelessWidget {
                     child: Text(
                       locale.translate(
                           "pages.login.internet_connection.enable_internet_connections.wifi_message"),
-                      style: aboutCardContentStyle,
+                      style: fs16fw400,
                       textAlign: TextAlign.justify,
                     )),
                 Padding(
@@ -135,7 +135,7 @@ class EnableInternetConnectionDialog extends StatelessWidget {
                     Text(
                       locale.translate(
                           "pages.login.internet_connection.enable_internet_connections.mobile_data_message"),
-                      style: aboutCardContentStyle,
+                      style: fs16fw400,
                       textAlign: TextAlign.justify,
                     ),
                   ]),

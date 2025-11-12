@@ -55,6 +55,7 @@ import 'package:cognition_package/cognition_package.dart';
 import 'package:carp_health_package/health_package.dart';
 // import 'package:health/health.dart';
 import 'package:carp_movesense_package/carp_movesense_package.dart';
+import 'package:carp_themes_package/carp_themes_package.dart';
 
 part 'blocs/app_bloc.dart';
 part 'blocs/util.dart';
@@ -105,8 +106,7 @@ part 'ui/pages/devices_page.enable_bluetooth_dialog.dart';
 part 'ui/pages/devices_page.bluetooth_connection_page.dart';
 part 'ui/pages/devices_page.disconnection_dialog.dart';
 part 'ui/pages/devices_page.list_title.dart';
-part 'ui/pages/devices_page.health_service_connect1.dart';
-part 'ui/pages/devices_page.health_service_connect2.dart';
+part 'ui/pages/devices_page.health_service_connect.dart';
 
 part 'ui/tasks/audio_task_page.dart';
 part 'ui/tasks/audio_page.dart';
