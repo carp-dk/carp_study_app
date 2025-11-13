@@ -14,7 +14,7 @@ class InstallHealthConnectDialog extends StatelessWidget {
       ),
       content: Text(
         locale.translate('pages.about.install_health_connect.description'),
-        style: aboutCardContentStyle,
+        style: fs16fw400,
         textAlign: TextAlign.justify,
       ),
       actions: [

@@ -30,7 +30,7 @@ class _MobilityCardState extends State<MobilityCard> {
     RPLocalizations locale = RPLocalizations.of(context)!;
 
     return StudiesMaterial(
-      backgroundColor: Theme.of(context).extension<RPColors>()!.white!,
+      backgroundColor: Theme.of(context).extension<CarpColors>()!.white!,
       child: Padding(
         padding: const EdgeInsets.all(8.0),
         child: Column(
@@ -39,7 +39,7 @@ class _MobilityCardState extends State<MobilityCard> {
               children: [
                 Text(
                   '$_homestay%',
-                  style: dataVizCardTitleNumber.copyWith(
+                  style: fs28fw700.copyWith(
                     color: widget.colors[0],
                   ),
                 ),
@@ -47,8 +47,9 @@ class _MobilityCardState extends State<MobilityCard> {
                   padding: const EdgeInsets.only(left: 4.0),
                   child: Text(
                     "${locale.translate('cards.mobility.homestay')} ${_getDayName(touchedIndex)}",
-                    style: dataVizCardTitleText.copyWith(
-                      color: Theme.of(context).extension<RPColors>()!.grey900!,
+                    style: fs12fw700.copyWith(
+                      color:
+                          Theme.of(context).extension<CarpColors>()!.grey900!,
                     ),
                   ),
                 ),
@@ -58,8 +59,8 @@ class _MobilityCardState extends State<MobilityCard> {
               children: [
                 Text(
                   "${widget.model.currentMonth} ${widget.model.startOfWeek} - ${int.parse(widget.model.endOfWeek) < int.parse(widget.model.startOfWeek) ? widget.model.nextMonth : widget.model.currentMonth} ${widget.model.endOfWeek}, ${widget.model.currentYear}",
-                  style: dataVizCardTitleText.copyWith(
-                    color: Theme.of(context).extension<RPColors>()!.grey600,
+                  style: fs12fw700.copyWith(
+                    color: Theme.of(context).extension<CarpColors>()!.grey600,
                   ),
                 ),
                 Spacer(),
@@ -81,7 +82,7 @@ class _MobilityCardState extends State<MobilityCard> {
                   children: [
                     Text(
                       '$_places',
-                      style: dataVizCardBottomNumber.copyWith(
+                      style: fs22fw700.copyWith(
                         color: widget.colors[0],
                       ),
                     ),
@@ -89,9 +90,9 @@ class _MobilityCardState extends State<MobilityCard> {
                       padding: const EdgeInsets.all(4.0),
                       child: Text(
                         locale.translate('cards.mobility.places'),
-                        style: dataVizCardBottomText.copyWith(
+                        style: fs12fw700.copyWith(
                             color: Theme.of(context)
-                                .extension<RPColors>()!
+                                .extension<CarpColors>()!
                                 .grey800),
                       ),
                     ),
@@ -206,8 +207,8 @@ class _MobilityCardState extends State<MobilityCard> {
         value.toInt() % meta.appliedInterval == 0
             ? value.toInt().toString()
             : '',
-        style: dataCardRightTitleStyle.copyWith(
-          color: Theme.of(context).extension<RPColors>()!.grey600,
+        style: fs14ls1.copyWith(
+          color: Theme.of(context).extension<CarpColors>()!.grey600,
         ),
       ),
     );
@@ -221,8 +222,8 @@ class _MobilityCardState extends State<MobilityCard> {
         value.toInt() % meta.appliedInterval == 0
             ? value.toInt().toString()
             : '',
-        style: dataCardRightTitleStyle.copyWith(
-          color: Theme.of(context).extension<RPColors>()!.grey600,
+        style: fs14ls1.copyWith(
+          color: Theme.of(context).extension<CarpColors>()!.grey600,
         ),
       ),
     );

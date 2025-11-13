@@ -1,7 +1,7 @@
 name: carp_study_app
 description: The generic CARP study app.
 publish_to: "none"
-version: 4.1.1+87
+version: 4.2.0+89
 
 environment:
   sdk: ">=3.2.0 <4.0.0"
@@ -21,6 +21,7 @@ dependencies:
   carp_polar_package: ^1.6.1
   carp_health_package: ^3.2.0
   carp_movesense_package: ^1.7.2
+  carp_themes_package: ^0.0.1
 
   carp_webservices: ^3.8.0
   carp_backend: ^1.9.2
@@ -69,7 +70,7 @@ dependency_overrides:
   # carp_core:
   #   path: ../carp/carp.sensing-flutter/carp_core/
   # carp_mobile_sensing:
-  #   path: ../carp/carp.sensing-flutter/carp_mobile_sensing/
+  #   path: ../carp.sensing-flutter/carp_mobile_sensing/
   # carp_context_package:
   #   path: ../carp/carp.sensing-flutter/packages/carp_context_package/
   # carp_connectivity_package:

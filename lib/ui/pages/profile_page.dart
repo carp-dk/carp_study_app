@@ -26,7 +26,7 @@ class ProfilePageState extends State<ProfilePage> {
     RPLocalizations locale = RPLocalizations.of(context)!;
 
     return Scaffold(
-      backgroundColor: Theme.of(context).extension<RPColors>()!.grey100,
+      backgroundColor: Theme.of(context).extension<CarpColors>()!.grey100,
       body: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         mainAxisAlignment: MainAxisAlignment.start,
@@ -43,7 +43,7 @@ class ProfilePageState extends State<ProfilePage> {
                   icon: Icon(Icons.account_circle,
                       color: Theme.of(context).primaryColor, size: 30),
                   label: Text(locale.translate("pages.profile.title"),
-                      style: aboutCardTitleStyle.copyWith(
+                      style: fs20fw700.copyWith(
                           color: Theme.of(context).primaryColor)),
                 ),
                 IconButton(
@@ -215,7 +215,7 @@ class ProfilePageState extends State<ProfilePage> {
 
   Widget _buildSectionCard(BuildContext context, List<Widget> children) {
     return Card(
-      color: Theme.of(context).extension<RPColors>()!.grey50,
+      color: Theme.of(context).extension<CarpColors>()!.grey50,
       shape: RoundedRectangleBorder(
         borderRadius: BorderRadius.circular(8.0),
       ),
@@ -225,7 +225,7 @@ class ProfilePageState extends State<ProfilePage> {
           children: ListTile.divideTiles(
             context: context,
             tiles: children,
-            color: Theme.of(context).extension<RPColors>()!.grey400,
+            color: Theme.of(context).extension<CarpColors>()!.grey400,
           ).toList(),
         ),
       ),
@@ -234,14 +234,13 @@ class ProfilePageState extends State<ProfilePage> {
 
   Widget _buildListTile(String title, String subtitle) {
     return ListTile(
-      title: Text(title,
-          style: profileSectionStyle.copyWith(color: CACHET.GREY_6)),
+      title: Text(title, style: fs12fw600.copyWith(color: CACHET.GREY_6)),
       subtitle: FittedBox(
         fit: BoxFit.scaleDown,
         alignment: Alignment.centerLeft,
         child: Text(
           subtitle,
-          style: profileTitleStyle,
+          style: fs14fw600,
           maxLines: 1,
         ),
       ),
@@ -258,8 +257,8 @@ class ProfilePageState extends State<ProfilePage> {
     return ListTile(
       leading: leading,
       title: Text(title,
-          style: profileActionStyle.copyWith(
-              color: Theme.of(context).extension<RPColors>()!.grey900)),
+          style: fs16fw600.copyWith(
+              color: Theme.of(context).extension<CarpColors>()!.grey900)),
       trailing: trailing,
       onTap: onTap,
       contentPadding: EdgeInsets.symmetric(vertical: 4, horizontal: 16),

@@ -21,7 +21,7 @@ class _SurveyCardState extends State<SurveyCard> {
     }
 
     return StudiesMaterial(
-      backgroundColor: Theme.of(context).extension<RPColors>()!.white!,
+      backgroundColor: Theme.of(context).extension<CarpColors>()!.white!,
       child: Padding(
         padding: const EdgeInsets.all(8.0),
         child: Column(
@@ -30,7 +30,7 @@ class _SurveyCardState extends State<SurveyCard> {
             Padding(
               padding: const EdgeInsets.only(left: 10.0),
               child: Text(locale.translate('cards.survey.title').toUpperCase(),
-                  style: dataCardTitleStyle),
+                  style: fs16fw400ls1),
             ),
             SizedBox(
               height: 160,
@@ -57,7 +57,7 @@ class _SurveyCardState extends State<SurveyCard> {
                           );
                           Widget text = Text(
                             '${entry.value} ${locale.translate(entry.key).truncateTo(12)}',
-                            style: legendStyle,
+                            style: fs12fw400,
                           );
                           return Row(
                             children: [
@@ -83,9 +83,10 @@ class _SurveyCardState extends State<SurveyCard> {
                       ),
                       Text(
                         '$totalSurveys',
-                        style: surveysCardTotalTextStyle.copyWith(
-                          color:
-                              Theme.of(context).extension<RPColors>()!.grey800,
+                        style: fs24fw700.copyWith(
+                          color: Theme.of(context)
+                              .extension<CarpColors>()!
+                              .grey800,
                         ),
                       )
                     ],

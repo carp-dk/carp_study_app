@@ -5,7 +5,8 @@ class LocationPermissionPage {
     RPLocalizations locale = RPLocalizations.of(context)!;
 
     return Scaffold(
-      backgroundColor: Theme.of(context).extension<RPColors>()!.backgroundGray,
+      backgroundColor:
+          Theme.of(context).extension<CarpColors>()!.backgroundGray,
       body: Padding(
         padding: const EdgeInsets.symmetric(vertical: 16.0),
         child: SafeArea(
@@ -27,7 +28,7 @@ class LocationPermissionPage {
                   padding: const EdgeInsets.only(top: 16.0),
                   child: StudiesMaterial(
                     backgroundColor:
-                        Theme.of(context).extension<RPColors>()!.white!,
+                        Theme.of(context).extension<CarpColors>()!.white!,
                     shape: RoundedRectangleBorder(
                       borderRadius: BorderRadius.circular(12.0),
                     ),
@@ -55,7 +56,7 @@ class LocationPermissionPage {
                                           fontWeight: FontWeight.bold,
                                           fontSize: 22.0,
                                           color: Theme.of(context)
-                                              .extension<RPColors>()!
+                                              .extension<CarpColors>()!
                                               .primary,
                                         ),
                                       ),
@@ -67,14 +68,14 @@ class LocationPermissionPage {
                                     child: Icon(
                                       Icons.location_on,
                                       color: Theme.of(context)
-                                          .extension<RPColors>()!
+                                          .extension<CarpColors>()!
                                           .primary,
                                       size: 48,
                                     ),
                                   ),
                                   Text(
                                     locale.translate(message),
-                                    style: aboutCardContentStyle.copyWith(
+                                    style: fs16fw400.copyWith(
                                       fontWeight: FontWeight.bold,
                                     ),
                                     textAlign: TextAlign.justify,

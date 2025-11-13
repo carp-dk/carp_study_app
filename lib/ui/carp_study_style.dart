@@ -1,8 +1,8 @@
 part of carp_study_app;
 
 @immutable
-class CarpColors extends ThemeExtension<CarpColors> {
-  const CarpColors({
+class StudyAppColors extends ThemeExtension<StudyAppColors> {
+  const StudyAppColors({
     this.primary,
     this.warningColor,
     this.backgroundGray,
@@ -44,7 +44,7 @@ class CarpColors extends ThemeExtension<CarpColors> {
   final Color? grey950;
 
   @override
-  CarpColors copyWith(
+  StudyAppColors copyWith(
       {Color? primary,
       Color? warningColor,
       Color? backgroundGray,
@@ -61,7 +61,7 @@ class CarpColors extends ThemeExtension<CarpColors> {
       Color? grey800,
       Color? grey900,
       Color? grey950}) {
-    return CarpColors(
+    return StudyAppColors(
       primary: primary ?? this.primary,
       warningColor: warningColor ?? this.warningColor,
       backgroundGray: backgroundGray ?? this.backgroundGray,
@@ -82,11 +82,11 @@ class CarpColors extends ThemeExtension<CarpColors> {
   }
 
   @override
-  CarpColors lerp(CarpColors? other, double t) {
-    if (other is! CarpColors) {
+  StudyAppColors lerp(StudyAppColors? other, double t) {
+    if (other is! StudyAppColors) {
       return this;
     }
-    return CarpColors(
+    return StudyAppColors(
       primary: Color.lerp(primary, other.primary, t),
       warningColor: Color.lerp(warningColor, other.warningColor, t),
       backgroundGray: Color.lerp(backgroundGray, other.backgroundGray, t),
@@ -109,7 +109,7 @@ class CarpColors extends ThemeExtension<CarpColors> {
 
 ThemeData carpStudyTheme = ThemeData.light().copyWith(
   extensions: <ThemeExtension<dynamic>>[
-    CarpColors(
+    StudyAppColors(
       primary: const Color(0xff000000),
       warningColor: Colors.orange[500],
       backgroundGray: const Color(0xfff2f2f7),
@@ -179,7 +179,7 @@ ThemeData carpStudyTheme = ThemeData.light().copyWith(
 
 ThemeData carpStudyDarkTheme = ThemeData.dark().copyWith(
   extensions: <ThemeExtension<dynamic>>[
-    CarpColors(
+    StudyAppColors(
       primary: const Color(0xff24B2FF),
       warningColor: Colors.orange[700],
       backgroundGray: const Color(0xff0e0e0e),
@@ -253,13 +253,13 @@ ThemeData carpStudyDarkTheme = ThemeData.dark().copyWith(
 
 // These TextStyles are now implemented in ResearchPackage
 
-// TextStyle studyTitleStyle =
+// TextStyle fs24fw600 =
 //     const TextStyle(fontSize: 24, fontWeight: FontWeight.w600);
 
-// TextStyle studyDetailsInfoTitle =
+// TextStyle fs16fw700 =
 //     const TextStyle(fontSize: 16, fontWeight: FontWeight.w700);
 
-// TextStyle studyDetailsInfoMessage =
+// TextStyle fs12fw700 =
 //     const TextStyle(fontSize: 12, fontWeight: FontWeight.w700);
 
 // TextStyle readMoreStudyStyle =
@@ -278,29 +278,29 @@ ThemeData carpStudyDarkTheme = ThemeData.dark().copyWith(
 // TextStyle scoreTextStyle =
 //     const TextStyle(fontSize: 12, fontWeight: FontWeight.w700);
 
-// TextStyle aboutStudyCardTitleStyle =
+// TextStyle fs24fw700 =
 //     const TextStyle(fontSize: 24, fontWeight: FontWeight.w700)
 //         .apply(fontFamily: 'OpenSans');
 
-// TextStyle aboutCardTitleStyle =
+// TextStyle fs20fw700 =
 //     const TextStyle(fontSize: 20, fontWeight: FontWeight.w700)
 //         .apply(fontFamily: 'OpenSans');
 
 // TextStyle aboutCardInfoStyle =
 //     const TextStyle(fontSize: 14, fontStyle: FontStyle.italic);
 
-// TextStyle aboutCardSubtitleStyle =
+// TextStyle fs16fw600 =
 //     const TextStyle(fontSize: 16, fontWeight: FontWeight.w600);
 
-// TextStyle aboutCardContentStyle =
+// TextStyle fs16fw400 =
 //     const TextStyle(fontSize: 16, fontWeight: FontWeight.w400)
 //         .apply(fontFamily: 'OpenSans');
 
-// TextStyle aboutCardTimeAgoStyle =
+// TextStyle fs10fw600 =
 //     const TextStyle(fontSize: 10, fontWeight: FontWeight.w600)
 //         .apply(fontFamily: 'OpenSans');
 
-// TextStyle sectionTitleStyle =
+// TextStyle fs18fw700 =
 //     const TextStyle(fontSize: 18, fontWeight: FontWeight.w700);
 
 // TextStyle inputFieldStyle =
@@ -312,18 +312,18 @@ ThemeData carpStudyDarkTheme = ThemeData.dark().copyWith(
 // TextStyle studyDescriptionStyle =
 //     const TextStyle(fontSize: 12, fontWeight: FontWeight.w300);
 
-// TextStyle dataCardTitleStyle = const TextStyle(
+// TextStyle fs16fw400ls1 = const TextStyle(
 //     fontSize: 16, fontWeight: FontWeight.w400, letterSpacing: 1);
 // TextStyle dataCardRightTitleStyle =
 //     const TextStyle(fontSize: 14, letterSpacing: 1);
 // TextStyle measuresStyle =
 //     const TextStyle(fontSize: 18, fontWeight: FontWeight.w400);
-// TextStyle legendStyle =
+// TextStyle fs12fw400 =
 //     const TextStyle(fontSize: 12, fontWeight: FontWeight.w400);
 
-// TextStyle audioTitleStyle =
+// TextStyle fs22fw700 =
 //     const TextStyle(fontSize: 22, fontWeight: FontWeight.w700);
-// TextStyle audioContentStyle =
+// TextStyle fs16fw600 =
 //     const TextStyle(fontSize: 16, fontWeight: FontWeight.w700);
 
 // TextStyle heartRateNumberStyle =
@@ -343,27 +343,27 @@ ThemeData carpStudyDarkTheme = ThemeData.dark().copyWith(
 // TextStyle dataVizCardBottomText =
 //     const TextStyle(fontSize: 12, fontWeight: FontWeight.w700);
 
-// TextStyle deviceTitle =
+// TextStyle fs16fw700 =
 //     const TextStyle(fontSize: 16, fontWeight: FontWeight.w700);
 
-// TextStyle deviceSubtitle =
+// TextStyle fs12fw700 =
 //     const TextStyle(fontSize: 12, fontWeight: FontWeight.w700);
 
 // TextStyle healthServiceConnectTitleStyle =
 //     const TextStyle(fontSize: 24, fontWeight: FontWeight.w700);
 
-// TextStyle healthServiceConnectMessageStyle =
+// TextStyle fs22fw700 =
 //     const TextStyle(fontSize: 22, fontWeight: FontWeight.w700);
 
-// TextStyle profileSectionStyle =
+// TextStyle fs12fw600 =
 //     TextStyle(fontSize: 12, fontWeight: FontWeight.w600);
-// TextStyle profileTitleStyle =
+// TextStyle fs14fw600 =
 //     TextStyle(fontSize: 14, fontWeight: FontWeight.w600);
-// TextStyle profileActionStyle =
+// TextStyle fs16fw600 =
 //     TextStyle(fontSize: 16, fontWeight: FontWeight.w600);
 
 // TextStyle timerStyle =
 //     const TextStyle(fontSize: 36, fontWeight: FontWeight.w600);
 
-// TextStyle studyNameStyle =
+// TextStyle fs30fw800 =
 //     const TextStyle(fontSize: 30.0, fontWeight: FontWeight.w800);

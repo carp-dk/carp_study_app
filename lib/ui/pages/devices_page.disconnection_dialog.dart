@@ -26,7 +26,7 @@ class DisconnectionDialog extends StatelessWidget {
       children: [
         Text(
           "${locale.translate("pages.devices.connection.disconnect_bluetooth.message")} ${locale.translate(device.name)}?",
-          style: aboutCardContentStyle,
+          style: fs16fw400,
           textAlign: TextAlign.justify,
         ),
         Row(

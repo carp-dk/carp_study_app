@@ -37,7 +37,7 @@ class AudioPageState extends State<AudioPage> {
                           Spacer(),
                           IconButton(
                             color: Theme.of(context)
-                                .extension<RPColors>()!
+                                .extension<CarpColors>()!
                                 .grey900!,
                             onPressed: () {
                               _showCancelConfirmationDialog();
@@ -66,16 +66,16 @@ class AudioPageState extends State<AudioPage> {
                                           locale.translate(
                                             widget.audioUserTask!.title,
                                           ),
-                                          style: audioTitleStyle.copyWith(
+                                          style: fs22fw700.copyWith(
                                             color: Theme.of(context)
-                                                .extension<RPColors>()!
+                                                .extension<CarpColors>()!
                                                 .primary,
                                           ),
                                         ),
                                       ),
                                       StudiesMaterial(
                                         backgroundColor: Theme.of(context)
-                                            .extension<RPColors>()!
+                                            .extension<CarpColors>()!
                                             .white!,
                                         child: Scrollbar(
                                           child: SingleChildScrollView(
@@ -89,7 +89,7 @@ class AudioPageState extends State<AudioPage> {
                                                   widget.audioUserTask!
                                                       .instructions,
                                                 ),
-                                                style: audioContentStyle,
+                                                style: fs16fw600,
                                               ),
                                             ),
                                           ),
@@ -99,7 +99,7 @@ class AudioPageState extends State<AudioPage> {
                                       CircleAvatar(
                                         radius: 30,
                                         backgroundColor: Theme.of(context)
-                                            .extension<RPColors>()!
+                                            .extension<CarpColors>()!
                                             .primary,
                                         child: IconButton(
                                           onPressed: () => widget.audioUserTask!
@@ -118,7 +118,7 @@ class AudioPageState extends State<AudioPage> {
                                         child: Text(
                                           locale.translate(
                                               "pages.audio_task.play"),
-                                          style: audioContentStyle,
+                                          style: fs16fw600,
                                         ),
                                       ),
                                     ],
@@ -135,16 +135,16 @@ class AudioPageState extends State<AudioPage> {
                                           locale.translate(
                                             widget.audioUserTask!.title,
                                           ),
-                                          style: audioTitleStyle.copyWith(
+                                          style: fs22fw700.copyWith(
                                             color: Theme.of(context)
-                                                .extension<RPColors>()!
+                                                .extension<CarpColors>()!
                                                 .primary,
                                           ),
                                         ),
                                       ),
                                       StudiesMaterial(
                                         backgroundColor: Theme.of(context)
-                                            .extension<RPColors>()!
+                                            .extension<CarpColors>()!
                                             .white!,
                                         child: Scrollbar(
                                           child: SingleChildScrollView(
@@ -157,7 +157,7 @@ class AudioPageState extends State<AudioPage> {
                                                 locale.translate(widget
                                                     .audioUserTask!
                                                     .instructions),
-                                                style: audioContentStyle,
+                                                style: fs16fw600,
                                               ),
                                             ),
                                           ),
@@ -193,7 +193,7 @@ class AudioPageState extends State<AudioPage> {
                                         child: Text(
                                           locale.translate(
                                               "pages.audio_task.recording"),
-                                          style: audioTitleStyle,
+                                          style: fs22fw700,
                                         ),
                                       ),
                                     ],
@@ -209,9 +209,9 @@ class AudioPageState extends State<AudioPage> {
                                         child: Text(
                                           locale.translate(
                                               'pages.audio_task.done'),
-                                          style: audioTitleStyle.copyWith(
+                                          style: fs22fw700.copyWith(
                                             color: Theme.of(context)
-                                                .extension<RPColors>()!
+                                                .extension<CarpColors>()!
                                                 .primary,
                                           ),
                                         ),
@@ -222,7 +222,7 @@ class AudioPageState extends State<AudioPage> {
                                         child: Text(
                                             locale.translate(
                                                 'pages.audio_task.recording_completed'),
-                                            style: audioContentStyle),
+                                            style: fs16fw600),
                                       ),
                                       Spacer(),
                                       Padding(
@@ -245,7 +245,7 @@ class AudioPageState extends State<AudioPage> {
                                                 icon: Icon(
                                                   Icons.replay,
                                                   color: Theme.of(context)
-                                                      .extension<RPColors>()!
+                                                      .extension<CarpColors>()!
                                                       .grey700,
                                                   size: 30,
                                                 ),

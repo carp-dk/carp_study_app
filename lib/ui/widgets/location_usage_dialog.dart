@@ -16,7 +16,7 @@ class LocationUsageDialog {
             height: MediaQuery.of(context).size.height * 0.15,
           ),
           Text(locale.translate("dialog.location.permission"),
-              style: aboutCardTitleStyle),
+              style: fs20fw700),
         ],
       ),
       contentPadding: const EdgeInsets.all(15),
@@ -28,7 +28,7 @@ class LocationUsageDialog {
             children: [
               Text(
                 locale.translate(message),
-                style: aboutCardContentStyle,
+                style: fs16fw400,
                 textAlign: TextAlign.justify,
               ),
             ],
