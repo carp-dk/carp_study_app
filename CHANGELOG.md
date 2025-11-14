@@ -1,6 +1,11 @@
 ## 4.2.0
 
 * moving to carp_themes_package instead of research package themes
+* partially transitioning from pods to spm
+* health connect flow update
+* informed consent accepted is now checked via API instead of local settings
+* fixing hasSeenBluetoothInstructions bool logic
+* small UI changes
 
 ## 4.1.1
 
