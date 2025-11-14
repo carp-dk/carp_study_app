@@ -26,7 +26,7 @@ dependencies:
   carp_webservices: ^3.8.0
   carp_backend: ^1.9.2
 
-  research_package: ^2.0.0
+  research_package: ^2.2.0
   cognition_package: ^1.6.1
 
   url_launcher: ^6.1.5
