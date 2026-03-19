@@ -265,9 +265,9 @@ class StudyAppBLoC extends ChangeNotifier {
   /// If a [context] is provided, the translation for this study is re-loaded
   /// and applied in the app.
   void setStudyInvitation(
-    ActiveParticipationInvitation invitation, [
+    ActiveParticipationInvitation invitation,
     BuildContext? context,
-  ]) {
+  ) {
     // create and save the participant info based on this invitation
     var participant = Participant.fromParticipationInvitation(invitation);
     LocalSettings().participant = participant;
