@@ -166,7 +166,9 @@ class StudyAppBLoC extends ChangeNotifier {
 
     Sensing();
 
-    // Initialize and use the CAWS backend if not in local deployment mode
+    // Initialize and use the CAWS backend if not in local deployment mode.
+    // backend.initialize() re-seeds the cached study into CAWS service
+    // singletons, so a returning user doesn't hit null-derefs.
     if (deploymentMode != DeploymentMode.local) {
       if (await checkConnectivity()) {
         await backend.initialize();
@@ -351,31 +353,34 @@ class StudyAppBLoC extends ChangeNotifier {
       informedConsentManager.getInformedConsent(refresh: refresh);
 
   /// Has the informed consent been accepted by the user?
-  bool get hasInformedConsentBeenAccepted =>
-      backend.getInformedConsentByRole(
-          study!.studyDeploymentId, study!.participantRoleName) !=
-      null;
+  /// Local mode trusts [LocalSettings]; otherwise asks the backend, falling
+  /// back to [LocalSettings] when offline so signed users aren't re-prompted.
+  Future<bool> get hasInformedConsentBeenAccepted async {
+    final local =
+        LocalSettings().participant?.hasInformedConsentBeenAccepted ?? false;
+    if (deploymentMode == DeploymentMode.local || study == null) return local;
+    try {
+      final consent = await backend.getInformedConsentByRole(
+          study!.studyDeploymentId, study!.participantRoleName);
+      return consent != null;
+    } catch (e) {
+      warning('Could not fetch informed consent status from backend: $e');
+      return local;
+    }
+  }
 
-  set hasInformedConsentBeenAccepted(bool accepted) {
+  /// Mark the informed consent as accepted: persist locally and (when online)
+  /// upload the signed [result] to CAWS. Pass `null` when the study has no
+  /// consent document — only the local flag is set.
+  Future<void> informedConsentHasBeenAccepted([RPTaskResult? result]) async {
+    info('Informed consent has been accepted by user.');
     var participant = LocalSettings().participant;
     participant?.hasInformedConsentBeenAccepted = true;
     LocalSettings().participant = participant;
-  }
-
-  /// Mark the informed consent as accepted by the user based on the
-  /// [informedConsentResult].
-  ///
-  /// This entails that it has been shown to the user and accepted by the user.
-  /// Will upload it to CAWS (if not running in local deployment mode).
-  Future<void> informedConsentHasBeenAccepted(
-    RPTaskResult informedConsentResult,
-  ) async {
-    info('Informed consent has been accepted by user.');
-    hasInformedConsentBeenAccepted = true;
-
-    if (deploymentMode != DeploymentMode.local) {
-      await backend.uploadInformedConsent(informedConsentResult);
+    if (result != null && deploymentMode != DeploymentMode.local) {
+      await backend.uploadInformedConsent(result);
     }
+    notifyListeners();
   }
 
   /// Refresh the list of messages (news, announcements, articles) to be shown in

@@ -90,6 +90,12 @@ class CarpBackend {
     CarpParticipationService().configureFrom(CarpService());
     CarpDeploymentService().configureFrom(CarpService());
 
+    // CAWS services hold the active study as ambient state. If a study is
+    // cached locally (returning user), re-seed the services here — otherwise
+    // CarpResourceManager throws null-derefs on the first resource fetch.
+    final cachedStudy = LocalSettings().study;
+    if (cachedStudy != null) study = cachedStudy;
+
     info('$runtimeType initialized - app: $app');
   }
 

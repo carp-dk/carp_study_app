@@ -28,9 +28,11 @@ class InformedConsentState extends State<InformedConsentPage> {
       body: FutureBuilder<RPOrderedTask?>(
         future: widget.model.getInformedConsent(localization.locale).then(
           (document) {
+            // No consent document configured for this study → mark accepted
+            // locally and continue. Nothing to upload.
             if (document == null) {
-              bloc.hasInformedConsentBeenAccepted = true;
-              context.go(CarpStudyAppState.homeRoute);
+              bloc.informedConsentHasBeenAccepted();
+              if (context.mounted) context.go(CarpStudyAppState.homeRoute);
             }
             return document;
           },

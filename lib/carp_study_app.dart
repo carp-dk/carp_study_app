@@ -8,8 +8,7 @@ class CarpStudyApp extends StatefulWidget {
 
   /// Reload language translations and re-build the entire app.
   static void reloadLocale(BuildContext context) async {
-    CarpStudyAppState? state =
-        context.findAncestorStateOfType<CarpStudyAppState>();
+    CarpStudyAppState? state = context.findAncestorStateOfType<CarpStudyAppState>();
     state?.reloadLocale();
   }
 
@@ -34,8 +33,7 @@ class CarpStudyAppState extends State<CarpStudyApp> {
     routes: <RouteBase>[
       ShellRoute(
         navigatorKey: _shellNavigatorKey,
-        builder: (BuildContext context, GoRouterState state, Widget child) =>
-            HomePage(child: child),
+        builder: (BuildContext context, GoRouterState state, Widget child) => HomePage(child: child),
         routes: [
           // This is the root route, handling the onboarding.
           // The flow of logic is:
@@ -50,17 +48,16 @@ class CarpStudyAppState extends State<CarpStudyApp> {
               path: homeRoute,
               parentNavigatorKey: _shellNavigatorKey,
               redirect: (context, state) async {
-                if (bloc.deploymentMode != DeploymentMode.local) {
-                  if (!bloc.backend.isAuthenticated) {
-                    return LoginPage.route;
-                  } else if (!bloc.hasStudyBeenDeployed) {
-                    return InvitationListPage.route;
-                  }
+                if (bloc.deploymentMode != DeploymentMode.local &&
+                    !bloc.backend.isAuthenticated) {
+                  return LoginPage.route;
                 }
-                if (!bloc.hasInformedConsentBeenAccepted) {
+                if (!bloc.hasStudyBeenDeployed) {
+                  return InvitationListPage.route;
+                }
+                if (!await bloc.hasInformedConsentBeenAccepted) {
                   return InformedConsentPage.route;
                 }
-
                 return firstRoute;
               }),
           GoRoute(
@@ -87,8 +84,7 @@ class CarpStudyAppState extends State<CarpStudyApp> {
             path: DataVisualizationPage.route,
             parentNavigatorKey: _shellNavigatorKey,
             pageBuilder: (context, state) => CustomTransitionPage(
-              child: DataVisualizationPage(
-                  bloc.appViewModel.dataVisualizationPageViewModel),
+              child: DataVisualizationPage(bloc.appViewModel.dataVisualizationPageViewModel),
               transitionsBuilder: bottomNavigationBarAnimation,
             ),
           ),
@@ -120,8 +116,7 @@ class CarpStudyAppState extends State<CarpStudyApp> {
       GoRoute(
         path: ParticipantDataPage.route,
         parentNavigatorKey: _rootNavigatorKey,
-        builder: (context, state) => ParticipantDataPage(
-            model: bloc.appViewModel.participantDataPageViewModel),
+        builder: (context, state) => ParticipantDataPage(model: bloc.appViewModel.participantDataPageViewModel),
       ),
       GoRoute(
         path: '/task/:taskId',
@@ -147,8 +142,7 @@ class CarpStudyAppState extends State<CarpStudyApp> {
       GoRoute(
         path: '${MessageDetailsPage.route}/:messageId',
         parentNavigatorKey: _rootNavigatorKey,
-        builder: (context, state) => MessageDetailsPage(
-            messageId: state.pathParameters['messageId'] ?? ''),
+        builder: (context, state) => MessageDetailsPage(messageId: state.pathParameters['messageId'] ?? ''),
       ),
       GoRoute(
         path: '${InvitationDetailsPage.route}/:invitationId',
@@ -161,11 +155,8 @@ class CarpStudyAppState extends State<CarpStudyApp> {
       GoRoute(
         path: InvitationListPage.route,
         parentNavigatorKey: _rootNavigatorKey,
-        redirect: (context, state) => bloc.study != null
-            ? InformedConsentPage.route
-            : (bloc.user == null ? LoginPage.route : null),
-        builder: (context, state) => InvitationListPage(
-            model: bloc.appViewModel.invitationsListViewModel),
+        builder: (context, state) =>
+            InvitationListPage(model: bloc.appViewModel.invitationsListViewModel),
       ),
     ],
     debugLogDiagnostics: true,
@@ -173,8 +164,7 @@ class CarpStudyAppState extends State<CarpStudyApp> {
 
   /// Research Package translations, incl. both local language assets plus
   /// translations of informed consent and surveys downloaded from CARP
-  final RPLocalizationsDelegate rpLocalizationsDelegate =
-      RPLocalizationsDelegate(
+  final RPLocalizationsDelegate rpLocalizationsDelegate = RPLocalizationsDelegate(
     loaders: [
       const AssetLocalizationLoader(),
       bloc.localizationLoader,
