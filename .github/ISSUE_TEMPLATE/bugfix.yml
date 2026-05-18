@@ -36,15 +36,6 @@ body:
       required: true
 
   - type: input
-    id: device-model
-    attributes:
-      label: Device Model
-      description: What is the specific device model you're using?
-      placeholder: "e.g., iPhone 12 Pro, Samsung Galaxy S21"
-    validations:
-      required: true
-
-  - type: input
     id: os-version
     attributes:
       label: Operating System Version
