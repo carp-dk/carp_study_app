@@ -53,19 +53,6 @@ body:
     validations:
       required: true
 
-  - type: dropdown
-    id: deployment-mode
-    attributes:
-      label: App Deployment Mode
-      description: How was the app deployed to your device?
-      options:
-        - Production (App Store / Play Store)
-        - TestFlight (iOS) / Internal Testing (Play Store, Android)
-        - Development (Local build via Xcode / Android Studio / Flutter CLI)
-        - Other (specify in additional info)
-    validations:
-      required: true
-
   - type: input
     id: affected-screen
     attributes:
