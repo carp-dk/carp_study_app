@@ -9,8 +9,8 @@ body:
     attributes:
       value: |
         # Bug Report Form
-        Thank you for taking the time to report a bug. Please provide as much detail as possible to help us investigate and resolve the issue quickly.
-        
+        Thank you for taking the time to report a bug. **The more information you provide, the faster the issue will be resolved** — fill in every field you can, even the optional ones.
+
         **Note:** Fields marked with an asterisk (*) are required.
 
   - type: input
@@ -19,8 +19,6 @@ body:
       label: App Version
       description: Which version of the app are you currently using?
       placeholder: "e.g. 1.5"
-    validations:
-      required: true
 
   - type: dropdown
     id: platform
@@ -74,19 +72,6 @@ body:
         2. Go to '...'
         3. Tap on '...'
         4. Observe the error
-    validations:
-      required: true
-
-  - type: dropdown
-    id: reproducibility
-    attributes:
-      label: Reproducibility
-      description: How consistently does this bug occur when following the steps above?
-      options:
-        - Always (100%)
-        - Often (more than half the time)
-        - Sometimes (less than half the time)
-        - Once (could not reproduce)
     validations:
       required: true
 
