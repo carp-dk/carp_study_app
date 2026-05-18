@@ -26,9 +26,7 @@ class Sensing {
 
   /// The deployment service used in this app.
   DeploymentService get deploymentService =>
-      bloc.deploymentMode == DeploymentMode.local
-          ? SmartphoneDeploymentService()
-          : CarpDeploymentService();
+      bloc.deploymentMode == DeploymentMode.local ? SmartphoneDeploymentService() : CarpDeploymentService();
 
   /// The study running on this phone.
   /// Only available after [addStudy] is called.
@@ -51,13 +49,10 @@ class Sensing {
   SmartphoneDeploymentController? get controller => _controller;
 
   /// Is sensing running, i.e. has the study executor been started?
-  bool get isRunning =>
-      (controller != null) &&
-      controller!.executor.state == ExecutorState.started;
+  bool get isRunning => (controller != null) && controller!.executor.state == ExecutorState.started;
 
   /// The list of running - i.e. used - probes in this study.
-  List<Probe> get runningProbes =>
-      (_controller != null) ? _controller!.executor.probes : [];
+  List<Probe> get runningProbes => (_controller != null) ? _controller!.executor.probes : [];
 
   /// The list of all device managers used in the current deployment.
   ///
@@ -69,8 +64,7 @@ class Sensing {
           .deviceController
           .devices
           .values
-          .where((manager) => deployment!.devices
-              .any((element) => element.type == manager.type))
+          .where((manager) => deployment!.devices.any((element) => element.type == manager.type))
           .toList()
       : [];
 
@@ -79,8 +73,7 @@ class Sensing {
       SmartPhoneClientManager().deviceController.smartphoneDeviceManager;
 
   /// The list of connected devices.
-  List<DeviceManager>? get connectedDevices =>
-      SmartPhoneClientManager().deviceController.connectedDevices;
+  List<DeviceManager>? get connectedDevices => SmartPhoneClientManager().deviceController.connectedDevices;
 
   /// The singleton sensing instance
   factory Sensing() => _instance;
@@ -131,13 +124,11 @@ class Sensing {
   Future<StudyStatus> addStudy() async {
     assert(SmartPhoneClientManager().isConfigured,
         'The client manager is not yet configured. Call SmartPhoneClientManager().configure() before adding a study.');
-    assert(bloc.study != null,
-        'No study is provided. Cannot start deployment w/o a study.');
+    assert(bloc.study != null, 'No study is provided. Cannot start deployment w/o a study.');
 
     // Add the study to the client.
     _study = await SmartPhoneClientManager().addStudy(bloc.study!);
-    _controller =
-        SmartPhoneClientManager().getStudyRuntime(study!.studyDeploymentId);
+    _controller = SmartPhoneClientManager().getStudyRuntime(study!.studyDeploymentId);
 
     // Get the study controller and try to deploy the study.
     return await tryDeployment();
@@ -150,8 +141,7 @@ class Sensing {
   /// If not deployed before (i.e., cached) the study deployment will be
   /// fetched from the deployment service.
   Future<StudyStatus> tryDeployment() async {
-    assert(controller != null,
-        'No study or controller is provided. Cannot start deployment w/o a study.');
+    assert(controller != null, 'No study or controller is provided. Cannot start deployment w/o a study.');
 
     StudyStatus status = await controller!.tryDeployment(useCached: true);
 
@@ -163,8 +153,7 @@ class Sensing {
     await controller?.configure();
 
     // Listening on the data stream and print them as json to the debug console
-    controller?.measurements
-        .listen((measurement) => debugPrint(toJsonString(measurement)));
+    controller?.measurements.listen((measurement) => debugPrint(toJsonString(measurement)));
 
     info('$runtimeType - Study added, deployment id: $studyDeploymentId');
     return status;
@@ -184,10 +173,7 @@ class Sensing {
   /// Get the status for the current study deployment.
   /// Returns null if the study is not yet deployed on this phone.
   Future<StudyDeploymentStatus?> getStudyDeploymentStatus() async =>
-      studyDeploymentId != null
-          ? _status = await deploymentService
-              .getStudyDeploymentStatus(studyDeploymentId!)
-          : null;
+      studyDeploymentId != null ? _status = await deploymentService.getStudyDeploymentStatus(studyDeploymentId!) : null;
 
   /// Translate the title and description of all AppTask in the study protocol
   /// of the current master deployment.
@@ -198,8 +184,7 @@ class Sensing {
     if (bloc.localization == null) return;
 
     // Fast out, if not configured or no protocol
-    if (controller?.status != StudyStatus.Deployed ||
-        controller?.deployment == null) {
+    if (controller?.status != StudyStatus.Deployed || controller?.deployment == null) {
       return;
     }
 
@@ -210,7 +195,6 @@ class Sensing {
       }
     }
 
-    info(
-        "$runtimeType - Study protocol translated to locale '${bloc.localization!.locale}'");
+    info("$runtimeType - Study protocol translated to locale '${bloc.localization!.locale}'");
   }
 }

@@ -11,8 +11,7 @@ class HeartRateCardViewModel extends SerializableViewModel<HourlyHeartRate> {
   /// The current heart rate
   double? get currentHeartRate => model.currentHeartRate;
 
-  HeartRateMinMaxPrHour get dayMinMax =>
-      HeartRateMinMaxPrHour(model.minHeartRate, model.maxHeartRate);
+  HeartRateMinMaxPrHour get dayMinMax => HeartRateMinMaxPrHour(model.minHeartRate, model.maxHeartRate);
 
   final StreamGroup<double> _group = StreamGroup.broadcast();
 
@@ -21,9 +20,7 @@ class HeartRateCardViewModel extends SerializableViewModel<HourlyHeartRate> {
   /// Stream of heart rate based on [PolarHR] measures.
   Stream<double>? get polarHRStream => controller?.measurements
       .where((measurement) => measurement.data is PolarHR)
-      .map((measurement) =>
-          (measurement.data as PolarHR).samples.firstOrNull?.hr.toDouble() ??
-          0);
+      .map((measurement) => (measurement.data as PolarHR).samples.firstOrNull?.hr.toDouble() ?? 0);
 
   /// Stream of heart rate based on [MovesenseHR] measures.
   Stream<double>? get movesenseHRStream => controller?.measurements
@@ -124,14 +121,12 @@ class HourlyHeartRate extends DataModel {
   @override
   String toString() {
     String str = 'time | heart rate\n';
-    hourlyHeartRate
-        .forEach((time, heartRate) => str += '$time  | $heartRate\n');
+    hourlyHeartRate.forEach((time, heartRate) => str += '$time  | $heartRate\n');
     return str;
   }
 
   @override
-  HourlyHeartRate fromJson(Map<String, dynamic> json) =>
-      _$HourlyHeartRateFromJson(json);
+  HourlyHeartRate fromJson(Map<String, dynamic> json) => _$HourlyHeartRateFromJson(json);
   @override
   Map<String, dynamic> toJson() => _$HourlyHeartRateToJson(this);
 }
@@ -146,17 +141,13 @@ class HeartRateMinMaxPrHour {
   @override
   String toString() => {'min': min, 'max': max}.toString();
 
-  factory HeartRateMinMaxPrHour.fromJson(Map<String, dynamic> json) =>
-      _$HeartRateMinMaxPrHourFromJson(json);
+  factory HeartRateMinMaxPrHour.fromJson(Map<String, dynamic> json) => _$HeartRateMinMaxPrHourFromJson(json);
   Map<String, dynamic> toJson() => _$HeartRateMinMaxPrHourToJson(this);
 
   @override
   bool operator ==(Object other) =>
       identical(this, other) ||
-      other is HeartRateMinMaxPrHour &&
-          runtimeType == other.runtimeType &&
-          min == other.min &&
-          max == other.max;
+      other is HeartRateMinMaxPrHour && runtimeType == other.runtimeType && min == other.min && max == other.max;
 
   @override
   int get hashCode => min.hashCode ^ max.hashCode;

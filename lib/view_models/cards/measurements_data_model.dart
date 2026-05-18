@@ -7,12 +7,11 @@ class MeasurementsCardViewModel extends ViewModel {
   Stream<Measurement>? get measureEvents => controller?.measurements;
 
   /// Stream of more quiet [DataPoint] measures.
-  Stream<Measurement>? get quietMeasureEvents => controller?.measurements
-      .where((measurement) => measurement.dataType.name != 'sensor');
+  Stream<Measurement>? get quietMeasureEvents =>
+      controller?.measurements.where((measurement) => measurement.dataType.name != 'sensor');
 
   /// The total sampling size
-  int get samplingSize =>
-      controller?.samplingSize == null ? 0 : controller!.samplingSize;
+  int get samplingSize => controller?.samplingSize == null ? 0 : controller!.samplingSize;
   // samplingTable.values.fold(0, (prev, element) => prev + element);
 
   /// A table with sampling size of each measure type
@@ -28,14 +27,12 @@ class MeasurementsCardViewModel extends ViewModel {
   /// The list of measures
   List<MeasureCount> get measures {
     // sort them first
-    var mapEntries = _samplingTable.entries.toList()
-      ..sort((b, a) => a.value.compareTo(b.value));
+    var mapEntries = _samplingTable.entries.toList()..sort((b, a) => a.value.compareTo(b.value));
     Map<String, int> sortedTasksTable = {}..addEntries(mapEntries);
 
     // and map to the [TaskCount] model
-    List<MeasureCount> tasksList = sortedTasksTable.entries
-        .map((entry) => MeasureCount(entry.key, entry.value))
-        .toList();
+    List<MeasureCount> tasksList =
+        sortedTasksTable.entries.map((entry) => MeasureCount(entry.key, entry.value)).toList();
 
     return tasksList;
   }

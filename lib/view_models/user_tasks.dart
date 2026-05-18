@@ -36,9 +36,7 @@ class AudioUserTask extends UserTask {
   int ongoingRecordingDuration = 60;
 
   AudioUserTask(AppTaskExecutor executor) : super(executor) {
-    recordingDuration = (executor.task.minutesToComplete != null)
-        ? executor.task.minutesToComplete! * 60
-        : 60;
+    recordingDuration = (executor.task.minutesToComplete != null) ? executor.task.minutesToComplete! * 60 : 60;
   }
 
   @override
@@ -137,15 +135,11 @@ class VideoUserTask extends UserTask {
       // create the media measurement ...
       media = switch (_mediaType) {
         MediaType.image => ImageMedia(
-            filename: _file!.path,
-            startRecordingTime: _startRecordingTime!,
-            endRecordingTime: _endRecordingTime)
+            filename: _file!.path, startRecordingTime: _startRecordingTime!, endRecordingTime: _endRecordingTime)
           ..filename = _file!.path.split("/").last
           ..path = _file!.path,
         MediaType.video => VideoMedia(
-            filename: _file!.path,
-            startRecordingTime: _startRecordingTime!,
-            endRecordingTime: _endRecordingTime)
+            filename: _file!.path, startRecordingTime: _startRecordingTime!, endRecordingTime: _endRecordingTime)
           ..filename = _file!.path.split("/").last
           ..path = _file!.path,
         _ => null,

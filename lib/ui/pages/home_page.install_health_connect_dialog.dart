@@ -34,8 +34,8 @@ class InstallHealthConnectDialog extends StatelessWidget {
   }
 
   void _redirectToHealthConnectPlayStore() async {
-    final Uri url = Uri.parse(
-        'https://play.google.com/store/apps/details?id=${LocalSettings.healthConnectPackageName}');
+    final Uri url =
+        Uri.parse('https://play.google.com/store/apps/details?id=${LocalSettings.healthConnectPackageName}');
     var canLaunch = await canLaunchUrl(url);
     if (canLaunch) {
       await launchUrl(url);

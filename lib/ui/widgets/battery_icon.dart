@@ -5,8 +5,7 @@ class BatteryPercentage extends StatelessWidget {
     super.key,
     required this.batteryLevel,
     this.scale = 1.0,
-  }) : assert(batteryLevel >= 0 && batteryLevel <= 100,
-            'Battery level must be between 0 and 100');
+  }) : assert(batteryLevel >= 0 && batteryLevel <= 100, 'Battery level must be between 0 and 100');
 
   // Battery level from 0 to 100
   final int batteryLevel;
@@ -28,8 +27,7 @@ class BatteryPercentage extends StatelessWidget {
           height: height,
           child: Row(children: [
             SizedBox(
-                width:
-                    batteryLevel != 0 ? batteryLevel * (width * 0.9 / 100) : 0,
+                width: batteryLevel != 0 ? batteryLevel * (width * 0.9 / 100) : 0,
                 height: height * 0.75,
                 child: Container(color: Theme.of(context).primaryColor)),
           ]),

@@ -40,15 +40,12 @@ class ProfilePageState extends State<ProfilePage> {
               children: [
                 TextButton.icon(
                   onPressed: () {},
-                  icon: Icon(Icons.account_circle,
-                      color: Theme.of(context).primaryColor, size: 30),
+                  icon: Icon(Icons.account_circle, color: Theme.of(context).primaryColor, size: 30),
                   label: Text(locale.translate("pages.profile.title"),
-                      style: fs20fw700.copyWith(
-                          color: Theme.of(context).primaryColor)),
+                      style: fs20fw700.copyWith(color: Theme.of(context).primaryColor)),
                 ),
                 IconButton(
-                  icon: Icon(Icons.close,
-                      color: Theme.of(context).primaryColor, size: 30),
+                  icon: Icon(Icons.close, color: Theme.of(context).primaryColor, size: 30),
                   tooltip: locale.translate('Back'),
                   onPressed: () {
                     Navigator.of(context).pop();
@@ -78,15 +75,13 @@ class ProfilePageState extends State<ProfilePage> {
                       _buildListTile(
                         locale.translate('pages.profile.full_name'),
                         LocalSettings().isAnonymous
-                            ? locale
-                                .translate('pages.about.anonymous.anonymous')
+                            ? locale.translate('pages.about.anonymous.anonymous')
                             : widget.model.fullName,
                       ),
                       _buildListTile(
                         locale.translate('pages.profile.email'),
                         LocalSettings().isAnonymous
-                            ? locale
-                                .translate('pages.about.anonymous.anonymous')
+                            ? locale.translate('pages.about.anonymous.anonymous')
                             : widget.model.email,
                       ),
                     ],
@@ -142,10 +137,8 @@ class ProfilePageState extends State<ProfilePage> {
                     context,
                     [
                       _buildActionListTile(
-                        leading: Icon(Icons.mail,
-                            color: Theme.of(context).primaryColor),
-                        trailing: const Icon(Icons.arrow_forward_ios,
-                            color: CACHET.GREY_6),
+                        leading: Icon(Icons.mail, color: Theme.of(context).primaryColor),
+                        trailing: const Icon(Icons.arrow_forward_ios, color: CACHET.GREY_6),
                         title: locale.translate('pages.profile.contact'),
                         onTap: () async {
                           _sendEmailToContactResearcher(
@@ -155,10 +148,8 @@ class ProfilePageState extends State<ProfilePage> {
                         },
                       ),
                       _buildActionListTile(
-                        leading: Icon(Icons.policy,
-                            color: Theme.of(context).primaryColor),
-                        trailing: const Icon(Icons.arrow_forward_ios,
-                            color: CACHET.GREY_6),
+                        leading: Icon(Icons.policy, color: Theme.of(context).primaryColor),
+                        trailing: const Icon(Icons.arrow_forward_ios, color: CACHET.GREY_6),
                         title: locale.translate('pages.profile.privacy'),
                         onTap: () async {
                           try {
@@ -167,10 +158,8 @@ class ProfilePageState extends State<ProfilePage> {
                         },
                       ),
                       _buildActionListTile(
-                        leading: Icon(Icons.public,
-                            color: Theme.of(context).primaryColor),
-                        trailing: const Icon(Icons.arrow_forward_ios,
-                            color: CACHET.GREY_6),
+                        leading: Icon(Icons.public, color: Theme.of(context).primaryColor),
+                        trailing: const Icon(Icons.arrow_forward_ios, color: CACHET.GREY_6),
                         title: locale.translate('pages.profile.study_website'),
                         onTap: () async {
                           try {
@@ -191,8 +180,7 @@ class ProfilePageState extends State<ProfilePage> {
                   ]),
                   _buildSectionCard(context, [
                     _buildActionListTile(
-                      leading: const Icon(Icons.power_settings_new,
-                          color: CACHET.RED_1),
+                      leading: const Icon(Icons.power_settings_new, color: CACHET.RED_1),
                       title: locale.translate('pages.profile.log_out'),
                       onTap: () async {
                         bool isConnected = await bloc.checkConnectivity();
@@ -256,9 +244,7 @@ class ProfilePageState extends State<ProfilePage> {
   }) {
     return ListTile(
       leading: leading,
-      title: Text(title,
-          style: fs16fw600.copyWith(
-              color: Theme.of(context).extension<CarpColors>()!.grey900)),
+      title: Text(title, style: fs16fw600.copyWith(color: Theme.of(context).extension<CarpColors>()!.grey900)),
       trailing: trailing,
       onTap: onTap,
       contentPadding: EdgeInsets.symmetric(vertical: 4, horizontal: 16),
@@ -277,12 +263,8 @@ class ProfilePageState extends State<ProfilePage> {
 
   /// Sends and email to the researcher with the name of the study + user id
   void _sendEmailToContactResearcher(String email, String subject) async {
-    final url = Uri(
-            scheme: 'mailto',
-            path: email,
-            queryParameters: {'subject': subject})
-        .toString()
-        .replaceAll("+", "%20");
+    final url =
+        Uri(scheme: 'mailto', path: email, queryParameters: {'subject': subject}).toString().replaceAll("+", "%20");
     try {
       await launchUrl(Uri.parse(url));
     } finally {}
@@ -326,8 +308,7 @@ class ProfilePageState extends State<ProfilePage> {
       context: context,
       builder: (BuildContext builderContext) {
         return AlertDialog(
-          title:
-              Text(locale.translate("pages.profile.leave_study.confirmation")),
+          title: Text(locale.translate("pages.profile.leave_study.confirmation")),
           actions: <Widget>[
             TextButton(
               child: Text(locale.translate("NO")),
@@ -371,8 +352,7 @@ class SlidePageRoute extends PageRouteBuilder<Widget> {
             var begin = Offset(1.0, 0.0);
             var end = Offset.zero;
             var curve = Curves.easeInOut;
-            var tween =
-                Tween(begin: begin, end: end).chain(CurveTween(curve: curve));
+            var tween = Tween(begin: begin, end: end).chain(CurveTween(curve: curve));
             var offsetAnimation = animation.drive(tween);
             return SlideTransition(
               position: offsetAnimation,

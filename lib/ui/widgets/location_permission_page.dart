@@ -5,8 +5,7 @@ class LocationPermissionPage {
     RPLocalizations locale = RPLocalizations.of(context)!;
 
     return Scaffold(
-      backgroundColor:
-          Theme.of(context).extension<CarpColors>()!.backgroundGray,
+      backgroundColor: Theme.of(context).extension<CarpColors>()!.backgroundGray,
       body: Padding(
         padding: const EdgeInsets.symmetric(vertical: 16.0),
         child: SafeArea(
@@ -27,8 +26,7 @@ class LocationPermissionPage {
                 child: Padding(
                   padding: const EdgeInsets.only(top: 16.0),
                   child: StudiesMaterial(
-                    backgroundColor:
-                        Theme.of(context).extension<CarpColors>()!.white!,
+                    backgroundColor: Theme.of(context).extension<CarpColors>()!.white!,
                     shape: RoundedRectangleBorder(
                       borderRadius: BorderRadius.circular(12.0),
                     ),
@@ -50,26 +48,20 @@ class LocationPermissionPage {
                                   Row(
                                     children: [
                                       Text(
-                                        locale.translate(
-                                            'dialog.location.location_data'),
+                                        locale.translate('dialog.location.location_data'),
                                         style: TextStyle(
                                           fontWeight: FontWeight.bold,
                                           fontSize: 22.0,
-                                          color: Theme.of(context)
-                                              .extension<CarpColors>()!
-                                              .primary,
+                                          color: Theme.of(context).extension<CarpColors>()!.primary,
                                         ),
                                       ),
                                     ],
                                   ),
                                   Padding(
-                                    padding: const EdgeInsets.symmetric(
-                                        vertical: 24.0),
+                                    padding: const EdgeInsets.symmetric(vertical: 24.0),
                                     child: Icon(
                                       Icons.location_on,
-                                      color: Theme.of(context)
-                                          .extension<CarpColors>()!
-                                          .primary,
+                                      color: Theme.of(context).extension<CarpColors>()!.primary,
                                       size: 48,
                                     ),
                                   ),
@@ -100,14 +92,11 @@ class LocationPermissionPage {
                 ),
                 child: TextButton(
                   onPressed: () {
-                    Permission.locationWhenInUse
-                        .request()
-                        .then((value) => context.pop(true));
+                    Permission.locationWhenInUse.request().then((value) => context.pop(true));
                   },
                   child: Text(
                     locale.translate("dialog.location.continue"),
-                    style:
-                        const TextStyle(color: Color(0xffffffff), fontSize: 22),
+                    style: const TextStyle(color: Color(0xffffffff), fontSize: 22),
                     textAlign: TextAlign.center,
                   ),
                 ),

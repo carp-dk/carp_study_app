@@ -141,17 +141,14 @@ class CarpBackend {
   Future<List<ActiveParticipationInvitation>> getInvitations() async {
     CarpParticipationService().configureFrom(CarpService());
 
-    invitations =
-        await CarpParticipationService().getActiveParticipationInvitations();
+    invitations = await CarpParticipationService().getActiveParticipationInvitations();
 
     // Filter the invitations to only include those that
     // have a smartphone as a device in [ActiveParticipationInvitation.assignedDevices] list
     // (i.e. the invitation is for a smartphone).
     // This is done to avoid showing invitations for other devices (e.g. [WebBrowser]).
-    invitations.removeWhere((invitation) =>
-        invitation.assignedDevices
-            ?.any((device) => device.device is! Smartphone) ??
-        false);
+    invitations.removeWhere(
+        (invitation) => invitation.assignedDevices?.any((device) => device.device is! Smartphone) ?? false);
 
     return invitations;
   }
@@ -178,8 +175,7 @@ class CarpBackend {
       return null;
     }
     if (participant == null) {
-      warning(
-          '$runtimeType - No participant (no invitation has been accepted).');
+      warning('$runtimeType - No participant (no invitation has been accepted).');
       return null;
     }
 
@@ -189,8 +185,7 @@ class CarpBackend {
         (result) => result is RPConsentSignatureResult,
       ) as RPConsentSignatureResult;
     } catch (_) {
-      warning(
-          '$runtimeType - No signed informed consent found to be uploaded.');
+      warning('$runtimeType - No signed informed consent found to be uploaded.');
       return null;
     }
 
@@ -205,24 +200,18 @@ class CarpBackend {
     );
 
     try {
-      await CarpParticipationService()
-          .participation()
-          .setInformedConsent(uploadedConsent);
+      await CarpParticipationService().participation().setInformedConsent(uploadedConsent);
 
       info('$runtimeType - Informed consent document uploaded successfully for '
           'deployment id: ${bloc.study?.studyDeploymentId}');
     } on Exception {
-      warning(
-          '$runtimeType - Informed consent upload failed for username: $username');
+      warning('$runtimeType - Informed consent upload failed for username: $username');
     }
 
     return uploadedConsent;
   }
 
-  Future<InformedConsentInput?>? getInformedConsentByRole(
-      String studyDeploymentId, String? role) async {
-    return await CarpParticipationService()
-        .participation(studyDeploymentId)
-        .getInformedConsentByRole(role);
+  Future<InformedConsentInput?>? getInformedConsentByRole(String studyDeploymentId, String? role) async {
+    return await CarpParticipationService().participation(studyDeploymentId).getInformedConsentByRole(role);
   }
 }

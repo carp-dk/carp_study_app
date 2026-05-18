@@ -5,11 +5,7 @@ class DisplayPicturePage extends StatefulWidget {
   final bool isVideo;
   final VideoUserTask videoUserTask;
 
-  const DisplayPicturePage(
-      {super.key,
-      required this.file,
-      required this.videoUserTask,
-      this.isVideo = false});
+  const DisplayPicturePage({super.key, required this.file, required this.videoUserTask, this.isVideo = false});
 
   @override
   State<DisplayPicturePage> createState() => DisplayPicturePageState();
@@ -52,8 +48,7 @@ class DisplayPicturePageState extends State<DisplayPicturePage> {
             Row(
               children: [
                 Padding(
-                  padding:
-                      const EdgeInsets.symmetric(vertical: 8.0, horizontal: 10),
+                  padding: const EdgeInsets.symmetric(vertical: 8.0, horizontal: 10),
                   child: const CarpAppBar(
                     hasProfileIcon: false,
                   ),
@@ -81,8 +76,7 @@ class DisplayPicturePageState extends State<DisplayPicturePage> {
                   child: (widget.isVideo && _videoPlayerController != null)
                       ? _videoPlayerController!.value.isInitialized
                           ? AspectRatio(
-                              aspectRatio:
-                                  _videoPlayerController!.value.aspectRatio,
+                              aspectRatio: _videoPlayerController!.value.aspectRatio,
                               child: VideoPlayer(_videoPlayerController!))
                           : const CircularProgressIndicator()
                       : Image.file(File(videoFilePath)),
@@ -96,8 +90,7 @@ class DisplayPicturePageState extends State<DisplayPicturePage> {
                 children: [
                   Padding(
                     padding: const EdgeInsets.symmetric(horizontal: 10),
-                    child: Text(locale.translate('pages.audio_task.done'),
-                        style: fs22fw700),
+                    child: Text(locale.translate('pages.audio_task.done'), style: fs22fw700),
                   ),
                   const SizedBox(height: 40),
                   Padding(
@@ -119,8 +112,7 @@ class DisplayPicturePageState extends State<DisplayPicturePage> {
                           IconButton(
                             onPressed: () => Navigator.of(context).pop(),
                             padding: const EdgeInsets.all(0),
-                            icon: const Icon(Icons.replay,
-                                size: 25, color: CACHET.GREY_5),
+                            icon: const Icon(Icons.replay, size: 25, color: CACHET.GREY_5),
                           ),
                           const SizedBox(width: 20),
                           CircleAvatar(
@@ -134,8 +126,7 @@ class DisplayPicturePageState extends State<DisplayPicturePage> {
                                 Navigator.of(context).pop();
                               },
                               padding: const EdgeInsets.all(0),
-                              icon: const Icon(Icons.check_circle_outline,
-                                  color: Colors.white, size: 30),
+                              icon: const Icon(Icons.check_circle_outline, color: Colors.white, size: 30),
                             ),
                           ),
                           const SizedBox(width: 50),

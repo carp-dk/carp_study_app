@@ -6,15 +6,13 @@ enum CurrentStep { scan, instructions, done }
 class BluetoothConnectionPage extends StatefulWidget {
   final DeviceViewModel device;
 
-  const BluetoothConnectionPage(CurrentStep currentStep,
-      {super.key, required this.device})
+  const BluetoothConnectionPage(CurrentStep currentStep, {super.key, required this.device})
       : _currentStep = currentStep;
 
   final CurrentStep _currentStep;
 
   @override
-  State<StatefulWidget> createState() =>
-      _BluetoothConnectionPageState(_currentStep);
+  State<StatefulWidget> createState() => _BluetoothConnectionPageState(_currentStep);
 }
 
 class _BluetoothConnectionPageState extends State<BluetoothConnectionPage> {
@@ -50,8 +48,7 @@ class _BluetoothConnectionPageState extends State<BluetoothConnectionPage> {
     RPLocalizations locale = RPLocalizations.of(context)!;
 
     return Scaffold(
-      backgroundColor:
-          Theme.of(context).extension<CarpColors>()!.backgroundGray,
+      backgroundColor: Theme.of(context).extension<CarpColors>()!.backgroundGray,
       body: SafeArea(
         child: Stack(
           children: [
@@ -59,8 +56,7 @@ class _BluetoothConnectionPageState extends State<BluetoothConnectionPage> {
               child: Column(
                 children: [
                   Padding(
-                    padding: const EdgeInsets.symmetric(
-                        vertical: 8.0, horizontal: 16),
+                    padding: const EdgeInsets.symmetric(vertical: 8.0, horizontal: 16),
                     child: const CarpAppBar(hasProfileIcon: true),
                   ),
                   Expanded(
@@ -78,8 +74,7 @@ class _BluetoothConnectionPageState extends State<BluetoothConnectionPage> {
                             ),
                           ),
                           Padding(
-                            padding: const EdgeInsets.symmetric(
-                                horizontal: 20, vertical: 16),
+                            padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 16),
                             child: Row(
                               mainAxisAlignment: MainAxisAlignment.spaceBetween,
                               children: _buildActionButtons(locale),
@@ -107,13 +102,10 @@ class _BluetoothConnectionPageState extends State<BluetoothConnectionPage> {
 
   Widget _buildDialogTitle(RPLocalizations locale) {
     final stepTitleMap = {
-      CurrentStep.scan:
-          locale.translate("pages.devices.connection.step.start.title"),
-      CurrentStep.instructions:
-          locale.translate("pages.devices.connection.step.how_to.title"),
+      CurrentStep.scan: locale.translate("pages.devices.connection.step.start.title"),
+      CurrentStep.instructions: locale.translate("pages.devices.connection.step.how_to.title"),
       CurrentStep.done:
-          locale.translate("pages.devices.connection.step.confirm.title") +
-              (" ${selectedDevice?.platformName} "),
+          locale.translate("pages.devices.connection.step.confirm.title") + (" ${selectedDevice?.platformName} "),
     };
     return Padding(
       padding: const EdgeInsets.only(bottom: 16),
@@ -148,8 +140,8 @@ class _BluetoothConnectionPageState extends State<BluetoothConnectionPage> {
   }
 
   List<Widget> _buildActionButtons(RPLocalizations locale) {
-    Widget buildTranslatedButton(String key, VoidCallback onPressed,
-        bool enabled, ButtonStyle? buttonStyle, TextStyle? buttonTextStyle) {
+    Widget buildTranslatedButton(
+        String key, VoidCallback onPressed, bool enabled, ButtonStyle? buttonStyle, TextStyle? buttonTextStyle) {
       return ElevatedButton(
         onPressed: enabled ? onPressed : null,
         child: Text(
@@ -180,9 +172,7 @@ class _BluetoothConnectionPageState extends State<BluetoothConnectionPage> {
       ],
       CurrentStep.instructions: [
         buildTranslatedButton("settings", () {
-          Platform.isAndroid
-              ? OpenSettingsPlusAndroid().bluetooth()
-              : OpenSettingsPlusIOS().bluetooth();
+          Platform.isAndroid ? OpenSettingsPlusAndroid().bluetooth() : OpenSettingsPlusIOS().bluetooth();
         }, true, null, null),
         buildTranslatedButton(
           "ok",
@@ -264,10 +254,8 @@ class _BluetoothConnectionPageState extends State<BluetoothConnectionPage> {
               context: context,
               builder: (BuildContext context) {
                 return AlertDialog(
-                  title: Text(locale.translate(
-                      "pages.devices.connection.connection_failed.title")),
-                  content: Text(locale.translate(
-                      "pages.devices.connection.connection_failed.message")),
+                  title: Text(locale.translate("pages.devices.connection.connection_failed.title")),
+                  content: Text(locale.translate("pages.devices.connection.connection_failed.message")),
                   actions: [
                     TextButton(
                       onPressed: () {
@@ -323,18 +311,15 @@ class _BluetoothConnectionPageState extends State<BluetoothConnectionPage> {
                   padding: const EdgeInsets.only(top: 16),
                   child: Column(
                     children: snapshot.data!
-                        .where((element) =>
-                            element.device.platformName.isNotEmpty &&
-                            _matchesUuid(element, _filterUuids))
+                        .where(
+                            (element) => element.device.platformName.isNotEmpty && _matchesUuid(element, _filterUuids))
                         .toList()
                         .asMap()
                         .entries
                         .map(
                           (bluetoothDevice) => StudiesMaterial(
                             hasBorder: true,
-                            backgroundColor: Theme.of(context)
-                                .extension<CarpColors>()!
-                                .grey50!,
+                            backgroundColor: Theme.of(context).extension<CarpColors>()!.grey50!,
                             child: InkWell(
                               child: ListTile(
                                 selected: bluetoothDevice.key == selected,
@@ -344,9 +329,7 @@ class _BluetoothConnectionPageState extends State<BluetoothConnectionPage> {
                                     fontSize: 20,
                                   ),
                                 ),
-                                selectedTileColor: Theme.of(context)
-                                    .primaryColor
-                                    .withValues(alpha: 0.2),
+                                selectedTileColor: Theme.of(context).primaryColor.withValues(alpha: 0.2),
                               ),
                               onTap: () {
                                 selectedDevice = bluetoothDevice.value.device;
@@ -369,12 +352,10 @@ class _BluetoothConnectionPageState extends State<BluetoothConnectionPage> {
               TextSpan(
                 children: [
                   TextSpan(
-                    text: locale
-                        .translate("pages.devices.connection.step.start.1"),
+                    text: locale.translate("pages.devices.connection.step.start.1"),
                   ),
                   TextSpan(
-                    text: locale
-                        .translate("pages.devices.connection.instructions"),
+                    text: locale.translate("pages.devices.connection.instructions"),
                     style: TextStyle(
                       color: Theme.of(context).extension<CarpColors>()!.primary,
                       decoration: TextDecoration.underline,
@@ -392,8 +373,7 @@ class _BluetoothConnectionPageState extends State<BluetoothConnectionPage> {
                   ),
                 ],
               ),
-              style: fs22fw700.copyWith(
-                  color: Theme.of(context).extension<CarpColors>()!.grey900),
+              style: fs22fw700.copyWith(color: Theme.of(context).extension<CarpColors>()!.grey900),
               textAlign: TextAlign.center,
             ),
           )
@@ -437,28 +417,22 @@ class _BluetoothConnectionPageState extends State<BluetoothConnectionPage> {
     switch (device.deviceManager) {
       case PolarDeviceManager _
           when device.type == PolarDevice.DEVICE_TYPE &&
-              (device.polarDeviceType == PolarDeviceType.H10 ||
-                  device.polarDeviceType == PolarDeviceType.H9):
-        assetImage =
-            AssetImage('assets/instructions/polar_h9_h10_instructions.png');
+              (device.polarDeviceType == PolarDeviceType.H10 || device.polarDeviceType == PolarDeviceType.H9):
+        assetImage = AssetImage('assets/instructions/polar_h9_h10_instructions.png');
         break;
 
       case PolarDeviceManager _
-          when device.type == PolarDevice.DEVICE_TYPE &&
-              device.polarDeviceType == PolarDeviceType.SENSE:
-        assetImage =
-            AssetImage('assets/instructions/polar_sense_instructions.png');
+          when device.type == PolarDevice.DEVICE_TYPE && device.polarDeviceType == PolarDeviceType.SENSE:
+        assetImage = AssetImage('assets/instructions/polar_sense_instructions.png');
         break;
 
       // if device type is not defined in the protocol, show h9, h10 instructions
       case PolarDeviceManager _:
-        assetImage =
-            AssetImage('assets/instructions/polar_h9_h10_instructions.png');
+        assetImage = AssetImage('assets/instructions/polar_h9_h10_instructions.png');
         break;
 
       case MovesenseDeviceManager _:
-        assetImage =
-            AssetImage('assets/instructions/movesense_instructions.png');
+        assetImage = AssetImage('assets/instructions/movesense_instructions.png');
         break;
 
       default:

@@ -3,9 +3,7 @@ part of carp_study_app;
 class ActivityCard extends StatefulWidget {
   final ActivityCardViewModel model;
   final List<Color> colors;
-  const ActivityCard(this.model,
-      {super.key,
-      this.colors = const [CACHET.CAQUI, CACHET.OCEAN, CACHET.BLUE_2]});
+  const ActivityCard(this.model, {super.key, this.colors = const [CACHET.CAQUI, CACHET.OCEAN, CACHET.BLUE_2]});
 
   @override
   State<StatefulWidget> createState() => ActivityCardState();
@@ -21,18 +19,14 @@ class ActivityCardState extends State<ActivityCard> {
 
   final betweenSpace = 2.4;
 
-  List<List<int>> activitiesList = List.generate(
-      7, (_) => List.generate(4, (index) => index, growable: false),
-      growable: false);
+  List<List<int>> activitiesList =
+      List.generate(7, (_) => List.generate(4, (index) => index, growable: false), growable: false);
 
   @override
   void initState() {
-    _walk =
-        widget.model.activities[ActivityType.WALKING]![DateTime.now().weekday];
-    _run =
-        widget.model.activities[ActivityType.RUNNING]![DateTime.now().weekday];
-    _cycle = widget
-        .model.activities[ActivityType.ON_BICYCLE]![DateTime.now().weekday];
+    _walk = widget.model.activities[ActivityType.WALKING]![DateTime.now().weekday];
+    _run = widget.model.activities[ActivityType.RUNNING]![DateTime.now().weekday];
+    _cycle = widget.model.activities[ActivityType.ON_BICYCLE]![DateTime.now().weekday];
 
     /// Doing some conversions to make the data readable by the chart
     /// The data is organized in a list of lists, where each list represents a day
@@ -125,10 +119,7 @@ class ActivityCardState extends State<ActivityCard> {
                             padding: const EdgeInsets.all(4.0),
                             child: Text(
                               locale.translate('cards.activity.walking'),
-                              style: fs12fw700.copyWith(
-                                  color: Theme.of(context)
-                                      .extension<CarpColors>()!
-                                      .grey800),
+                              style: fs12fw700.copyWith(color: Theme.of(context).extension<CarpColors>()!.grey800),
                             ),
                           ),
                         ],
@@ -150,10 +141,7 @@ class ActivityCardState extends State<ActivityCard> {
                             padding: const EdgeInsets.all(4.0),
                             child: Text(
                               locale.translate('cards.activity.running'),
-                              style: fs12fw700.copyWith(
-                                  color: Theme.of(context)
-                                      .extension<CarpColors>()!
-                                      .grey800),
+                              style: fs12fw700.copyWith(color: Theme.of(context).extension<CarpColors>()!.grey800),
                             ),
                           ),
                         ],
@@ -174,9 +162,7 @@ class ActivityCardState extends State<ActivityCard> {
                       child: Text(
                         locale.translate('cards.activity.cycling'),
                         style: fs12fw700.copyWith(
-                          color: Theme.of(context)
-                              .extension<CarpColors>()!
-                              .grey800,
+                          color: Theme.of(context).extension<CarpColors>()!.grey800,
                         ),
                       ),
                     ),
@@ -216,16 +202,12 @@ class ActivityCardState extends State<ActivityCard> {
           enabled: false,
           touchCallback: (p0, p1) {
             setState(() {
-              touchedIndex = (p1?.spot?.touchedBarGroupIndex ??
-                      DateTime.now().weekday - 1) +
-                  1;
+              touchedIndex = (p1?.spot?.touchedBarGroupIndex ?? DateTime.now().weekday - 1) + 1;
             });
           },
         ),
         groupsSpace: 4,
-        barGroups: activitiesList
-            .map((e) => generateGroupData(e[0], e[1], e[2], e[3]))
-            .toList(),
+        barGroups: activitiesList.map((e) => generateGroupData(e[0], e[1], e[2], e[3])).toList(),
         maxY: (maxValue) * 1.2,
         gridData: FlGridData(
           show: true,
@@ -301,9 +283,7 @@ class ActivityCardState extends State<ActivityCard> {
       meta: meta,
       space: 6,
       child: Text(
-        value.toInt() % meta.appliedInterval == 0
-            ? value.toInt().toString()
-            : '',
+        value.toInt() % meta.appliedInterval == 0 ? value.toInt().toString() : '',
         style: fs14ls1.copyWith(
           color: Theme.of(context).extension<CarpColors>()!.grey600,
         ),

@@ -4,9 +4,7 @@ class StepsCardWidget extends StatefulWidget {
   final List<Color> colors;
 
   final StepsCardViewModel model;
-  const StepsCardWidget(this.model,
-      {super.key,
-      this.colors = const [CACHET.ORANGE, CACHET.BLUE_2, CACHET.BLUE_3]});
+  const StepsCardWidget(this.model, {super.key, this.colors = const [CACHET.ORANGE, CACHET.BLUE_2, CACHET.BLUE_3]});
 
   @override
   StepsCardWidgetState createState() => StepsCardWidgetState();
@@ -105,9 +103,7 @@ class StepsCardWidgetState extends State<StepsCardWidget> {
         enabled: false,
         touchCallback: (p0, p1) {
           setState(() {
-            touchedIndex =
-                (p1?.spot?.touchedBarGroupIndex ?? DateTime.now().weekday - 1) +
-                    1;
+            touchedIndex = (p1?.spot?.touchedBarGroupIndex ?? DateTime.now().weekday - 1) + 1;
           });
         },
       ),
@@ -136,9 +132,7 @@ class StepsCardWidgetState extends State<StepsCardWidget> {
   }
 
   List<BarChartGroupData> get barChartsGroups {
-    return widget.model.weeklySteps.entries
-        .map((e) => generateGroupData(e.key, e.value))
-        .toList();
+    return widget.model.weeklySteps.entries.map((e) => generateGroupData(e.key, e.value)).toList();
   }
 
   BarChartGroupData generateGroupData(int x, int step) {
@@ -169,9 +163,7 @@ class StepsCardWidgetState extends State<StepsCardWidget> {
       meta: meta,
       space: 6,
       child: Text(
-        value.toInt() % meta.appliedInterval == 0
-            ? value.toInt().toString()
-            : '',
+        value.toInt() % meta.appliedInterval == 0 ? value.toInt().toString() : '',
         style: fs14ls1.copyWith(
           color: Theme.of(context).extension<CarpColors>()!.grey600,
         ),

@@ -17,11 +17,7 @@ part of carp_study_app;
 /// Note that the 'id' of the protocol in the [getStudyProtocol] method is ignored.
 /// The 'protocol.json' file is always loaded.
 class LocalResourceManager
-    implements
-        InformedConsentManager,
-        LocalizationManager,
-        MessageManager,
-        StudyProtocolManager {
+    implements InformedConsentManager, LocalizationManager, MessageManager, StudyProtocolManager {
   /// The path to the json files to be loaded using this resource manager.
   static final String basePath = 'assets/carp';
 
@@ -49,10 +45,8 @@ class LocalResourceManager
   Future<RPOrderedTask?> getInformedConsent({bool refresh = false}) async {
     if (_informedConsent == null) {
       try {
-        var jsonString =
-            await rootBundle.loadString('$basePath/resources/consent.json');
-        Map<String, dynamic> jsonMap =
-            json.decode(jsonString) as Map<String, dynamic>;
+        var jsonString = await rootBundle.loadString('$basePath/resources/consent.json');
+        Map<String, dynamic> jsonMap = json.decode(jsonString) as Map<String, dynamic>;
         _informedConsent = RPOrderedTask.fromJson(jsonMap);
       } catch (error) {
         warning("$runtimeType - Could not load a local informed consent. "
@@ -85,10 +79,8 @@ class LocalResourceManager
       var path = '$basePath/lang/${locale.languageCode}.json';
       var jsonString = await rootBundle.loadString(path);
 
-      Map<String, dynamic> jsonMap =
-          json.decode(jsonString) as Map<String, dynamic>;
-      _translations =
-          jsonMap.map((key, value) => MapEntry(key, value.toString()));
+      Map<String, dynamic> jsonMap = json.decode(jsonString) as Map<String, dynamic>;
+      _translations = jsonMap.map((key, value) => MapEntry(key, value.toString()));
     }
     return _translations!;
   }
@@ -119,36 +111,28 @@ class LocalResourceManager
   }) async {
     if (_messages.isEmpty) {
       final assetManifest = await AssetManifest.loadFromAssetBundle(rootBundle);
-      final files = assetManifest
-          .listAssets()
-          .where((string) => string.startsWith("$basePath/messages/"))
-          .toList();
+      final files = assetManifest.listAssets().where((string) => string.startsWith("$basePath/messages/")).toList();
 
       for (var file in files) {
         var jsonString = await rootBundle.loadString(file);
 
-        Map<String, dynamic> jsonMap =
-            json.decode(jsonString) as Map<String, dynamic>;
+        Map<String, dynamic> jsonMap = json.decode(jsonString) as Map<String, dynamic>;
 
         var message = Message.fromJson(jsonMap);
         _messages[message.id] = message;
       }
     }
-    return _messages.values
-        .toList()
-        .sublist(0, (count! < _messages.length) ? count : _messages.length);
+    return _messages.values.toList().sublist(0, (count! < _messages.length) ? count : _messages.length);
   }
 
   @override
   Future<Message?> getMessage(String messageId) async => _messages[messageId];
 
   @override
-  Future<void> setMessage(Message message) async =>
-      _messages[message.id] = message;
+  Future<void> setMessage(Message message) async => _messages[message.id] = message;
 
   @override
-  Future<void> deleteMessage(String messageId) async =>
-      _messages.remove(messageId);
+  Future<void> deleteMessage(String messageId) async => _messages.remove(messageId);
 
   @override
   Future<void> deleteAllMessages() async => _messages.clear();
@@ -159,11 +143,9 @@ class LocalResourceManager
   Future<SmartphoneStudyProtocol?> getStudyProtocol(String id) async {
     if (_protocol == null) {
       try {
-        var jsonString =
-            await rootBundle.loadString('$basePath/resources/protocol.json');
+        var jsonString = await rootBundle.loadString('$basePath/resources/protocol.json');
 
-        Map<String, dynamic> jsonMap =
-            json.decode(jsonString) as Map<String, dynamic>;
+        Map<String, dynamic> jsonMap = json.decode(jsonString) as Map<String, dynamic>;
         _protocol = SmartphoneStudyProtocol.fromJson(jsonMap);
 
         if (_protocol?.dataEndPoint?.type != null) {

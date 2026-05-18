@@ -151,10 +151,10 @@ ThemeData carpStudyTheme = ThemeData.light().copyWith(
               fontWeight: FontWeight.w400,
               fontSize: 16.0,
             ),
-        titleMedium: ThemeData.light().textTheme.titleMedium!.copyWith(
-            fontWeight: FontWeight.w600,
-            fontSize: 20.0,
-            color: const Color(0xFF206FA2)),
+        titleMedium: ThemeData.light()
+            .textTheme
+            .titleMedium!
+            .copyWith(fontWeight: FontWeight.w600, fontSize: 20.0, color: const Color(0xFF206FA2)),
         titleLarge: ThemeData.light().textTheme.titleLarge!.copyWith(
               fontWeight: FontWeight.w500,
               fontSize: 20.0,
@@ -163,8 +163,10 @@ ThemeData carpStudyTheme = ThemeData.light().copyWith(
               fontWeight: FontWeight.w700,
               fontSize: 30.0,
             ),
-        labelLarge: ThemeData.light().textTheme.labelLarge!.copyWith(
-            fontWeight: FontWeight.w500, fontSize: 16.0, color: Colors.white),
+        labelLarge: ThemeData.light()
+            .textTheme
+            .labelLarge!
+            .copyWith(fontWeight: FontWeight.w500, fontSize: 16.0, color: Colors.white),
       )
       .apply(
         fontFamily: 'OpenSans',
@@ -234,10 +236,10 @@ ThemeData carpStudyDarkTheme = ThemeData.dark().copyWith(
               fontWeight: FontWeight.w700,
               fontSize: 30.0,
             ),
-        labelLarge: ThemeData.dark().textTheme.labelLarge!.copyWith(
-            fontWeight: FontWeight.w500,
-            fontSize: 16.0,
-            color: Colors.grey.shade800),
+        labelLarge: ThemeData.dark()
+            .textTheme
+            .labelLarge!
+            .copyWith(fontWeight: FontWeight.w500, fontSize: 16.0, color: Colors.grey.shade800),
       )
       .apply(
         fontFamily: 'OpenSans',

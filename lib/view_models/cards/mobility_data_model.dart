@@ -7,27 +7,22 @@ class MobilityCardViewModel extends SerializableViewModel<WeeklyMobility> {
   Map<int, DailyMobility> get weekData => model.weekMobility;
 
   /// Stream of mobility [DataPoint] measures.
-  Stream<Measurement>? get mobilityEvents => controller?.measurements
-      .where((measurement) => measurement.data is Mobility);
+  Stream<Measurement>? get mobilityEvents =>
+      controller?.measurements.where((measurement) => measurement.data is Mobility);
 
-  final DateTime _startOfWeek =
-      DateTime.now().subtract(Duration(days: DateTime.now().weekday - 1));
-  final DateTime _endOfWeek = DateTime.now()
-      .subtract(Duration(days: DateTime.now().weekday - 1))
-      .add(Duration(days: 6));
+  final DateTime _startOfWeek = DateTime.now().subtract(Duration(days: DateTime.now().weekday - 1));
+  final DateTime _endOfWeek =
+      DateTime.now().subtract(Duration(days: DateTime.now().weekday - 1)).add(Duration(days: 6));
 
   String get startOfWeek => DateFormat('dd').format(_startOfWeek);
 
   String get endOfWeek => DateFormat('dd').format(_endOfWeek);
 
-  String get currentMonth =>
-      DateFormat('MMM').format(DateTime(_startOfWeek.year, _startOfWeek.month));
+  String get currentMonth => DateFormat('MMM').format(DateTime(_startOfWeek.year, _startOfWeek.month));
 
-  String get nextMonth => DateFormat('MMM')
-      .format(DateTime(_startOfWeek.year, _startOfWeek.month + 1, 1));
+  String get nextMonth => DateFormat('MMM').format(DateTime(_startOfWeek.year, _startOfWeek.month + 1, 1));
 
-  String get currentYear =>
-      DateFormat('yyyy').format(DateTime(DateTime.now().year));
+  String get currentYear => DateFormat('yyyy').format(DateTime(DateTime.now().year));
 
   MobilityCardViewModel();
   @override
@@ -64,18 +59,12 @@ class WeeklyMobility extends DataModel {
   void setMobilityFeatures(Mobility data) {
     DateTime day = data.date ?? DateTime.now();
 
-    weekMobility[day.weekday] = DailyMobility(
-        day.weekday,
-        data.numberOfPlaces ?? 0,
-        data.homeStay != null && data.homeStay! > 0
-            ? (100 * (data.homeStay!)).toInt()
-            : 0,
-        data.distanceTraveled ?? 0);
+    weekMobility[day.weekday] = DailyMobility(day.weekday, data.numberOfPlaces ?? 0,
+        data.homeStay != null && data.homeStay! > 0 ? (100 * (data.homeStay!)).toInt() : 0, data.distanceTraveled ?? 0);
   }
 
   @override
-  WeeklyMobility fromJson(Map<String, dynamic> json) =>
-      _$WeeklyMobilityFromJson(json);
+  WeeklyMobility fromJson(Map<String, dynamic> json) => _$WeeklyMobilityFromJson(json);
   @override
   Map<String, dynamic> toJson() => _$WeeklyMobilityToJson(this);
 }
@@ -90,6 +79,5 @@ class DailyMobility extends DailyMeasure {
   DailyMobility(super.weekday, this.places, this.homeStay, this.distance);
 
   Map<String, dynamic> toJson() => _$DailyMobilityToJson(this);
-  static DailyMobility fromJson(Map<String, dynamic> json) =>
-      _$DailyMobilityFromJson(json);
+  static DailyMobility fromJson(Map<String, dynamic> json) => _$DailyMobilityFromJson(json);
 }

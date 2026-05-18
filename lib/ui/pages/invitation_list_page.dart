@@ -9,8 +9,7 @@ class InvitationListPage extends StatelessWidget {
   Widget build(BuildContext context) {
     RPLocalizations locale = RPLocalizations.of(context)!;
     return Scaffold(
-      backgroundColor:
-          Theme.of(context).extension<CarpColors>()!.backgroundGray,
+      backgroundColor: Theme.of(context).extension<CarpColors>()!.backgroundGray,
       body: FutureBuilder<List<ActiveParticipationInvitation>>(
         future: bloc.backend.getInvitations(),
         builder: (context, snapshot) {
@@ -38,8 +37,7 @@ class InvitationListPage extends StatelessWidget {
           return CustomScrollView(
             slivers: [
               SliverAppBar(
-                backgroundColor:
-                    Theme.of(context).extension<CarpColors>()!.backgroundGray,
+                backgroundColor: Theme.of(context).extension<CarpColors>()!.backgroundGray,
                 title: const CarpAppBar(),
                 centerTitle: true,
                 pinned: true,
@@ -86,8 +84,7 @@ class InvitationListPage extends StatelessWidget {
               ),
               SliverToBoxAdapter(
                 child: Padding(
-                  padding: const EdgeInsets.only(
-                      bottom: 8.0, left: 16.0, right: 16.0),
+                  padding: const EdgeInsets.only(bottom: 8.0, left: 16.0, right: 16.0),
                   child: Container(
                     padding: EdgeInsets.all(10.0),
                     child: Text(
@@ -128,8 +125,7 @@ class InvitationMaterial extends StatelessWidget {
       ),
       child: InkWell(
         onTap: () {
-          context.push(
-              '${InvitationDetailsPage.route}/${invitation.participation.participantId}');
+          context.push('${InvitationDetailsPage.route}/${invitation.participation.participantId}');
         },
         child: Padding(
           padding: const EdgeInsets.all(16.0),
@@ -139,27 +135,22 @@ class InvitationMaterial extends StatelessWidget {
               Text(
                 invitation.invitation.name,
                 maxLines: 1,
-                style: fs24fw600.copyWith(
-                    color: CACHET.TASK_COMPLETED_BLUE,
-                    overflow: TextOverflow.ellipsis),
+                style: fs24fw600.copyWith(color: CACHET.TASK_COMPLETED_BLUE, overflow: TextOverflow.ellipsis),
               ),
               Text.rich(
                 TextSpan(
                   children: [
                     TextSpan(
-                      text: locale.translate(
-                          'invitation_list.roles_in_the_study.description'),
+                      text: locale.translate('invitation_list.roles_in_the_study.description'),
                       style: fs16fw700.copyWith(
-                        color:
-                            Theme.of(context).extension<CarpColors>()!.grey600,
+                        color: Theme.of(context).extension<CarpColors>()!.grey600,
                         fontSize: 12,
                       ),
                     ),
                     TextSpan(
                       text: invitation.participantRoleName,
                       style: fs16fw700.copyWith(
-                        color:
-                            Theme.of(context).extension<CarpColors>()!.grey600,
+                        color: Theme.of(context).extension<CarpColors>()!.grey600,
                         fontSize: 12,
                       ),
                     ),

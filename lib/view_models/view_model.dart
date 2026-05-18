@@ -76,8 +76,7 @@ abstract class SerializableViewModel<D extends DataModel> extends ViewModel {
     });
 
     // save the data model on a regular basis.
-    _persistenceTimer =
-        Timer.periodic(const Duration(minutes: 3), (_) => save());
+    _persistenceTimer = Timer.periodic(const Duration(minutes: 3), (_) => save());
 
     /// Check if we are running in a test environment.
     /// If so, do not listen to app lifecycle events.
@@ -171,9 +170,7 @@ class DailyMeasure {
 
   /// Get the localized name of the [weekday].
   @override
-  String toString() => DateFormat('EEEE')
-      .format(DateTime(2021, 2, 7).add(Duration(days: weekday)))
-      .substring(0, 3);
+  String toString() => DateFormat('EEEE').format(DateTime(2021, 2, 7).add(Duration(days: weekday))).substring(0, 3);
 }
 
 /// A measure for a specific hour of the day. [hour] and [minute] is the time of the day in 24 hour format.
@@ -190,33 +187,25 @@ class HourlyMeasure {
 
 /// The view model for the entire app.
 class CarpStudyAppViewModel extends ViewModel {
-  final DataVisualizationPageViewModel _dataVisualizationPageViewModel =
-      DataVisualizationPageViewModel();
+  final DataVisualizationPageViewModel _dataVisualizationPageViewModel = DataVisualizationPageViewModel();
   final StudyPageViewModel _studyPageViewModel = StudyPageViewModel();
   final TaskListPageViewModel _taskListPageViewModel = TaskListPageViewModel();
   final ProfilePageViewModel _profilePageViewModel = ProfilePageViewModel();
-  final DeviceListPageViewModel _devicesPageViewModel =
-      DeviceListPageViewModel();
+  final DeviceListPageViewModel _devicesPageViewModel = DeviceListPageViewModel();
   final InvitationsViewModel _invitationsListViewModel = InvitationsViewModel();
-  final InformedConsentViewModel _informedConsentViewModel =
-      InformedConsentViewModel();
-  final ParticipantDataPageViewModel _participantDataPageViewModel =
-      ParticipantDataPageViewModel();
+  final InformedConsentViewModel _informedConsentViewModel = InformedConsentViewModel();
+  final ParticipantDataPageViewModel _participantDataPageViewModel = ParticipantDataPageViewModel();
 
   CarpStudyAppViewModel() : super();
 
-  DataVisualizationPageViewModel get dataVisualizationPageViewModel =>
-      _dataVisualizationPageViewModel;
+  DataVisualizationPageViewModel get dataVisualizationPageViewModel => _dataVisualizationPageViewModel;
   StudyPageViewModel get studyPageViewModel => _studyPageViewModel;
   TaskListPageViewModel get taskListPageViewModel => _taskListPageViewModel;
   ProfilePageViewModel get profilePageViewModel => _profilePageViewModel;
   DeviceListPageViewModel get devicesPageViewModel => _devicesPageViewModel;
-  InvitationsViewModel get invitationsListViewModel =>
-      _invitationsListViewModel;
-  InformedConsentViewModel get informedConsentViewModel =>
-      _informedConsentViewModel;
-  ParticipantDataPageViewModel get participantDataPageViewModel =>
-      _participantDataPageViewModel;
+  InvitationsViewModel get invitationsListViewModel => _invitationsListViewModel;
+  InformedConsentViewModel get informedConsentViewModel => _informedConsentViewModel;
+  ParticipantDataPageViewModel get participantDataPageViewModel => _participantDataPageViewModel;
 
   @override
   void init(SmartphoneDeploymentController ctrl) {

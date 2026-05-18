@@ -4,9 +4,7 @@ class MobilityCard extends StatefulWidget {
   final List<Color> colors;
 
   final MobilityCardViewModel model;
-  const MobilityCard(this.model,
-      {super.key,
-      this.colors = const [CACHET.CAQUI, CACHET.ORANGE, CACHET.BLUE_3]});
+  const MobilityCard(this.model, {super.key, this.colors = const [CACHET.CAQUI, CACHET.ORANGE, CACHET.BLUE_3]});
 
   @override
   State<MobilityCard> createState() => _MobilityCardState();
@@ -48,8 +46,7 @@ class _MobilityCardState extends State<MobilityCard> {
                   child: Text(
                     "${locale.translate('cards.mobility.homestay')} ${_getDayName(touchedIndex)}",
                     style: fs12fw700.copyWith(
-                      color:
-                          Theme.of(context).extension<CarpColors>()!.grey900!,
+                      color: Theme.of(context).extension<CarpColors>()!.grey900!,
                     ),
                   ),
                 ),
@@ -90,10 +87,7 @@ class _MobilityCardState extends State<MobilityCard> {
                       padding: const EdgeInsets.all(4.0),
                       child: Text(
                         locale.translate('cards.mobility.places'),
-                        style: fs12fw700.copyWith(
-                            color: Theme.of(context)
-                                .extension<CarpColors>()!
-                                .grey800),
+                        style: fs12fw700.copyWith(color: Theme.of(context).extension<CarpColors>()!.grey800),
                       ),
                     ),
                   ],
@@ -131,9 +125,7 @@ class _MobilityCardState extends State<MobilityCard> {
         enabled: false,
         touchCallback: (p0, p1) {
           setState(() {
-            touchedIndex =
-                (p1?.spot?.touchedBarGroupIndex ?? DateTime.now().weekday - 1) +
-                    1;
+            touchedIndex = (p1?.spot?.touchedBarGroupIndex ?? DateTime.now().weekday - 1) + 1;
           });
         },
       ),
@@ -204,9 +196,7 @@ class _MobilityCardState extends State<MobilityCard> {
       meta: meta,
       space: 6,
       child: Text(
-        value.toInt() % meta.appliedInterval == 0
-            ? value.toInt().toString()
-            : '',
+        value.toInt() % meta.appliedInterval == 0 ? value.toInt().toString() : '',
         style: fs14ls1.copyWith(
           color: Theme.of(context).extension<CarpColors>()!.grey600,
         ),
@@ -219,9 +209,7 @@ class _MobilityCardState extends State<MobilityCard> {
       meta: meta,
       space: 6,
       child: Text(
-        value.toInt() % meta.appliedInterval == 0
-            ? value.toInt().toString()
-            : '',
+        value.toInt() % meta.appliedInterval == 0 ? value.toInt().toString() : '',
         style: fs14ls1.copyWith(
           color: Theme.of(context).extension<CarpColors>()!.grey600,
         ),

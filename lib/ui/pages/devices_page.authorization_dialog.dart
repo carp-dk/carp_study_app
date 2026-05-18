@@ -20,8 +20,7 @@ class AuthorizationDialog extends StatelessWidget {
         ));
   }
 
-  Widget authorizationInstructions(
-      BuildContext context, DeviceViewModel device) {
+  Widget authorizationInstructions(BuildContext context, DeviceViewModel device) {
     RPLocalizations locale = RPLocalizations.of(context)!;
     return Column(
       children: [
@@ -30,8 +29,7 @@ class AuthorizationDialog extends StatelessWidget {
             child: Column(
               children: [
                 Text(
-                  locale.translate(
-                      "pages.devices.connection.bluetooth_authorization.message"),
+                  locale.translate("pages.devices.connection.bluetooth_authorization.message"),
                   style: fs16fw400,
                   textAlign: TextAlign.justify,
                 ),
@@ -55,8 +53,7 @@ class AuthorizationDialog extends StatelessWidget {
                 },
               ),
               TextButton(
-                child:
-                    Text(locale.translate("pages.devices.connection.settings")),
+                child: Text(locale.translate("pages.devices.connection.settings")),
                 onPressed: () => OpenSettingsPlusIOS().bluetooth(),
               ),
             ],

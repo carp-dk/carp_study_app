@@ -4,35 +4,28 @@ part of carp_study_app;
 /// news articles to be shown as part of the study.
 class StudyPageViewModel extends ViewModel {
   String get title => bloc.deployment?.studyDescription?.title ?? 'Unnamed';
-  String get description =>
-      bloc.deployment?.studyDescription?.description ?? '';
+  String get description => bloc.deployment?.studyDescription?.description ?? '';
   String get purpose => bloc.deployment?.studyDescription?.purpose ?? '';
   Image get image => Image.asset('assets/images/exercise.png');
   String? get userID => bloc.deployment?.participantId;
   String get studyDeploymentId => bloc.deployment?.studyDeploymentId ?? '';
-  String get responsibleName =>
-      bloc.deployment?.studyDescription?.responsible?.name ?? '';
-  String get responsibleEmail =>
-      bloc.deployment?.studyDescription?.responsible?.email ?? '';
-  String get studyDescriptionUrl =>
-      bloc.deployment?.studyDescription?.studyDescriptionUrl ?? '';
+  String get responsibleName => bloc.deployment?.studyDescription?.responsible?.name ?? '';
+  String get responsibleEmail => bloc.deployment?.studyDescription?.responsible?.email ?? '';
+  String get studyDescriptionUrl => bloc.deployment?.studyDescription?.studyDescriptionUrl ?? '';
   String get privacyPolicyUrl =>
-      bloc.deployment?.studyDescription?.privacyPolicyUrl ??
-      'https://carp.dk/privacy-policy-app/';
+      bloc.deployment?.studyDescription?.privacyPolicyUrl ?? 'https://carp.dk/privacy-policy-app/';
 
   String get piTitle => bloc.deployment?.responsible?.title ?? '';
   String get piName => bloc.deployment?.responsible?.name ?? '';
   String get piAddress => bloc.deployment?.responsible?.address ?? '';
   String get piEmail => bloc.deployment?.responsible?.email ?? '';
   String get piAffiliation =>
-      bloc.deployment?.responsible?.affiliation ??
-      'Department of Health Technology, Technical University of Denmark';
+      bloc.deployment?.responsible?.affiliation ?? 'Department of Health Technology, Technical University of Denmark';
 
   String get participantRole => bloc.deployment?.participantRoleName ?? '';
   String get deviceRole => bloc.deployment?.deviceRoleName ?? '';
 
-  Future<StudyDeploymentStatus?> get studyDeploymentStatus =>
-      bloc.studyDeploymentStatus;
+  Future<StudyDeploymentStatus?> get studyDeploymentStatus => bloc.studyDeploymentStatus;
 
   /// The stream of messages (count)
   Stream<int> get messageStream => bloc.messageStream;

@@ -35,15 +35,13 @@ class HomePageState extends State<HomePage> {
             barrierDismissible: false,
             barrierColor: Colors.black38,
             transitionBuilder: (ctx, anim1, anim2, child) => BackdropFilter(
-                  filter: ui.ImageFilter.blur(
-                      sigmaX: 4 * anim1.value, sigmaY: 4 * anim1.value),
+                  filter: ui.ImageFilter.blur(sigmaX: 4 * anim1.value, sigmaY: 4 * anim1.value),
                   child: FadeTransition(
                     opacity: anim1,
                     child: child,
                   ),
                 ),
-            pageBuilder: (context, anim1, anim2) =>
-                LocationPermissionPage().build(
+            pageBuilder: (context, anim1, anim2) => LocationPermissionPage().build(
                   context,
                   "dialog.location.info",
                 ));
@@ -61,12 +59,11 @@ class HomePageState extends State<HomePage> {
     //  - configuring the study
     //  - loading localizations
     //  - starting sensing
-    askForLocationPermissions(context)
-        .then((_) => bloc.configureStudy().then((_) {
-              // Load localizations for the current locale and study
-              CarpStudyApp.reloadLocale(context);
-              bloc.start();
-            }));
+    askForLocationPermissions(context).then((_) => bloc.configureStudy().then((_) {
+          // Load localizations for the current locale and study
+          CarpStudyApp.reloadLocale(context);
+          bloc.start();
+        }));
 
     if (Platform.isAndroid) {
       // Check if HealthConnect is installed
@@ -103,8 +100,7 @@ class HomePageState extends State<HomePage> {
     });
 
     return Scaffold(
-      backgroundColor:
-          Theme.of(context).extension<CarpColors>()!.backgroundGray,
+      backgroundColor: Theme.of(context).extension<CarpColors>()!.backgroundGray,
       body: SafeArea(
         child: widget.child,
       ),

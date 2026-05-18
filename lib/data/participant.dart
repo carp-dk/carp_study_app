@@ -29,11 +29,9 @@ class Participant {
           studyDeploymentId: invitation.studyDeploymentId,
           deviceRoleName: invitation.assignedDevices?.first.device.roleName,
           participantId: invitation.participation.participantId,
-          participantRoleName:
-              invitation.participation.assignedRoles.roleNames?.first,
+          participantRoleName: invitation.participation.assignedRoles.roleNames?.first,
         );
 
-  factory Participant.fromJson(Map<String, dynamic> json) =>
-      _$ParticipantFromJson(json);
+  factory Participant.fromJson(Map<String, dynamic> json) => _$ParticipantFromJson(json);
   Map<String, dynamic> toJson() => _$ParticipantToJson(this);
 }

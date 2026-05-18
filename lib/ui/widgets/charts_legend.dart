@@ -8,12 +8,7 @@ class ChartsLegend extends StatelessWidget {
   final List<Color> colors;
 
   const ChartsLegend(
-      {super.key,
-      this.heroTag,
-      this.iconAssetName,
-      required this.title,
-      this.values = const [],
-      required this.colors});
+      {super.key, this.heroTag, this.iconAssetName, required this.title, this.values = const [], required this.colors});
 
   @override
   Widget build(BuildContext context) {
@@ -37,8 +32,7 @@ class ChartsLegend extends StatelessWidget {
                           (entry) => Row(
                             mainAxisAlignment: MainAxisAlignment.spaceAround,
                             children: [
-                              Icon(Icons.circle,
-                                  color: colors[entry.key], size: 12.0),
+                              Icon(Icons.circle, color: colors[entry.key], size: 12.0),
                               Text(' ${entry.value} ', style: fs12fw400),
                             ],
                           ),

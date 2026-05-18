@@ -28,8 +28,7 @@ import 'package:permission_handler/permission_handler.dart' as _i5;
 // ignore_for_file: camel_case_types
 // ignore_for_file: subtype_of_sealed_class
 
-class _FakeDeviceController_0 extends _i1.SmartFake
-    implements _i2.DeviceController {
+class _FakeDeviceController_0 extends _i1.SmartFake implements _i2.DeviceController {
   _FakeDeviceController_0(
     Object parent,
     Invocation parentInvocation,
@@ -39,8 +38,7 @@ class _FakeDeviceController_0 extends _i1.SmartFake
         );
 }
 
-class _FakeSmartphoneDeploymentExecutor_1 extends _i1.SmartFake
-    implements _i2.SmartphoneDeploymentExecutor {
+class _FakeSmartphoneDeploymentExecutor_1 extends _i1.SmartFake implements _i2.SmartphoneDeploymentExecutor {
   _FakeSmartphoneDeploymentExecutor_1(
     Object parent,
     Invocation parentInvocation,
@@ -60,8 +58,7 @@ class _FakeData_2 extends _i1.SmartFake implements _i3.Data {
         );
 }
 
-class _FakeDeploymentService_3 extends _i1.SmartFake
-    implements _i3.DeploymentService {
+class _FakeDeploymentService_3 extends _i1.SmartFake implements _i3.DeploymentService {
   _FakeDeploymentService_3(
     Object parent,
     Invocation parentInvocation,
@@ -71,8 +68,7 @@ class _FakeDeploymentService_3 extends _i1.SmartFake
         );
 }
 
-class _FakeHeartRateMinMaxPrHour_4 extends _i1.SmartFake
-    implements _i4.HeartRateMinMaxPrHour {
+class _FakeHeartRateMinMaxPrHour_4 extends _i1.SmartFake implements _i4.HeartRateMinMaxPrHour {
   _FakeHeartRateMinMaxPrHour_4(
     Object parent,
     Invocation parentInvocation,
@@ -82,8 +78,7 @@ class _FakeHeartRateMinMaxPrHour_4 extends _i1.SmartFake
         );
 }
 
-class _FakeHourlyHeartRate_5 extends _i1.SmartFake
-    implements _i4.HourlyHeartRate {
+class _FakeHourlyHeartRate_5 extends _i1.SmartFake implements _i4.HourlyHeartRate {
   _FakeHourlyHeartRate_5(
     Object parent,
     Invocation parentInvocation,
@@ -126,8 +121,7 @@ class _FakeDataModel_8 extends _i1.SmartFake implements _i4.DataModel {
 /// A class which mocks [SmartphoneDeploymentController].
 ///
 /// See the documentation for Mockito's code generation for more information.
-class MockSmartphoneDeploymentController extends _i1.Mock
-    implements _i2.SmartphoneDeploymentController {
+class MockSmartphoneDeploymentController extends _i1.Mock implements _i2.SmartphoneDeploymentController {
   @override
   _i2.DeviceController get deviceRegistry => (super.noSuchMethod(
         Invocation.getter(#deviceRegistry),
@@ -142,8 +136,7 @@ class MockSmartphoneDeploymentController extends _i1.Mock
       ) as _i2.DeviceController);
 
   @override
-  Map<_i5.Permission, _i5.PermissionStatus> get permissions =>
-      (super.noSuchMethod(
+  Map<_i5.Permission, _i5.PermissionStatus> get permissions => (super.noSuchMethod(
         Invocation.getter(#permissions),
         returnValue: <_i5.Permission, _i5.PermissionStatus>{},
         returnValueForMissingStub: <_i5.Permission, _i5.PermissionStatus>{},
@@ -251,17 +244,14 @@ class MockSmartphoneDeploymentController extends _i1.Mock
       ) as bool);
 
   @override
-  List<_i3.DeviceConfiguration<_i3.DeviceRegistration>>
-      get remainingDevicesToRegister => (super.noSuchMethod(
-            Invocation.getter(#remainingDevicesToRegister),
-            returnValue: <_i3.DeviceConfiguration<_i3.DeviceRegistration>>[],
-            returnValueForMissingStub: <_i3
-                .DeviceConfiguration<_i3.DeviceRegistration>>[],
-          ) as List<_i3.DeviceConfiguration<_i3.DeviceRegistration>>);
+  List<_i3.DeviceConfiguration<_i3.DeviceRegistration>> get remainingDevicesToRegister => (super.noSuchMethod(
+        Invocation.getter(#remainingDevicesToRegister),
+        returnValue: <_i3.DeviceConfiguration<_i3.DeviceRegistration>>[],
+        returnValueForMissingStub: <_i3.DeviceConfiguration<_i3.DeviceRegistration>>[],
+      ) as List<_i3.DeviceConfiguration<_i3.DeviceRegistration>>);
 
   @override
-  set deployment(_i3.PrimaryDeviceDeployment? _deployment) =>
-      super.noSuchMethod(
+  set deployment(_i3.PrimaryDeviceDeployment? _deployment) => super.noSuchMethod(
         Invocation.setter(
           #deployment,
           _deployment,
@@ -270,8 +260,7 @@ class MockSmartphoneDeploymentController extends _i1.Mock
       );
 
   @override
-  set deviceRegistry(_i3.DeviceDataCollectorFactory? _deviceRegistry) =>
-      super.noSuchMethod(
+  set deviceRegistry(_i3.DeviceDataCollectorFactory? _deviceRegistry) => super.noSuchMethod(
         Invocation.setter(
           #deviceRegistry,
           _deviceRegistry,
@@ -280,8 +269,7 @@ class MockSmartphoneDeploymentController extends _i1.Mock
       );
 
   @override
-  set deploymentService(_i3.DeploymentService? _deploymentService) =>
-      super.noSuchMethod(
+  set deploymentService(_i3.DeploymentService? _deploymentService) => super.noSuchMethod(
         Invocation.setter(
           #deploymentService,
           _deploymentService,
@@ -290,8 +278,7 @@ class MockSmartphoneDeploymentController extends _i1.Mock
       );
 
   @override
-  set deploymentStatus(_i3.StudyDeploymentStatus? _deploymentStatus) =>
-      super.noSuchMethod(
+  set deploymentStatus(_i3.StudyDeploymentStatus? _deploymentStatus) => super.noSuchMethod(
         Invocation.setter(
           #deploymentStatus,
           _deploymentStatus,
@@ -309,8 +296,7 @@ class MockSmartphoneDeploymentController extends _i1.Mock
       );
 
   @override
-  _i7.Stream<_i3.Measurement> measurementsByType(String? type) =>
-      (super.noSuchMethod(
+  _i7.Stream<_i3.Measurement> measurementsByType(String? type) => (super.noSuchMethod(
         Invocation.method(
           #measurementsByType,
           [type],
@@ -357,9 +343,7 @@ class MockSmartphoneDeploymentController extends _i1.Mock
       );
 
   @override
-  void initializeDevice(
-          _i3.DeviceConfiguration<_i3.DeviceRegistration>? configuration) =>
-      super.noSuchMethod(
+  void initializeDevice(_i3.DeviceConfiguration<_i3.DeviceRegistration>? configuration) => super.noSuchMethod(
         Invocation.method(
           #initializeDevice,
           [configuration],
@@ -387,17 +371,14 @@ class MockSmartphoneDeploymentController extends _i1.Mock
       ) as _i7.Future<void>);
 
   @override
-  _i7.Future<_i3.StudyStatus> tryDeployment({bool? useCached = true}) =>
-      (super.noSuchMethod(
+  _i7.Future<_i3.StudyStatus> tryDeployment({bool? useCached = true}) => (super.noSuchMethod(
         Invocation.method(
           #tryDeployment,
           [],
           {#useCached: useCached},
         ),
-        returnValue: _i7.Future<_i3.StudyStatus>.value(
-            _i3.StudyStatus.DeploymentNotStarted),
-        returnValueForMissingStub: _i7.Future<_i3.StudyStatus>.value(
-            _i3.StudyStatus.DeploymentNotStarted),
+        returnValue: _i7.Future<_i3.StudyStatus>.value(_i3.StudyStatus.DeploymentNotStarted),
+        returnValueForMissingStub: _i7.Future<_i3.StudyStatus>.value(_i3.StudyStatus.DeploymentNotStarted),
       ) as _i7.Future<_i3.StudyStatus>);
 
   @override
@@ -487,20 +468,17 @@ class MockSmartphoneDeploymentController extends _i1.Mock
       ) as _i7.Future<void>);
 
   @override
-  _i7.Future<_i3.StudyDeploymentStatus?> getStudyDeploymentStatus() =>
-      (super.noSuchMethod(
+  _i7.Future<_i3.StudyDeploymentStatus?> getStudyDeploymentStatus() => (super.noSuchMethod(
         Invocation.method(
           #getStudyDeploymentStatus,
           [],
         ),
         returnValue: _i7.Future<_i3.StudyDeploymentStatus?>.value(),
-        returnValueForMissingStub:
-            _i7.Future<_i3.StudyDeploymentStatus?>.value(),
+        returnValueForMissingStub: _i7.Future<_i3.StudyDeploymentStatus?>.value(),
       ) as _i7.Future<_i3.StudyDeploymentStatus?>);
 
   @override
-  _i7.Future<void> tryRegisterConnectedDevice(
-          _i3.DeviceConfiguration<_i3.DeviceRegistration>? device) =>
+  _i7.Future<void> tryRegisterConnectedDevice(_i3.DeviceConfiguration<_i3.DeviceRegistration>? device) =>
       (super.noSuchMethod(
         Invocation.method(
           #tryRegisterConnectedDevice,
@@ -511,8 +489,7 @@ class MockSmartphoneDeploymentController extends _i1.Mock
       ) as _i7.Future<void>);
 
   @override
-  _i7.Future<void> tryRegisterRemainingDevicesToRegister() =>
-      (super.noSuchMethod(
+  _i7.Future<void> tryRegisterRemainingDevicesToRegister() => (super.noSuchMethod(
         Invocation.method(
           #tryRegisterRemainingDevicesToRegister,
           [],
@@ -525,11 +502,9 @@ class MockSmartphoneDeploymentController extends _i1.Mock
 /// A class which mocks [HeartRateCardViewModel].
 ///
 /// See the documentation for Mockito's code generation for more information.
-class MockHeartRateCardViewModel extends _i1.Mock
-    implements _i4.HeartRateCardViewModel {
+class MockHeartRateCardViewModel extends _i1.Mock implements _i4.HeartRateCardViewModel {
   @override
-  Map<int, _i4.HeartRateMinMaxPrHour> get hourlyHeartRate =>
-      (super.noSuchMethod(
+  Map<int, _i4.HeartRateMinMaxPrHour> get hourlyHeartRate => (super.noSuchMethod(
         Invocation.getter(#hourlyHeartRate),
         returnValue: <int, _i4.HeartRateMinMaxPrHour>{},
         returnValueForMissingStub: <int, _i4.HeartRateMinMaxPrHour>{},
@@ -568,8 +543,7 @@ class MockHeartRateCardViewModel extends _i1.Mock
           this,
           Invocation.getter(#filename),
         )),
-        returnValueForMissingStub:
-            _i7.Future<String>.value(_i6.dummyValue<String>(
+        returnValueForMissingStub: _i7.Future<String>.value(_i6.dummyValue<String>(
           this,
           Invocation.getter(#filename),
         )),
@@ -694,8 +668,7 @@ class MockHeartRateCardViewModel extends _i1.Mock
 /// See the documentation for Mockito's code generation for more information.
 class MockHourlyHeartRate extends _i1.Mock implements _i4.HourlyHeartRate {
   @override
-  Map<int, _i4.HeartRateMinMaxPrHour> get hourlyHeartRate =>
-      (super.noSuchMethod(
+  Map<int, _i4.HeartRateMinMaxPrHour> get hourlyHeartRate => (super.noSuchMethod(
         Invocation.getter(#hourlyHeartRate),
         returnValue: <int, _i4.HeartRateMinMaxPrHour>{},
         returnValueForMissingStub: <int, _i4.HeartRateMinMaxPrHour>{},
@@ -715,8 +688,7 @@ class MockHourlyHeartRate extends _i1.Mock implements _i4.HourlyHeartRate {
       ) as DateTime);
 
   @override
-  set hourlyHeartRate(Map<int, _i4.HeartRateMinMaxPrHour>? _hourlyHeartRate) =>
-      super.noSuchMethod(
+  set hourlyHeartRate(Map<int, _i4.HeartRateMinMaxPrHour>? _hourlyHeartRate) => super.noSuchMethod(
         Invocation.setter(
           #hourlyHeartRate,
           _hourlyHeartRate,
@@ -818,8 +790,7 @@ class MockHourlyHeartRate extends _i1.Mock implements _i4.HourlyHeartRate {
       ) as _i4.HourlyHeartRate);
 
   @override
-  _i4.HourlyHeartRate fromJson(Map<String, dynamic>? json) =>
-      (super.noSuchMethod(
+  _i4.HourlyHeartRate fromJson(Map<String, dynamic>? json) => (super.noSuchMethod(
         Invocation.method(
           #fromJson,
           [json],

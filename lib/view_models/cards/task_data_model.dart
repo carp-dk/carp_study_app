@@ -19,8 +19,7 @@ class TaskCardViewModel extends ViewModel {
 
     AppTaskController()
         .userTaskQueue
-        .where(
-            (task) => task.state == UserTaskState.done && task.type == taskType)
+        .where((task) => task.state == UserTaskState.done && task.type == taskType)
         .forEach((task) {
       if (!tasksTable.containsKey(task.title)) tasksTable[task.title] = 0;
       tasksTable[task.title] = tasksTable[task.title]! + 1;
@@ -31,21 +30,17 @@ class TaskCardViewModel extends ViewModel {
   /// The total number of tasks done of type [taskType].
   int get tasksDone => AppTaskController()
       .userTaskQueue
-      .where(
-          (task) => task.state == UserTaskState.done && task.type == taskType)
+      .where((task) => task.state == UserTaskState.done && task.type == taskType)
       .length;
 
   /// The list of [TaskCount]s done.
   List<TaskCount> get taskCount {
     // sort them first
-    var mapEntries = tasksTable.entries.toList()
-      ..sort((b, a) => a.value.compareTo(b.value));
+    var mapEntries = tasksTable.entries.toList()..sort((b, a) => a.value.compareTo(b.value));
     Map<String, int> sortedTasksTable = {}..addEntries(mapEntries);
 
     // and map to the [TaskCount] model
-    List<TaskCount> tasksList = sortedTasksTable.entries
-        .map((entry) => TaskCount(entry.key, entry.value))
-        .toList();
+    List<TaskCount> tasksList = sortedTasksTable.entries.map((entry) => TaskCount(entry.key, entry.value)).toList();
 
     return tasksList;
   }

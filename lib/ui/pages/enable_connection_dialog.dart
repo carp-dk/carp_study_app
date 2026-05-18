@@ -9,9 +9,7 @@ class EnableInternetConnectionDialog extends StatelessWidget {
       scrollable: true,
       titlePadding: const EdgeInsets.symmetric(vertical: 4),
       insetPadding: const EdgeInsets.symmetric(vertical: 24, horizontal: 40),
-      title: DialogTitle(
-          title:
-              "pages.login.internet_connection.enable_internet_connections.title"),
+      title: DialogTitle(title: "pages.login.internet_connection.enable_internet_connections.title"),
       content: SizedBox(
         height: MediaQuery.of(context).size.height * 0.45,
         child: (() {
@@ -35,16 +33,14 @@ class EnableInternetConnectionDialog extends StatelessWidget {
             child: Column(
               children: [
                 Text(
-                  locale.translate(
-                      "pages.login.internet_connection.enable_internet_connections.general_message"),
+                  locale.translate("pages.login.internet_connection.enable_internet_connections.general_message"),
                   style: fs16fw400,
                   textAlign: TextAlign.justify,
                 ),
                 Padding(
                     padding: EdgeInsets.symmetric(vertical: 16.0),
                     child: Text(
-                      locale.translate(
-                          "pages.login.internet_connection.enable_internet_connections.wifi_message"),
+                      locale.translate("pages.login.internet_connection.enable_internet_connections.wifi_message"),
                       style: fs16fw400,
                       textAlign: TextAlign.justify,
                     )),
@@ -58,8 +54,7 @@ class EnableInternetConnectionDialog extends StatelessWidget {
                 Padding(
                   padding: EdgeInsets.symmetric(vertical: 16.0),
                   child: Text(
-                    locale.translate(
-                        "pages.login.internet_connection.enable_internet_connections.mobile_data_message"),
+                    locale.translate("pages.login.internet_connection.enable_internet_connections.mobile_data_message"),
                     style: fs16fw400,
                     textAlign: TextAlign.justify,
                   ),
@@ -109,16 +104,14 @@ class EnableInternetConnectionDialog extends StatelessWidget {
             child: Column(
               children: [
                 Text(
-                  locale.translate(
-                      "pages.login.internet_connection.enable_internet_connections.general_message"),
+                  locale.translate("pages.login.internet_connection.enable_internet_connections.general_message"),
                   style: fs16fw400,
                   textAlign: TextAlign.justify,
                 ),
                 Padding(
                     padding: EdgeInsets.symmetric(vertical: 16.0),
                     child: Text(
-                      locale.translate(
-                          "pages.login.internet_connection.enable_internet_connections.wifi_message"),
+                      locale.translate("pages.login.internet_connection.enable_internet_connections.wifi_message"),
                       style: fs16fw400,
                       textAlign: TextAlign.justify,
                     )),
@@ -133,8 +126,8 @@ class EnableInternetConnectionDialog extends StatelessWidget {
                   padding: EdgeInsets.symmetric(vertical: 16.0),
                   child: Column(children: [
                     Text(
-                      locale.translate(
-                          "pages.login.internet_connection.enable_internet_connections.mobile_data_message"),
+                      locale
+                          .translate("pages.login.internet_connection.enable_internet_connections.mobile_data_message"),
                       style: fs16fw400,
                       textAlign: TextAlign.justify,
                     ),
