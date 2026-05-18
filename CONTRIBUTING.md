@@ -5,8 +5,11 @@ Thanks for contributing to the CARP study app. This guide covers how to propose 
 ## Branching
 
 - `master` — released code; tagged versions are cut from here.
+- `test` — staging branch. `develop` is promoted here for QA / pre-release validation before it reaches `master`. Do not open feature PRs against `test`.
 - `develop` — integration branch. **Open all PRs against `develop`.**
 - Feature branches — named `feature/<short-description>`, `fix/<short-description>`, or `chore/<short-description>`.
+
+Flow: `feature/*` → `develop` → `test` (staging) → `master` (release).
 
 ## Flutter version
 
@@ -24,7 +27,7 @@ Before opening a PR:
 
 1. Rebase on the latest `develop`.
 2. Run `fvm flutter analyze` and `fvm dart format .` — both must be clean.
-3. Run `fvm flutter test` — all tests must pass.
+3. Run `fvm flutter test` — the suite is minimal today, but keep it green and add tests for new model logic where practical.
 4. Build and smoke-test the change in at least the `local` and `dev` deployment modes (see `launch.json`). Note in the PR description which modes you tested.
 
 When opening the PR:
