@@ -68,6 +68,15 @@ body:
     validations:
       required: true
 
+  - type: input
+    id: affected-screen
+    attributes:
+      label: Affected Screen / Feature
+      description: Where in the app did the bug happen? Be specific — name the screen, tab, or feature.
+      placeholder: "e.g., Study consent screen, Heart rate task, Settings → Account"
+    validations:
+      required: true
+
   - type: textarea
     id: bug-description
     attributes:
@@ -81,14 +90,41 @@ body:
     id: reproduction-steps
     attributes:
       label: Steps to Reproduce
-      description: How can we reproduce this issue? Be specific and detailed.
+      description: |
+        How can we reproduce this issue? Be specific — every step a fresh install needs to hit the same bug.
+        Include the exact account / study / invitation code used, whether you were logged in, and any toggles or permissions that were on/off.
       value: |
-        1. Go to '...'
-        2. Click on '...'
-        3. Scroll down to '...'
+        1. Start from '...' (fresh install? logged in? which study/invitation?)
+        2. Go to '...'
+        3. Tap on '...'
         4. Observe the error
     validations:
       required: true
+
+  - type: dropdown
+    id: reproducibility
+    attributes:
+      label: Reproducibility
+      description: How consistently does this bug occur when following the steps above?
+      options:
+        - Always (100%)
+        - Often (more than half the time)
+        - Sometimes (less than half the time)
+        - Once (could not reproduce)
+    validations:
+      required: true
+
+  - type: textarea
+    id: configuration
+    attributes:
+      label: Study / Protocol Configuration
+      description: |
+        If the bug depends on a specific study, deployment, sampling package, or device configuration, describe (or paste) it here. Include the deployment ID / invitation code if applicable.
+      placeholder: |
+        - Study: ...
+        - Deployment ID / invitation code: ...
+        - Sampling packages enabled: ...
+        - Paired external devices (Polar, Movesense, etc.): ...
 
   - type: textarea
     id: expected-behavior
@@ -117,6 +153,16 @@ body:
       placeholder: |
         [Paste your logs here]
         The text will be automatically formatted into code.
+
+  - type: textarea
+    id: flutter-doctor
+    attributes:
+      label: Flutter Doctor Output
+      description: |
+        Developer reporters only — paste the output of `fvm flutter doctor -v` (or `flutter doctor -v` if not using FVM). Skip this section if you're reporting as an end user.
+      render: shell
+      placeholder: |
+        [Paste `fvm flutter doctor -v` output here]
 
   - type: textarea
     id: screenshots
