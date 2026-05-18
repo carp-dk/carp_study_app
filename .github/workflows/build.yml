@@ -36,7 +36,7 @@ jobs:
         run: flutter pub get
 
       - name: Verify formatting
-        run: dart format --output=none --set-exit-if-changed lib/** test/**
+        run: dart format --line-length 120 --output=none --set-exit-if-changed lib/** test/**
 
       - name: Analyze project source
         run: flutter analyze --no-fatal-infos --no-fatal-warnings lib/ test/
