@@ -169,7 +169,7 @@ class InvitationDetailsPage extends StatelessWidget {
                 child: TextButton(
                   onPressed: () {
                     bloc.setStudyInvitation(invitation, context);
-                    context.push(InformedConsentPage.route);
+                    context.go(StudyPage.route);
                   },
                   child: Text(
                     locale.translate("invitation.accept_invite"),
