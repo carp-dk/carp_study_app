@@ -98,7 +98,8 @@ class HomePageState extends State<HomePage> {
     });
 
     return Scaffold(
-      backgroundColor: Theme.of(context).extension<CarpColors>()!.backgroundGray,
+      backgroundColor:
+          Theme.of(context).extension<CarpColors>()!.backgroundGray,
       body: SafeArea(
         child: widget.child,
       ),
