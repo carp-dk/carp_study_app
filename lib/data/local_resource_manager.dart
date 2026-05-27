@@ -38,7 +38,7 @@ class LocalResourceManager
   }
 
   @override
-  Future<void> initialize() async {}
+  void initialize() {}
 
   // INFORMED CONSENT
 

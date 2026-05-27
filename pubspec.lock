@@ -316,9 +316,10 @@ packages:
   carp_context_package:
     dependency: "direct main"
     description:
-      path: "../carp.sensing-flutter/packages/carp_context_package"
-      relative: true
-    source: path
+      name: carp_context_package
+      sha256: a1a708be991d8e7a66e43b43ad606c2915ac9c55851f5c57f63a61f35baefb6e
+      url: "https://pub.dev"
+    source: hosted
     version: "1.12.0"
   carp_core:
     dependency: "direct main"
@@ -339,10 +340,11 @@ packages:
   carp_mobile_sensing:
     dependency: "direct main"
     description:
-      path: "../carp.sensing-flutter/carp_mobile_sensing"
-      relative: true
-    source: path
-    version: "1.12.2"
+      name: carp_mobile_sensing
+      sha256: c9b58ba07c7468a681619aad4ff87c7382b453538994a974bce63b87bd9959cc
+      url: "https://pub.dev"
+    source: hosted
+    version: "1.13.1"
   carp_movesense_package:
     dependency: "direct main"
     description:
