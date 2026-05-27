@@ -5,7 +5,10 @@
 
 name: Flutter build and test
 
-on: push
+on:
+  push:
+    branches: [master, test]
+  pull_request:
 
 env:
   FLUTTER_FOLDER: '$HOME/flutter'
