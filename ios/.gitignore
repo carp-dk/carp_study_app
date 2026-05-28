@@ -20,7 +20,6 @@ Flutter/Flutter.framework
 Flutter/Flutter.podspec
 Flutter/Generated.xcconfig
 Flutter/ephemeral/
-**/Package.resolved
 Flutter/app.flx
 Flutter/app.zip
 Flutter/flutter_assets/
