@@ -36,7 +36,7 @@ jobs:
 
           - if: ${{ steps.cache-flutter.outputs.cache-hit != 'true' }}
             name: Install Flutter
-            run: git clone https://github.com/flutter/flutter.git --depth 1 -b stable $FOLDER
+            run: git clone https://github.com/flutter/flutter.git --depth 1 -b 3.41.9 $FOLDER
 
           - name: Add Flutter to PATH
             run: echo "$GITHUB_WORKSPACE/flutter/bin" >> $GITHUB_PATH
