@@ -33,8 +33,4 @@ fi
 
 flutter build ios --config-only --release --dart-define="deployment-mode=$MODE"
 
-# Refresh Package.resolved so Xcode Cloud (which has automatic SPM resolution
-# disabled) doesn't reject the build when Flutter plugins change iOS deps.
-xcodebuild -workspace Runner.xcworkspace -scheme Runner -resolvePackageDependencies
-
 exit 0
