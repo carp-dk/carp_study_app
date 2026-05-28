@@ -1,7 +1,7 @@
 name: carp_study_app
 description: The generic CARP study app.
 publish_to: "none"
-version: 4.2.0+91
+version: 4.2.0+90
 
 environment:
   sdk: ">=3.2.0 <4.0.0"
@@ -39,7 +39,7 @@ dependencies:
 
   flutter_localizations:
     sdk: flutter
-  intl: ">= 0.19.0 <= 0.21.0"
+  intl: '>= 0.19.0 <= 0.21.0'
 
   fl_chart: 1.0.0
   google_fonts: ^6.1.0
@@ -72,7 +72,7 @@ dependency_overrides:
   # carp_mobile_sensing:
   #   path: ../carp.sensing-flutter/carp_mobile_sensing/
   # carp_context_package:
-  #   path: ../carp.sensing-flutter/packages/carp_context_package/
+  #   path: ../carp/carp.sensing-flutter/packages/carp_context_package/
   # carp_connectivity_package:
   #   path: ../../packages/carp_connectivity_package/
   # carp_survey_package:
@@ -97,10 +97,11 @@ dependency_overrides:
   #   path: ../carp.sensing-flutter/backends/carp_webservices/
   # carp_backend:
   #   path: ../carp/carp.sensing-flutter/backends/carp_backend/
-  # research_package:
+  # research_package: 
   #   path: ../research.package/
   # cognition_package:
   #   path: ../cognition_package
+
 
 dev_dependencies:
   test: any
@@ -117,6 +118,7 @@ dev_dependencies:
 #  2. add the 'flutter_icons:' section below
 #  3. run 'flutter pub get'
 #  3. run 'dart run flutter_launcher_icons:main'
+
 
 flutter:
   uses-material-design: true

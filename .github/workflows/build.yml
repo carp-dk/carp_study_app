@@ -5,10 +5,7 @@
 
 name: Flutter build and test
 
-on:
-  push:
-    branches: [master, test]
-  pull_request:
+on: push
 
 env:
   FLUTTER_FOLDER: '$HOME/flutter'
@@ -33,7 +30,7 @@ jobs:
         uses: flutter-actions/setup-flutter@v4
         with:
           channel: stable
-          version: 3.41.9
+          version: 3.32.1
 
       - name: Install dependencies
         run: flutter pub get

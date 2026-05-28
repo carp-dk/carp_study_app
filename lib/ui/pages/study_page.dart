@@ -26,33 +26,24 @@ class StudyPageState extends State<StudyPage> {
               child: const CarpAppBar(hasProfileIcon: true),
             ),
             Flexible(
-              // Re-render when configureStudy completes; until then show loader.
-              child: ListenableBuilder(
-                listenable: bloc,
-                builder: (context, _) {
-                  if (!bloc.isConfigured) {
-                    return const _ConfiguringStudyLoader();
-                  }
-                  return StreamBuilder<int>(
-                    stream: widget.model.messageStream,
-                    builder: (context, AsyncSnapshot<int> snapshot) {
-                      final cards = _buildCards(context);
-                      return RefreshIndicator(
-                        onRefresh: () async {
-                          await bloc.refreshMessages();
-                          final status = await Sensing().tryDeployment();
-                          if (status == StudyStatus.Deployed) {
-                            bloc.start();
-                          }
-                          bloc.deploymentService.getStudyDeploymentStatus(
-                              widget.model.studyDeploymentId);
-                        },
-                        child: ListView.builder(
-                          itemCount: cards.length,
-                          itemBuilder: (context, index) => cards[index],
-                        ),
-                      );
+              child: StreamBuilder<int>(
+                stream: widget.model.messageStream,
+                builder: (context, AsyncSnapshot<int> snapshot) {
+                  final cards = _buildCards(context);
+                  return RefreshIndicator(
+                    onRefresh: () async {
+                      await bloc.refreshMessages();
+                      final status = await Sensing().tryDeployment();
+                      if (status == StudyStatus.Deployed) {
+                        bloc.start();
+                      }
+                      bloc.deploymentService.getStudyDeploymentStatus(
+                          widget.model.studyDeploymentId);
                     },
+                    child: ListView.builder(
+                      itemCount: cards.length,
+                      itemBuilder: (context, index) => cards[index],
+                    ),
                   );
                 },
               ),
@@ -539,29 +530,6 @@ extension CopyWithAdditional on DateTime {
       second + seconds,
       millisecond + milliseconds,
       microsecond + microseconds,
-    );
-  }
-}
-
-/// Placeholder shown while [StudyAppBLoC.configureStudy] is running.
-class _ConfiguringStudyLoader extends StatelessWidget {
-  const _ConfiguringStudyLoader();
-
-  @override
-  Widget build(BuildContext context) {
-    return const Center(
-      child: Column(
-        mainAxisAlignment: MainAxisAlignment.center,
-        children: [
-          CircularProgressIndicator(),
-          SizedBox(height: 16),
-          Text(
-            'Configuring the study',
-            textAlign: TextAlign.center,
-            style: TextStyle(fontSize: 16, fontWeight: FontWeight.w500),
-          ),
-        ],
-      ),
     );
   }
 }
