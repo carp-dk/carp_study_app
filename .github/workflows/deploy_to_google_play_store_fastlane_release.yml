@@ -2,112 +2,112 @@ name: Upload to Google Store
 run-name: ${{github.actor}} is pushing to branch and deploying to Google Store
 
 on:
-    push:
-        branches:
-        - master
-        - test
+  push:
+    branches:
+      - master
+      - test
 jobs:
-    build:
-        runs-on: ubuntu-latest
-        steps:
-          - uses: actions/checkout@v4
-          - uses: actions/setup-java@v4
-            with:
-              distribution: 'adopt' # See 'Supported distributions' for available options
-              java-version: '17'
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-java@v4
+        with:
+          distribution: "adopt" # See 'Supported distributions' for available options
+          java-version: "17"
 
-          - name: Cache Flutter
-            id: cache-flutter
-            uses: actions/cache@v3
-            with:
-              path: |
-                flutter
-                ~/.pub-cache
-              key: flutter-${{ hashFiles('**/pubspec.lock') }}
+      - name: Cache Flutter
+        id: cache-flutter
+        uses: actions/cache@v3
+        with:
+          path: |
+            flutter
+            ~/.pub-cache
+          key: flutter-${{ hashFiles('**/pubspec.lock') }}
 
-          - name: Cache Gradle
-            id: cache-gradle
-            uses: actions/cache@v3
-            with: 
-              path: |
-                ~/.gradle/caches
-                ~/.gradle/wrapper/
-              key: gradle-ubuntu-${{ hashFiles('**/*.gradle*', '**/gradle-wrapper.properties') }}
+      - name: Cache Gradle
+        id: cache-gradle
+        uses: actions/cache@v3
+        with:
+          path: |
+            ~/.gradle/caches
+            ~/.gradle/wrapper/
+          key: gradle-ubuntu-${{ hashFiles('**/*.gradle*', '**/gradle-wrapper.properties') }}
 
-          - if: ${{ steps.cache-flutter.outputs.cache-hit != 'true' }}
-            name: Install Flutter
-            run: git clone https://github.com/flutter/flutter.git --depth 1 -b 3.41.9 $FOLDER
+      - if: ${{ steps.cache-flutter.outputs.cache-hit != 'true' }}
+        name: Install Flutter
+        run: git clone https://github.com/flutter/flutter.git --depth 1 -b 3.44.0 $FOLDER
 
-          - name: Add Flutter to PATH
-            run: echo "$GITHUB_WORKSPACE/flutter/bin" >> $GITHUB_PATH
+      - name: Add Flutter to PATH
+        run: echo "$GITHUB_WORKSPACE/flutter/bin" >> $GITHUB_PATH
 
-          - if: ${{ steps.cache-flutter.outputs.cache-hit != 'true' }}
-            name: Install dependencies
-            run: flutter pub get
+      - if: ${{ steps.cache-flutter.outputs.cache-hit != 'true' }}
+        name: Install dependencies
+        run: flutter pub get
 
-        # Setup Ruby, Bundler, and Gemfile dependencies
-          - name: Setup Fastlane
-            uses: ruby/setup-ruby@v1
-            with:
-              ruby-version: '3.3'
-              bundler-cache: false
-              working-directory: android
+      # Setup Ruby, Bundler, and Gemfile dependencies
+      - name: Setup Fastlane
+        uses: ruby/setup-ruby@v1
+        with:
+          ruby-version: "3.3"
+          bundler-cache: false
+          working-directory: android
 
-          - name: Extract last commit message
-            id: extract-commit-message
-            run: |
-              COMMIT_MESSAGE=$(git log -1 --pretty=%B | tr -d '\n')
-              COMMIT_MESSAGE="${COMMIT_MESSAGE}"
-              echo "Commit Message: $COMMIT_MESSAGE"
-              echo "commit_message=$COMMIT_MESSAGE" >> $GITHUB_ENV
+      - name: Extract last commit message
+        id: extract-commit-message
+        run: |
+          COMMIT_MESSAGE=$(git log -1 --pretty=%B | tr -d '\n')
+          COMMIT_MESSAGE="${COMMIT_MESSAGE}"
+          echo "Commit Message: $COMMIT_MESSAGE"
+          echo "commit_message=$COMMIT_MESSAGE" >> $GITHUB_ENV
 
-          - name: Extract version code and version name from pubspec.yaml
-            id: extract-version
-            run: |
-              # Navigate to the root directory (if not already there)
-              pwd
-              cd $GITHUB_WORKSPACE
-    
-              # Extract version name and version code from pubspec.yaml
-              VERSION_NAME=$(grep 'version:' pubspec.yaml | awk '{print $2}' | cut -d'+' -f1)
-              VERSION_CODE=$(grep 'version:' pubspec.yaml | awk '{print $2}' | cut -d'+' -f2)
-    
-              echo "Version Name: $VERSION_NAME"
-              echo "Version Code: $VERSION_CODE"
-    
-              echo "version_name=$VERSION_NAME" >> $GITHUB_ENV
-              echo "version_code=$VERSION_CODE" >> $GITHUB_ENV
+      - name: Extract version code and version name from pubspec.yaml
+        id: extract-version
+        run: |
+          # Navigate to the root directory (if not already there)
+          pwd
+          cd $GITHUB_WORKSPACE
 
-          - name: Create or update changelog file
-            run: |
-              pwd
-              mkdir -p ./android/fastlane/metadata/android/en-GB/changelogs
-              echo "${{ env.commit_message }}" > "./android/fastlane/metadata/android/en-GB/changelogs/${{ env.version_code }}.txt"
+          # Extract version name and version code from pubspec.yaml
+          VERSION_NAME=$(grep 'version:' pubspec.yaml | awk '{print $2}' | cut -d'+' -f1)
+          VERSION_CODE=$(grep 'version:' pubspec.yaml | awk '{print $2}' | cut -d'+' -f2)
 
-          - name: Configure Keystore
-            run: |
-              echo "$PLAY_STORE_UPLOAD_KEY" | base64 --decode > app/upload-keystore.jks
-              echo "$PLAY_STORE_CONFIG_JSON" > PLAY_STORE_CONFIG.json
-              echo "keyPassword=$KEYSTORE_KEY_PASSWORD" >> key.properties
-              echo "storePassword=$KEYSTORE_STORE_PASSWORD" >> key.properties
-              echo "keyAlias=$KEYSTORE_KEY_ALIAS" >> key.properties
-              echo "storeFile=upload-keystore.jks" >> key.properties
-            env:
-              PLAY_STORE_UPLOAD_KEY: ${{ secrets.PLAY_STORE_UPLOAD_KEY }}
-              KEYSTORE_KEY_ALIAS: ${{ secrets.KEYSTORE_KEY_ALIAS }}
-              KEYSTORE_KEY_PASSWORD: ${{ secrets.KEYSTORE_KEY_PASSWORD }}
-              KEYSTORE_STORE_PASSWORD: ${{ secrets.KEYSTORE_STORE_PASSWORD }}
-              PLAY_STORE_CONFIG_JSON: ${{secrets.PLAY_STORE_CONFIG_JSON}}
-            working-directory: android
+          echo "Version Name: $VERSION_NAME"
+          echo "Version Code: $VERSION_CODE"
 
-          - if: github.ref == 'refs/heads/master'
-            run: fastlane release
-            env:
-              PLAY_STORE_JSON_KEY: PLAY_STORE_CONFIG.json
-            working-directory: android
+          echo "version_name=$VERSION_NAME" >> $GITHUB_ENV
+          echo "version_code=$VERSION_CODE" >> $GITHUB_ENV
 
-          - if: github.ref == 'refs/heads/test'
-            run: fastlane test
-            env:
-              PLAY_STORE_JSON_KEY: PLAY_STORE_CONFIG.json
-            working-directory: android
+      - name: Create or update changelog file
+        run: |
+          pwd
+          mkdir -p ./android/fastlane/metadata/android/en-GB/changelogs
+          echo "${{ env.commit_message }}" > "./android/fastlane/metadata/android/en-GB/changelogs/${{ env.version_code }}.txt"
+
+      - name: Configure Keystore
+        run: |
+          echo "$PLAY_STORE_UPLOAD_KEY" | base64 --decode > app/upload-keystore.jks
+          echo "$PLAY_STORE_CONFIG_JSON" > PLAY_STORE_CONFIG.json
+          echo "keyPassword=$KEYSTORE_KEY_PASSWORD" >> key.properties
+          echo "storePassword=$KEYSTORE_STORE_PASSWORD" >> key.properties
+          echo "keyAlias=$KEYSTORE_KEY_ALIAS" >> key.properties
+          echo "storeFile=upload-keystore.jks" >> key.properties
+        env:
+          PLAY_STORE_UPLOAD_KEY: ${{ secrets.PLAY_STORE_UPLOAD_KEY }}
+          KEYSTORE_KEY_ALIAS: ${{ secrets.KEYSTORE_KEY_ALIAS }}
+          KEYSTORE_KEY_PASSWORD: ${{ secrets.KEYSTORE_KEY_PASSWORD }}
+          KEYSTORE_STORE_PASSWORD: ${{ secrets.KEYSTORE_STORE_PASSWORD }}
+          PLAY_STORE_CONFIG_JSON: ${{secrets.PLAY_STORE_CONFIG_JSON}}
+        working-directory: android
+
+      - if: github.ref == 'refs/heads/master'
+        run: fastlane release
+        env:
+          PLAY_STORE_JSON_KEY: PLAY_STORE_CONFIG.json
+        working-directory: android
+
+      - if: github.ref == 'refs/heads/test'
+        run: fastlane test
+        env:
+          PLAY_STORE_JSON_KEY: PLAY_STORE_CONFIG.json
+        working-directory: android

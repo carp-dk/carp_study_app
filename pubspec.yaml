@@ -21,7 +21,7 @@ dependencies:
   carp_polar_package: ^1.6.1
   carp_health_package: ^3.2.0
   carp_movesense_package: ^1.7.2
-  carp_themes_package: ^0.0.1
+  carp_themes_package: ^0.0.5
 
   carp_webservices: ^3.8.0
   carp_backend: ^1.9.2
