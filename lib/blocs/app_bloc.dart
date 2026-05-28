@@ -162,6 +162,10 @@ class StudyAppBLoC extends ChangeNotifier {
 
     Settings().debugLevel = debugLevel;
     await Settings().init();
+
+    // Pre-warm sqflite during splash; first call freezes the UI thread.
+    await Persistence().init();
+
     CarpResourceManager().initialize();
 
     Sensing();
@@ -203,9 +207,9 @@ class StudyAppBLoC extends ChangeNotifier {
     if (Platform.isIOS) return true;
 
     try {
-      final apps = await appCheck.getInstalledApps() ?? [];
-      return apps.any(
-          (app) => app.packageName == LocalSettings.healthConnectPackageName);
+      // Single-package query; getInstalledApps() enumerates everything.
+      return await appCheck
+          .isAppInstalled(LocalSettings.healthConnectPackageName);
     } catch (e) {
       debug("$runtimeType - Error checking Health Connect installation: $e");
       return false;
@@ -303,28 +307,24 @@ class StudyAppBLoC extends ChangeNotifier {
 
     _state = StudyAppState.configuring;
 
-    // set up and initialize sensing
     await Sensing().initialize();
 
-    // make sure that the CAWS backend services are configured with the study
-    backend.study = study!;
+    // backend.study is set in backend.initialize() (cached study on cold start)
+    // and in setStudyInvitation() (new invitation flow). No need to re-assign.
 
-    // add the study and configure sensing
     await Sensing().addStudy();
 
-    // initialize the UI data models
     appViewModel.init(Sensing().controller!);
 
-    // set up the messaging part and get the initial list of messages
     messageManager.initialize();
     refreshMessages();
 
-    // refresh the list of messages on a regular basis
     Timer.periodic(const Duration(minutes: 30), (_) => refreshMessages());
 
     info('Study configuration done.');
-    notifyListeners();
+    // Flip state before notifying so listeners see isConfigured == true.
     _state = StudyAppState.configured;
+    notifyListeners();
   }
 
   Future<List<ParticipantData>> getParticipantDataListFromDeployment() async =>
@@ -353,19 +353,22 @@ class StudyAppBLoC extends ChangeNotifier {
       informedConsentManager.getInformedConsent(refresh: refresh);
 
   /// Has the informed consent been accepted by the user?
-  /// Local mode trusts [LocalSettings]; otherwise asks the backend, falling
-  /// back to [LocalSettings] when offline so signed users aren't re-prompted.
+  ///
+  /// Consent is tied to the account, not the device, so the backend is the
+  /// single source of truth in non-local deployments. Local mode has no
+  /// backend and falls back to the locally stored flag.
   Future<bool> get hasInformedConsentBeenAccepted async {
-    final local =
-        LocalSettings().participant?.hasInformedConsentBeenAccepted ?? false;
-    if (deploymentMode == DeploymentMode.local || study == null) return local;
+    if (deploymentMode == DeploymentMode.local || study == null) {
+      return LocalSettings().participant?.hasInformedConsentBeenAccepted ??
+          false;
+    }
     try {
       final consent = await backend.getInformedConsentByRole(
           study!.studyDeploymentId, study!.participantRoleName);
       return consent != null;
     } catch (e) {
       warning('Could not fetch informed consent status from backend: $e');
-      return local;
+      return false;
     }
   }
 

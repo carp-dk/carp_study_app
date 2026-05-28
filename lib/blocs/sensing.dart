@@ -134,12 +134,11 @@ class Sensing {
     assert(bloc.study != null,
         'No study is provided. Cannot start deployment w/o a study.');
 
-    // Add the study to the client.
     _study = await SmartPhoneClientManager().addStudy(bloc.study!);
+
     _controller =
         SmartPhoneClientManager().getStudyRuntime(study!.studyDeploymentId);
 
-    // Get the study controller and try to deploy the study.
     return await tryDeployment();
   }
 
@@ -155,24 +154,34 @@ class Sensing {
 
     StudyStatus status = await controller!.tryDeployment(useCached: true);
 
-    // Make sure to translate the user tasks in the study protocol before using
-    // them in the app's task list.
     translateStudyProtocol();
 
-    // Configure the controller
     await controller?.configure();
 
-    // Listening on the data stream and print them as json to the debug console
-    controller?.measurements
-        .listen((measurement) => debugPrint(toJsonString(measurement)));
+    // Mirror each measurement to the console only when CAMS debug logging is on
+    // — matches the gating in carp_mobile_sensing's debug()/info() helpers so a
+    // release build (or any non-debug level) doesn't get spammed.
+    if (Settings().debugLevel.index >= DebugLevel.debug.index) {
+      controller?.measurements
+          .listen((measurement) => debugPrint(toJsonString(measurement)));
+    }
 
     info('$runtimeType - Study added, deployment id: $studyDeploymentId');
     return status;
   }
 
   Future<void> removeStudy() async {
-    if (study != null) {
+    if (study == null) return;
+    // SmartPhoneClientManager.removeStudy calls getStudyRuntime which does an
+    // unsafe `as SmartphoneDeploymentController` cast — it throws when the
+    // study was never added to the client manager (e.g. the user cancelled
+    // consent before configureStudy ran). Swallow that case; we just want
+    // the study gone, and it never existed here.
+    try {
       await SmartPhoneClientManager().removeStudy(study!.studyDeploymentId);
+    } on TypeError {
+      info('$runtimeType - study $study was never registered with the '
+          'client manager, skipping removeStudy.');
     }
   }
 

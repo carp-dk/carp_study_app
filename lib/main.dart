@@ -122,7 +122,6 @@ part 'ui/tasks/camera_page.dart';
 
 part 'ui/widgets/carp_app_bar.dart';
 part 'ui/widgets/horizontal_bar.dart';
-part 'ui/widgets/location_permission_page.dart';
 part 'ui/widgets/charts_legend.dart';
 part 'ui/widgets/details_banner.dart';
 part 'ui/widgets/studies_material.dart';

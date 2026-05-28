@@ -12,72 +12,67 @@ class HomePage extends StatefulWidget {
 }
 
 class HomePageState extends State<HomePage> {
-  /// Ask for location permissions.
-  ///
-  /// The method opens the [LocationPermissionPage] if location permissions are
-  /// needed and not yet granted.
-  ///
-  /// Android requires the app to show a modal window explaining "why" the app
-  /// needs access to location. Best practice for doing this is explain on the
-  /// [Request location permissions](https://developer.android.com/develop/sensors-and-location/location/permissions)
-  /// Android Developer page.
-  ///
-  /// This approach is used on both Android and iOS, even though it is an
-  /// Android recommendation / requirement.
-  Future<void> askForLocationPermissions(BuildContext context) async {
-    if (!context.mounted) return;
-
-    if (bloc.usingLocationPermissions) {
-      var granted = await LocationManager().isGranted();
-      if (!granted) {
-        await showGeneralDialog(
-            context: context,
-            barrierDismissible: false,
-            barrierColor: Colors.black38,
-            transitionBuilder: (ctx, anim1, anim2, child) => BackdropFilter(
-                  filter: ui.ImageFilter.blur(
-                      sigmaX: 4 * anim1.value, sigmaY: 4 * anim1.value),
-                  child: FadeTransition(
-                    opacity: anim1,
-                    child: child,
-                  ),
-                ),
-            pageBuilder: (context, anim1, anim2) =>
-                LocationPermissionPage().build(
-                  context,
-                  "dialog.location.info",
-                ));
-        await LocationManager().requestPermission();
-      }
-    }
-  }
+  bool _setupDone = false;
+  bool _setupInFlight = false;
 
   @override
   void initState() {
     super.initState();
+    // Re-run setup when bloc notifies (e.g. after consent submission).
+    bloc.addListener(_onBlocChanged);
+  }
 
-    // Setting up sensing, which entails;
-    //  - asking for location permissions
-    //  - configuring the study
-    //  - loading localizations
-    //  - starting sensing
-    askForLocationPermissions(context)
-        .then((_) => bloc.configureStudy().then((_) {
-              // Load localizations for the current locale and study
-              CarpStudyApp.reloadLocale(context);
-              bloc.start();
-            }));
+  @override
+  void dispose() {
+    bloc.removeListener(_onBlocChanged);
+    super.dispose();
+  }
 
-    if (Platform.isAndroid) {
-      // Check if HealthConnect is installed
-      _checkHealthConnectInstallation();
+  void _onBlocChanged() {
+    _maybeRunSetup();
+  }
+
+  @override
+  void didChangeDependencies() {
+    super.didChangeDependencies();
+    _maybeRunSetup();
+  }
+
+  Future<void> _maybeRunSetup() async {
+    if (_setupDone || _setupInFlight || !mounted) return;
+    if (!bloc.hasStudyBeenDeployed) return;
+
+    _setupInFlight = true;
+    try {
+      // Defer configureStudy (and its OS permission prompts) until consent.
+      if (!await bloc.hasInformedConsentBeenAccepted) {
+        if (!mounted) return;
+        final loc = GoRouterState.of(context).matchedLocation;
+        if (loc != InformedConsentPage.route) {
+          context.go(InformedConsentPage.route);
+        }
+        return;
+      }
+
+      _setupDone = true;
+
+      // Run setup and HC check in parallel so the HC dialog doesn't gate sensing.
+      await Future.wait([
+        bloc.configureStudy().whenComplete(() {
+          if (mounted) CarpStudyApp.reloadLocale(context);
+          bloc.start();
+        }),
+        if (Platform.isAndroid) _checkHealthConnectInstallation(),
+      ]);
+    } finally {
+      _setupInFlight = false;
     }
   }
 
   Future<void> _checkHealthConnectInstallation() async {
     bool isInstalled = await bloc.isHealthInstalled();
-    if (!isInstalled) {
-      showDialog<void>(
+    if (!isInstalled && mounted) {
+      await showDialog<void>(
         context: context,
         barrierDismissible: true,
         builder: (context) => InstallHealthConnectDialog(context),
