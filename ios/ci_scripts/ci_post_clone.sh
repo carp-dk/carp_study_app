@@ -31,6 +31,8 @@ elif [ "${CI_WORKFLOW:-}" = "Test - Internal Testing" ]; then
   MODE="test"
 fi
 
-flutter build ios --config-only --release --dart-define="deployment-mode=$MODE"
+# Build number is Xcode Cloud's auto-incrementing counter (CI_BUILD_NUMBER),
+# so iOS builds don't rely on a manual bump in pubspec.
+flutter build ios --config-only --release --build-number="$CI_BUILD_NUMBER" --dart-define="deployment-mode=$MODE"
 
 exit 0

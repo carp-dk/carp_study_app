@@ -5,10 +5,12 @@
 
 name: Flutter build and test
 
+# CI validation runs only on pull requests into the integration branches.
+# Feature-branch pushes don't trigger anything; nothing runs on push to a
+# branch, so there are no duplicate runs.
 on:
-  push:
-    branches: [master, test]
   pull_request:
+    branches: [develop, test, master]
 
 env:
   FLUTTER_FOLDER: '$HOME/flutter'
@@ -34,6 +36,9 @@ jobs:
         with:
           channel: stable
           version: 3.44.0
+
+      - name: Clean
+        run: flutter clean
 
       - name: Install dependencies
         run: flutter pub get
