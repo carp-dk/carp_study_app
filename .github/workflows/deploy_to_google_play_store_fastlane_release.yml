@@ -55,7 +55,8 @@ jobs:
       - name: Extract last commit message
         id: extract-commit-message
         run: |
-          COMMIT_MESSAGE=$(git log -1 --pretty=%B | tr -d '\n')
+          # Subject line only: Play release notes are capped at 500 chars.
+          COMMIT_MESSAGE=$(git log -1 --pretty=%s | tr -d '\n')
           COMMIT_MESSAGE="${COMMIT_MESSAGE}"
           echo "Commit Message: $COMMIT_MESSAGE"
           echo "commit_message=$COMMIT_MESSAGE" >> $GITHUB_ENV
