@@ -331,7 +331,7 @@ class _BluetoothConnectionPageState extends State<BluetoothConnectionPage> {
                         .entries
                         .map(
                           (bluetoothDevice) => StudiesMaterial(
-                            hasBorder: true,
+                            // hasBorder: true,
                             backgroundColor: Theme.of(context)
                                 .extension<CarpColors>()!
                                 .grey50!,

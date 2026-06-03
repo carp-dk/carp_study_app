@@ -72,7 +72,7 @@ class ScoreboardPersistentHeaderDelegate
     ];
 
     List<Widget> childrenTasks = [
-      Text(model.tasksCompleted.toString(),
+      Text(model.taskCompleted.toString(),
           style: fs36fw800.copyWith(
               fontSize: calculateScrollAwareSizing(
                   shrinkOffset, fs20fw800.fontSize!, fs36fw800.fontSize!),

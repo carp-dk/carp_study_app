@@ -33,6 +33,20 @@ class CarpBackend {
         host: uris[bloc.deploymentMode],
       );
 
+  /// The URI of the CAWS authentication service.
+  ///
+  /// Of the form:
+  ///    https://dev.carp.dk/auth/realms/Carp/
+  Uri get authUri => Uri(
+        scheme: 'https',
+        host: uris[bloc.deploymentMode],
+        pathSegments: [
+          'auth',
+          'realms',
+          'Carp',
+        ],
+      );
+
   /// The CAWS app configuration.
   late final CarpApp _app = CarpApp(name: "CAWS @ DTU", uri: uri);
 
@@ -75,6 +89,12 @@ class CarpBackend {
 
     CarpParticipationService().configureFrom(CarpService());
     CarpDeploymentService().configureFrom(CarpService());
+
+    // CAWS services hold the active study as ambient state. If a study is
+    // cached locally (returning user), re-seed the services here — otherwise
+    // CarpResourceManager throws null-derefs on the first resource fetch.
+    final cachedStudy = LocalSettings().study;
+    if (cachedStudy != null) study = cachedStudy;
 
     info('$runtimeType initialized - app: $app');
   }

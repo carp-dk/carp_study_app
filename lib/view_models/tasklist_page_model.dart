@@ -45,7 +45,7 @@ class TaskListPageViewModel extends ViewModel {
       : 0;
 
   /// The number of tasks completed so far.
-  int get tasksCompleted => AppTaskController()
+  int get taskCompleted => AppTaskController()
       .userTaskQueue
       .where((task) => task.state == UserTaskState.done)
       .length;

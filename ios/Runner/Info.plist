@@ -7,7 +7,7 @@
 			<string>$(PRODUCT_BUNDLE_IDENTIFIER)</string>
 		</array>
 		<key>CADisableMinimumFrameDurationOnPhone</key>
-		<true />
+		<true/>
 		<key>CFBundleDevelopmentRegion</key>
 		<string>$(DEVELOPMENT_LANGUAGE)</string>
 		<key>CFBundleDisplayName</key>
@@ -50,11 +50,11 @@
 		<key>CFBundleVersion</key>
 		<string>$(CURRENT_PROJECT_VERSION)</string>
 		<key>FLTEnableImpeller</key>
-		<true />
+		<true/>
 		<key>FlutterDeepLinkingEnabled</key>
-		<true />
+		<true/>
 		<key>ITSAppUsesNonExemptEncryption</key>
-		<false />
+		<false/>
 		<key>LSApplicationQueriesSchemes</key>
 		<array>
 			<string>https</string>
@@ -62,9 +62,9 @@
 			<string>mailto</string>
 		</array>
 		<key>LSRequiresIPhoneOS</key>
-		<true />
+		<true/>
 		<key>LSSupportsOpeningDocumentsInPlace</key>
-		<true />
+		<true/>
 		<key>NSAppleMusicUsageDescription</key>
 		<string>CARP uses Apple Music</string>
 		<key>NSBluetoothAlwaysUsageDescription</key>
@@ -93,8 +93,29 @@
 		<string>CARP uses the motion system to detects activities such as walking and biking</string>
 		<key>NSSpeechRecognitionUsageDescription</key>
 		<string>CARP uses speech recognition</string>
+		<key>UIApplicationSceneManifest</key>
+		<dict>
+			<key>UIApplicationSupportsMultipleScenes</key>
+			<false/>
+			<key>UISceneConfigurations</key>
+			<dict>
+				<key>UIWindowSceneSessionRoleApplication</key>
+				<array>
+					<dict>
+						<key>UISceneClassName</key>
+						<string>UIWindowScene</string>
+						<key>UISceneConfigurationName</key>
+						<string>flutter</string>
+						<key>UISceneDelegateClassName</key>
+						<string>FlutterSceneDelegate</string>
+						<key>UISceneStoryboardFile</key>
+						<string>Main</string>
+					</dict>
+				</array>
+			</dict>
+		</dict>
 		<key>UIApplicationSupportsIndirectInputEvents</key>
-		<true />
+		<true/>
 		<key>UIBackgroundModes</key>
 		<array>
 			<string>bluetooth-central</string>
@@ -104,7 +125,7 @@
 			<string>processing</string>
 		</array>
 		<key>UIFileSharingEnabled</key>
-		<true />
+		<true/>
 		<key>UILaunchStoryboardName</key>
 		<string>LaunchScreen</string>
 		<key>UIMainStoryboardFile</key>
@@ -114,6 +135,6 @@
 			<string>UIInterfaceOrientationPortrait</string>
 		</array>
 		<key>UIViewControllerBasedStatusBarAppearance</key>
-		<false />
+		<false/>
 	</dict>
 </plist>

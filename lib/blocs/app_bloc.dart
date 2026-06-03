@@ -162,11 +162,17 @@ class StudyAppBLoC extends ChangeNotifier {
 
     Settings().debugLevel = debugLevel;
     await Settings().init();
+
+    // Pre-warm sqflite during splash; first call freezes the UI thread.
+    await Persistence().init();
+
     CarpResourceManager().initialize();
 
     Sensing();
 
-    // Initialize and use the CAWS backend if not in local deployment mode
+    // Initialize and use the CAWS backend if not in local deployment mode.
+    // backend.initialize() re-seeds the cached study into CAWS service
+    // singletons, so a returning user doesn't hit null-derefs.
     if (deploymentMode != DeploymentMode.local) {
       if (await checkConnectivity()) {
         await backend.initialize();
@@ -201,9 +207,9 @@ class StudyAppBLoC extends ChangeNotifier {
     if (Platform.isIOS) return true;
 
     try {
-      final apps = await appCheck.getInstalledApps() ?? [];
-      return apps.any(
-          (app) => app.packageName == LocalSettings.healthConnectPackageName);
+      // Single-package query; getInstalledApps() enumerates everything.
+      return await appCheck
+          .isAppInstalled(LocalSettings.healthConnectPackageName);
     } catch (e) {
       debug("$runtimeType - Error checking Health Connect installation: $e");
       return false;
@@ -265,9 +271,9 @@ class StudyAppBLoC extends ChangeNotifier {
   /// If a [context] is provided, the translation for this study is re-loaded
   /// and applied in the app.
   void setStudyInvitation(
-    ActiveParticipationInvitation invitation,
+    ActiveParticipationInvitation invitation, [
     BuildContext? context,
-  ) {
+  ]) {
     // create and save the participant info based on this invitation
     var participant = Participant.fromParticipationInvitation(invitation);
     LocalSettings().participant = participant;
@@ -301,28 +307,24 @@ class StudyAppBLoC extends ChangeNotifier {
 
     _state = StudyAppState.configuring;
 
-    // set up and initialize sensing
     await Sensing().initialize();
 
-    // make sure that the CAWS backend services are configured with the study
-    backend.study = study!;
+    // backend.study is set in backend.initialize() (cached study on cold start)
+    // and in setStudyInvitation() (new invitation flow). No need to re-assign.
 
-    // add the study and configure sensing
     await Sensing().addStudy();
 
-    // initialize the UI data models
     appViewModel.init(Sensing().controller!);
 
-    // set up the messaging part and get the initial list of messages
     messageManager.initialize();
     refreshMessages();
 
-    // refresh the list of messages on a regular basis
     Timer.periodic(const Duration(minutes: 30), (_) => refreshMessages());
 
     info('Study configuration done.');
-    notifyListeners();
+    // Flip state before notifying so listeners see isConfigured == true.
     _state = StudyAppState.configured;
+    notifyListeners();
   }
 
   Future<List<ParticipantData>> getParticipantDataListFromDeployment() async =>
@@ -351,31 +353,37 @@ class StudyAppBLoC extends ChangeNotifier {
       informedConsentManager.getInformedConsent(refresh: refresh);
 
   /// Has the informed consent been accepted by the user?
-  bool get hasInformedConsentBeenAccepted =>
-      backend.getInformedConsentByRole(
-          study!.studyDeploymentId, study!.participantRoleName) !=
-      null;
+  ///
+  /// Consent is tied to the account, not the device, so the backend is the
+  /// single source of truth in non-local deployments. Local mode has no
+  /// backend and falls back to the locally stored flag.
+  Future<bool> get hasInformedConsentBeenAccepted async {
+    if (deploymentMode == DeploymentMode.local || study == null) {
+      return LocalSettings().participant?.hasInformedConsentBeenAccepted ??
+          false;
+    }
+    try {
+      final consent = await backend.getInformedConsentByRole(
+          study!.studyDeploymentId, study!.participantRoleName);
+      return consent != null;
+    } catch (e) {
+      warning('Could not fetch informed consent status from backend: $e');
+      return false;
+    }
+  }
 
-  set hasInformedConsentBeenAccepted(bool accepted) {
+  /// Mark the informed consent as accepted: persist locally and (when online)
+  /// upload the signed [result] to CAWS. Pass `null` when the study has no
+  /// consent document — only the local flag is set.
+  Future<void> informedConsentHasBeenAccepted([RPTaskResult? result]) async {
+    info('Informed consent has been accepted by user.');
     var participant = LocalSettings().participant;
     participant?.hasInformedConsentBeenAccepted = true;
     LocalSettings().participant = participant;
-  }
-
-  /// Mark the informed consent as accepted by the user based on the
-  /// [informedConsentResult].
-  ///
-  /// This entails that it has been shown to the user and accepted by the user.
-  /// Will upload it to CAWS (if not running in local deployment mode).
-  Future<void> informedConsentHasBeenAccepted(
-    RPTaskResult informedConsentResult,
-  ) async {
-    info('Informed consent has been accepted by user.');
-    hasInformedConsentBeenAccepted = true;
-
-    if (deploymentMode != DeploymentMode.local) {
-      await backend.uploadInformedConsent(informedConsentResult);
+    if (result != null && deploymentMode != DeploymentMode.local) {
+      await backend.uploadInformedConsent(result);
     }
+    notifyListeners();
   }
 
   /// Refresh the list of messages (news, announcements, articles) to be shown in

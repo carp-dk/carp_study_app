@@ -7,7 +7,7 @@ set -ex
 set -euo pipefail
 
 # Install Flutter using git.
-git clone https://github.com/flutter/flutter.git --depth 1 -b stable $HOME/flutter
+git clone https://github.com/flutter/flutter.git --depth 1 -b 3.44.0 $HOME/flutter
 export PATH="$PATH:$HOME/flutter/bin"
 
 # Install Flutter artifacts for iOS (--ios), or macOS (--macos) platforms.
@@ -31,6 +31,8 @@ elif [ "${CI_WORKFLOW:-}" = "Test - Internal Testing" ]; then
   MODE="test"
 fi
 
-flutter build ios --config-only --release --dart-define="deployment-mode=$MODE"
+# Build number is Xcode Cloud's auto-incrementing counter (CI_BUILD_NUMBER),
+# so iOS builds don't rely on a manual bump in pubspec.
+flutter build ios --config-only --release --build-number="$CI_BUILD_NUMBER" --dart-define="deployment-mode=$MODE"
 
 exit 0
