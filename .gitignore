@@ -125,3 +125,6 @@ carp/carpspec.yaml
 assets/carp/
 assets/carp/lang/_da.json
 assets/carp/lang/_en.json
+
+# FVM Version Cache
+.fvm/
