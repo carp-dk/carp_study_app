@@ -16,56 +16,42 @@ platform :android do
 
   desc "Submit a new release build to Google Play's Production track"
   lane :release do
-    current_production_version_code = google_play_track_version_codes(track: 'production').first.to_i
-    current_internal_version_code = google_play_track_version_codes(track: 'internal').first.to_i
-    pubspec_content = YAML.load_file('../../pubspec.yaml')
-    version_string = pubspec_content['version']
-    version_parts = version_string.split('+')
-    if version_parts.size == 2
-      version_number = version_parts[1].to_i
-      if version_number > current_production_version_code && version_number > current_internal_version_code
+    # Auto-increment: one above the highest code on either track. This mirrors
+    # the iOS Xcode Cloud CI_BUILD_NUMBER flow, so the build number never needs
+    # a manual bump in pubspec.yaml.
+    codes = google_play_track_version_codes(track: 'production') +
+            google_play_track_version_codes(track: 'internal')
+    build_number = (codes.map(&:to_i).max || 0) + 1
+    build_name = YAML.load_file('../../pubspec.yaml')['version'].split('+').first
+    UI.message("Building production versionCode #{build_number} (#{build_name})")
+
     sh "flutter clean"
     sh "flutter pub get"
-    sh "flutter build appbundle --release --no-deferred-components --no-tree-shake-icons"
+    sh "flutter build appbundle --release --no-deferred-components --no-tree-shake-icons --build-name=#{build_name} --build-number=#{build_number}"
 
     upload_to_play_store(
       track: 'production',
       aab: '../build/app/outputs/bundle/release/app-release.aab',
     )
-      else
-        UI.user_error!("Version code must be greater than or equal to the current version code: #{current_production_version_code} and #{current_internal_version_code}")
-      end
-    end
   end
 
   desc "Upload to internal testing track"
   lane :test do
-    current_production_version_code = google_play_track_version_codes(track: 'production').first.to_i
-    current_internal_version_code = google_play_track_version_codes(track: 'internal').first.to_i
-    pubspec_path = '../../pubspec.yaml'
-    pubspec_content = YAML.load_file(pubspec_path)
-    version_string = pubspec_content['version']
-    version_parts = version_string.split('+')
+    # Auto-increment from the live Play state (see :release for rationale).
+    codes = google_play_track_version_codes(track: 'production') +
+            google_play_track_version_codes(track: 'internal')
+    build_number = (codes.map(&:to_i).max || 0) + 1
+    base_version = YAML.load_file('../../pubspec.yaml')['version'].split('+').first
+    build_name = "#{base_version}-test"
+    UI.message("Building internal versionCode #{build_number} (#{build_name})")
 
-    if version_parts.size == 2
-      version_number = version_parts[1].to_i
-      base_version = version_parts[0]
-
-      if version_number > current_production_version_code && version_number > current_internal_version_code
-        test_version = "#{base_version}-test+#{version_number}"
-        sh "sed -i 's/^version: .*/version: #{test_version}/' #{pubspec_path}"
     sh "flutter clean"
     sh "flutter pub get"
-
-    sh "flutter build appbundle --release --no-deferred-components --no-tree-shake-icons --dart-define='deployment-mode=test'"
+    sh "flutter build appbundle --release --no-deferred-components --no-tree-shake-icons --dart-define='deployment-mode=test' --build-name=#{build_name} --build-number=#{build_number}"
 
     upload_to_play_store(
       track: 'internal',
       aab: '../build/app/outputs/bundle/release/app-release.aab',
     )
-      else
-        UI.user_error!("Version code must be greater than or equal to the current version code: #{current_production_version_code} and #{current_internal_version_code}")
-      end
-    end
   end
 end
