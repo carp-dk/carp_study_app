@@ -1,0 +1,8 @@
+<svg width="1024" height="1024" viewBox="0 0 1024 1024" fill="none" xmlns="http://www.w3.org/2000/svg">
+<!-- CARP mark, centered with ~19% padding for the iOS 26 Liquid Glass rim. Transparent background: the background layer is set separately in Icon Composer. -->
+<g transform="translate(194.5,194.5) scale(15.875)">
+<path d="M10.0012 20C10.0012 14.4795 5.52114 10 0 10V30C5.52114 30 10.0012 25.5252 10.0012 20Z" fill="#D61D41"/>
+<path d="M30.0035 10H20.0023H10.0011V20C10.0011 25.5205 14.4764 30 20.0023 30H30.0035C35.5246 30 40.0046 25.5252 40.0046 20C40.0046 14.4795 35.5293 10 30.0035 10V10Z" fill="#D61D41"/>
+<path d="M33.0024 18.6334H29.6787V15.1094H27.1079V18.6334H23.7842V21.3628H27.1079V24.8914H29.6787V21.3628H33.0024V18.6334Z" fill="white"/>
+</g>
+</svg>
