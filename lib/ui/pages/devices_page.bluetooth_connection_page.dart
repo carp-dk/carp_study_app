@@ -319,8 +319,8 @@ class _BluetoothConnectionPageState extends State<BluetoothConnectionPage> {
                   padding: const EdgeInsets.only(top: 16),
                   child: Column(
                     children: snapshot.data!
-                        .where((element) =>
-                            element.device.platformName.isNotEmpty)
+                        .where(
+                            (element) => element.device.platformName.isNotEmpty)
                         .toList()
                         .asMap()
                         .entries
