@@ -44,14 +44,16 @@
 
     <!-- The following permissions are used in the Context Package -->
 
-    <!--Location Permissions-->
+    <!--Location
+    Permissions-->
     <uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION" />
     <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION" />
     <uses-permission android:name="android.permission.ACCESS_BACKGROUND_LOCATION" />
 
-    <!--Foreground Service Permissions for Android >= 14 / SDK 34-->
+    <!--Foreground
+    Service Permissions for Android >= 14 / SDK 34-->
     <uses-permission android:name="android.permission.FOREGROUND_SERVICE_LOCATION" />
-    
+
     <!-- for Android 9 (API 28 and below), use: -->
     <uses-permission
         android:name="com.google.android.gms.permission.ACTIVITY_RECOGNITION"
@@ -121,14 +123,6 @@
                 <category android:name="android.intent.category.DEFAULT" />
                 <category android:name="android.intent.category.BROWSABLE" />
 
-                <data android:scheme="carp-ws-prod-auth" android:host="auth" />
-            </intent-filter>
-            <intent-filter>
-                <action android:name="android.intent.action.VIEW" />
-
-                <category android:name="android.intent.category.DEFAULT" />
-                <category android:name="android.intent.category.BROWSABLE" />
-
                 <data android:scheme="http" />
                 <data android:host="carp.computerome.dk" />
                 <data android:pathPrefix="/auth/dev" />
@@ -171,15 +165,42 @@
                 <action android:name="android.intent.action.MAIN" />
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
-        </activity>
-        <activity
-            android:name="com.linusu.flutter_web_auth_2.CallbackActivity"
-            android:exported="true">
-            <intent-filter android:label="flutter_web_auth_2">
+            <!-- Deep linking  -->
+            <intent-filter
+                android:autoVerify="true" >
+
+                <action android:name="android.intent.action.VIEW" />
+                <category android:name="android.intent.category.DEFAULT" />
+                <category android:name="android.intent.category.BROWSABLE" />
+
+                <data android:scheme="https" android:host="study.app.carp.computerome.dk"
+                    android:pathPattern="/auth/realms/Carp/login-actions/action-token" />
+                <data android:scheme="https" android:host="study.app.test.carp.dk"
+                    android:pathPattern="/auth/realms/Carp/login-actions/action-token" />
+                <data android:scheme="https" android:host="study.app.dev.carp.dk"
+                    android:pathPattern="/auth/realms/Carp/login-actions/action-token" />
+
+            </intent-filter>
+
+            <!-- Handle custom carp-studies URI scheme so deep links like
+                 carp-studies:/login open the MainActivity (not a helper
+                 callback activity) and keep the Flutter app running. -->
+            <intent-filter>
                 <action android:name="android.intent.action.VIEW" />
                 <category android:name="android.intent.category.DEFAULT" />
                 <category android:name="android.intent.category.BROWSABLE" />
                 <data android:scheme="carp-studies" android:pathPrefix="/" />
+            </intent-filter>
+        </activity>
+        <activity
+            android:name="com.linusu.flutter_web_auth_2.CallbackActivity"
+            android:exported="true">
+            <intent-filter
+                android:label="flutter_web_auth_2">
+                <action android:name="android.intent.action.VIEW" />
+                <category android:name="android.intent.category.DEFAULT" />
+                <category android:name="android.intent.category.BROWSABLE" />
+                <data android:scheme="carp-studies-anonymous" android:pathPrefix="/" />
             </intent-filter>
         </activity>
         <activity

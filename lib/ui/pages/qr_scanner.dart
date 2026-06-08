@@ -6,11 +6,11 @@ class QRViewExample extends StatefulWidget {
   @override
   State<StatefulWidget> createState() => _QRViewExampleState();
 }
+  final GlobalKey qrKey = GlobalKey(debugLabel: 'QR');
 
 class _QRViewExampleState extends State<QRViewExample> {
   qr.Barcode? result;
   qr.QRViewController? controller;
-  final GlobalKey qrKey = GlobalKey(debugLabel: 'QR');
 
   // In order to get hot reload to work we need to pause the camera if the platform
   // is android, or resume the camera if the platform is iOS.
@@ -115,6 +115,7 @@ class _QRViewExampleState extends State<QRViewExample> {
       });
 
       final qrcode = scanData.code;
+      print('QR code scanned: $qrcode');
 
       if (qrcode != null && Uri.tryParse(qrcode)?.hasAbsolutePath == true) {
         await bloc.backend.authenticateWithMagicLink(qrcode).then((_) {

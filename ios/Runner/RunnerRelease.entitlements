@@ -6,8 +6,8 @@
 	<string>development</string>
 	<key>com.apple.developer.associated-domains</key>
 	<array>
-		<string>webcredentials:carp.computerome.com</string>
-		<string>applinks:carp.computerome.dk</string>
+		<string>applinks:app.dev.carp.dk</string>
+		<string>applinks:app.carp.computerome.dk</string>
 	</array>
 	<key>com.apple.developer.authentication-services.autofill-credential-provider</key>
 	<true/>

@@ -68,10 +68,15 @@ class _LoginPageState extends State<LoginPage> {
             child: TextButton(
               onPressed: () async {
                 bool isConnected = await bloc.checkConnectivity();
+                print("isConnected: $isConnected");
                 if (isConnected) {
                   await bloc.backend.initialize();
                   await bloc.backend.authenticate();
-                  if (context.mounted) context.go(CarpStudyAppState.homeRoute);
+                  if (context.mounted) {
+                    WidgetsBinding.instance.addPostFrameCallback((_) {
+                      context.go(CarpStudyAppState.homeRoute);
+                    });
+                  }
                 } else {
                   showDialog<bool>(
                     context: context,

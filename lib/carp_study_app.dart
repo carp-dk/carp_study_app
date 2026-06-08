@@ -154,6 +154,26 @@ class CarpStudyAppState extends State<CarpStudyApp> {
           return task?.widget ?? const ErrorPage();
         },
       ),
+      // Handle external magic-link callbacks from the auth server. The
+      // identity provider posts a link like
+      // /auth/realms/Carp/login-actions/action-token?key=...
+      // We attempt to authenticate using the URI. On
+      // success we go to '/', on failure we redirect to the login page.
+      GoRoute(
+        path: '/auth/realms/Carp/login-actions/action-token',
+        parentNavigatorKey: _rootNavigatorKey,
+        redirect: (context, state) async {
+          // We don't show any page, but handle the magic link in the background.
+          try {
+            await bloc.backend.authenticateWithMagicLink(state.uri.toString());
+            return homeRoute;
+          } catch (error) {
+            debugPrint(
+                'Magic-link authentication failed: $error, redirecting to login page');
+            return LoginPage.route;
+          }
+        },
+      ),
       GoRoute(
         path: LoginPage.route,
         parentNavigatorKey: _rootNavigatorKey,

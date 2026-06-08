@@ -65,7 +65,14 @@ android {
                 keyPassword keyProperties.getProperty('keyPassword')
             }
         }
-        debug {}
+        debug {
+            if (signingConfigExists) {
+                storeFile file(keyProperties.getProperty('storeFile'))
+                storePassword keyProperties.getProperty('storePassword')
+                keyAlias keyProperties.getProperty('keyAlias')
+                keyPassword keyProperties.getProperty('keyPassword')
+            }
+        }
      }
 
     buildTypes {
