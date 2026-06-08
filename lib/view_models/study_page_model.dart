@@ -40,18 +40,6 @@ class StudyPageViewModel extends ViewModel {
   /// The list of messages to be displayed.
   List<Message> get messages => bloc.messages.reversed.toList();
 
-  /// The icon for a type of message
-  Icon getMessageTypeIcon(MessageType type) {
-    switch (type) {
-      case MessageType.announcement:
-        return const Icon(Icons.new_releases);
-      case MessageType.article:
-        return const Icon(Icons.description);
-      case MessageType.news:
-        return const Icon(Icons.create_new_folder);
-    }
-  }
-
   /// Get the image based on [imagePath]. Can be both an asset and a network
   /// image. See [Message.imagePath].
   ///

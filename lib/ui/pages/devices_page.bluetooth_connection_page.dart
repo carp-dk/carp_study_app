@@ -41,10 +41,6 @@ class _BluetoothConnectionPageState extends State<BluetoothConnectionPage> {
   BluetoothDevice? selectedDevice;
   int selected = 40;
 
-  /// Set of normalized UUIDs (no dashes, lower-case) to filter discovered devices by
-  /// If empty, no UUID filtering is applied.
-  final Set<String> _filterUuids = <String>{};
-
   @override
   Widget build(BuildContext context) {
     RPLocalizations locale = RPLocalizations.of(context)!;
@@ -324,8 +320,7 @@ class _BluetoothConnectionPageState extends State<BluetoothConnectionPage> {
                   child: Column(
                     children: snapshot.data!
                         .where((element) =>
-                            element.device.platformName.isNotEmpty &&
-                            _matchesUuid(element, _filterUuids))
+                            element.device.platformName.isNotEmpty)
                         .toList()
                         .asMap()
                         .entries
@@ -400,34 +395,6 @@ class _BluetoothConnectionPageState extends State<BluetoothConnectionPage> {
         ],
       ),
     );
-  }
-
-  /// Returns true if [scanResult] advertises any UUID present in [filterUuids].
-  /// If [filterUuids] is empty, always returns true.
-  bool _matchesUuid(ScanResult scanResult, Set<String> filterUuids) {
-    if (filterUuids.isEmpty) return true;
-
-    // Normalize helper: remove dashes and lowercase
-    String normalize(String u) => u.replaceAll('-', '').toLowerCase();
-
-    try {
-      // FlutterBluePlus ScanResult contains advertisementData with serviceUuids
-      final adv = scanResult.advertisementData;
-      final serviceUuids = adv.serviceUuids;
-      for (var u in serviceUuids) {
-        final us = u.toString();
-        if (filterUuids.contains(normalize(us))) return true;
-      }
-
-      // Also check device id (remoteId) as fallback
-      final devId = scanResult.device.remoteId.str;
-      if (filterUuids.contains(normalize(devId))) return true;
-    } catch (_) {
-      // If structure differs, fall back to allowing the device
-      return true;
-    }
-
-    return false;
   }
 
   Widget connectionInstructions(DeviceViewModel device, BuildContext context) {

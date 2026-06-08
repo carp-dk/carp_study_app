@@ -10,7 +10,21 @@
 #     https://docs.fastlane.tools/plugins/available-plugins
 #
 
+require 'fileutils'
+
 default_platform(:android)
+
+# Write the latest commit subject as the Play release notes for [version_code].
+# Keyed on the uploaded versionCode so Play matches the note to the release.
+# Play caps release notes at 500 chars and rejects empty notes.
+def write_play_changelog(version_code)
+  notes = `git log -1 --pretty=%s`.strip[0, 500]
+  notes = 'Bug fixes and improvements.' if notes.empty?
+  dir = 'metadata/android/en-GB/changelogs'
+  FileUtils.mkdir_p(dir)
+  File.write("#{dir}/#{version_code}.txt", notes)
+  UI.message("Changelog #{version_code}.txt: #{notes}")
+end
 
 platform :android do
 
@@ -28,6 +42,8 @@ platform :android do
     sh "flutter clean"
     sh "flutter pub get"
     sh "flutter build appbundle --release --no-deferred-components --no-tree-shake-icons --build-name=#{build_name} --build-number=#{build_number}"
+
+    write_play_changelog(build_number)
 
     upload_to_play_store(
       track: 'production',
@@ -48,6 +64,8 @@ platform :android do
     sh "flutter clean"
     sh "flutter pub get"
     sh "flutter build appbundle --release --no-deferred-components --no-tree-shake-icons --dart-define='deployment-mode=test' --build-name=#{build_name} --build-number=#{build_number}"
+
+    write_play_changelog(build_number)
 
     upload_to_play_store(
       track: 'internal',

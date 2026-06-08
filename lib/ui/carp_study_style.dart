@@ -309,9 +309,6 @@ ThemeData carpStudyDarkTheme = ThemeData.dark().copyWith(
 // TextStyle welcomeMessageStyle = const TextStyle(
 //     fontSize: 24, color: Color(0xff707070), fontWeight: FontWeight.bold);
 
-// TextStyle studyDescriptionStyle =
-//     const TextStyle(fontSize: 12, fontWeight: FontWeight.w300);
-
 // TextStyle fs16fw400ls1 = const TextStyle(
 //     fontSize: 16, fontWeight: FontWeight.w400, letterSpacing: 1);
 // TextStyle dataCardRightTitleStyle =

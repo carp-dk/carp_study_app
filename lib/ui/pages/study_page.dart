@@ -409,7 +409,7 @@ class StudyPageState extends State<StudyPage> {
                       borderRadius: BorderRadius.circular(100.0),
                       child: Padding(
                         padding: const EdgeInsets.all(4.0),
-                        child: messageTypeIcon[message.type],
+                        child: Icon(message.type.icon, color: Colors.white),
                       ),
                     ),
                   ],
@@ -510,12 +510,6 @@ class StudyPageState extends State<StudyPage> {
         'pages.about.status.deploying_devices.message',
     StudyDeploymentStatusTypes.Running: 'pages.about.status.running.message',
     StudyDeploymentStatusTypes.Stopped: 'pages.about.status.stopped.message',
-  };
-
-  static Map<MessageType, Icon> messageTypeIcon = {
-    MessageType.announcement: Icon(Icons.campaign, color: Colors.white),
-    MessageType.news: Icon(Icons.newspaper, color: Colors.white),
-    MessageType.article: Icon(Icons.article, color: Colors.white),
   };
 }
 

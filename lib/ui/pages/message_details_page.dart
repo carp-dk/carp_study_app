@@ -64,7 +64,7 @@ class MessageDetailsPage extends StatelessWidget {
                   Padding(
                     padding: const EdgeInsets.only(right: 24),
                     child: Material(
-                      color: CACHET.DEPLOYMENT_DEPLOYING,
+                      color: Theme.of(context).extension<CarpColors>()!.primary,
                       borderRadius: BorderRadius.circular(100.0),
                       child: Padding(
                         padding: const EdgeInsets.symmetric(

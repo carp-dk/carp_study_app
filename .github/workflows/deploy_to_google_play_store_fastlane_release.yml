@@ -40,38 +40,6 @@ jobs:
           bundler-cache: false
           working-directory: android
 
-      - name: Extract last commit message
-        id: extract-commit-message
-        run: |
-          # Subject line only: Play release notes are capped at 500 chars.
-          COMMIT_MESSAGE=$(git log -1 --pretty=%s | tr -d '\n')
-          COMMIT_MESSAGE="${COMMIT_MESSAGE}"
-          echo "Commit Message: $COMMIT_MESSAGE"
-          echo "commit_message=$COMMIT_MESSAGE" >> $GITHUB_ENV
-
-      - name: Extract version code and version name from pubspec.yaml
-        id: extract-version
-        run: |
-          # Navigate to the root directory (if not already there)
-          pwd
-          cd $GITHUB_WORKSPACE
-
-          # Extract version name and version code from pubspec.yaml
-          VERSION_NAME=$(grep 'version:' pubspec.yaml | awk '{print $2}' | cut -d'+' -f1)
-          VERSION_CODE=$(grep 'version:' pubspec.yaml | awk '{print $2}' | cut -d'+' -f2)
-
-          echo "Version Name: $VERSION_NAME"
-          echo "Version Code: $VERSION_CODE"
-
-          echo "version_name=$VERSION_NAME" >> $GITHUB_ENV
-          echo "version_code=$VERSION_CODE" >> $GITHUB_ENV
-
-      - name: Create or update changelog file
-        run: |
-          pwd
-          mkdir -p ./android/fastlane/metadata/android/en-GB/changelogs
-          echo "${{ env.commit_message }}" > "./android/fastlane/metadata/android/en-GB/changelogs/${{ env.version_code }}.txt"
-
       - name: Configure Keystore
         run: |
           echo "$PLAY_STORE_UPLOAD_KEY" | base64 --decode > app/upload-keystore.jks

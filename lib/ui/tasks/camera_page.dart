@@ -101,7 +101,7 @@ class CameraPageState extends State<CameraPage> {
     }
   }
 
-  void stopRecording(dynamic details) async {
+  void stopRecording(LongPressEndDetails details) async {
     try {
       var video = await _cameraController.stopVideoRecording();
 

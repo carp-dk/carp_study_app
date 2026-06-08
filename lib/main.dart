@@ -93,6 +93,7 @@ part 'ui/pages/home_page.dart';
 part 'ui/pages/home_page.install_health_connect_dialog.dart';
 part 'ui/carp_study_style.dart';
 part 'ui/colors.dart';
+part 'ui/helpers.dart';
 part 'ui/pages/data_visualization_page.dart';
 part 'ui/pages/study_page.dart';
 part 'ui/pages/task_list_page.dart';
