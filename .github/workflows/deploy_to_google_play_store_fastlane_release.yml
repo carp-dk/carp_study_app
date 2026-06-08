@@ -15,34 +15,22 @@ jobs:
           distribution: "adopt" # See 'Supported distributions' for available options
           java-version: "17"
 
-      - name: Cache Flutter
-        id: cache-flutter
-        uses: actions/cache@v3
+      - name: Set up Flutter
+        uses: subosito/flutter-action@v2
         with:
-          path: |
-            flutter
-            ~/.pub-cache
-          key: flutter-${{ hashFiles('**/pubspec.lock') }}
+          flutter-version: "3.44.0"
+          channel: stable
+          cache: true
+          pub-cache: true
 
       - name: Cache Gradle
         id: cache-gradle
-        uses: actions/cache@v3
+        uses: actions/cache@v4
         with:
           path: |
             ~/.gradle/caches
             ~/.gradle/wrapper/
           key: gradle-ubuntu-${{ hashFiles('**/*.gradle*', '**/gradle-wrapper.properties') }}
-
-      - if: ${{ steps.cache-flutter.outputs.cache-hit != 'true' }}
-        name: Install Flutter
-        run: git clone https://github.com/flutter/flutter.git --depth 1 -b 3.44.0 $FOLDER
-
-      - name: Add Flutter to PATH
-        run: echo "$GITHUB_WORKSPACE/flutter/bin" >> $GITHUB_PATH
-
-      - if: ${{ steps.cache-flutter.outputs.cache-hit != 'true' }}
-        name: Install dependencies
-        run: flutter pub get
 
       # Setup Ruby, Bundler, and Gemfile dependencies
       - name: Setup Fastlane
