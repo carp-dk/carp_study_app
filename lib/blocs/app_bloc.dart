@@ -163,16 +163,11 @@ class StudyAppBLoC extends ChangeNotifier {
     Settings().debugLevel = debugLevel;
     await Settings().init();
 
-    // Pre-warm sqflite during splash; first call freezes the UI thread.
-    await Persistence().init();
-
     CarpResourceManager().initialize();
 
     Sensing();
 
-    // Initialize and use the CAWS backend if not in local deployment mode.
-    // backend.initialize() re-seeds the cached study into CAWS service
-    // singletons, so a returning user doesn't hit null-derefs.
+    // Initialize and use the CAWS backend if not in local deployment mode
     if (deploymentMode != DeploymentMode.local) {
       if (await checkConnectivity()) {
         await backend.initialize();
@@ -207,7 +202,6 @@ class StudyAppBLoC extends ChangeNotifier {
     if (Platform.isIOS) return true;
 
     try {
-      // Single-package query; getInstalledApps() enumerates everything.
       return await appCheck
           .isAppInstalled(LocalSettings.healthConnectPackageName);
     } catch (e) {
@@ -322,7 +316,7 @@ class StudyAppBLoC extends ChangeNotifier {
     Timer.periodic(const Duration(minutes: 30), (_) => refreshMessages());
 
     info('Study configuration done.');
-    // Flip state before notifying so listeners see isConfigured == true.
+
     _state = StudyAppState.configured;
     notifyListeners();
   }
