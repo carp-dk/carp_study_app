@@ -10,12 +10,6 @@ class LoginPage extends StatefulWidget {
 
 class _LoginPageState extends State<LoginPage> {
   final GlobalKey webViewKey = GlobalKey();
-
-  @override
-  void initState() {
-    super.initState();
-  }
-
   @override
   Widget build(BuildContext context) {
     RPLocalizations locale = RPLocalizations.of(context)!;

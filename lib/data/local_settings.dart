@@ -122,6 +122,11 @@ class LocalSettings {
   set isAnonymous(bool value) =>
       Settings().preferences!.setBool('isAnonymous', value);
 
+  bool get referrerUsed =>
+      Settings().preferences!.getBool('referrerUsed') ?? false;
+  set referrerUsed(bool value) =>
+      Settings().preferences!.setBool('referrerUsed', value);
+
   /// The study deployment id for the currently running deployment.
   String? get studyDeploymentId => _study?.studyDeploymentId;
 

@@ -165,21 +165,27 @@
                 <action android:name="android.intent.action.MAIN" />
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
-            <!-- Deep linking  -->
-            <intent-filter
-                android:autoVerify="true" >
-
+            <!-- Deep linking — separate intent-filters so autoVerify succeeds per-host -->
+            <intent-filter android:autoVerify="true">
                 <action android:name="android.intent.action.VIEW" />
                 <category android:name="android.intent.category.DEFAULT" />
                 <category android:name="android.intent.category.BROWSABLE" />
-
-                <data android:scheme="https" android:host="study.app.carp.computerome.dk"
-                    android:pathPattern="/auth/realms/Carp/login-actions/action-token" />
                 <data android:scheme="https" android:host="study.app.test.carp.dk"
                     android:pathPattern="/auth/realms/Carp/login-actions/action-token" />
+            </intent-filter>
+            <intent-filter android:autoVerify="true">
+                <action android:name="android.intent.action.VIEW" />
+                <category android:name="android.intent.category.DEFAULT" />
+                <category android:name="android.intent.category.BROWSABLE" />
                 <data android:scheme="https" android:host="study.app.dev.carp.dk"
                     android:pathPattern="/auth/realms/Carp/login-actions/action-token" />
-
+            </intent-filter>
+            <intent-filter android:autoVerify="true">
+                <action android:name="android.intent.action.VIEW" />
+                <category android:name="android.intent.category.DEFAULT" />
+                <category android:name="android.intent.category.BROWSABLE" />
+                <data android:scheme="https" android:host="study.app.carp.computerome.dk"
+                    android:pathPattern="/auth/realms/Carp/login-actions/action-token" />
             </intent-filter>
 
             <!-- Handle custom carp-studies URI scheme so deep links like
@@ -200,7 +206,7 @@
                 <action android:name="android.intent.action.VIEW" />
                 <category android:name="android.intent.category.DEFAULT" />
                 <category android:name="android.intent.category.BROWSABLE" />
-                <data android:scheme="carp-studies-anonymous" android:pathPrefix="/" />
+                <data android:scheme="https" android:host="study.app.test.carp.dk" android:pathPrefix="/anonymous" />
             </intent-filter>
         </activity>
         <activity

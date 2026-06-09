@@ -370,11 +370,13 @@ packages:
     source: hosted
     version: "0.0.5"
   carp_webservices:
-    dependency: "direct overridden"
+    dependency: "direct main"
     description:
-      path: "../carp.sensing-flutter/backends/carp_webservices"
-      relative: true
-    source: path
+      path: "backends/carp_webservices"
+      ref: "4e1e0f4c"
+      resolved-ref: "4e1e0f4c02472765917b9e65e15ae575f4995339"
+      url: "https://github.com/carp-dk/carp.sensing-flutter.git"
+    source: git
     version: "3.8.0"
   characters:
     dependency: transitive
@@ -1628,6 +1630,14 @@ packages:
       url: "https://pub.dev"
     source: hosted
     version: "3.1.6"
+  play_install_referrer:
+    dependency: "direct main"
+    description:
+      name: play_install_referrer
+      sha256: "7dd808236d35d15199d5e7a5b55488e4343c1b67c4694902d6b95196b22b19cd"
+      url: "https://pub.dev"
+    source: hosted
+    version: "0.5.0"
   plugin_platform_interface:
     dependency: transitive
     description:

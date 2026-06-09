@@ -57,7 +57,7 @@ class CarpBackend {
         authURL: uri,
         clientId: 'studies-app',
         redirectURI: Uri.parse('carp-studies-auth://auth'),
-        anonymousRedirectURI: Uri.parse('carp-studies-anonymous://anonymous'),
+        anonymousRedirectURI: Uri.parse('https://study.app.${uris[bloc.deploymentMode]}/anonymous'),
         // For authentication at CAWS the path is '/auth/realms/Carp'
         discoveryURL: uri.replace(pathSegments: [
           'auth',

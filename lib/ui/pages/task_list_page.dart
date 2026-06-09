@@ -53,7 +53,7 @@ class TaskListPageState extends State<TaskListPage>
     _tabController = TabController(length: 2, vsync: this);
     bloc.getParticipantDataListFromDeployment().then((value) {
       setState(() {
-        showParticipantDataCard = value.isEmpty;
+        showParticipantDataCard = value.isNotEmpty;
       });
     });
 

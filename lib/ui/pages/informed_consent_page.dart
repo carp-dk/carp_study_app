@@ -11,16 +11,22 @@ class InformedConsentPage extends StatefulWidget {
 
 class InformedConsentState extends State<InformedConsentPage> {
   final GlobalKey<ScaffoldState> _scaffoldKey = GlobalKey<ScaffoldState>();
-
-  // Tracks whether the user actually completed consent. Anything else that
-  // tears down this page (cancel dialog, system back, programmatic redirect)
-  // is treated as "user did not consent" and leaveStudy() is called from
-  // dispose(). Set BEFORE awaiting the upload so a router-driven redirect
-  // mid-await doesn't get misread as a cancel.
   bool _submitted = false;
+  Timer? _timeout;
+
+  @override
+  void initState() {
+    super.initState();
+    _timeout = Timer(const Duration(seconds: 2), () {
+      if (mounted && !_submitted) {
+        context.go(CarpStudyAppState.homeRoute);
+      }
+    });
+  }
 
   Future<void> resultCallback(RPTaskResult result) async {
     _submitted = true;
+    _timeout?.cancel();
     await widget.model.informedConsentHasBeenAccepted(result);
     if (!mounted) return;
     context.go(CarpStudyAppState.homeRoute);
@@ -28,7 +34,7 @@ class InformedConsentState extends State<InformedConsentPage> {
 
   @override
   void dispose() {
-    // Bypassing onCancel entirely is intentional — see issue carp-dk/research.package#168.
+    _timeout?.cancel();
     if (!_submitted) {
       bloc.leaveStudy();
     }
@@ -44,11 +50,9 @@ class InformedConsentState extends State<InformedConsentPage> {
       body: FutureBuilder<RPOrderedTask?>(
         future: widget.model.getInformedConsent(localization.locale).then(
           (document) async {
-            // No consent document configured for this study → mark accepted
-            // and navigate to /study. Set _submitted so dispose() doesn't tear
-            // the study back down.
             if (document == null && !_submitted) {
               _submitted = true;
+              _timeout?.cancel();
               await bloc.informedConsentHasBeenAccepted();
               if (mounted) context.go(CarpStudyAppState.homeRoute);
             }
@@ -56,15 +60,14 @@ class InformedConsentState extends State<InformedConsentPage> {
           },
         ),
         builder: (context, snapshot) {
-          if (snapshot.connectionState == ConnectionState.done) {
-            if (snapshot.hasData) {
-              return RPUITask(
-                task: snapshot.data!,
-                onSubmit: resultCallback,
-              );
-            }
+          if (snapshot.connectionState == ConnectionState.done &&
+              snapshot.hasData) {
+            _timeout?.cancel();
+            return RPUITask(
+              task: snapshot.data!,
+              onSubmit: resultCallback,
+            );
           }
-
           return const Center(child: CircularProgressIndicator());
         },
       ),

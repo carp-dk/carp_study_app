@@ -28,14 +28,52 @@ class CarpStudyAppState extends State<CarpStudyApp> {
   // changes notify the router via refreshListenable, which re-evaluates the
   // redirect at the current location and moves the user automatically.
   final GoRouter _router = GoRouter(
-    initialLocation: StudyPage.route,
+    initialLocation: homeRoute,
     navigatorKey: _rootNavigatorKey,
     refreshListenable: bloc,
-    errorBuilder: (context, state) => const ErrorPage(),
+    errorBuilder: (context, state) {
+      debugPrint('[GoRouter ERROR] uri=${state.uri} '
+          'matchedLocation=${state.matchedLocation} '
+          'error=${state.error}');
+      return const ErrorPage();
+    },
     redirect: (context, state) async {
+      debugPrint('HERE!!!!!!!!!!!!!!!');
+      debugPrint('GoRouter redirect called with location: ${state.extra}');
+      debugPrint('GoRouter redirect called with uri: ${state.uri}');
       final loc = state.matchedLocation;
       debugPrint('[redirect] loc=$loc auth=${bloc.backend.isAuthenticated} '
           'studyDeployed=${bloc.hasStudyBeenDeployed}');
+
+      if (loc == '/auth/realms/Carp/login-actions/action-token') {
+        if (!bloc.backend.isAuthenticated) {
+          await bloc.backend.authenticateWithMagicLink(state.uri.toString());
+        }
+      }
+
+      // // --- DEBUG: hardcoded magic link for local testing ---
+      // const debugMagicLink =
+      //     "https://study.app.test.carp.dk/auth/realms/Carp/login-actions/action-token?key=eyJhbGciOiJIUzUxMiIsInR5cCIgOiAiSldUIiwia2lkIiA6ICIyZDRkYjcxMy1kMjViLTQ4NWEtOTI2OC05MmI4YzM2NWYwZjIifQ.eyJleHAiOjE4MTI3NTEyMDAsImlhdCI6MTc4MTA4MDA4MiwianRpIjoiYTliMThmMzItYjE5OC00NzY5LWFiOTMtODNkNmQ1MjJlYjdkIiwiaXNzIjoiaHR0cHM6Ly90ZXN0LmNhcnAuZGsvYXV0aC9yZWFsbXMvQ2FycCIsImF1ZCI6Imh0dHBzOi8vdGVzdC5jYXJwLmRrL2F1dGgvcmVhbG1zL0NhcnAiLCJzdWIiOiIxMjFiY2I4OS1mYjNlLTQ4MjMtYjQwZC02NzhjZThiNjZkNzEiLCJ0eXAiOiJleHQtbWFnaWMtbGluayIsImF6cCI6InN0dWRpZXMtYXBwIiwibm9uY2UiOiJhOWIxOGYzMi1iMTk4LTQ3NjktYWI5My04M2Q2ZDUyMmViN2QiLCJyZHUiOiJodHRwczovL3N0dWR5LmFwcC50ZXN0LmNhcnAuZGsvYW5vbnltb3VzIiwicm1lIjpmYWxzZSwicnUiOnRydWV9.HP1Z_cwHQfT-K7P6Bbz87MARPTSIy40Fu8VTUesXbv9kZUxR1LC4NsZxa4h15BauJcKmIYimijMKDpoHfrI3kw&client_id=studies-app";
+      // if (Platform.isAndroid && !LocalSettings().referrerUsed) {
+      //   LocalSettings().referrerUsed = true;
+      //   await bloc.backend.authenticateWithMagicLink(debugMagicLink);
+      //   return homeRoute;
+      // }
+      // // --- END DEBUG ---
+
+      if (Platform.isAndroid && !LocalSettings().referrerUsed) {
+        try {
+          final referrerDetails = await PlayInstallReferrer.installReferrer;
+          final referrer = referrerDetails.installReferrer;
+          debugPrint('[redirect] installReferrer: $referrer');
+          if (referrer != null && referrer.contains('action-token')) {
+            LocalSettings().referrerUsed = true;
+            await bloc.backend.authenticateWithMagicLink(referrer);
+          }
+        } catch (e) {
+          debugPrint('Failed to get referrer details: $e');
+        }
+      }
 
       // 1) Not authenticated → login page.
       if (bloc.deploymentMode != DeploymentMode.local &&
@@ -162,17 +200,12 @@ class CarpStudyAppState extends State<CarpStudyApp> {
       GoRoute(
         path: '/auth/realms/Carp/login-actions/action-token',
         parentNavigatorKey: _rootNavigatorKey,
-        redirect: (context, state) async {
-          // We don't show any page, but handle the magic link in the background.
-          try {
-            await bloc.backend.authenticateWithMagicLink(state.uri.toString());
-            return homeRoute;
-          } catch (error) {
-            debugPrint(
-                'Magic-link authentication failed: $error, redirecting to login page');
-            return LoginPage.route;
-          }
-        },
+        redirect: (_, __) => homeRoute,
+      ),
+      GoRoute(
+        path: '/anonymous',
+        parentNavigatorKey: _rootNavigatorKey,
+        redirect: (_, __) => homeRoute,
       ),
       GoRoute(
         path: LoginPage.route,

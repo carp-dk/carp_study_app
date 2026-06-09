@@ -11,6 +11,8 @@ import 'package:app_version_update/data/models/app_version_result.dart';
 import 'package:async/async.dart';
 import 'package:flutter/gestures.dart';
 
+import 'package:flutter/cupertino.dart';
+
 import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
 import 'package:flutter/services.dart';
@@ -20,6 +22,7 @@ import 'package:country_code_picker/country_code_picker.dart';
 import 'package:intl_phone_number_input/intl_phone_number_input.dart';
 import 'package:json_annotation/json_annotation.dart';
 import 'package:fl_chart/fl_chart.dart';
+import 'package:play_install_referrer/play_install_referrer.dart';
 import 'package:url_launcher/url_launcher.dart';
 import 'package:timeago/timeago.dart' as timeago;
 import 'package:camera/camera.dart';
