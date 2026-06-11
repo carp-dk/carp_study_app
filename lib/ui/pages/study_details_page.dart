@@ -10,23 +10,20 @@ class StudyDetailsPage extends StatelessWidget {
     RPLocalizations locale = RPLocalizations.of(context)!;
 
     return Scaffold(
-      backgroundColor:
-          Theme.of(context).extension<CarpColors>()!.backgroundGray,
+      backgroundColor: Theme.of(context).extension<CarpColors>()!.backgroundGray,
       body: SafeArea(
         child: Container(
           color: Theme.of(context).extension<CarpColors>()!.backgroundGray,
           child: Column(
             children: [
               Padding(
-                padding:
-                    const EdgeInsets.symmetric(vertical: 8.0, horizontal: 18),
+                padding: const EdgeInsets.symmetric(vertical: 8.0, horizontal: 18),
                 child: const CarpAppBar(hasProfileIcon: true),
               ),
               Row(
                 children: [
                   IconButton(
-                    padding: const EdgeInsets.only(
-                        left: 26, right: 10, top: 16, bottom: 16),
+                    padding: const EdgeInsets.only(left: 26, right: 10, top: 16, bottom: 16),
                     icon: Icon(
                       Icons.arrow_back_ios,
                       color: Theme.of(context).extension<CarpColors>()!.grey600,
@@ -42,17 +39,13 @@ class StudyDetailsPage extends StatelessWidget {
                   Padding(
                     padding: const EdgeInsets.symmetric(vertical: 10.0),
                     child: Text(locale.translate(model.title),
-                        style: fs20fw700.copyWith(
-                            color: Theme.of(context)
-                                .extension<CarpColors>()!
-                                .primary)),
+                        style: fs20fw700.copyWith(color: Theme.of(context).extension<CarpColors>()!.primary)),
                   ),
                 ],
               ),
               Flexible(
                 child: ListView(
-                  padding:
-                      const EdgeInsets.symmetric(horizontal: 24, vertical: 16),
+                  padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 16),
                   children: [
                     Padding(
                       padding: const EdgeInsets.symmetric(vertical: 16.0),
@@ -75,12 +68,8 @@ class StudyDetailsPage extends StatelessWidget {
                       [
                         _buildActionListTile(
                           context: context,
-                          leading: Icon(Icons.mail,
-                              color: Theme.of(context)
-                                  .extension<CarpColors>()!
-                                  .primary),
-                          trailing: const Icon(Icons.arrow_forward_ios,
-                              color: CACHET.GREY_6),
+                          leading: Icon(Icons.mail, color: Theme.of(context).extension<CarpColors>()!.primary),
+                          trailing: const Icon(Icons.arrow_forward_ios, color: CACHET.GREY_6),
                           title: locale.translate('pages.profile.contact'),
                           onTap: () async {
                             _sendEmailToContactResearcher(
@@ -91,18 +80,12 @@ class StudyDetailsPage extends StatelessWidget {
                         ),
                         _buildActionListTile(
                             context: context,
-                            leading: Icon(Icons.policy,
-                                color: Theme.of(context)
-                                    .extension<CarpColors>()!
-                                    .primary),
-                            trailing: const Icon(Icons.arrow_forward_ios,
-                                color: CACHET.GREY_6),
-                            title:
-                                locale.translate('pages.about.study.privacy'),
+                            leading: Icon(Icons.policy, color: Theme.of(context).extension<CarpColors>()!.primary),
+                            trailing: const Icon(Icons.arrow_forward_ios, color: CACHET.GREY_6),
+                            title: locale.translate('pages.about.study.privacy'),
                             onTap: () async {
                               try {
-                                await launchUrl(Uri.parse(
-                                    locale.translate(model.privacyPolicyUrl)));
+                                await launchUrl(Uri.parse(locale.translate(model.privacyPolicyUrl)));
                               } catch (error) {
                                 warning(
                                     "Could not launch study description URL - ${locale.translate(model.privacyPolicyUrl)}");
@@ -110,17 +93,12 @@ class StudyDetailsPage extends StatelessWidget {
                             }),
                         _buildActionListTile(
                           context: context,
-                          leading: Icon(Icons.public,
-                              color: Theme.of(context)
-                                  .extension<CarpColors>()!
-                                  .primary),
-                          trailing: const Icon(Icons.arrow_forward_ios,
-                              color: CACHET.GREY_6),
+                          leading: Icon(Icons.public, color: Theme.of(context).extension<CarpColors>()!.primary),
+                          trailing: const Icon(Icons.arrow_forward_ios, color: CACHET.GREY_6),
                           title: locale.translate('pages.about.study.website'),
                           onTap: () async {
                             try {
-                              await launchUrl(Uri.parse(
-                                  locale.translate(model.studyDescriptionUrl)));
+                              await launchUrl(Uri.parse(locale.translate(model.studyDescriptionUrl)));
                             } catch (error) {
                               warning(
                                   "Could not launch study description URL - ${locale.translate(model.studyDescriptionUrl)}");
@@ -137,54 +115,35 @@ class StudyDetailsPage extends StatelessWidget {
                         children: [
                           Text(
                             locale.translate('widgets.study_card.responsible'),
-                            style: fs16fw700.copyWith(
-                                color: Theme.of(context)
-                                    .extension<CarpColors>()!
-                                    .grey900),
+                            style: fs16fw700.copyWith(color: Theme.of(context).extension<CarpColors>()!.grey900),
                           ),
                           Padding(
                             padding: const EdgeInsets.only(top: 4.0, bottom: 8),
                             child: Text(
                               locale.translate(model.responsibleName),
-                              style: fs12fw700.copyWith(
-                                  color: Theme.of(context)
-                                      .extension<CarpColors>()!
-                                      .grey700),
+                              style: fs12fw700.copyWith(color: Theme.of(context).extension<CarpColors>()!.grey700),
                             ),
                           ),
                           Text(
-                            locale.translate(
-                                'widgets.study_card.participant_role'),
-                            style: fs16fw700.copyWith(
-                                color: Theme.of(context)
-                                    .extension<CarpColors>()!
-                                    .grey900),
+                            locale.translate('widgets.study_card.participant_role'),
+                            style: fs16fw700.copyWith(color: Theme.of(context).extension<CarpColors>()!.grey900),
                           ),
                           Padding(
                             padding: const EdgeInsets.only(top: 4.0, bottom: 8),
                             child: Text(
                               locale.translate(model.participantRole),
-                              style: fs12fw700.copyWith(
-                                  color: Theme.of(context)
-                                      .extension<CarpColors>()!
-                                      .grey700),
+                              style: fs12fw700.copyWith(color: Theme.of(context).extension<CarpColors>()!.grey700),
                             ),
                           ),
                           Text(
                             locale.translate('widgets.study_card.device_role'),
-                            style: fs16fw700.copyWith(
-                                color: Theme.of(context)
-                                    .extension<CarpColors>()!
-                                    .grey900),
+                            style: fs16fw700.copyWith(color: Theme.of(context).extension<CarpColors>()!.grey900),
                           ),
                           Padding(
                             padding: const EdgeInsets.only(top: 4.0, bottom: 8),
                             child: Text(
                               locale.translate(model.deviceRole),
-                              style: fs12fw700.copyWith(
-                                  color: Theme.of(context)
-                                      .extension<CarpColors>()!
-                                      .grey700),
+                              style: fs12fw700.copyWith(color: Theme.of(context).extension<CarpColors>()!.grey700),
                             ),
                           ),
                         ],
@@ -200,39 +159,25 @@ class StudyDetailsPage extends StatelessWidget {
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
                           Text(
-                            locale.translate(
-                                'widgets.study_card.study_description'),
-                            style: fs16fw700.copyWith(
-                                color: Theme.of(context)
-                                    .extension<CarpColors>()!
-                                    .grey900),
+                            locale.translate('widgets.study_card.study_description'),
+                            style: fs16fw700.copyWith(color: Theme.of(context).extension<CarpColors>()!.grey900),
                           ),
                           Padding(
                             padding: const EdgeInsets.only(top: 4.0, bottom: 8),
                             child: Text(
                               locale.translate(model.description),
-                              style: fs12fw700.copyWith(
-                                  color: Theme.of(context)
-                                      .extension<CarpColors>()!
-                                      .grey700),
+                              style: fs12fw700.copyWith(color: Theme.of(context).extension<CarpColors>()!.grey700),
                             ),
                           ),
                           Text(
-                            locale
-                                .translate('widgets.study_card.study_purpose'),
-                            style: fs16fw700.copyWith(
-                                color: Theme.of(context)
-                                    .extension<CarpColors>()!
-                                    .grey900),
+                            locale.translate('widgets.study_card.study_purpose'),
+                            style: fs16fw700.copyWith(color: Theme.of(context).extension<CarpColors>()!.grey900),
                           ),
                           Padding(
                             padding: const EdgeInsets.only(top: 4.0, bottom: 8),
                             child: Text(
                               locale.translate(model.purpose),
-                              style: fs12fw700.copyWith(
-                                  color: Theme.of(context)
-                                      .extension<CarpColors>()!
-                                      .grey700),
+                              style: fs12fw700.copyWith(color: Theme.of(context).extension<CarpColors>()!.grey700),
                             ),
                           ),
                         ],
@@ -278,9 +223,7 @@ class StudyDetailsPage extends StatelessWidget {
   }) {
     return ListTile(
       leading: leading,
-      title: Text(title,
-          style: fs16fw600.copyWith(
-              color: Theme.of(context).extension<CarpColors>()!.grey900)),
+      title: Text(title, style: fs16fw600.copyWith(color: Theme.of(context).extension<CarpColors>()!.grey900)),
       trailing: trailing,
       onTap: onTap,
       contentPadding: EdgeInsets.symmetric(vertical: 4, horizontal: 16),
@@ -289,12 +232,8 @@ class StudyDetailsPage extends StatelessWidget {
 
   // Sends and email to the researcher with the name of the study + user id
   void _sendEmailToContactResearcher(String email, String subject) async {
-    final url = Uri(
-            scheme: 'mailto',
-            path: email,
-            queryParameters: {'subject': subject})
-        .toString()
-        .replaceAll("+", "%20");
+    final url =
+        Uri(scheme: 'mailto', path: email, queryParameters: {'subject': subject}).toString().replaceAll("+", "%20");
     try {
       await launchUrl(Uri.parse(url));
     } finally {}

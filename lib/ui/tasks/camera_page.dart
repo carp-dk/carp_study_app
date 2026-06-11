@@ -109,10 +109,8 @@ class CameraPageState extends State<CameraPage> {
       if (context.mounted) {
         await Navigator.of(context).push(
           MaterialPageRoute<void>(
-              builder: (context) => DisplayPicturePage(
-                  file: video,
-                  isVideo: true,
-                  videoUserTask: widget.videoUserTask)),
+              builder: (context) =>
+                  DisplayPicturePage(file: video, isVideo: true, videoUserTask: widget.videoUserTask)),
         );
       }
       setState(() {
@@ -142,8 +140,7 @@ class CameraPageState extends State<CameraPage> {
                 builder: (context, snapshot) {
                   if (snapshot.connectionState == ConnectionState.done) {
                     return LayoutBuilder(
-                      builder:
-                          (BuildContext context, BoxConstraints constraints) {
+                      builder: (BuildContext context, BoxConstraints constraints) {
                         return SizedBox(
                           width: constraints.maxWidth,
                           height: constraints.maxHeight,
@@ -152,10 +149,8 @@ class CameraPageState extends State<CameraPage> {
                             child: FittedBox(
                               fit: BoxFit.cover,
                               child: SizedBox(
-                                width:
-                                    _cameraController.value.previewSize!.height,
-                                height:
-                                    _cameraController.value.previewSize!.width,
+                                width: _cameraController.value.previewSize!.height,
+                                height: _cameraController.value.previewSize!.width,
                                 child: CameraPreview(_cameraController),
                               ),
                             ),
@@ -221,8 +216,7 @@ class CameraPageState extends State<CameraPage> {
                                   height: 65,
                                   child: CircularProgressIndicator(
                                     backgroundColor: Colors.white54,
-                                    valueColor:
-                                        AlwaysStoppedAnimation(Colors.black54),
+                                    valueColor: AlwaysStoppedAnimation(Colors.black54),
                                     strokeWidth: 5,
                                   ),
                                 ),
@@ -286,8 +280,7 @@ class CameraPageState extends State<CameraPage> {
           actions: <Widget>[
             TextButton(
               child: Text(locale.translate("NO")),
-              onPressed: () =>
-                  Navigator.of(context).pop(), // Dismissing the pop-up
+              onPressed: () => Navigator.of(context).pop(), // Dismissing the pop-up
             ),
             TextButton(
               child: Text(locale.translate("YES")),

@@ -53,8 +53,7 @@ class StudyAppBLoC extends ChangeNotifier {
   final CarpBackend _backend = CarpBackend();
   final CarpStudyAppViewModel _appViewModel = CarpStudyAppViewModel();
   List<Message> _messages = [];
-  final StreamController<int> _messageStreamController =
-      StreamController.broadcast();
+  final StreamController<int> _messageStreamController = StreamController.broadcast();
 
   /// The state of this BloC.
   StudyAppState get state => _state;
@@ -86,14 +85,11 @@ class StudyAppBLoC extends ChangeNotifier {
 
   /// Create the BLoC for the app.
   StudyAppBLoC() : super() {
-    const dep =
-        String.fromEnvironment('deployment-mode', defaultValue: 'production');
-    deploymentMode =
-        DeploymentMode.values.where((element) => element.name == dep).first;
+    const dep = String.fromEnvironment('deployment-mode', defaultValue: 'production');
+    deploymentMode = DeploymentMode.values.where((element) => element.name == dep).first;
 
     const deb = String.fromEnvironment('debug-level', defaultValue: 'info');
-    debugLevel =
-        DebugLevel.values.where((element) => element.name == deb).first;
+    debugLevel = DebugLevel.values.where((element) => element.name == deb).first;
 
     info('$runtimeType created. '
         'DeploymentMode: ${deploymentMode.name}, '
@@ -101,28 +97,22 @@ class StudyAppBLoC extends ChangeNotifier {
   }
 
   LocalizationManager get localizationManager =>
-      (deploymentMode == DeploymentMode.local
-          ? LocalResourceManager()
-          : CarpResourceManager()) as LocalizationManager;
+      (deploymentMode == DeploymentMode.local ? LocalResourceManager() : CarpResourceManager()) as LocalizationManager;
 
   LocalizationLoader get localizationLoader {
     debug('$runtimeType - using localizationManager: $localizationManager');
     return ResourceLocalizationLoader(localizationManager);
   }
 
-  MessageManager get messageManager => (deploymentMode == DeploymentMode.local
-      ? LocalResourceManager()
-      : CarpResourceManager()) as MessageManager;
+  MessageManager get messageManager =>
+      (deploymentMode == DeploymentMode.local ? LocalResourceManager() : CarpResourceManager()) as MessageManager;
 
   InformedConsentManager get informedConsentManager =>
-      (bloc.deploymentMode == DeploymentMode.local
-          ? LocalResourceManager()
-          : CarpResourceManager()) as InformedConsentManager;
+      (bloc.deploymentMode == DeploymentMode.local ? LocalResourceManager() : CarpResourceManager())
+          as InformedConsentManager;
 
   ParticipationService get participationService =>
-      (bloc.deploymentMode == DeploymentMode.local
-          ? LocalParticipationService()
-          : CarpParticipationService());
+      (bloc.deploymentMode == DeploymentMode.local ? LocalParticipationService() : CarpParticipationService());
 
   CarpBackend get backend => _backend;
 
@@ -138,13 +128,11 @@ class StudyAppBLoC extends ChangeNotifier {
   /// The deployment running on this phone.
   SmartphoneDeployment? get deployment => Sensing().controller?.deployment;
 
-  Set<ExpectedParticipantData?> get expectedParticipantData =>
-      deployment?.expectedParticipantData ?? {};
+  Set<ExpectedParticipantData?> get expectedParticipantData => deployment?.expectedParticipantData ?? {};
 
   /// Get the status for the current study deployment.
   /// Returns null if the study is not yet deployed on this phone.
-  Future<StudyDeploymentStatus?> get studyDeploymentStatus async =>
-      await Sensing().getStudyDeploymentStatus();
+  Future<StudyDeploymentStatus?> get studyDeploymentStatus async => await Sensing().getStudyDeploymentStatus();
 
   /// When was this study deployed on this phone.
   DateTime? get studyStartTimestamp => deployment?.deployed;
@@ -186,12 +174,9 @@ class StudyAppBLoC extends ChangeNotifier {
 
   /// Is the phone connected to the internet either via wifi or mobile network?
   Future<bool> checkConnectivity() async {
-    final List<ConnectivityResult> results =
-        await (Connectivity().checkConnectivity());
+    final List<ConnectivityResult> results = await (Connectivity().checkConnectivity());
 
-    return results.any((element) =>
-        element == ConnectivityResult.mobile ||
-        element == ConnectivityResult.wifi);
+    return results.any((element) => element == ConnectivityResult.mobile || element == ConnectivityResult.wifi);
   }
 
   /// Check if the Health database is installed on this phone.
@@ -202,8 +187,7 @@ class StudyAppBLoC extends ChangeNotifier {
     if (Platform.isIOS) return true;
 
     try {
-      return await appCheck
-          .isAppInstalled(LocalSettings.healthConnectPackageName);
+      return await appCheck.isAppInstalled(LocalSettings.healthConnectPackageName);
     } catch (e) {
       debug("$runtimeType - Error checking Health Connect installation: $e");
       return false;
@@ -243,8 +227,7 @@ class StudyAppBLoC extends ChangeNotifier {
       var protocol = await LocalResourceManager().getStudyProtocol('');
 
       // Deploy this protocol using the on-phone deployment service.
-      final status =
-          await SmartphoneDeploymentService().createStudyDeployment(protocol!);
+      final status = await SmartphoneDeploymentService().createStudyDeployment(protocol!);
 
       // Save the participant and study on the phone for use across app restart.
       var participant = Participant(
@@ -322,10 +305,7 @@ class StudyAppBLoC extends ChangeNotifier {
   }
 
   Future<List<ParticipantData>> getParticipantDataListFromDeployment() async =>
-      (deployment == null)
-          ? []
-          : await participationService
-              .getParticipantDataList([deployment!.studyDeploymentId]);
+      (deployment == null) ? [] : await participationService.getParticipantDataList([deployment!.studyDeploymentId]);
 
   /// Set the participant data for this study.
   void setParticipantData(
@@ -353,12 +333,10 @@ class StudyAppBLoC extends ChangeNotifier {
   /// backend and falls back to the locally stored flag.
   Future<bool> get hasInformedConsentBeenAccepted async {
     if (deploymentMode == DeploymentMode.local || study == null) {
-      return LocalSettings().participant?.hasInformedConsentBeenAccepted ??
-          false;
+      return LocalSettings().participant?.hasInformedConsentBeenAccepted ?? false;
     }
     try {
-      final consent = await backend.getInformedConsentByRole(
-          study!.studyDeploymentId, study!.participantRoleName);
+      final consent = await backend.getInformedConsentByRole(study!.studyDeploymentId, study!.participantRoleName);
       return consent != null;
     } catch (e) {
       warning('Could not fetch informed consent status from backend: $e');
@@ -408,11 +386,10 @@ class StudyAppBLoC extends ChangeNotifier {
   /// Does this [deployment] have any measures?
   bool hasMeasures() => (deployment == null)
       ? false
-      : (deployment!.measures.any((measure) =>
-          (measure.type != SurveyUserTask.VIDEO_TYPE &&
-              measure.type != SurveyUserTask.IMAGE_TYPE &&
-              measure.type != SurveyUserTask.AUDIO_TYPE &&
-              measure.type != SurveyUserTask.SURVEY_TYPE)));
+      : (deployment!.measures.any((measure) => (measure.type != SurveyUserTask.VIDEO_TYPE &&
+          measure.type != SurveyUserTask.IMAGE_TYPE &&
+          measure.type != SurveyUserTask.AUDIO_TYPE &&
+          measure.type != SurveyUserTask.SURVEY_TYPE)));
 
   /// Does this [deployment] have the measure of type [type]?
   bool hasMeasure(String type) {
@@ -428,21 +405,16 @@ class StudyAppBLoC extends ChangeNotifier {
   }
 
   /// Does this [deployment] have any user tasks?
-  bool hasUserTasks() => (deployment == null)
-      ? false
-      : deployment!.tasks.whereType<AppTask>().isNotEmpty;
+  bool hasUserTasks() => (deployment == null) ? false : deployment!.tasks.whereType<AppTask>().isNotEmpty;
 
   /// Does this [deployment] have any connected devices?
-  bool hasDevices() =>
-      (deployment == null) ? false : deployment!.connectedDevices.isNotEmpty;
+  bool hasDevices() => (deployment == null) ? false : deployment!.connectedDevices.isNotEmpty;
 
   /// Is sensing running, i.e. has the study executor been resumed?
   bool get isRunning => Sensing().isRunning;
 
   /// the list of running - i.e. used - probes in this study.
-  List<Probe> get runningProbes => (Sensing().controller != null)
-      ? Sensing().controller!.executor.probes
-      : [];
+  List<Probe> get runningProbes => (Sensing().controller != null) ? Sensing().controller!.executor.probes : [];
 
   DeploymentService get deploymentService => Sensing().deploymentService;
 
@@ -452,8 +424,7 @@ class StudyAppBLoC extends ChangeNotifier {
 
   /// Start sensing.
   Future<void> start() async {
-    assert(Sensing().controller != null,
-        'No Study Controller - the study has not been deployed.');
+    assert(Sensing().controller != null, 'No Study Controller - the study has not been deployed.');
     if (!Sensing().isRunning) Sensing().controller?.start();
   }
 
@@ -468,12 +439,10 @@ class StudyAppBLoC extends ChangeNotifier {
   }
 
   /// Add [measurement] to the stream of collected measurements.
-  void addMeasurement(Measurement measurement) =>
-      Sensing().controller?.executor.addMeasurement(measurement);
+  void addMeasurement(Measurement measurement) => Sensing().controller?.executor.addMeasurement(measurement);
 
   /// Add [error] to the stream of measurements.
-  void addError(Object error, [StackTrace? stacktrace]) =>
-      Sensing().controller?.executor.addError(error, stacktrace);
+  void addError(Object error, [StackTrace? stacktrace]) => Sensing().controller?.executor.addError(error, stacktrace);
 
   /// Leave the study deployed on this phone.
   ///

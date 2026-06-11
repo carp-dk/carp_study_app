@@ -15,8 +15,7 @@ class LocationUsageDialog {
             width: MediaQuery.of(context).size.width * 0.15,
             height: MediaQuery.of(context).size.height * 0.15,
           ),
-          Text(locale.translate("dialog.location.permission"),
-              style: fs20fw700),
+          Text(locale.translate("dialog.location.permission"), style: fs20fw700),
         ],
       ),
       contentPadding: const EdgeInsets.all(15),
@@ -38,15 +37,11 @@ class LocationUsageDialog {
       actions: [
         ElevatedButton(
           onPressed: () {
-            Permission.locationWhenInUse
-                .request()
-                .then((value) => context.pop(true));
+            Permission.locationWhenInUse.request().then((value) => context.pop(true));
           },
           style: ButtonStyle(
-            backgroundColor:
-                WidgetStateProperty.all(Theme.of(context).primaryColor),
-            foregroundColor: WidgetStateProperty.all(
-                Theme.of(context).colorScheme.onPrimary),
+            backgroundColor: WidgetStateProperty.all(Theme.of(context).primaryColor),
+            foregroundColor: WidgetStateProperty.all(Theme.of(context).colorScheme.onPrimary),
           ),
           child: Text(
             locale.translate("dialog.location.continue"),

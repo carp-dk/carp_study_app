@@ -17,8 +17,7 @@ class InvitationDetailsPage extends StatelessWidget {
     var invitation = model.getInvitation(invitationId);
 
     return Scaffold(
-      backgroundColor:
-          Theme.of(context).extension<CarpColors>()!.backgroundGray,
+      backgroundColor: Theme.of(context).extension<CarpColors>()!.backgroundGray,
       body: Padding(
         padding: const EdgeInsets.symmetric(vertical: 16.0),
         child: SafeArea(
@@ -59,8 +58,7 @@ class InvitationDetailsPage extends StatelessWidget {
               Padding(
                 padding: const EdgeInsets.only(top: 16.0),
                 child: StudiesMaterial(
-                  backgroundColor:
-                      Theme.of(context).extension<CarpColors>()!.white!,
+                  backgroundColor: Theme.of(context).extension<CarpColors>()!.white!,
                   shape: RoundedRectangleBorder(
                     borderRadius: BorderRadius.circular(12.0),
                   ),
@@ -70,8 +68,7 @@ class InvitationDetailsPage extends StatelessWidget {
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
                         Text(
-                          locale
-                              .translate('invitation.roles_in_the_study.title'),
+                          locale.translate('invitation.roles_in_the_study.title'),
                           style: TextStyle(
                             fontWeight: FontWeight.bold,
                             fontSize: 20.0,
@@ -93,8 +90,7 @@ class InvitationDetailsPage extends StatelessWidget {
                 child: Padding(
                   padding: const EdgeInsets.only(top: 16.0),
                   child: StudiesMaterial(
-                    backgroundColor:
-                        Theme.of(context).extension<CarpColors>()!.white!,
+                    backgroundColor: Theme.of(context).extension<CarpColors>()!.white!,
                     shape: RoundedRectangleBorder(
                       borderRadius: BorderRadius.circular(12.0),
                     ),
@@ -118,14 +114,11 @@ class InvitationDetailsPage extends StatelessWidget {
                                     style: TextStyle(
                                       fontWeight: FontWeight.bold,
                                       fontSize: 22.0,
-                                      color: Theme.of(context)
-                                          .extension<CarpColors>()!
-                                          .primary,
+                                      color: Theme.of(context).extension<CarpColors>()!.primary,
                                     ),
                                   ),
                                   Padding(
-                                    padding: const EdgeInsets.only(
-                                        top: 8, bottom: 24),
+                                    padding: const EdgeInsets.only(top: 8, bottom: 24),
                                     child: FittedBox(
                                       fit: BoxFit.scaleDown,
                                       child: Text(
@@ -133,9 +126,7 @@ class InvitationDetailsPage extends StatelessWidget {
                                         style: TextStyle(
                                           fontWeight: FontWeight.bold,
                                           fontSize: 14,
-                                          color: Theme.of(context)
-                                              .extension<CarpColors>()!
-                                              .grey600,
+                                          color: Theme.of(context).extension<CarpColors>()!.grey600,
                                         ),
                                         maxLines: 1,
                                         textScaler: TextScaler.linear(0.9),
@@ -144,9 +135,7 @@ class InvitationDetailsPage extends StatelessWidget {
                                   ),
                                   Text(
                                     invitation.invitation.description ?? '',
-                                    style: const TextStyle(
-                                        fontSize: 16.0,
-                                        fontWeight: FontWeight.bold),
+                                    style: const TextStyle(fontSize: 16.0, fontWeight: FontWeight.bold),
                                   ),
                                 ],
                               ),
@@ -173,8 +162,7 @@ class InvitationDetailsPage extends StatelessWidget {
                   },
                   child: Text(
                     locale.translate("invitation.accept_invite"),
-                    style:
-                        const TextStyle(color: Color(0xffffffff), fontSize: 22),
+                    style: const TextStyle(color: Color(0xffffffff), fontSize: 22),
                     textAlign: TextAlign.center,
                   ),
                 ),

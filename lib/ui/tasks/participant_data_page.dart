@@ -1,14 +1,6 @@
 part of carp_study_app;
 
-enum ParticipantStep {
-  presentTypes,
-  address,
-  diagnosis,
-  fullName,
-  phoneNumber,
-  socialSecurityNumber,
-  review
-}
+enum ParticipantStep { presentTypes, address, diagnosis, fullName, phoneNumber, socialSecurityNumber, review }
 
 class ParticipantDataPage extends StatefulWidget {
   static const String route = '/participant_data';
@@ -81,8 +73,7 @@ class ParticipantDataPageState extends State<ParticipantDataPage> {
     widget.model._lastNameFocusNode = FocusNode();
 
     for (final key in _stepMap.keys) {
-      if (widget.model.expectedData.any(
-          (dataType) => dataType!.attribute!.inputDataType.contains(key))) {
+      if (widget.model.expectedData.any((dataType) => dataType!.attribute!.inputDataType.contains(key))) {
         _includedSteps.add(_stepMap[key]!);
       }
     }
@@ -237,14 +228,13 @@ class ParticipantDataPageState extends State<ParticipantDataPage> {
               widget.model._countryController.text.isNotEmpty;
           break;
         case ParticipantStep.diagnosis:
-          _nextEnabled =
-              widget.model._effectiveDateController.text.isNotEmpty &&
-                  widget.model._icd11CodeController.text.isNotEmpty &&
-                  widget.model._conclusionController.text.isNotEmpty;
+          _nextEnabled = widget.model._effectiveDateController.text.isNotEmpty &&
+              widget.model._icd11CodeController.text.isNotEmpty &&
+              widget.model._conclusionController.text.isNotEmpty;
           break;
         case ParticipantStep.fullName:
-          _nextEnabled = widget.model._firstNameController.text.isNotEmpty &&
-              widget.model._lastNameController.text.isNotEmpty;
+          _nextEnabled =
+              widget.model._firstNameController.text.isNotEmpty && widget.model._lastNameController.text.isNotEmpty;
           break;
         case ParticipantStep.phoneNumber:
           _nextEnabled = widget.model._phoneNumberController.text.isNotEmpty;
@@ -266,8 +256,7 @@ class ParticipantDataPageState extends State<ParticipantDataPage> {
   Widget build(BuildContext context) {
     RPLocalizations locale = RPLocalizations.of(context)!;
     return Scaffold(
-      backgroundColor:
-          Theme.of(context).extension<CarpColors>()!.backgroundGray!,
+      backgroundColor: Theme.of(context).extension<CarpColors>()!.backgroundGray!,
       body: SafeArea(
         child: Container(
           padding: const EdgeInsets.all(16.0),
@@ -276,8 +265,7 @@ class ParticipantDataPageState extends State<ParticipantDataPage> {
               Row(
                 children: [
                   Padding(
-                    padding: const EdgeInsets.symmetric(
-                        vertical: 8.0, horizontal: 10),
+                    padding: const EdgeInsets.symmetric(vertical: 8.0, horizontal: 10),
                     child: const CarpAppBar(
                       hasProfileIcon: false,
                     ),
@@ -306,14 +294,12 @@ class ParticipantDataPageState extends State<ParticipantDataPage> {
                         child: Padding(
                           padding: const EdgeInsets.symmetric(vertical: 8),
                           child: SizedBox(
-                            child: _buildStepContent(
-                                locale, widget.model.expectedData),
+                            child: _buildStepContent(locale, widget.model.expectedData),
                           ),
                         ),
                       ),
                       Padding(
-                        padding: const EdgeInsets.symmetric(
-                            horizontal: 20, vertical: 16),
+                        padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 16),
                         child: Row(
                           mainAxisAlignment: MainAxisAlignment.spaceBetween,
                           children: _buildActionButtons(locale),
@@ -333,20 +319,13 @@ class ParticipantDataPageState extends State<ParticipantDataPage> {
   /// Builds the title of the dialog based on the current step.
   Widget _buildDialogTitle(RPLocalizations locale) {
     final stepTitleMap = {
-      ParticipantStep.presentTypes:
-          locale.translate("tasks.participant_data.present_data.title"),
-      ParticipantStep.address:
-          locale.translate("tasks.participant_data.address.title"),
-      ParticipantStep.diagnosis:
-          locale.translate("tasks.participant_data.diagnosis.title"),
-      ParticipantStep.fullName:
-          locale.translate("tasks.participant_data.full_name.title"),
-      ParticipantStep.phoneNumber:
-          locale.translate("tasks.participant_data.phone_number.title"),
-      ParticipantStep.socialSecurityNumber:
-          locale.translate("tasks.participant_data.ssn.title"),
-      ParticipantStep.review:
-          locale.translate("tasks.participant_data.review.title"),
+      ParticipantStep.presentTypes: locale.translate("tasks.participant_data.present_data.title"),
+      ParticipantStep.address: locale.translate("tasks.participant_data.address.title"),
+      ParticipantStep.diagnosis: locale.translate("tasks.participant_data.diagnosis.title"),
+      ParticipantStep.fullName: locale.translate("tasks.participant_data.full_name.title"),
+      ParticipantStep.phoneNumber: locale.translate("tasks.participant_data.phone_number.title"),
+      ParticipantStep.socialSecurityNumber: locale.translate("tasks.participant_data.ssn.title"),
+      ParticipantStep.review: locale.translate("tasks.participant_data.review.title"),
     };
     return Padding(
       padding: const EdgeInsets.only(bottom: 16),
@@ -371,16 +350,13 @@ class ParticipantDataPageState extends State<ParticipantDataPage> {
   }
 
   /// Builds the content of the current step based on the [_includedSteps].
-  Widget _buildStepContent(
-      RPLocalizations locale, Set<ExpectedParticipantData?> expectedData) {
+  Widget _buildStepContent(RPLocalizations locale, Set<ExpectedParticipantData?> expectedData) {
     List<Widget> fields = [];
     switch (currentStep) {
       case ParticipantStep.presentTypes:
         fields.add(_buildPresentTypes(
           _includedSteps
-              .where((step) =>
-                  step != ParticipantStep.presentTypes &&
-                  step != ParticipantStep.review)
+              .where((step) => step != ParticipantStep.presentTypes && step != ParticipantStep.review)
               .map((step) => participantStepDescriptions[step])
               .toList(),
         ));
@@ -396,10 +372,8 @@ class ParticipantDataPageState extends State<ParticipantDataPage> {
         break;
       case ParticipantStep.diagnosis:
         fields.addAll([
-          _buildField(locale, widget.model.effectiveDateField,
-              isDatePicker: true),
-          _buildField(locale, widget.model.diagnosisDescriptionField,
-              isOptional: true),
+          _buildField(locale, widget.model.effectiveDateField, isDatePicker: true),
+          _buildField(locale, widget.model.diagnosisDescriptionField, isOptional: true),
           _buildField(locale, widget.model.icd11CodeField),
           _buildField(locale, widget.model.conclusionField, isThicc: true),
         ]);
@@ -412,8 +386,7 @@ class ParticipantDataPageState extends State<ParticipantDataPage> {
         ]);
         break;
       case ParticipantStep.phoneNumber:
-        fields.add(_buildField(locale, widget.model.phoneNumberField,
-            isPhoneNumber: true));
+        fields.add(_buildField(locale, widget.model.phoneNumberField, isPhoneNumber: true));
         break;
       case ParticipantStep.socialSecurityNumber:
         fields.add(_buildField(locale, widget.model.ssnField, isCPR: true));
@@ -463,14 +436,10 @@ class ParticipantDataPageState extends State<ParticipantDataPage> {
         final String field = fields.elementAt(index).title;
         String input = "";
         if (index < fields.length) {
-          if (fields.elementAt(index).controller ==
-              widget.model._phoneNumberController) {
-            input =
-                "${widget.model._phoneNumberCodeController.text} ${fields.elementAt(index).controller.text}";
-          } else if (fields.elementAt(index).controller ==
-              widget.model._ssnController) {
-            input =
-                "${widget.model._ssnCountryController.text} ${fields.elementAt(index).controller.text}";
+          if (fields.elementAt(index).controller == widget.model._phoneNumberController) {
+            input = "${widget.model._phoneNumberCodeController.text} ${fields.elementAt(index).controller.text}";
+          } else if (fields.elementAt(index).controller == widget.model._ssnController) {
+            input = "${widget.model._ssnCountryController.text} ${fields.elementAt(index).controller.text}";
           } else {
             input = fields.elementAt(index).controller.text;
           }
@@ -520,8 +489,7 @@ class ParticipantDataPageState extends State<ParticipantDataPage> {
     if (isPhoneNumber) {
       return InternationalPhoneNumberInput(
         onInputChanged: (phoneNumber) {
-          widget.model._phoneNumberCodeController.text =
-              phoneNumber.dialCode ?? '';
+          widget.model._phoneNumberCodeController.text = phoneNumber.dialCode ?? '';
         },
         textFieldController: stepField.controller,
         selectorConfig: SelectorConfig(
@@ -533,8 +501,7 @@ class ParticipantDataPageState extends State<ParticipantDataPage> {
         autoValidateMode: AutovalidateMode.disabled,
         selectorTextStyle: TextStyle(color: Colors.black),
         formatInput: true,
-        keyboardType:
-            TextInputType.numberWithOptions(signed: true, decimal: true),
+        keyboardType: TextInputType.numberWithOptions(signed: true, decimal: true),
         inputBorder: OutlineInputBorder(),
       );
     } else if (isCPR) {
@@ -549,8 +516,7 @@ class ParticipantDataPageState extends State<ParticipantDataPage> {
                 child: Container(
                   decoration: BoxDecoration(
                     border: Border.all(
-                      color:
-                          Theme.of(context).extension<CarpColors>()!.grey600!,
+                      color: Theme.of(context).extension<CarpColors>()!.grey600!,
                       width: 1.0,
                     ),
                     borderRadius: BorderRadius.circular(16.0),
@@ -558,8 +524,7 @@ class ParticipantDataPageState extends State<ParticipantDataPage> {
                   child: CountryCodePicker(
                     onChanged: (value) {
                       stepField.controller.clear();
-                      widget.model._ssnCountryController.text =
-                          value.code ?? '';
+                      widget.model._ssnCountryController.text = value.code ?? '';
                       stepField.controller.text = stepField.controller.text;
                     },
                     initialSelection: 'DK',
@@ -567,8 +532,7 @@ class ParticipantDataPageState extends State<ParticipantDataPage> {
                     showOnlyCountryWhenClosed: true,
                     alignLeft: false,
                     textStyle: fs16fw600.copyWith(
-                      color:
-                          Theme.of(context).extension<CarpColors>()!.grey900!,
+                      color: Theme.of(context).extension<CarpColors>()!.grey900!,
                     ),
                   ),
                 ),
@@ -597,8 +561,7 @@ class ParticipantDataPageState extends State<ParticipantDataPage> {
                 textInputAction: TextInputAction.next,
                 onFieldSubmitted: (_) {
                   if (stepField.nextFocusNode != null) {
-                    FocusScope.of(context)
-                        .requestFocus(stepField.nextFocusNode);
+                    FocusScope.of(context).requestFocus(stepField.nextFocusNode);
                   }
                 },
                 onTap: isDatePicker
@@ -610,8 +573,7 @@ class ParticipantDataPageState extends State<ParticipantDataPage> {
                           lastDate: DateTime.now(),
                         );
                         if (pickedDate != null) {
-                          stepField.controller.text =
-                              "${pickedDate.toLocal()}".split(' ')[0];
+                          stepField.controller.text = "${pickedDate.toLocal()}".split(' ')[0];
                         }
                       }
                     : null,
@@ -624,8 +586,7 @@ class ParticipantDataPageState extends State<ParticipantDataPage> {
     }
   }
 
-  InputDecoration _buildInputDecoration(
-      RPLocalizations locale, StepField stepField, bool isThicc) {
+  InputDecoration _buildInputDecoration(RPLocalizations locale, StepField stepField, bool isThicc) {
     return InputDecoration(
         labelText: locale.translate(stepField.title),
         floatingLabelBehavior: FloatingLabelBehavior.always,
@@ -641,16 +602,15 @@ class ParticipantDataPageState extends State<ParticipantDataPage> {
           borderRadius: BorderRadius.circular(8),
           borderSide: BorderSide(color: Colors.blue, width: 2),
         ),
-        contentPadding:
-            EdgeInsets.symmetric(horizontal: 16, vertical: isThicc ? 70 : 12));
+        contentPadding: EdgeInsets.symmetric(horizontal: 16, vertical: isThicc ? 70 : 12));
   }
 
   /// Builds the action buttons at the bottom of the page.
   /// Includes "Cancel", "Previous", "Next", and "Submit" buttons.
   /// The "Next" button is enabled only if the required fields for the current step are filled.
   List<Widget> _buildActionButtons(RPLocalizations locale) {
-    Widget buildTranslatedButton(String key, VoidCallback onPressed,
-        bool enabled, ButtonStyle? buttonStyle, TextStyle? buttonTextStyle) {
+    Widget buildTranslatedButton(
+        String key, VoidCallback onPressed, bool enabled, ButtonStyle? buttonStyle, TextStyle? buttonTextStyle) {
       return ElevatedButton(
         onPressed: enabled ? onPressed : null,
         child: Text(
@@ -683,10 +643,8 @@ class ParticipantDataPageState extends State<ParticipantDataPage> {
               },
               _nextEnabled,
               ElevatedButton.styleFrom(
-                backgroundColor:
-                    Theme.of(context).extension<CarpColors>()!.primary,
-                padding:
-                    const EdgeInsets.symmetric(horizontal: 30, vertical: 12),
+                backgroundColor: Theme.of(context).extension<CarpColors>()!.primary,
+                padding: const EdgeInsets.symmetric(horizontal: 30, vertical: 12),
               ),
               TextStyle(
                 color: Colors.white,
@@ -704,10 +662,8 @@ class ParticipantDataPageState extends State<ParticipantDataPage> {
               },
               currentStep == ParticipantStep.presentTypes ? true : _nextEnabled,
               ElevatedButton.styleFrom(
-                backgroundColor:
-                    Theme.of(context).extension<CarpColors>()!.primary,
-                padding:
-                    const EdgeInsets.symmetric(horizontal: 30, vertical: 12),
+                backgroundColor: Theme.of(context).extension<CarpColors>()!.primary,
+                padding: const EdgeInsets.symmetric(horizontal: 30, vertical: 12),
               ),
               TextStyle(
                 color: Colors.white,
@@ -736,8 +692,7 @@ class ParticipantDataPageState extends State<ParticipantDataPage> {
         DiagnosisInput.type: DiagnosisInput(
           effectiveDate: widget.model._effectiveDateController.text.isNotEmpty
               ? DateFormat("yyyy-MM-dd'T'HH:mm:ss'Z'")
-                  .parse(
-                      '${widget.model._effectiveDateController.text}T00:00:00Z')
+                  .parse('${widget.model._effectiveDateController.text}T00:00:00Z')
                   .toUtc()
               : null,
           diagnosis: widget.model._diagnosisDescriptionController.text,

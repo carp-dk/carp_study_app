@@ -17,8 +17,7 @@ class DetailsBanner extends StatelessWidget {
         if (imagePath != null && imagePath!.isNotEmpty)
           SizedBox(
             height: 300,
-            child:
-                bloc.appViewModel.studyPageViewModel.getMessageImage(imagePath),
+            child: bloc.appViewModel.studyPageViewModel.getMessageImage(imagePath),
           ),
         Padding(
           padding: const EdgeInsets.all(16),
@@ -29,8 +28,7 @@ class DetailsBanner extends StatelessWidget {
                 children: [
                   Text(
                     locale.translate(title),
-                    style: fs30fw800.copyWith(
-                        fontSize: 30, color: Theme.of(context).primaryColor),
+                    style: fs30fw800.copyWith(fontSize: 30, color: Theme.of(context).primaryColor),
                   ),
                 ],
               ),

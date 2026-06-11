@@ -10,19 +10,15 @@ class ProfilePageViewModel extends ViewModel {
 
   String get studyId => bloc.deployment?.studyId ?? '';
   String get studyDeploymentId => bloc.deployment?.studyDeploymentId ?? '';
-  String get studyDeploymentTitle =>
-      bloc.deployment?.studyDescription?.title ?? '';
+  String get studyDeploymentTitle => bloc.deployment?.studyDescription?.title ?? '';
   String get participantId => bloc.deployment?.participantId ?? '';
   String get participantRole => bloc.deployment?.participantRoleName ?? '';
   String get deviceRole => bloc.deployment?.deviceRoleName ?? '';
 
-  String get responsibleEmail =>
-      bloc.deployment?.studyDescription?.responsible?.email ?? 'study@carp.dk';
+  String get responsibleEmail => bloc.deployment?.studyDescription?.responsible?.email ?? 'study@carp.dk';
   String get privacyPolicyUrl =>
-      bloc.deployment?.studyDescription?.privacyPolicyUrl ??
-      'https://carp.dk/privacy-policy-app/';
-  String get studyDescriptionUrl =>
-      bloc.deployment?.studyDescription?.studyDescriptionUrl ?? '';
+      bloc.deployment?.studyDescription?.privacyPolicyUrl ?? 'https://carp.dk/privacy-policy-app/';
+  String get studyDescriptionUrl => bloc.deployment?.studyDescription?.studyDescriptionUrl ?? '';
   String get deviceID => DeviceInfo().deviceID ?? '';
   String get currentServer => bloc.backend.uri.toString();
 

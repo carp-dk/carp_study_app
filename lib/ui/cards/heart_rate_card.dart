@@ -4,15 +4,13 @@ class HeartRateCardWidget extends StatefulWidget {
   final HeartRateCardViewModel model;
   const HeartRateCardWidget(this.model, {super.key});
 
-  factory HeartRateCardWidget.withSampleData(HeartRateCardViewModel model) =>
-      HeartRateCardWidget(model);
+  factory HeartRateCardWidget.withSampleData(HeartRateCardViewModel model) => HeartRateCardWidget(model);
 
   @override
   HeartRateCardWidgetState createState() => HeartRateCardWidgetState();
 }
 
-class HeartRateCardWidgetState extends State<HeartRateCardWidget>
-    with SingleTickerProviderStateMixin {
+class HeartRateCardWidgetState extends State<HeartRateCardWidget> with SingleTickerProviderStateMixin {
   late AnimationController animationController;
   late Animation<double> animation;
 
@@ -83,18 +81,14 @@ class HeartRateCardWidgetState extends State<HeartRateCardWidget>
         Container(
           margin: const EdgeInsets.only(left: 8, right: 4, bottom: 4),
           child: Text(
-            min == null || max == null
-                ? '-'
-                : '${(min.toInt())} - ${(max.toInt())}',
+            min == null || max == null ? '-' : '${(min.toInt())} - ${(max.toInt())}',
             style: fs28fw700,
           ),
         ),
         Padding(
           padding: const EdgeInsets.only(bottom: 10),
           child: Text(
-            min == null || max == null
-                ? ''
-                : locale.translate('cards.heartrate.bpm'),
+            min == null || max == null ? '' : locale.translate('cards.heartrate.bpm'),
             style: fs10fw700.copyWith(
               fontSize: 12,
               color: Theme.of(context).extension<CarpColors>()!.grey600,
@@ -134,8 +128,7 @@ class HeartRateCardWidgetState extends State<HeartRateCardWidget>
                   children: [
                     RepaintBoundary(
                       child: ScaleTransition(
-                        scale: Tween<double>(begin: 1, end: 1)
-                            .animate(animationController),
+                        scale: Tween<double>(begin: 1, end: 1).animate(animationController),
                         child: Icon(
                           Icons.favorite,
                           color: CACHET.HEART_RATE_RED,
@@ -146,8 +139,7 @@ class HeartRateCardWidgetState extends State<HeartRateCardWidget>
                     Text(
                       locale.translate('cards.heartrate.bpm'),
                       style: fs10fw700.copyWith(
-                        color:
-                            Theme.of(context).extension<CarpColors>()!.grey600,
+                        color: Theme.of(context).extension<CarpColors>()!.grey600,
                       ),
                     ),
                   ],
@@ -177,11 +169,9 @@ class HeartRateCardWidgetState extends State<HeartRateCardWidget>
                 textAlign: TextAlign.start,
                 children: [
                   TextSpan(
-                    text:
-                        locale.translate('cards.heartrate.range').toUpperCase(),
+                    text: locale.translate('cards.heartrate.range').toUpperCase(),
                     style: TextStyle(
-                      color:
-                          Theme.of(context).primaryTextTheme.bodySmall?.color,
+                      color: Theme.of(context).primaryTextTheme.bodySmall?.color,
                       fontWeight: FontWeight.bold,
                     ),
                   ),
@@ -196,16 +186,14 @@ class HeartRateCardWidgetState extends State<HeartRateCardWidget>
                     text: "${locale.translate('cards.heartrate.bpm')}\n",
                     style: TextStyle(
                       fontWeight: FontWeight.bold,
-                      color:
-                          Theme.of(context).primaryTextTheme.bodySmall?.color,
+                      color: Theme.of(context).primaryTextTheme.bodySmall?.color,
                       fontSize: 20,
                     ),
                   ),
                   TextSpan(
                     text: "$groupIndex-${groupIndex + 1} ",
                     style: TextStyle(
-                      color:
-                          Theme.of(context).primaryTextTheme.bodySmall?.color,
+                      color: Theme.of(context).primaryTextTheme.bodySmall?.color,
                       fontWeight: FontWeight.bold,
                       fontSize: 20,
                     ),
@@ -248,10 +236,8 @@ class HeartRateCardWidgetState extends State<HeartRateCardWidget>
                   strokeWidth: 1,
                 ),
             checkToShowHorizontalLine: (value) => value % 100 == 0,
-            getDrawingVerticalLine: (value) => FlLine(
-                color: Colors.grey.withValues(alpha: 0.2),
-                strokeWidth: 1,
-                dashArray: [3, 2]),
+            getDrawingVerticalLine: (value) =>
+                FlLine(color: Colors.grey.withValues(alpha: 0.2), strokeWidth: 1, dashArray: [3, 2]),
             verticalInterval: 1 / 24,
             checkToShowVerticalLine: (value) {
               if ((value * 24).round() == 6) return true;
@@ -308,9 +294,7 @@ class HeartRateCardWidgetState extends State<HeartRateCardWidget>
       meta: meta,
       space: 6,
       child: Text(
-        value.toInt() % meta.appliedInterval == 0
-            ? value.toInt().toString()
-            : '',
+        value.toInt() % meta.appliedInterval == 0 ? value.toInt().toString() : '',
         style: fs14ls1.copyWith(
           color: Theme.of(context).extension<CarpColors>()!.grey600,
         ),
@@ -319,20 +303,19 @@ class HeartRateCardWidgetState extends State<HeartRateCardWidget>
     );
   }
 
-  List<BarChartGroupData> getHeartRateBars() =>
-      widget.model.hourlyHeartRate.entries
-          .map((value) => BarChartGroupData(
-                x: value.key,
-                barRods: [
-                  BarChartRodData(
-                    fromY: value.value.min,
-                    toY: value.value.max ?? 0,
-                    color: CACHET.HEART_RATE_RED,
-                    width: 6,
-                  ),
-                ],
-              ))
-          .toList();
+  List<BarChartGroupData> getHeartRateBars() => widget.model.hourlyHeartRate.entries
+      .map((value) => BarChartGroupData(
+            x: value.key,
+            barRods: [
+              BarChartRodData(
+                fromY: value.value.min,
+                toY: value.value.max ?? 0,
+                color: CACHET.HEART_RATE_RED,
+                width: 6,
+              ),
+            ],
+          ))
+      .toList();
 }
 
 class HeartRateOuterStatefulWidget extends StatefulWidget {
@@ -340,12 +323,10 @@ class HeartRateOuterStatefulWidget extends StatefulWidget {
   const HeartRateOuterStatefulWidget(this.model, {super.key});
 
   @override
-  HeartRateOuterStatefulWidgetState createState() =>
-      HeartRateOuterStatefulWidgetState();
+  HeartRateOuterStatefulWidgetState createState() => HeartRateOuterStatefulWidgetState();
 }
 
-class HeartRateOuterStatefulWidgetState
-    extends State<HeartRateOuterStatefulWidget> {
+class HeartRateOuterStatefulWidgetState extends State<HeartRateOuterStatefulWidget> {
   @override
   Widget build(BuildContext context) {
     return HeartRateCardWidget.withSampleData(widget.model);

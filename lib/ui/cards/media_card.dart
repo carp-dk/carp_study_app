@@ -3,8 +3,7 @@ part of carp_study_app;
 class MediaCardWidget extends StatefulWidget {
   final List<TaskCardViewModel> modelsList;
   final List<Color> colors;
-  const MediaCardWidget(this.modelsList,
-      {super.key, this.colors = CACHET.COLOR_LIST});
+  const MediaCardWidget(this.modelsList, {super.key, this.colors = CACHET.COLOR_LIST});
   @override
   MediaCardWidgetState createState() => MediaCardWidgetState();
 }
@@ -41,27 +40,20 @@ class MediaCardWidgetState extends State<MediaCardWidget> {
                                 .entries
                                 .map(
                                   (entry) => Column(
-                                    crossAxisAlignment:
-                                        CrossAxisAlignment.start,
+                                    crossAxisAlignment: CrossAxisAlignment.start,
                                     children: [
                                       const SizedBox(height: 15),
                                       Text(
                                         '${entry.value.tasksDone} ${locale.translate('cards.${entry.value.taskType}.title')}',
-                                        style:
-                                            fs16fw400ls1.copyWith(fontSize: 14),
+                                        style: fs16fw400ls1.copyWith(fontSize: 14),
                                       ),
-                                      LayoutBuilder(builder:
-                                          (BuildContext context,
-                                              BoxConstraints constraints) {
+                                      LayoutBuilder(builder: (BuildContext context, BoxConstraints constraints) {
                                         return HorizontalBar(
                                             parentWidth: constraints.maxWidth,
                                             names: entry.value.taskCount
-                                                .map((task) => locale
-                                                    .translate(task.title))
+                                                .map((task) => locale.translate(task.title))
                                                 .toList(),
-                                            values: entry.value.taskCount
-                                                .map((task) => task.size)
-                                                .toList(),
+                                            values: entry.value.taskCount.map((task) => task.size).toList(),
                                             colors: CACHET.COLOR_LIST,
                                             height: 18);
                                       }),

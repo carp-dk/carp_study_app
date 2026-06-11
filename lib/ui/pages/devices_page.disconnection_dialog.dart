@@ -45,8 +45,7 @@ class DisconnectionDialog extends StatelessWidget {
                 if (context.canPop()) context.pop(true);
               },
               child: Text(
-                locale.translate(
-                    "pages.devices.connection.disconnect_bluetooth.disconnect"),
+                locale.translate("pages.devices.connection.disconnect_bluetooth.disconnect"),
               ),
             ),
           ],

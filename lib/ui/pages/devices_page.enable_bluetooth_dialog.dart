@@ -11,16 +11,14 @@ class EnableBluetoothDialog extends StatelessWidget {
         scrollable: true,
         titlePadding: const EdgeInsets.symmetric(vertical: 4),
         insetPadding: const EdgeInsets.symmetric(vertical: 24, horizontal: 40),
-        title: const DialogTitle(
-            title: "pages.devices.connection.enable_bluetooth.title"),
+        title: const DialogTitle(title: "pages.devices.connection.enable_bluetooth.title"),
         content: SizedBox(
           height: MediaQuery.of(context).size.height * 0.45,
           child: enableBluetoothInstructions(context, device),
         ));
   }
 
-  Widget enableBluetoothInstructions(
-      BuildContext context, DeviceViewModel device) {
+  Widget enableBluetoothInstructions(BuildContext context, DeviceViewModel device) {
     RPLocalizations locale = RPLocalizations.of(context)!;
     return Column(
       children: [
@@ -29,8 +27,7 @@ class EnableBluetoothDialog extends StatelessWidget {
             child: Column(
               children: [
                 Text(
-                  locale.translate(
-                      "pages.devices.connection.enable_bluetooth.message1"),
+                  locale.translate("pages.devices.connection.enable_bluetooth.message1"),
                   style: fs16fw400,
                   textAlign: TextAlign.justify,
                 ),
@@ -38,8 +35,7 @@ class EnableBluetoothDialog extends StatelessWidget {
                   padding: EdgeInsets.symmetric(vertical: 16.0),
                 ),
                 Text(
-                  locale.translate(
-                      "pages.devices.connection.enable_bluetooth.message2"),
+                  locale.translate("pages.devices.connection.enable_bluetooth.message2"),
                   style: fs16fw400,
                   textAlign: TextAlign.justify,
                 ),
@@ -52,8 +48,7 @@ class EnableBluetoothDialog extends StatelessWidget {
                     ),
                   ),
                 Text(
-                  locale.translate(
-                      "pages.devices.connection.enable_bluetooth.message3"),
+                  locale.translate("pages.devices.connection.enable_bluetooth.message3"),
                   style: fs16fw400,
                   textAlign: TextAlign.justify,
                 ),

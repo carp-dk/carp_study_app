@@ -29,8 +29,7 @@ class ScoreboardCardState extends State<ScoreboardCard> {
 /// This is used in the [StudyPage] to make the header of the page.
 /// The delegate should retract from 110px to 40px when scrolling down.
 /// The animation should be simple and linear. A stretched header does not do anything.
-class ScoreboardPersistentHeaderDelegate
-    extends SliverPersistentHeaderDelegate {
+class ScoreboardPersistentHeaderDelegate extends SliverPersistentHeaderDelegate {
   TaskListPageViewModel model;
   RPLocalizations locale;
   @override
@@ -46,8 +45,7 @@ class ScoreboardPersistentHeaderDelegate
   });
 
   @override
-  Widget build(
-      BuildContext context, double shrinkOffset, bool overlapsContent) {
+  Widget build(BuildContext context, double shrinkOffset, bool overlapsContent) {
     double height = 110;
 
     double offsetForShrink = 50;
@@ -55,40 +53,34 @@ class ScoreboardPersistentHeaderDelegate
     List<Widget> childrenDays = [
       Text(model.daysInStudy.toString(),
           style: fs36fw800.copyWith(
-              fontSize: calculateScrollAwareSizing(
-                  shrinkOffset, fs20fw800.fontSize!, fs36fw800.fontSize!),
+              fontSize: calculateScrollAwareSizing(shrinkOffset, fs20fw800.fontSize!, fs36fw800.fontSize!),
               color: Theme.of(context).extension<CarpColors>()!.grey900)),
       if (shrinkOffset < offsetForShrink)
         Text(locale.translate('cards.scoreboard.days'),
-            style: fs12fw700.copyWith(
-                color: Theme.of(context).extension<CarpColors>()!.grey900)),
+            style: fs12fw700.copyWith(color: Theme.of(context).extension<CarpColors>()!.grey900)),
       if (shrinkOffset > offsetForShrink)
         Padding(
           padding: const EdgeInsets.only(left: 8.0),
           child: Text(locale.translate('cards.scoreboard.days-short'),
-              style: fs12fw700.copyWith(
-                  color: Theme.of(context).extension<CarpColors>()!.grey900)),
+              style: fs12fw700.copyWith(color: Theme.of(context).extension<CarpColors>()!.grey900)),
         )
     ];
 
     List<Widget> childrenTasks = [
       Text(model.taskCompleted.toString(),
           style: fs36fw800.copyWith(
-              fontSize: calculateScrollAwareSizing(
-                  shrinkOffset, fs20fw800.fontSize!, fs36fw800.fontSize!),
+              fontSize: calculateScrollAwareSizing(shrinkOffset, fs20fw800.fontSize!, fs36fw800.fontSize!),
               color: Theme.of(context).extension<CarpColors>()!.primary)),
       if (shrinkOffset < offsetForShrink)
         Text(locale.translate('cards.scoreboard.tasks'),
-            style: fs12fw700.copyWith(
-                color: Theme.of(context).extension<CarpColors>()!.primary)),
+            style: fs12fw700.copyWith(color: Theme.of(context).extension<CarpColors>()!.primary)),
       if (shrinkOffset > offsetForShrink)
         Expanded(
           flex: 0,
           child: Padding(
             padding: const EdgeInsets.only(left: 8.0),
             child: Text(locale.translate('cards.scoreboard.tasks-short'),
-                style: fs12fw700.copyWith(
-                    color: Theme.of(context).extension<CarpColors>()!.primary)),
+                style: fs12fw700.copyWith(color: Theme.of(context).extension<CarpColors>()!.primary)),
           ),
         )
     ];
@@ -121,8 +113,7 @@ class ScoreboardPersistentHeaderDelegate
               Expanded(
                 flex: 0,
                 child: Container(
-                  height: calculateScrollAwareSizing(
-                      shrinkOffset, minExtent * 0.6, maxExtent * 0.6),
+                  height: calculateScrollAwareSizing(shrinkOffset, minExtent * 0.6, maxExtent * 0.6),
                   width: 2,
                   decoration: BoxDecoration(
                     color: Theme.of(context).dividerColor,
@@ -150,8 +141,7 @@ class ScoreboardPersistentHeaderDelegate
 
   // A simple function that returns the font size from the scoreNumberStyle, but increasingly smaller when scrolling down.
   // Also used for the size of the divider in the middle
-  double calculateScrollAwareSizing(
-      double shrinkOffset, double minSize, double maxSize) {
+  double calculateScrollAwareSizing(double shrinkOffset, double minSize, double maxSize) {
     // Calculate the normalized shrinkOffset value in the range [0, 1]
     double normalizedShrinkOffset = shrinkOffset / maxExtent;
 
@@ -168,13 +158,11 @@ class ScoreboardPersistentHeaderDelegate
   }
 
   @override
-  FloatingHeaderSnapConfiguration get snapConfiguration =>
-      FloatingHeaderSnapConfiguration(
+  FloatingHeaderSnapConfiguration get snapConfiguration => FloatingHeaderSnapConfiguration(
         curve: Curves.linear,
         duration: const Duration(milliseconds: 100),
       );
 
   @override
-  OverScrollHeaderStretchConfiguration get stretchConfiguration =>
-      OverScrollHeaderStretchConfiguration();
+  OverScrollHeaderStretchConfiguration get stretchConfiguration => OverScrollHeaderStretchConfiguration();
 }

@@ -13,8 +13,7 @@ class MessageDetailsPage extends StatelessWidget {
   Widget build(BuildContext context) {
     RPLocalizations locale = RPLocalizations.of(context)!;
 
-    Message message = bloc.messages
-        .firstWhere((element) => element.id == messageId, orElse: () {
+    Message message = bloc.messages.firstWhere((element) => element.id == messageId, orElse: () {
       return Message(
           id: '0',
           title: 'Unknown message',
@@ -31,15 +30,13 @@ class MessageDetailsPage extends StatelessWidget {
           child: Column(
             children: [
               Padding(
-                padding:
-                    const EdgeInsets.symmetric(vertical: 8.0, horizontal: 18),
+                padding: const EdgeInsets.symmetric(vertical: 8.0, horizontal: 18),
                 child: const CarpAppBar(hasProfileIcon: true),
               ),
               Row(
                 children: [
                   IconButton(
-                    padding: const EdgeInsets.only(
-                        left: 26, right: 10, top: 16, bottom: 16),
+                    padding: const EdgeInsets.only(left: 26, right: 10, top: 16, bottom: 16),
                     icon: Icon(
                       Icons.arrow_back_ios,
                       color: Theme.of(context).extension<CarpColors>()!.grey600,
@@ -55,10 +52,7 @@ class MessageDetailsPage extends StatelessWidget {
                   Padding(
                     padding: const EdgeInsets.symmetric(vertical: 10.0),
                     child: Text(locale.translate(message.title!),
-                        style: fs20fw700.copyWith(
-                            color: Theme.of(context)
-                                .extension<CarpColors>()!
-                                .grey900)),
+                        style: fs20fw700.copyWith(color: Theme.of(context).extension<CarpColors>()!.grey900)),
                   ),
                   Spacer(),
                   Padding(
@@ -67,14 +61,8 @@ class MessageDetailsPage extends StatelessWidget {
                       color: Theme.of(context).extension<CarpColors>()!.primary,
                       borderRadius: BorderRadius.circular(100.0),
                       child: Padding(
-                        padding: const EdgeInsets.symmetric(
-                            horizontal: 12.0, vertical: 6.0),
-                        child: Text(
-                            locale.translate(message.type
-                                .toString()
-                                .split('.')
-                                .last
-                                .toLowerCase()),
+                        padding: const EdgeInsets.symmetric(horizontal: 12.0, vertical: 6.0),
+                        child: Text(locale.translate(message.type.toString().split('.').last.toLowerCase()),
                             style: fs16fw600.copyWith(color: Colors.white)),
                       ),
                     ),
@@ -83,18 +71,13 @@ class MessageDetailsPage extends StatelessWidget {
               ),
               Flexible(
                 child: ListView(
-                  padding:
-                      const EdgeInsets.symmetric(horizontal: 24, vertical: 16),
+                  padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 16),
                   children: [
                     message.subTitle != null
                         ? Padding(
-                            padding: const EdgeInsets.symmetric(
-                                horizontal: 10.0, vertical: 6.0),
+                            padding: const EdgeInsets.symmetric(horizontal: 10.0, vertical: 6.0),
                             child: Text(locale.translate(message.subTitle!),
-                                style: fs16fw400.copyWith(
-                                    color: Theme.of(context)
-                                        .extension<CarpColors>()!
-                                        .grey700)),
+                                style: fs16fw400.copyWith(color: Theme.of(context).extension<CarpColors>()!.grey700)),
                           )
                         : const SizedBox.shrink(),
                     if (message.image != null && message.image!.isNotEmpty)
@@ -108,24 +91,19 @@ class MessageDetailsPage extends StatelessWidget {
                           ),
                           child: FittedBox(
                               fit: BoxFit.contain,
-                              child: bloc.appViewModel.studyPageViewModel
-                                  .getMessageImage(message.image)),
+                              child: bloc.appViewModel.studyPageViewModel.getMessageImage(message.image)),
                         );
                       }),
                     // DetailsBanner(message.title ?? '', message.image),
                     Padding(
-                      padding: const EdgeInsets.symmetric(
-                          horizontal: 12, vertical: 16),
+                      padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 16),
                       child: Column(
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
                           if (message.message != null)
                             Text(
                               locale.translate(message.message!),
-                              style: fs16fw400.copyWith(
-                                  color: Theme.of(context)
-                                      .extension<CarpColors>()!
-                                      .grey900),
+                              style: fs16fw400.copyWith(color: Theme.of(context).extension<CarpColors>()!.grey900),
                               textAlign: TextAlign.justify,
                             )
                         ],

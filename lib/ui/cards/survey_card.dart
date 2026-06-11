@@ -29,8 +29,7 @@ class _SurveyCardState extends State<SurveyCard> {
           children: [
             Padding(
               padding: const EdgeInsets.only(left: 10.0),
-              child: Text(locale.translate('cards.survey.title').toUpperCase(),
-                  style: fs16fw400ls1),
+              child: Text(locale.translate('cards.survey.title').toUpperCase(), style: fs16fw400ls1),
             ),
             SizedBox(
               height: 160,
@@ -40,8 +39,7 @@ class _SurveyCardState extends State<SurveyCard> {
                 Expanded(
                   flex: 2,
                   child: Padding(
-                    padding: const EdgeInsets.symmetric(
-                        horizontal: 10.0, vertical: 8),
+                    padding: const EdgeInsets.symmetric(horizontal: 10.0, vertical: 8),
                     child: Column(
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: widget.model.tasksTable.entries.map((entry) {
@@ -49,9 +47,7 @@ class _SurveyCardState extends State<SurveyCard> {
                             width: 10,
                             height: 10,
                             decoration: BoxDecoration(
-                              color: widget.colors[widget.model.tasksTable.keys
-                                  .toList()
-                                  .indexOf(entry.key)],
+                              color: widget.colors[widget.model.tasksTable.keys.toList().indexOf(entry.key)],
                               shape: BoxShape.circle,
                             ),
                           );
@@ -84,9 +80,7 @@ class _SurveyCardState extends State<SurveyCard> {
                       Text(
                         '$totalSurveys',
                         style: fs24fw700.copyWith(
-                          color: Theme.of(context)
-                              .extension<CarpColors>()!
-                              .grey800,
+                          color: Theme.of(context).extension<CarpColors>()!.grey800,
                         ),
                       )
                     ],
@@ -105,8 +99,7 @@ class _SurveyCardState extends State<SurveyCard> {
       (entry) {
         return PieChartSectionData(
           // Color should be the next color in the list
-          color: widget
-              .colors[widget.model.tasksTable.keys.toList().indexOf(entry.key)],
+          color: widget.colors[widget.model.tasksTable.keys.toList().indexOf(entry.key)],
           value: entry.value.toDouble(),
           title: '${entry.value}',
           showTitle: false,

@@ -25,18 +25,15 @@ void main() {
     });
     group('init', () {
       group('should listen to heart rate events', () {
-        final mockSmartphoneDeploymentController =
-            MockSmartphoneDeploymentController();
+        final mockSmartphoneDeploymentController = MockSmartphoneDeploymentController();
         final mockPolarHRSample = MockPolarHRSample();
         final mockPolarHRDatum = MockPolarHR();
         final mockMeasurement = MockMeasurement();
         final viewModel = HeartRateCardViewModel();
-        final heartRateStreamController =
-            StreamController<MockMeasurement>.broadcast();
+        final heartRateStreamController = StreamController<MockMeasurement>.broadcast();
 
         setUp(() {
-          when(mockSmartphoneDeploymentController.measurements)
-              .thenAnswer((_) => heartRateStreamController.stream);
+          when(mockSmartphoneDeploymentController.measurements).thenAnswer((_) => heartRateStreamController.stream);
 
           viewModel.init(mockSmartphoneDeploymentController);
         });
@@ -55,10 +52,8 @@ void main() {
             await Future<void>.delayed(const Duration(milliseconds: 100));
             expect(viewModel.currentHeartRate, equals(80.0));
             expect(viewModel.dayMinMax, equals(HeartRateMinMaxPrHour(80, 80)));
-            expect(
-                viewModel.hourlyHeartRate,
-                equals((HourlyHeartRate().addHeartRate(DateTime.now().hour, 80))
-                    .hourlyHeartRate));
+            expect(viewModel.hourlyHeartRate,
+                equals((HourlyHeartRate().addHeartRate(DateTime.now().hour, 80)).hourlyHeartRate));
           });
           test('with multiple events', () async {
             // Add a heart rate data point to the stream
@@ -80,9 +75,7 @@ void main() {
             expect(viewModel.dayMinMax, equals(HeartRateMinMaxPrHour(60, 90)));
             expect(
                 viewModel.hourlyHeartRate,
-                equals((HourlyHeartRate()
-                        .addHeartRate(DateTime.now().hour, 60)
-                        .addHeartRate(DateTime.now().hour, 90))
+                equals((HourlyHeartRate().addHeartRate(DateTime.now().hour, 60).addHeartRate(DateTime.now().hour, 90))
                     .hourlyHeartRate));
           });
           test('with events with data that is 0', () async {
@@ -95,10 +88,8 @@ void main() {
 
             await Future<void>.delayed(const Duration(milliseconds: 100));
             expect(viewModel.currentHeartRate, equals(null));
-            expect(
-                viewModel.dayMinMax, equals(HeartRateMinMaxPrHour(null, null)));
-            expect(viewModel.hourlyHeartRate,
-                equals((HourlyHeartRate()).hourlyHeartRate));
+            expect(viewModel.dayMinMax, equals(HeartRateMinMaxPrHour(null, null)));
+            expect(viewModel.hourlyHeartRate, equals((HourlyHeartRate()).hourlyHeartRate));
             // expect(viewModel.skinContact, equals(false));
           });
           test('with contactStatus being true', () async {
@@ -129,8 +120,7 @@ void main() {
       hr.hourlyHeartRate[13] = HeartRateMinMaxPrHour(75, 85);
       hr.maxHeartRate = 85;
       hr.minHeartRate = 70;
-      hr.lastUpdated =
-          DateTime.now().subtract(const Duration(days: 1)); // yesterday
+      hr.lastUpdated = DateTime.now().subtract(const Duration(days: 1)); // yesterday
 
       // call resetDataAtMidnight
       hr.resetDataAtMidnight();

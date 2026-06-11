@@ -41,18 +41,15 @@ class ProcessMessagePage extends StatelessWidget {
       switch (statusType) {
         case ProcessStatus.done:
           image = Image(
-              image: const AssetImage('assets/icons/done.png'),
-              height: MediaQuery.of(context).size.height * 0.35);
+              image: const AssetImage('assets/icons/done.png'), height: MediaQuery.of(context).size.height * 0.35);
           break;
         case ProcessStatus.error:
           image = Image(
-              image: const AssetImage('assets/icons/error.png'),
-              height: MediaQuery.of(context).size.height * 0.35);
+              image: const AssetImage('assets/icons/error.png'), height: MediaQuery.of(context).size.height * 0.35);
           break;
         case ProcessStatus.other:
           image = Image(
-              image: const AssetImage('assets/icons/info.png'),
-              height: MediaQuery.of(context).size.height * 0.35);
+              image: const AssetImage('assets/icons/info.png'), height: MediaQuery.of(context).size.height * 0.35);
           break;
       }
 
@@ -88,8 +85,7 @@ class ProcessMessagePage extends StatelessWidget {
                             Navigator.of(context).pop();
                           },
                           child: Text(locale.translate('cancel').toUpperCase(),
-                              style: TextStyle(
-                                  color: Theme.of(context).primaryColor))),
+                              style: TextStyle(color: Theme.of(context).primaryColor))),
                       const SizedBox(width: 10),
                     ],
                   )
@@ -98,8 +94,7 @@ class ProcessMessagePage extends StatelessWidget {
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
                 ElevatedButton(
-                  style: ElevatedButton.styleFrom(
-                      backgroundColor: Theme.of(context).primaryColor),
+                  style: ElevatedButton.styleFrom(backgroundColor: Theme.of(context).primaryColor),
                   onPressed: () {
                     actionFunction();
                   },

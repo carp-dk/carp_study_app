@@ -16,19 +16,16 @@ class DeviceListPageState extends State<DeviceListPage> {
   StreamSubscription<BluetoothAdapterState>? bluetoothStateStream;
   BluetoothAdapterState? bluetoothAdapterState;
 
-  final List<DeviceViewModel> _smartphoneDevice = bloc.deploymentDevices
-      .where((element) => element.deviceManager is SmartphoneDeviceManager)
-      .toList();
+  final List<DeviceViewModel> _smartphoneDevice =
+      bloc.deploymentDevices.where((element) => element.deviceManager is SmartphoneDeviceManager).toList();
 
   final List<DeviceViewModel> _hardwareDevices = bloc.deploymentDevices
       .where((element) =>
-          element.deviceManager is HardwareDeviceManager &&
-          element.deviceManager is! SmartphoneDeviceManager)
+          element.deviceManager is HardwareDeviceManager && element.deviceManager is! SmartphoneDeviceManager)
       .toList();
 
-  final List<DeviceViewModel> _onlineServices = bloc.deploymentDevices
-      .where((element) => element.deviceManager is OnlineServiceManager)
-      .toList();
+  final List<DeviceViewModel> _onlineServices =
+      bloc.deploymentDevices.where((element) => element.deviceManager is OnlineServiceManager).toList();
 
   @override
   void initState() {
@@ -49,16 +46,14 @@ class DeviceListPageState extends State<DeviceListPage> {
   Widget build(BuildContext context) {
     RPLocalizations locale = RPLocalizations.of(context)!;
     return Scaffold(
-      backgroundColor:
-          Theme.of(context).extension<CarpColors>()!.backgroundGray,
+      backgroundColor: Theme.of(context).extension<CarpColors>()!.backgroundGray,
       body: SafeArea(
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.center,
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
             Padding(
-              padding:
-                  const EdgeInsets.symmetric(vertical: 8.0, horizontal: 10),
+              padding: const EdgeInsets.symmetric(vertical: 8.0, horizontal: 10),
               child: const CarpAppBar(hasProfileIcon: true),
             ),
             Container(
@@ -74,9 +69,7 @@ class DeviceListPageState extends State<DeviceListPage> {
                       Text(
                         locale.translate('pages.devices.title'),
                         style: fs24fw700.copyWith(
-                          color: Theme.of(context)
-                              .extension<CarpColors>()!
-                              .grey900,
+                          color: Theme.of(context).extension<CarpColors>()!.grey900,
                           fontWeight: FontWeight.bold,
                         ),
                       ),
@@ -97,9 +90,7 @@ class DeviceListPageState extends State<DeviceListPage> {
                     children: [
                       Text(locale.translate("pages.devices.message"),
                           style: fs16fw600.copyWith(
-                            color: Theme.of(context)
-                                .extension<CarpColors>()!
-                                .grey600,
+                            color: Theme.of(context).extension<CarpColors>()!.grey600,
                           )),
                       const SizedBox(height: 15),
                     ],
@@ -112,10 +103,8 @@ class DeviceListPageState extends State<DeviceListPage> {
               child: CustomScrollView(
                 slivers: [
                   ..._smartphoneDeviceList(locale),
-                  if (_hardwareDevices.isNotEmpty)
-                    ..._hardwareDevicesList(locale),
-                  if (_onlineServices.isNotEmpty)
-                    ..._onlineServicesList(locale),
+                  if (_hardwareDevices.isNotEmpty) ..._hardwareDevicesList(locale),
+                  if (_onlineServices.isNotEmpty) ..._onlineServicesList(locale),
                 ],
               ),
             ),
@@ -135,8 +124,7 @@ class DeviceListPageState extends State<DeviceListPage> {
               listenable: _smartphoneDevice[index],
               builder: (BuildContext context, Widget? widget) => Center(
                 child: StudiesMaterial(
-                  backgroundColor:
-                      Theme.of(context).extension<CarpColors>()!.grey50!,
+                  backgroundColor: Theme.of(context).extension<CarpColors>()!.grey50!,
                   child: _cardListBuilder(
                     leading: _smartphoneDevice[index].icon!,
                     title: (
@@ -167,23 +155,16 @@ class DeviceListPageState extends State<DeviceListPage> {
                 () => _cardListBuilder(
                   enableFeedback: true,
                   leading: device.icon!,
-                  title: (
-                    locale.translate(device.typeName),
-                    device.batteryLevel ?? 0
-                  ),
+                  title: (locale.translate(device.typeName), device.batteryLevel ?? 0),
                   subtitle: device.name,
                   onTap: () async => await _hardwareDeviceClicked(device),
                   trailing: device.getDeviceStatusIcon is Icon
                       ? device.getDeviceStatusIcon as Icon
                       : Container(
-                          padding: const EdgeInsets.symmetric(
-                              horizontal: 16, vertical: 8),
+                          padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
                           decoration: BoxDecoration(
-                              color: CACHET.DEPLOYMENT_DEPLOYING,
-                              borderRadius: BorderRadius.circular(100)),
-                          child: Text(
-                              locale.translate(
-                                  device.getDeviceStatusIcon as String),
+                              color: CACHET.DEPLOYMENT_DEPLOYING, borderRadius: BorderRadius.circular(100)),
+                          child: Text(locale.translate(device.getDeviceStatusIcon as String),
                               style: fs20fw700.copyWith(color: Colors.white)),
                         ),
                 ),
@@ -211,14 +192,11 @@ class DeviceListPageState extends State<DeviceListPage> {
                   onTap: () async => await _onlineServiceClicked(service),
                   trailing: service.getServiceStatusIcon is String
                       ? Container(
-                          padding: const EdgeInsets.symmetric(
-                              horizontal: 16, vertical: 8),
+                          padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
                           decoration: BoxDecoration(
-                              color: CACHET.DEPLOYMENT_DEPLOYING,
-                              borderRadius: BorderRadius.circular(100)),
+                              color: CACHET.DEPLOYMENT_DEPLOYING, borderRadius: BorderRadius.circular(100)),
                           child: Text(
-                            locale.translate(
-                                service.getServiceStatusIcon as String),
+                            locale.translate(service.getServiceStatusIcon as String),
                             style: fs20fw700.copyWith(color: Colors.white),
                           ),
                         )
@@ -260,8 +238,7 @@ class DeviceListPageState extends State<DeviceListPage> {
                 ),
               ),
               SizedBox(width: 6),
-              if (title.$2 != null && title.$2! > 0)
-                BatteryPercentage(batteryLevel: title.$2 ?? 0),
+              if (title.$2 != null && title.$2! > 0) BatteryPercentage(batteryLevel: title.$2 ?? 0),
             ],
           ),
         ),
@@ -276,8 +253,7 @@ class DeviceListPageState extends State<DeviceListPage> {
                     child: Text(
                       subtitle,
                       style: fs12fw700.copyWith(
-                        color:
-                            Theme.of(context).extension<CarpColors>()!.grey700,
+                        color: Theme.of(context).extension<CarpColors>()!.grey700,
                       ),
                     ),
                   ),
@@ -311,8 +287,7 @@ class DeviceListPageState extends State<DeviceListPage> {
       );
 
   Future<void> _onlineServiceClicked(DeviceViewModel service) async {
-    if (service.status == DeviceStatus.connected ||
-        service.status == DeviceStatus.connecting) {
+    if (service.status == DeviceStatus.connected || service.status == DeviceStatus.connecting) {
       return;
     }
 
@@ -320,8 +295,7 @@ class DeviceListPageState extends State<DeviceListPage> {
       if (service.type == HealthService.DEVICE_TYPE) {
         Navigator.push(
           context,
-          MaterialPageRoute<void>(
-              builder: (context) => HealthServiceConnectPage()),
+          MaterialPageRoute<void>(builder: (context) => HealthServiceConnectPage()),
         );
       } else {
         await service.deviceManager.requestPermissions();
@@ -338,16 +312,14 @@ class DeviceListPageState extends State<DeviceListPage> {
     if (Platform.isAndroid) await FlutterBluePlus.turnOn();
 
     if (context.mounted) {
-      if (bluetoothAdapterState == BluetoothAdapterState.off &&
-          Platform.isIOS) {
+      if (bluetoothAdapterState == BluetoothAdapterState.off && Platform.isIOS) {
         await showDialog<void>(
           context: context,
           barrierDismissible: true,
           builder: (context) => EnableBluetoothDialog(device: device),
         );
       } else if (bluetoothAdapterState == BluetoothAdapterState.on) {
-        if (device.status == DeviceStatus.connected ||
-            device.status == DeviceStatus.connecting) {
+        if (device.status == DeviceStatus.connected || device.status == DeviceStatus.connecting) {
           bool disconnect = await showDialog<bool?>(
                 context: context,
                 barrierDismissible: true,
@@ -356,22 +328,18 @@ class DeviceListPageState extends State<DeviceListPage> {
               false;
           if (disconnect) await device.disconnectFromDevice();
         } else {
-          final hasSeenInstructions =
-              LocalSettings().hasSeenBluetoothConnectionInstructions;
+          final hasSeenInstructions = LocalSettings().hasSeenBluetoothConnectionInstructions;
           Navigator.push(
             context,
             MaterialPageRoute<void>(
               builder: (context) => BluetoothConnectionPage(
-                hasSeenInstructions
-                    ? CurrentStep.scan
-                    : CurrentStep.instructions,
+                hasSeenInstructions ? CurrentStep.scan : CurrentStep.instructions,
                 device: device,
               ),
             ),
           );
         }
-      } else if (bluetoothAdapterState == BluetoothAdapterState.unauthorized &&
-          Platform.isIOS) {
+      } else if (bluetoothAdapterState == BluetoothAdapterState.unauthorized && Platform.isIOS) {
         await showDialog<void>(
           context: context,
           barrierDismissible: true,

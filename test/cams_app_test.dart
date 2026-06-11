@@ -42,11 +42,9 @@ void main() {
   group("Local Study Protocol Manager", () {
     // skipping this test since it is throwing strange "asUnmodifiableView" errors....?
     test('JSON File -> StudyProtocol', skip: true, () async {
-      final plainJson =
-          File('test/json/study_protocol.json').readAsStringSync();
+      final plainJson = File('test/json/study_protocol.json').readAsStringSync();
 
-      SmartphoneStudyProtocol.fromJson(
-          json.decode(plainJson) as Map<String, dynamic>);
+      SmartphoneStudyProtocol.fromJson(json.decode(plainJson) as Map<String, dynamic>);
     });
   });
 }

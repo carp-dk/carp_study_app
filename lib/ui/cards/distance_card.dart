@@ -4,9 +4,7 @@ class DistanceCard extends StatefulWidget {
   final List<Color> colors;
 
   final MobilityCardViewModel model;
-  const DistanceCard(this.model,
-      {super.key,
-      this.colors = const [CACHET.BLUE_1, CACHET.BLUE_2, CACHET.BLUE_3]});
+  const DistanceCard(this.model, {super.key, this.colors = const [CACHET.BLUE_1, CACHET.BLUE_2, CACHET.BLUE_3]});
 
   @override
   State<DistanceCard> createState() => _DistanceCardState();
@@ -107,9 +105,7 @@ class _DistanceCardState extends State<DistanceCard> {
         enabled: false,
         touchCallback: (p0, p1) {
           setState(() {
-            touchedIndex =
-                (p1?.spot?.touchedBarGroupIndex ?? DateTime.now().weekday - 1) +
-                    1;
+            touchedIndex = (p1?.spot?.touchedBarGroupIndex ?? DateTime.now().weekday - 1) + 1;
           });
         },
       ),
@@ -138,9 +134,7 @@ class _DistanceCardState extends State<DistanceCard> {
   }
 
   List<BarChartGroupData> get barChartsGroups {
-    return widget.model.weekData.entries
-        .map((e) => generateGroupData(e.key, e.value.distance))
-        .toList();
+    return widget.model.weekData.entries.map((e) => generateGroupData(e.key, e.value.distance)).toList();
   }
 
   BarChartGroupData generateGroupData(int x, double step) {
@@ -171,9 +165,7 @@ class _DistanceCardState extends State<DistanceCard> {
       meta: meta,
       space: 6,
       child: Text(
-        value.toInt() % meta.appliedInterval == 0
-            ? value.toInt().toString()
-            : '',
+        value.toInt() % meta.appliedInterval == 0 ? value.toInt().toString() : '',
         style: fs14ls1.copyWith(
           color: Theme.of(context).extension<CarpColors>()!.grey600,
         ),

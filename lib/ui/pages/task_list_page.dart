@@ -22,8 +22,7 @@ class _SliverAppBarDelegate extends SliverPersistentHeaderDelegate {
   double get maxExtent => _tabBar.preferredSize.height;
 
   @override
-  Widget build(
-      BuildContext context, double shrinkOffset, bool overlapsContent) {
+  Widget build(BuildContext context, double shrinkOffset, bool overlapsContent) {
     return Container(
       width: double.infinity,
       padding: const EdgeInsets.symmetric(vertical: 4),
@@ -41,8 +40,7 @@ class _SliverAppBarDelegate extends SliverPersistentHeaderDelegate {
   }
 }
 
-class TaskListPageState extends State<TaskListPage>
-    with TickerProviderStateMixin {
+class TaskListPageState extends State<TaskListPage> with TickerProviderStateMixin {
   late TabController _tabController;
 
   bool showParticipantDataCard = false;
@@ -68,15 +66,13 @@ class TaskListPageState extends State<TaskListPage>
     return DefaultTabController(
       length: 2,
       child: Scaffold(
-        backgroundColor:
-            Theme.of(context).extension<CarpColors>()!.backgroundGray,
+        backgroundColor: Theme.of(context).extension<CarpColors>()!.backgroundGray,
         body: SafeArea(
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.center,
             children: <Widget>[
               Padding(
-                padding:
-                    const EdgeInsets.symmetric(vertical: 8.0, horizontal: 10),
+                padding: const EdgeInsets.symmetric(vertical: 8.0, horizontal: 10),
                 child: const CarpAppBar(hasProfileIcon: true),
               ),
               Expanded(
@@ -91,16 +87,13 @@ class TaskListPageState extends State<TaskListPage>
                         slivers: [
                           SliverToBoxAdapter(
                             child: Padding(
-                              padding: const EdgeInsets.symmetric(
-                                  horizontal: 24, vertical: 16),
+                              padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 16),
                               child: Align(
                                 alignment: Alignment.centerLeft,
                                 child: Text(
                                   locale.translate('pages.task_list.title'),
                                   style: fs24fw700.copyWith(
-                                    color: Theme.of(context)
-                                        .extension<CarpColors>()!
-                                        .grey900,
+                                    color: Theme.of(context).extension<CarpColors>()!.grey900,
                                     fontWeight: FontWeight.bold,
                                   ),
                                 ),
@@ -109,49 +102,38 @@ class TaskListPageState extends State<TaskListPage>
                           ),
                           // Scoreboard showing days in study and tasks completed
                           SliverPadding(
-                            padding: const EdgeInsets.only(
-                                top: 4, bottom: 6, left: 40, right: 40),
+                            padding: const EdgeInsets.only(top: 4, bottom: 6, left: 40, right: 40),
                             sliver: ScoreboardCard(widget.model),
                           ),
                           // Tab holder
                           SliverPadding(
-                            padding: const EdgeInsets.only(
-                                top: 8, bottom: 24, left: 64, right: 64),
+                            padding: const EdgeInsets.only(top: 8, bottom: 24, left: 64, right: 64),
                             sliver: SliverPersistentHeader(
                               pinned: true,
                               delegate: _SliverAppBarDelegate(
                                 TabBar(
                                   controller: _tabController,
-                                  labelPadding: const EdgeInsets.only(
-                                      top: 4, bottom: 4, left: 4, right: 4),
-                                  labelColor: Theme.of(context)
-                                      .extension<CarpColors>()!
-                                      .grey900,
-                                  unselectedLabelColor: Theme.of(context)
-                                      .extension<CarpColors>()!
-                                      .grey900,
+                                  labelPadding: const EdgeInsets.only(top: 4, bottom: 4, left: 4, right: 4),
+                                  labelColor: Theme.of(context).extension<CarpColors>()!.grey900,
+                                  unselectedLabelColor: Theme.of(context).extension<CarpColors>()!.grey900,
                                   dividerColor: Colors.transparent,
                                   indicator: ShapeDecoration(
                                     shape: RoundedRectangleBorder(
                                       borderRadius: BorderRadius.circular(8),
                                     ),
-                                    color: Theme.of(context)
-                                        .extension<CarpColors>()!
-                                        .white,
+                                    color: Theme.of(context).extension<CarpColors>()!.white,
                                   ),
                                   tabs: [
                                     Container(
                                       width: double.infinity,
                                       child: Tab(
-                                        text: locale.translate(
-                                            'pages.task_list.pending'),
+                                        text: locale.translate('pages.task_list.pending'),
                                       ),
                                     ),
                                     Container(
                                       width: double.infinity,
                                       child: Tab(
-                                        text: locale.translate(
-                                            'pages.task_list.completed'),
+                                        text: locale.translate('pages.task_list.completed'),
                                       ),
                                     ),
                                   ],
@@ -169,14 +151,11 @@ class TaskListPageState extends State<TaskListPage>
                                 UserTask userTask = widget.model.tasks[index];
                                 if (_tabController.index == 0) {
                                   if (userTask.availableForUser) {
-                                    return _buildAvailableTaskCard(
-                                        context, userTask);
+                                    return _buildAvailableTaskCard(context, userTask);
                                   }
                                 } else if (_tabController.index == 1) {
-                                  if (userTask.state == UserTaskState.done ||
-                                      userTask.state == UserTaskState.expired) {
-                                    return _buildCompletedTaskCard(
-                                        context, userTask);
+                                  if (userTask.state == UserTaskState.done || userTask.state == UserTaskState.expired) {
+                                    return _buildCompletedTaskCard(context, userTask);
                                   }
                                 }
                                 return const SizedBox.shrink();
@@ -229,8 +208,7 @@ class TaskListPageState extends State<TaskListPage>
                             child: Text(
                               "Input Data",
                               style: TextStyle(
-                                color:
-                                    taskTypeColors["ExpectedParticipantData"],
+                                color: taskTypeColors["ExpectedParticipantData"],
                                 fontWeight: FontWeight.bold,
                               ),
                             ),
@@ -288,10 +266,9 @@ class TaskListPageState extends State<TaskListPage>
               right: Radius.circular(8.0),
             ),
           ),
-          backgroundColor:
-              userTask.expiresIn != null && userTask.expiresIn!.inHours < 24
-                  ? CACHET.TASK_TO_EXPIRE_BACKGROUND
-                  : Theme.of(context).extension<CarpColors>()!.grey50!,
+          backgroundColor: userTask.expiresIn != null && userTask.expiresIn!.inHours < 24
+              ? CACHET.TASK_TO_EXPIRE_BACKGROUND
+              : Theme.of(context).extension<CarpColors>()!.grey50!,
           child: Padding(
             padding: const EdgeInsets.symmetric(vertical: 16),
             child: IntrinsicHeight(
@@ -306,15 +283,12 @@ class TaskListPageState extends State<TaskListPage>
                       children: [
                         Row(
                           children: [
-                            if (userTask.state == UserTaskState.started)
-                              CircularProgressIndicator(),
-                            if (userTask.state != UserTaskState.started)
-                              _taskTypeIcon(userTask),
+                            if (userTask.state == UserTaskState.started) CircularProgressIndicator(),
+                            if (userTask.state != UserTaskState.started) _taskTypeIcon(userTask),
                             Padding(
                               padding: const EdgeInsets.only(left: 4.0),
                               child: Text(
-                                userTask.type[0].toUpperCase() +
-                                    userTask.type.substring(1),
+                                userTask.type[0].toUpperCase() + userTask.type.substring(1),
                                 style: TextStyle(
                                   color: taskTypeColors[userTask.type],
                                   fontWeight: FontWeight.bold,
@@ -325,11 +299,8 @@ class TaskListPageState extends State<TaskListPage>
                             if (_timeRemainingSubtitle(userTask).isNotEmpty)
                               Icon(
                                 Icons.alarm,
-                                color: userTask.expiresIn != null &&
-                                        userTask.expiresIn!.inHours < 24
-                                    ? Theme.of(context)
-                                        .extension<CarpColors>()!
-                                        .warningColor
+                                color: userTask.expiresIn != null && userTask.expiresIn!.inHours < 24
+                                    ? Theme.of(context).extension<CarpColors>()!.warningColor
                                     : Colors.grey,
                               ),
                             const SizedBox(width: 4.0),
@@ -338,11 +309,8 @@ class TaskListPageState extends State<TaskListPage>
                               child: Text(
                                 _timeRemainingSubtitle(userTask),
                                 style: TextStyle(
-                                  color: userTask.expiresIn != null &&
-                                          userTask.expiresIn!.inHours < 24
-                                      ? Theme.of(context)
-                                          .extension<CarpColors>()!
-                                          .warningColor
+                                  color: userTask.expiresIn != null && userTask.expiresIn!.inHours < 24
+                                      ? Theme.of(context).extension<CarpColors>()!.warningColor
                                       : Colors.grey,
                                   fontSize: 12.0,
                                 ),
@@ -401,8 +369,7 @@ class TaskListPageState extends State<TaskListPage>
         ),
         onTap: () {
           // only start if not already started, done, or expired
-          if (userTask.state == UserTaskState.enqueued ||
-              userTask.state == UserTaskState.canceled) {
+          if (userTask.state == UserTaskState.enqueued || userTask.state == UserTaskState.canceled) {
             userTask.onStart();
             if (userTask.hasWidget) {
               context.push('/task/${userTask.id}');
@@ -410,8 +377,7 @@ class TaskListPageState extends State<TaskListPage>
               Timer(const Duration(seconds: 10), () {
                 userTask.onDone();
                 ScaffoldMessenger.of(context).showSnackBar(SnackBar(
-                    backgroundColor:
-                        Theme.of(context).extension<CarpColors>()!.grey700,
+                    backgroundColor: Theme.of(context).extension<CarpColors>()!.grey700,
                     content: Text(locale.translate('Done!')),
                     shape: RoundedRectangleBorder(
                       borderRadius: BorderRadius.circular(4),
@@ -436,8 +402,7 @@ class TaskListPageState extends State<TaskListPage>
       builder: (context, snapshot) {
         if (taskTypeIcons[userTask.type] != null && userTask.availableForUser) {
           return originalIcon;
-        } else if (taskTypeIcons[userTask.type] != null &&
-            userTask.state == UserTaskState.started) {
+        } else if (taskTypeIcons[userTask.type] != null && userTask.state == UserTaskState.started) {
           return Padding(
             padding: const EdgeInsets.all(4),
             child: SizedBox(
@@ -448,12 +413,10 @@ class TaskListPageState extends State<TaskListPage>
               width: 14,
             ),
           );
-        } else if (taskTypeIcons[userTask.type] != null &&
-            userTask.state == UserTaskState.done) {
+        } else if (taskTypeIcons[userTask.type] != null && userTask.state == UserTaskState.done) {
           return Icon(originalIcon.icon, color: CACHET.TASK_COMPLETED_BLUE);
         } else {
-          return Icon(originalIcon.icon,
-              color: Theme.of(context).extension<CarpColors>()!.grey600);
+          return Icon(originalIcon.icon, color: Theme.of(context).extension<CarpColors>()!.grey600);
         }
       },
     );
@@ -501,9 +464,7 @@ class TaskListPageState extends State<TaskListPage>
               right: Radius.circular(8.0),
             ),
           ),
-          borderColor: (userTask.state == UserTaskState.done)
-              ? CACHET.TASK_COMPLETED_BLUE
-              : CACHET.GREY_6,
+          borderColor: (userTask.state == UserTaskState.done) ? CACHET.TASK_COMPLETED_BLUE : CACHET.GREY_6,
           child: Padding(
             padding: const EdgeInsets.only(top: 16, bottom: 16, right: 16),
             child: IntrinsicHeight(
@@ -534,15 +495,11 @@ class TaskListPageState extends State<TaskListPage>
                             Spacer(),
                             Text(
                               userTask.doneTime != null
-                                  ? DateFormat('MMMM dd yyyy')
-                                      .format(userTask.doneTime!)
+                                  ? DateFormat('MMMM dd yyyy').format(userTask.doneTime!)
                                   : 'Done time null',
                               style: TextStyle(
-                                color: userTask.expiresIn != null &&
-                                        userTask.expiresIn!.inHours < 24
-                                    ? Theme.of(context)
-                                        .extension<CarpColors>()!
-                                        .warningColor
+                                color: userTask.expiresIn != null && userTask.expiresIn!.inHours < 24
+                                    ? Theme.of(context).extension<CarpColors>()!.warningColor
                                     : Colors.grey,
                                 fontSize: 12.0,
                               ),
@@ -733,13 +690,10 @@ class TaskListPageState extends State<TaskListPage>
   };
 
   static Map<UserTaskState, Icon> get taskStateIcon => {
-        UserTaskState.initialized:
-            const Icon(Icons.stream, color: CACHET.YELLOW),
-        UserTaskState.enqueued:
-            const Icon(Icons.notifications, color: CACHET.YELLOW),
+        UserTaskState.initialized: const Icon(Icons.stream, color: CACHET.YELLOW),
+        UserTaskState.enqueued: const Icon(Icons.notifications, color: CACHET.YELLOW),
         UserTaskState.dequeued: const Icon(Icons.stop, color: CACHET.YELLOW),
-        UserTaskState.started:
-            const Icon(Icons.play_arrow, color: CACHET.GREY_4),
+        UserTaskState.started: const Icon(Icons.play_arrow, color: CACHET.GREY_4),
         UserTaskState.canceled: const Icon(Icons.pause, color: CACHET.GREY_4),
         UserTaskState.done: const Icon(Icons.check, color: CACHET.GREEN),
       };

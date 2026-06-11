@@ -39,14 +39,9 @@ class TaskListPageViewModel extends ViewModel {
   /// [StudyDeploymentStatus].
   /// Returns 0 if the study deployment status is not available.
   int get daysInStudy => (Sensing().studyDeploymentStatus != null)
-      ? DateTime.now()
-          .difference(Sensing().studyDeploymentStatus!.createdOn)
-          .inDays
+      ? DateTime.now().difference(Sensing().studyDeploymentStatus!.createdOn).inDays
       : 0;
 
   /// The number of tasks completed so far.
-  int get taskCompleted => AppTaskController()
-      .userTaskQueue
-      .where((task) => task.state == UserTaskState.done)
-      .length;
+  int get taskCompleted => AppTaskController().userTaskQueue.where((task) => task.state == UserTaskState.done).length;
 }

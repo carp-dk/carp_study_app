@@ -57,8 +57,7 @@ class CACHET {
 
   static const Color HEART_RATE_RED = Color.fromRGBO(235, 75, 98, 1.0);
 
-  static Color pie =
-      createMaterialColor(const Color.fromRGBO(225, 244, 250, 1));
+  static Color pie = createMaterialColor(const Color.fromRGBO(225, 244, 250, 1));
 
   static const List<Color> COLOR_LIST = [
     Color(0xFF7FC9E3),

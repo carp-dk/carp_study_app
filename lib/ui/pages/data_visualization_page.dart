@@ -15,16 +15,14 @@ class _DataVisualizationPageState extends State<DataVisualizationPage> {
   Widget build(BuildContext context) {
     RPLocalizations locale = RPLocalizations.of(context)!;
     return Scaffold(
-        backgroundColor:
-            Theme.of(context).extension<CarpColors>()!.backgroundGray,
+        backgroundColor: Theme.of(context).extension<CarpColors>()!.backgroundGray,
         body: SafeArea(
             child: Column(
           crossAxisAlignment: CrossAxisAlignment.center,
           mainAxisAlignment: MainAxisAlignment.center,
           children: <Widget>[
             Padding(
-              padding:
-                  const EdgeInsets.symmetric(vertical: 8.0, horizontal: 10),
+              padding: const EdgeInsets.symmetric(vertical: 8.0, horizontal: 10),
               child: const CarpAppBar(hasProfileIcon: true),
             ),
             Container(
@@ -39,9 +37,7 @@ class _DataVisualizationPageState extends State<DataVisualizationPage> {
                     children: [
                       Text(locale.translate('pages.data_viz.title'),
                           style: fs24fw700.copyWith(
-                            color: Theme.of(context)
-                                .extension<CarpColors>()!
-                                .grey900,
+                            color: Theme.of(context).extension<CarpColors>()!.grey900,
                             fontWeight: FontWeight.bold,
                           )),
                     ],
@@ -57,13 +53,10 @@ class _DataVisualizationPageState extends State<DataVisualizationPage> {
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: [
                     Padding(
-                      padding: const EdgeInsets.symmetric(
-                          horizontal: 15, vertical: 24.0),
+                      padding: const EdgeInsets.symmetric(horizontal: 15, vertical: 24.0),
                       child: Text(locale.translate('pages.data_viz.thanks'),
                           style: fs16fw600.copyWith(
-                            color: Theme.of(context)
-                                .extension<CarpColors>()!
-                                .grey600,
+                            color: Theme.of(context).extension<CarpColors>()!.grey600,
                           )),
                     ),
                     ..._dataVizCards,
@@ -81,15 +74,12 @@ class _DataVisualizationPageState extends State<DataVisualizationPage> {
 
     // Show user task progress, if study has any tasks.
     if (bloc.hasUserTasks()) {
-      widgets.add(
-          StudyProgressCardWidget(widget.model.studyProgressCardDataModel));
+      widgets.add(StudyProgressCardWidget(widget.model.studyProgressCardDataModel));
     }
 
     // Show HR if there is a POLAR or MOVESENSE device in the study
-    if (bloc.hasMeasure(PolarSamplingPackage.HR) ||
-        bloc.hasMeasure(MovesenseSamplingPackage.HR)) {
-      widgets.add(
-          HeartRateOuterStatefulWidget(widget.model.heartRateCardDataModel));
+    if (bloc.hasMeasure(PolarSamplingPackage.HR) || bloc.hasMeasure(MovesenseSamplingPackage.HR)) {
+      widgets.add(HeartRateOuterStatefulWidget(widget.model.heartRateCardDataModel));
     }
 
     // check to show surveys stats

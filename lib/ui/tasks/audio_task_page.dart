@@ -25,17 +25,14 @@ class AudioTaskPageState extends State<AudioTaskPage> {
                     Row(
                       children: [
                         Padding(
-                          padding: const EdgeInsets.symmetric(
-                              vertical: 8.0, horizontal: 10),
+                          padding: const EdgeInsets.symmetric(vertical: 8.0, horizontal: 10),
                           child: const CarpAppBar(
                             hasProfileIcon: false,
                           ),
                         ),
                         Spacer(),
                         IconButton(
-                          color: Theme.of(context)
-                              .extension<CarpColors>()!
-                              .grey900!,
+                          color: Theme.of(context).extension<CarpColors>()!.grey900!,
                           onPressed: () {
                             _showCancelConfirmationDialog();
                           },
@@ -48,19 +45,14 @@ class AudioTaskPageState extends State<AudioTaskPage> {
                     ),
                     Padding(
                       padding: const EdgeInsets.symmetric(vertical: 30),
-                      child: const Image(
-                          image: AssetImage('assets/icons/audio.png'),
-                          width: 220,
-                          height: 220),
+                      child: const Image(image: AssetImage('assets/icons/audio.png'), width: 220, height: 220),
                     ),
                     Padding(
                       padding: const EdgeInsets.symmetric(vertical: 12),
-                      child: Text(locale.translate(widget.audioUserTask!.title),
-                          style: fs22fw700),
+                      child: Text(locale.translate(widget.audioUserTask!.title), style: fs22fw700),
                     ),
                     Padding(
-                      padding: const EdgeInsets.symmetric(
-                          vertical: 12, horizontal: 20),
+                      padding: const EdgeInsets.symmetric(vertical: 12, horizontal: 20),
                       child: Text(
                         '${locale.translate(widget.audioUserTask!.description)}\n\n'
                         '${locale.translate('pages.audio_task.play')}',
@@ -89,9 +81,7 @@ class AudioTaskPageState extends State<AudioTaskPage> {
                               ),
                             ),
                             style: ElevatedButton.styleFrom(
-                              backgroundColor: Theme.of(context)
-                                  .extension<CarpColors>()!
-                                  .primary,
+                              backgroundColor: Theme.of(context).extension<CarpColors>()!.primary,
                               padding: const EdgeInsets.symmetric(
                                 horizontal: 30,
                                 vertical: 12,

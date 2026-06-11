@@ -3,21 +3,14 @@ part of carp_study_app;
 class DataVisualizationPageViewModel extends ViewModel {
   final ActivityCardViewModel _activityCardDataModel = ActivityCardViewModel();
   final StepsCardViewModel _stepsCardDataModel = StepsCardViewModel();
-  final MeasurementsCardViewModel _measuresCardDataModel =
-      MeasurementsCardViewModel();
+  final MeasurementsCardViewModel _measuresCardDataModel = MeasurementsCardViewModel();
   final MobilityCardViewModel _mobilityCardDataModel = MobilityCardViewModel();
-  final TaskCardViewModel _surveysCardDataModel =
-      TaskCardViewModel(SurveyUserTask.SURVEY_TYPE);
-  final TaskCardViewModel _audioCardDataModel =
-      TaskCardViewModel(SurveyUserTask.AUDIO_TYPE);
-  final TaskCardViewModel _videoCardDataModel =
-      TaskCardViewModel(SurveyUserTask.VIDEO_TYPE);
-  final TaskCardViewModel _imageCardDataModel =
-      TaskCardViewModel(SurveyUserTask.IMAGE_TYPE);
-  final StudyProgressCardViewModel _studyProgressCardDataModel =
-      StudyProgressCardViewModel();
-  final HeartRateCardViewModel _heartRateCardDataModel =
-      HeartRateCardViewModel();
+  final TaskCardViewModel _surveysCardDataModel = TaskCardViewModel(SurveyUserTask.SURVEY_TYPE);
+  final TaskCardViewModel _audioCardDataModel = TaskCardViewModel(SurveyUserTask.AUDIO_TYPE);
+  final TaskCardViewModel _videoCardDataModel = TaskCardViewModel(SurveyUserTask.VIDEO_TYPE);
+  final TaskCardViewModel _imageCardDataModel = TaskCardViewModel(SurveyUserTask.IMAGE_TYPE);
+  final StudyProgressCardViewModel _studyProgressCardDataModel = StudyProgressCardViewModel();
+  final HeartRateCardViewModel _heartRateCardDataModel = HeartRateCardViewModel();
 
   ActivityCardViewModel get activityCardDataModel => _activityCardDataModel;
   StepsCardViewModel get stepsCardDataModel => _stepsCardDataModel;
@@ -29,22 +22,17 @@ class DataVisualizationPageViewModel extends ViewModel {
   TaskCardViewModel get imageCardDataModel => _imageCardDataModel;
   HeartRateCardViewModel get heartRateCardDataModel => _heartRateCardDataModel;
 
-  StudyProgressCardViewModel get studyProgressCardDataModel =>
-      _studyProgressCardDataModel;
+  StudyProgressCardViewModel get studyProgressCardDataModel => _studyProgressCardDataModel;
 
   /// A stream of [UserTask]s as they are generated.
   Stream<UserTask> get userTaskEvents => AppTaskController().userTaskEvents;
 
   /// The number of days the user has been part of this study.
-  int get daysInStudy => (bloc.studyStartTimestamp != null)
-      ? DateTime.now().difference(bloc.studyStartTimestamp!).inDays + 1
-      : 0;
+  int get daysInStudy =>
+      (bloc.studyStartTimestamp != null) ? DateTime.now().difference(bloc.studyStartTimestamp!).inDays + 1 : 0;
 
   /// The number of tasks completed so far.
-  int get taskCompleted => AppTaskController()
-      .userTaskQueue
-      .where((task) => task.state == UserTaskState.done)
-      .length;
+  int get taskCompleted => AppTaskController().userTaskQueue.where((task) => task.state == UserTaskState.done).length;
 
   DataVisualizationPageViewModel();
 
