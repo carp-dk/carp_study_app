@@ -43,6 +43,7 @@
 				<key>CFBundleURLSchemes</key>
 				<array>
 					<string>carp-studies</string>
+					<string>carp-studies-anonymous</string>
 					<string>carp-studies-auth</string>
 				</array>
 			</dict>

@@ -23,7 +23,7 @@ dependencies:
   carp_movesense_package: ^1.7.2
   carp_themes_package: ^0.0.5
 
-  carp_webservices: ^3.8.0
+  # carp_webservices: ^3.8.0
   carp_backend: ^1.9.2
 
   research_package: ^2.2.0
@@ -93,8 +93,8 @@ dependency_overrides:
   #   path: ../carp/carp.sensing-flutter/packages/carp_health_package/
   # carp_movesense_package:
   #   path: ../carp/carp.sensing-flutter/packages/carp_movesense_package/
-  # carp_webservices:
-  #   path: ../carp.sensing-flutter/backends/carp_webservices/
+  carp_webservices:
+    path: ../carp.sensing-flutter/backends/carp_webservices/
   # carp_backend:
   #   path: ../carp/carp.sensing-flutter/backends/carp_backend/
   # research_package:
