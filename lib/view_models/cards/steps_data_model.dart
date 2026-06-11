@@ -13,8 +13,9 @@ class StepsCardViewModel extends SerializableViewModel<WeeklySteps> {
   List<DailySteps> get steps => model.steps;
 
   final DateTime _startOfWeek = DateTime.now().subtract(Duration(days: DateTime.now().weekday - 1));
-  final DateTime _endOfWeek =
-      DateTime.now().subtract(Duration(days: DateTime.now().weekday - 1)).add(Duration(days: 6));
+  final DateTime _endOfWeek = DateTime.now()
+      .subtract(Duration(days: DateTime.now().weekday - 1))
+      .add(Duration(days: 6));
 
   String get startOfWeek => DateFormat('dd').format(_startOfWeek);
 
@@ -31,7 +32,7 @@ class StepsCardViewModel extends SerializableViewModel<WeeklySteps> {
       controller?.measurements.where((dataPoint) => dataPoint.data is StepCount);
 
   @override
-  void init(SmartphoneDeploymentController ctrl) {
+  void init(SmartphoneStudyController ctrl) {
     super.init(ctrl);
 
     // listen for pedometer events and count them

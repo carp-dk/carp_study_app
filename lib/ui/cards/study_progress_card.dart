@@ -4,8 +4,11 @@ class StudyProgressCardWidget extends StatefulWidget {
   final StudyProgressCardViewModel model;
 
   final List<Color> colors;
-  const StudyProgressCardWidget(this.model,
-      {super.key, this.colors = const [CACHET.BLUE_1, CACHET.RED_1, CACHET.GREY_6]});
+  const StudyProgressCardWidget(
+    this.model, {
+    super.key,
+    this.colors = const [CACHET.BLUE_1, CACHET.RED_1, CACHET.GREY_6],
+  });
 
   @override
   StudyProgressCardWidgetState createState() => StudyProgressCardWidgetState();
@@ -30,9 +33,7 @@ class StudyProgressCardWidgetState extends State<StudyProgressCardWidget> {
                   padding: const EdgeInsets.only(left: 8),
                   child: Row(
                     mainAxisAlignment: MainAxisAlignment.start,
-                    children: <Widget>[
-                      Text(locale.translate('cards.study_progress.title'), style: fs16fw400ls1),
-                    ],
+                    children: <Widget>[Text(locale.translate('cards.study_progress.title'), style: fs16fw400ls1)],
                   ),
                 ),
                 SizedBox(
@@ -154,13 +155,7 @@ class TaskProgressPainter extends CustomPainter {
       );
 
       // draw a full circle as a background with a faint color
-      canvas.drawArc(
-        Rect.fromCircle(center: center, radius: radius),
-        0,
-        2 * pi,
-        false,
-        paintBackground,
-      );
+      canvas.drawArc(Rect.fromCircle(center: center, radius: radius), 0, 2 * pi, false, paintBackground);
     }
   }
 

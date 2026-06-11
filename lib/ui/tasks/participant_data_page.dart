@@ -178,10 +178,7 @@ class ParticipantDataPageState extends State<ParticipantDataPage> {
       controller: widget.model._phoneNumberController,
     );
 
-    widget.model.ssnField = StepField(
-      title: "tasks.participant_data.ssn.ssn",
-      controller: widget.model._ssnController,
-    );
+    widget.model.ssnField = StepField(title: "tasks.participant_data.ssn.ssn", controller: widget.model._ssnController);
   }
 
   @override
@@ -222,13 +219,15 @@ class ParticipantDataPageState extends State<ParticipantDataPage> {
     setState(() {
       switch (currentStep) {
         case ParticipantStep.address:
-          _nextEnabled = widget.model._address1Controller.text.isNotEmpty &&
+          _nextEnabled =
+              widget.model._address1Controller.text.isNotEmpty &&
               widget.model._streetController.text.isNotEmpty &&
               widget.model._postalCodeController.text.isNotEmpty &&
               widget.model._countryController.text.isNotEmpty;
           break;
         case ParticipantStep.diagnosis:
-          _nextEnabled = widget.model._effectiveDateController.text.isNotEmpty &&
+          _nextEnabled =
+              widget.model._effectiveDateController.text.isNotEmpty &&
               widget.model._icd11CodeController.text.isNotEmpty &&
               widget.model._conclusionController.text.isNotEmpty;
           break;
@@ -266,9 +265,7 @@ class ParticipantDataPageState extends State<ParticipantDataPage> {
                 children: [
                   Padding(
                     padding: const EdgeInsets.symmetric(vertical: 8.0, horizontal: 10),
-                    child: const CarpAppBar(
-                      hasProfileIcon: false,
-                    ),
+                    child: const CarpAppBar(hasProfileIcon: false),
                   ),
                   Spacer(),
                   IconButton(
@@ -276,10 +273,7 @@ class ParticipantDataPageState extends State<ParticipantDataPage> {
                     onPressed: () {
                       _showCancelConfirmationDialog();
                     },
-                    icon: const Icon(
-                      Icons.close,
-                      size: 30,
-                    ),
+                    icon: const Icon(Icons.close, size: 30),
                   ),
                 ],
               ),
@@ -293,9 +287,7 @@ class ParticipantDataPageState extends State<ParticipantDataPage> {
                       Expanded(
                         child: Padding(
                           padding: const EdgeInsets.symmetric(vertical: 8),
-                          child: SizedBox(
-                            child: _buildStepContent(locale, widget.model.expectedData),
-                          ),
+                          child: SizedBox(child: _buildStepContent(locale, widget.model.expectedData)),
                         ),
                       ),
                       Padding(
@@ -337,9 +329,7 @@ class ParticipantDataPageState extends State<ParticipantDataPage> {
             Flexible(
               child: Text(
                 stepTitleMap[currentStep] ?? '',
-                style: fs22fw700.copyWith(
-                  color: Theme.of(context).primaryColor,
-                ),
+                style: fs22fw700.copyWith(color: Theme.of(context).primaryColor),
                 textAlign: TextAlign.center,
               ),
             ),
@@ -354,12 +344,14 @@ class ParticipantDataPageState extends State<ParticipantDataPage> {
     List<Widget> fields = [];
     switch (currentStep) {
       case ParticipantStep.presentTypes:
-        fields.add(_buildPresentTypes(
-          _includedSteps
-              .where((step) => step != ParticipantStep.presentTypes && step != ParticipantStep.review)
-              .map((step) => participantStepDescriptions[step])
-              .toList(),
-        ));
+        fields.add(
+          _buildPresentTypes(
+            _includedSteps
+                .where((step) => step != ParticipantStep.presentTypes && step != ParticipantStep.review)
+                .map((step) => participantStepDescriptions[step])
+                .toList(),
+          ),
+        );
         break;
       case ParticipantStep.address:
         fields.addAll([
@@ -392,18 +384,12 @@ class ParticipantDataPageState extends State<ParticipantDataPage> {
         fields.add(_buildField(locale, widget.model.ssnField, isCPR: true));
         break;
       case ParticipantStep.review:
-        fields.add(_buildReviewStep(
-          locale,
-          _allUsedStepFields,
-        ));
+        fields.add(_buildReviewStep(locale, _allUsedStepFields));
         break;
     }
 
     return SingleChildScrollView(
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: fields,
-      ),
+      child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: fields),
     );
   }
 
@@ -417,11 +403,7 @@ class ParticipantDataPageState extends State<ParticipantDataPage> {
           child: Text(
             "\u2022 ${step ?? ''}",
             textAlign: TextAlign.start,
-            style: const TextStyle(
-              fontSize: 16,
-              fontWeight: FontWeight.w600,
-              letterSpacing: 0.4,
-            ),
+            style: const TextStyle(fontSize: 16, fontWeight: FontWeight.w600, letterSpacing: 0.4),
           ),
         );
       }).toList(),
@@ -452,20 +434,9 @@ class ParticipantDataPageState extends State<ParticipantDataPage> {
             children: [
               Text(
                 locale.translate(field),
-                style: const TextStyle(
-                  fontSize: 16,
-                  fontWeight: FontWeight.w600,
-                  letterSpacing: 0.4,
-                ),
+                style: const TextStyle(fontSize: 16, fontWeight: FontWeight.w600, letterSpacing: 0.4),
               ),
-              Text(
-                input,
-                style: const TextStyle(
-                  fontSize: 16,
-                  fontWeight: FontWeight.w600,
-                  letterSpacing: 0.4,
-                ),
-              ),
+              Text(input, style: const TextStyle(fontSize: 16, fontWeight: FontWeight.w600, letterSpacing: 0.4)),
             ],
           ),
         );
@@ -492,10 +463,7 @@ class ParticipantDataPageState extends State<ParticipantDataPage> {
           widget.model._phoneNumberCodeController.text = phoneNumber.dialCode ?? '';
         },
         textFieldController: stepField.controller,
-        selectorConfig: SelectorConfig(
-          selectorType: PhoneInputSelectorType.DIALOG,
-          useBottomSheetSafeArea: true,
-        ),
+        selectorConfig: SelectorConfig(selectorType: PhoneInputSelectorType.DIALOG, useBottomSheetSafeArea: true),
         inputDecoration: _buildInputDecoration(locale, stepField, isThicc),
         ignoreBlank: false,
         autoValidateMode: AutovalidateMode.disabled,
@@ -515,10 +483,7 @@ class ParticipantDataPageState extends State<ParticipantDataPage> {
                 width: 125,
                 child: Container(
                   decoration: BoxDecoration(
-                    border: Border.all(
-                      color: Theme.of(context).extension<CarpColors>()!.grey600!,
-                      width: 1.0,
-                    ),
+                    border: Border.all(color: Theme.of(context).extension<CarpColors>()!.grey600!, width: 1.0),
                     borderRadius: BorderRadius.circular(16.0),
                   ),
                   child: CountryCodePicker(
@@ -531,9 +496,7 @@ class ParticipantDataPageState extends State<ParticipantDataPage> {
                     showCountryOnly: true,
                     showOnlyCountryWhenClosed: true,
                     alignLeft: false,
-                    textStyle: fs16fw600.copyWith(
-                      color: Theme.of(context).extension<CarpColors>()!.grey900!,
-                    ),
+                    textStyle: fs16fw600.copyWith(color: Theme.of(context).extension<CarpColors>()!.grey900!),
                   ),
                 ),
               ),
@@ -556,30 +519,31 @@ class ParticipantDataPageState extends State<ParticipantDataPage> {
           Padding(
             padding: const EdgeInsets.only(bottom: 16),
             child: TextFormField(
-                controller: stepField.controller,
-                focusNode: stepField.focusNode,
-                textInputAction: TextInputAction.next,
-                onFieldSubmitted: (_) {
-                  if (stepField.nextFocusNode != null) {
-                    FocusScope.of(context).requestFocus(stepField.nextFocusNode);
-                  }
-                },
-                onTap: isDatePicker
-                    ? () async {
-                        DateTime? pickedDate = await showDatePicker(
-                          context: context,
-                          initialDate: DateTime.now(),
-                          firstDate: DateTime(1900),
-                          lastDate: DateTime.now(),
-                        );
-                        if (pickedDate != null) {
-                          stepField.controller.text = "${pickedDate.toLocal()}".split(' ')[0];
-                        }
+              controller: stepField.controller,
+              focusNode: stepField.focusNode,
+              textInputAction: TextInputAction.next,
+              onFieldSubmitted: (_) {
+                if (stepField.nextFocusNode != null) {
+                  FocusScope.of(context).requestFocus(stepField.nextFocusNode);
+                }
+              },
+              onTap: isDatePicker
+                  ? () async {
+                      DateTime? pickedDate = await showDatePicker(
+                        context: context,
+                        initialDate: DateTime.now(),
+                        firstDate: DateTime(1900),
+                        lastDate: DateTime.now(),
+                      );
+                      if (pickedDate != null) {
+                        stepField.controller.text = "${pickedDate.toLocal()}".split(' ')[0];
                       }
-                    : null,
-                keyboardType: TextInputType.multiline,
-                maxLines: isThicc ? null : 1,
-                decoration: _buildInputDecoration(locale, stepField, isThicc)),
+                    }
+                  : null,
+              keyboardType: TextInputType.multiline,
+              maxLines: isThicc ? null : 1,
+              decoration: _buildInputDecoration(locale, stepField, isThicc),
+            ),
           ),
         ],
       );
@@ -588,21 +552,22 @@ class ParticipantDataPageState extends State<ParticipantDataPage> {
 
   InputDecoration _buildInputDecoration(RPLocalizations locale, StepField stepField, bool isThicc) {
     return InputDecoration(
-        labelText: locale.translate(stepField.title),
-        floatingLabelBehavior: FloatingLabelBehavior.always,
-        border: OutlineInputBorder(
-          borderRadius: BorderRadius.circular(8),
-          borderSide: BorderSide(color: Colors.blue),
-        ),
-        enabledBorder: OutlineInputBorder(
-          borderRadius: BorderRadius.circular(8),
-          borderSide: BorderSide(color: Colors.grey.shade300),
-        ),
-        focusedBorder: OutlineInputBorder(
-          borderRadius: BorderRadius.circular(8),
-          borderSide: BorderSide(color: Colors.blue, width: 2),
-        ),
-        contentPadding: EdgeInsets.symmetric(horizontal: 16, vertical: isThicc ? 70 : 12));
+      labelText: locale.translate(stepField.title),
+      floatingLabelBehavior: FloatingLabelBehavior.always,
+      border: OutlineInputBorder(
+        borderRadius: BorderRadius.circular(8),
+        borderSide: BorderSide(color: Colors.blue),
+      ),
+      enabledBorder: OutlineInputBorder(
+        borderRadius: BorderRadius.circular(8),
+        borderSide: BorderSide(color: Colors.grey.shade300),
+      ),
+      focusedBorder: OutlineInputBorder(
+        borderRadius: BorderRadius.circular(8),
+        borderSide: BorderSide(color: Colors.blue, width: 2),
+      ),
+      contentPadding: EdgeInsets.symmetric(horizontal: 16, vertical: isThicc ? 70 : 12),
+    );
   }
 
   /// Builds the action buttons at the bottom of the page.
@@ -610,30 +575,44 @@ class ParticipantDataPageState extends State<ParticipantDataPage> {
   /// The "Next" button is enabled only if the required fields for the current step are filled.
   List<Widget> _buildActionButtons(RPLocalizations locale) {
     Widget buildTranslatedButton(
-        String key, VoidCallback onPressed, bool enabled, ButtonStyle? buttonStyle, TextStyle? buttonTextStyle) {
+      String key,
+      VoidCallback onPressed,
+      bool enabled,
+      ButtonStyle? buttonStyle,
+      TextStyle? buttonTextStyle,
+    ) {
       return ElevatedButton(
         onPressed: enabled ? onPressed : null,
-        child: Text(
-          locale.translate(key).toUpperCase(),
-          style: buttonTextStyle,
-        ),
+        child: Text(locale.translate(key).toUpperCase(), style: buttonTextStyle),
         style: buttonStyle,
       );
     }
 
     return [
       currentStep == ParticipantStep.presentTypes
-          ? buildTranslatedButton("cancel", () {
-              context.pop();
-            }, true, null, null)
-          : buildTranslatedButton("previous", () {
-              setState(() {
-                final idx = _includedSteps.indexOf(currentStep);
-                if (currentStep.index - 1 >= 0) {
-                  currentStep = _includedSteps[idx - 1];
-                }
-              });
-            }, true, null, null),
+          ? buildTranslatedButton(
+              "cancel",
+              () {
+                context.pop();
+              },
+              true,
+              null,
+              null,
+            )
+          : buildTranslatedButton(
+              "previous",
+              () {
+                setState(() {
+                  final idx = _includedSteps.indexOf(currentStep);
+                  if (currentStep.index - 1 >= 0) {
+                    currentStep = _includedSteps[idx - 1];
+                  }
+                });
+              },
+              true,
+              null,
+              null,
+            ),
       currentStep.index == ParticipantStep.values.length - 1
           ? buildTranslatedButton(
               "submit",
@@ -646,9 +625,7 @@ class ParticipantDataPageState extends State<ParticipantDataPage> {
                 backgroundColor: Theme.of(context).extension<CarpColors>()!.primary,
                 padding: const EdgeInsets.symmetric(horizontal: 30, vertical: 12),
               ),
-              TextStyle(
-                color: Colors.white,
-              ),
+              TextStyle(color: Colors.white),
             )
           : buildTranslatedButton(
               "next",
@@ -665,9 +642,7 @@ class ParticipantDataPageState extends State<ParticipantDataPage> {
                 backgroundColor: Theme.of(context).extension<CarpColors>()!.primary,
                 padding: const EdgeInsets.symmetric(horizontal: 30, vertical: 12),
               ),
-              TextStyle(
-                color: Colors.white,
-              ),
+              TextStyle(color: Colors.white),
             ),
     ];
   }
@@ -680,7 +655,7 @@ class ParticipantDataPageState extends State<ParticipantDataPage> {
 
     final Map<ParticipantStep, Map<String, Data>> participantStepToDataType = {
       ParticipantStep.address: {
-        AddressInput.type: AddressInput(
+        InputType.ADDRESS: AddressInput(
           address1: widget.model._address1Controller.text,
           address2: widget.model._address2Controller.text,
           street: widget.model._streetController.text,
@@ -689,11 +664,11 @@ class ParticipantDataPageState extends State<ParticipantDataPage> {
         ),
       },
       ParticipantStep.diagnosis: {
-        DiagnosisInput.type: DiagnosisInput(
+        InputType.DIAGNOSIS: DiagnosisInput(
           effectiveDate: widget.model._effectiveDateController.text.isNotEmpty
-              ? DateFormat("yyyy-MM-dd'T'HH:mm:ss'Z'")
-                  .parse('${widget.model._effectiveDateController.text}T00:00:00Z')
-                  .toUtc()
+              ? DateFormat(
+                  "yyyy-MM-dd'T'HH:mm:ss'Z'",
+                ).parse('${widget.model._effectiveDateController.text}T00:00:00Z').toUtc()
               : null,
           diagnosis: widget.model._diagnosisDescriptionController.text,
           icd11Code: widget.model._icd11CodeController.text,
@@ -701,20 +676,20 @@ class ParticipantDataPageState extends State<ParticipantDataPage> {
         ),
       },
       ParticipantStep.fullName: {
-        FullNameInput.type: FullNameInput(
+        InputType.FULL_NAME: FullNameInput(
           firstName: widget.model._firstNameController.text,
           middleName: widget.model._middleNameController.text,
           lastName: widget.model._lastNameController.text,
         ),
       },
       ParticipantStep.phoneNumber: {
-        PhoneNumberInput.type: PhoneNumberInput(
+        InputType.PHONE_NUMBER: PhoneNumberInput(
           countryCode: widget.model._phoneNumberCodeController.text,
           number: widget.model._phoneNumberController.text,
         ),
       },
       ParticipantStep.socialSecurityNumber: {
-        SocialSecurityNumberInput.type: SocialSecurityNumberInput(
+        InputType.SSN: SocialSecurityNumberInput(
           country: widget.model._ssnCountryController.text,
           socialSecurityNumber: widget.model._ssnController.text,
         ),
@@ -727,11 +702,7 @@ class ParticipantDataPageState extends State<ParticipantDataPage> {
       }
     }
 
-    bloc.setParticipantData(
-      bloc.study!.studyDeploymentId,
-      participantData,
-      bloc.study!.participantRoleName,
-    );
+    bloc.setParticipantData(bloc.study!.studyDeploymentId, participantData, bloc.study!.participantRoleName);
   }
 
   Future<void> _showCancelConfirmationDialog() {
@@ -756,7 +727,7 @@ class ParticipantDataPageState extends State<ParticipantDataPage> {
                 context.pop();
                 context.pop();
               },
-            )
+            ),
           ],
         );
       },
@@ -770,10 +741,5 @@ class StepField {
   final FocusNode? focusNode;
   final FocusNode? nextFocusNode;
 
-  StepField({
-    required this.title,
-    required this.controller,
-    this.focusNode,
-    this.nextFocusNode,
-  });
+  StepField({required this.title, required this.controller, this.focusNode, this.nextFocusNode});
 }

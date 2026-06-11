@@ -145,14 +145,15 @@ class MyAssetsBar extends StatelessWidget {
             .entries
             .map(
               (entry) => Padding(
-                  padding: const EdgeInsets.symmetric(vertical: 4, horizontal: 8),
-                  child: Row(
-                    mainAxisAlignment: MainAxisAlignment.start,
-                    children: [
-                      Icon(Icons.circle, color: entry.value.color, size: 12.0),
-                      Text(' ${entry.value.name!} ${entry.value.size}', style: fs12fw400, textAlign: TextAlign.right),
-                    ],
-                  )),
+                padding: const EdgeInsets.symmetric(vertical: 4, horizontal: 8),
+                child: Row(
+                  mainAxisAlignment: MainAxisAlignment.start,
+                  children: [
+                    Icon(Icons.circle, color: entry.value.color, size: 12.0),
+                    Text(' ${entry.value.name!} ${entry.value.size}', style: fs12fw400, textAlign: TextAlign.right),
+                  ],
+                ),
+              ),
             )
             .toList(),
       );
@@ -172,17 +173,23 @@ class MyAssetsBar extends StatelessWidget {
             .entries
             .map(
               (entry) => Padding(
-                  padding: const EdgeInsets.symmetric(vertical: 3, horizontal: 5),
-                  child: Row(
-                    mainAxisAlignment: MainAxisAlignment.start,
-                    children: [
-                      Icon(Icons.circle, color: entry.value.color, size: 12.0),
-                      Text(' ${entry.value.size}', style: fs12fw400, textAlign: TextAlign.left),
-                      Expanded(
-                          child: Text(' ${entry.value.name!}',
-                              style: fs12fw400, textAlign: TextAlign.left, overflow: TextOverflow.ellipsis)),
-                    ],
-                  )),
+                padding: const EdgeInsets.symmetric(vertical: 3, horizontal: 5),
+                child: Row(
+                  mainAxisAlignment: MainAxisAlignment.start,
+                  children: [
+                    Icon(Icons.circle, color: entry.value.color, size: 12.0),
+                    Text(' ${entry.value.size}', style: fs12fw400, textAlign: TextAlign.left),
+                    Expanded(
+                      child: Text(
+                        ' ${entry.value.name!}',
+                        style: fs12fw400,
+                        textAlign: TextAlign.left,
+                        overflow: TextOverflow.ellipsis,
+                      ),
+                    ),
+                  ],
+                ),
+              ),
             )
             .toList(),
       );

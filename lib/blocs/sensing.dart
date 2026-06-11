@@ -21,8 +21,8 @@ part of carp_study_app;
 class Sensing {
   static final Sensing _instance = Sensing._();
   StudyDeploymentStatus? _status;
-  SmartphoneDeploymentController? _controller;
-  Study? _study;
+  SmartphoneStudyController? _controller;
+  SmartphoneStudy? _study;
 
   /// The deployment service used in this app.
   DeploymentService get deploymentService =>
@@ -30,7 +30,7 @@ class Sensing {
 
   /// The study running on this phone.
   /// Only available after [addStudy] is called.
-  Study? get study => _study;
+  SmartphoneStudy? get study => _study;
 
   /// The deployment running on this phone.
   /// Only available after [addStudy] is called.
@@ -46,10 +46,10 @@ class Sensing {
   String? get studyDeploymentId => _study?.studyDeploymentId;
 
   /// The study runtime for this deployment.
-  SmartphoneDeploymentController? get controller => _controller;
+  SmartphoneStudyController? get controller => _controller;
 
-  /// Is sensing running, i.e. has the study executor been started?
-  bool get isRunning => (controller != null) && controller!.executor.state == ExecutorState.started;
+  /// Is sensing running, i.e. has the study executor been resumed?
+  bool get isRunning => (controller != null) && controller!.executor.state == ExecutorState.Resumed;
 
   /// The list of running - i.e. used - probes in this study.
   List<Probe> get runningProbes => (_controller != null) ? _controller!.executor.probes : [];
@@ -60,12 +60,9 @@ class Sensing {
   /// current deployment. Hence, this method returns the list of device managers
   /// used in the current deployment.
   List<DeviceManager> get deploymentDevices => deployment != null
-      ? SmartPhoneClientManager()
-          .deviceController
-          .devices
-          .values
-          .where((manager) => deployment!.devices.any((element) => element.type == manager.type))
-          .toList()
+      ? SmartPhoneClientManager().deviceController.devices.values
+            .where((manager) => deployment!.devices.any((element) => element.type == manager.deviceType))
+            .toList()
       : [];
 
   /// The smartphone (primary device) manager.
@@ -111,7 +108,7 @@ class Sensing {
     // Create and configure a client manager for this phone
     await SmartPhoneClientManager().configure(
       deploymentService: deploymentService,
-      deviceController: DeviceController(),
+      dataCollectorFactory: DeviceController(),
 
       // Need to ask for permissions all at once on Android.
       askForPermissions: Platform.isAndroid ? true : false,
@@ -120,37 +117,35 @@ class Sensing {
     info('$runtimeType initialized');
   }
 
-  /// Add and deploy the study, and configure the study runtime (sampling).
+  /// Add the study to the client manager and deploy it.
   Future<StudyStatus> addStudy() async {
-    assert(SmartPhoneClientManager().isConfigured,
-        'The client manager is not yet configured. Call SmartPhoneClientManager().configure() before adding a study.');
+    assert(
+      SmartPhoneClientManager().isConfigured,
+      'The client manager is not yet configured. Call SmartPhoneClientManager().configure() before adding a study.',
+    );
     assert(bloc.study != null, 'No study is provided. Cannot start deployment w/o a study.');
 
     _study = await SmartPhoneClientManager().addStudy(bloc.study!);
 
-    _controller = SmartPhoneClientManager().getStudyRuntime(study!.studyDeploymentId);
-
     return await tryDeployment();
   }
 
-  ///7 Try to deploy the study.
+  /// Try to deploy the study.
   ///
   /// Note that if the study has already been deployed on this phone it has
   /// been cached locally and the local version will be used pr. default.
-  /// If not deployed before (i.e., cached) the study deployment will be
-  /// fetched from the deployment service.
+  /// If not deployed before the study deployment will be fetched from the
+  /// deployment service.
   Future<StudyStatus> tryDeployment() async {
-    assert(controller != null, 'No study or controller is provided. Cannot start deployment w/o a study.');
+    assert(study != null, 'No study is provided. Cannot deploy w/o a study. Call addStudy() first.');
 
-    StudyStatus status = await controller!.tryDeployment(useCached: true);
+    StudyStatus status = await SmartPhoneClientManager().tryDeployment(study!.studyDeploymentId, study!.deviceRoleName);
+
+    _controller = SmartPhoneClientManager().getStudyController(_study!);
 
     translateStudyProtocol();
 
-    await controller?.configure();
-
-    // Mirror each measurement to the console only when CAMS debug logging is on
-    // — matches the gating in carp_mobile_sensing's debug()/info() helpers so a
-    // release build (or any non-debug level) doesn't get spammed.
+    // Mirror each measurement to the console only in debug to avoid spamming logs.
     if (Settings().debugLevel.index >= DebugLevel.debug.index) {
       controller?.measurements.listen((measurement) => debugPrint(toJsonString(measurement)));
     }
@@ -161,17 +156,7 @@ class Sensing {
 
   Future<void> removeStudy() async {
     if (study == null) return;
-    // SmartPhoneClientManager.removeStudy calls getStudyRuntime which does an
-    // unsafe `as SmartphoneDeploymentController` cast — it throws when the
-    // study was never added to the client manager (e.g. the user cancelled
-    // consent before configureStudy ran). Swallow that case; we just want
-    // the study gone, and it never existed here.
-    try {
-      await SmartPhoneClientManager().removeStudy(study!.studyDeploymentId);
-    } on TypeError {
-      info('$runtimeType - study $study was never registered with the '
-          'client manager, skipping removeStudy.');
-    }
+    await SmartPhoneClientManager().removeStudy(study!.studyDeploymentId, study!.deviceRoleName);
   }
 
   /// Get the last known status for the current study deployment.
@@ -192,8 +177,8 @@ class Sensing {
     // Fast out is no localization
     if (bloc.localization == null) return;
 
-    // Fast out, if not configured or no protocol
-    if (controller?.status != StudyStatus.Deployed || controller?.deployment == null) {
+    // Fast out, if not configured or no protocol.
+    if (study?.status != StudyStatus.Deployed || controller?.deployment == null) {
       return;
     }
 

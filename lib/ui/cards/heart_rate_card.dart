@@ -22,13 +22,8 @@ class HeartRateCardWidgetState extends State<HeartRateCardWidget> with SingleTic
       duration: const Duration(seconds: 1),
       lowerBound: 0.9,
       upperBound: 1,
-    )..repeat(
-        reverse: true,
-      );
-    animation = CurvedAnimation(
-      parent: animationController,
-      curve: Curves.easeOut,
-    );
+    )..repeat(reverse: true);
+    animation = CurvedAnimation(parent: animationController, curve: Curves.easeOut);
   }
 
   @override
@@ -51,14 +46,8 @@ class HeartRateCardWidgetState extends State<HeartRateCardWidget> with SingleTic
                 return Column(
                   children: [
                     getDailyRange,
-                    SizedBox(
-                      height: 240,
-                      child: barCharts,
-                    ),
-                    SizedBox(
-                      height: 50,
-                      child: currentHeartRateWidget,
-                    )
+                    SizedBox(height: 240, child: barCharts),
+                    SizedBox(height: 50, child: currentHeartRateWidget),
                   ],
                 );
               },
@@ -80,19 +69,13 @@ class HeartRateCardWidgetState extends State<HeartRateCardWidget> with SingleTic
       children: [
         Container(
           margin: const EdgeInsets.only(left: 8, right: 4, bottom: 4),
-          child: Text(
-            min == null || max == null ? '-' : '${(min.toInt())} - ${(max.toInt())}',
-            style: fs28fw700,
-          ),
+          child: Text(min == null || max == null ? '-' : '${(min.toInt())} - ${(max.toInt())}', style: fs28fw700),
         ),
         Padding(
           padding: const EdgeInsets.only(bottom: 10),
           child: Text(
             min == null || max == null ? '' : locale.translate('cards.heartrate.bpm'),
-            style: fs10fw700.copyWith(
-              fontSize: 12,
-              color: Theme.of(context).extension<CarpColors>()!.grey600,
-            ),
+            style: fs10fw700.copyWith(fontSize: 12, color: Theme.of(context).extension<CarpColors>()!.grey600),
           ),
         ),
       ],
@@ -114,10 +97,7 @@ class HeartRateCardWidgetState extends State<HeartRateCardWidget> with SingleTic
               Container(
                 margin: const EdgeInsets.only(left: 8, bottom: 8, right: 4),
                 child: currentHeartRate != null
-                    ? Text(
-                        currentHeartRate.toStringAsFixed(0),
-                        style: fs28fw700,
-                      )
+                    ? Text(currentHeartRate.toStringAsFixed(0), style: fs28fw700)
                     : Text('-', style: fs28fw700),
               ),
               Padding(
@@ -129,18 +109,12 @@ class HeartRateCardWidgetState extends State<HeartRateCardWidget> with SingleTic
                     RepaintBoundary(
                       child: ScaleTransition(
                         scale: Tween<double>(begin: 1, end: 1).animate(animationController),
-                        child: Icon(
-                          Icons.favorite,
-                          color: CACHET.HEART_RATE_RED,
-                          size: 10,
-                        ),
+                        child: Icon(Icons.favorite, color: CACHET.HEART_RATE_RED, size: 10),
                       ),
                     ),
                     Text(
                       locale.translate('cards.heartrate.bpm'),
-                      style: fs10fw700.copyWith(
-                        color: Theme.of(context).extension<CarpColors>()!.grey600,
-                      ),
+                      style: fs10fw700.copyWith(color: Theme.of(context).extension<CarpColors>()!.grey600),
                     ),
                   ],
                 ),
@@ -177,10 +151,7 @@ class HeartRateCardWidgetState extends State<HeartRateCardWidget> with SingleTic
                   ),
                   TextSpan(
                     text: "\n${rod.fromY.toInt()}-${rod.toY.toInt()}",
-                    style: const TextStyle(
-                      fontWeight: FontWeight.bold,
-                      fontSize: 30,
-                    ),
+                    style: const TextStyle(fontWeight: FontWeight.bold, fontSize: 30),
                   ),
                   TextSpan(
                     text: "${locale.translate('cards.heartrate.bpm')}\n",
@@ -207,51 +178,31 @@ class HeartRateCardWidgetState extends State<HeartRateCardWidget> with SingleTic
         titlesData: FlTitlesData(
           show: true,
           bottomTitles: AxisTitles(
-            sideTitles: SideTitles(
-              showTitles: true,
-              interval: 20,
-              getTitlesWidget: bottomTitles,
-            ),
+            sideTitles: SideTitles(showTitles: true, interval: 20, getTitlesWidget: bottomTitles),
           ),
           rightTitles: AxisTitles(
-            sideTitles: SideTitles(
-              showTitles: true,
-              reservedSize: 48,
-              getTitlesWidget: rightTitles,
-            ),
+            sideTitles: SideTitles(showTitles: true, reservedSize: 48, getTitlesWidget: rightTitles),
           ),
-          topTitles: const AxisTitles(
-            sideTitles: SideTitles(showTitles: false),
-          ),
-          leftTitles: const AxisTitles(
-            sideTitles: SideTitles(showTitles: false),
-          ),
+          topTitles: const AxisTitles(sideTitles: SideTitles(showTitles: false)),
+          leftTitles: const AxisTitles(sideTitles: SideTitles(showTitles: false)),
         ),
         gridData: FlGridData(
-            show: true,
-            drawVerticalLine: true,
-            drawHorizontalLine: true,
-            getDrawingHorizontalLine: (value) => FlLine(
-                  color: Colors.grey.withValues(alpha: 0.2),
-                  strokeWidth: 1,
-                ),
-            checkToShowHorizontalLine: (value) => value % 100 == 0,
-            getDrawingVerticalLine: (value) =>
-                FlLine(color: Colors.grey.withValues(alpha: 0.2), strokeWidth: 1, dashArray: [3, 2]),
-            verticalInterval: 1 / 24,
-            checkToShowVerticalLine: (value) {
-              if ((value * 24).round() == 6) return true;
-              if ((value * 24).round() == 12) return true;
-              if ((value * 24).round() == 18) return true;
-              return false;
-            }),
-        borderData: FlBorderData(
           show: true,
-          border: Border.all(
-            width: 1,
-            color: Colors.grey.withValues(alpha: 0.2),
-          ),
+          drawVerticalLine: true,
+          drawHorizontalLine: true,
+          getDrawingHorizontalLine: (value) => FlLine(color: Colors.grey.withValues(alpha: 0.2), strokeWidth: 1),
+          checkToShowHorizontalLine: (value) => value % 100 == 0,
+          getDrawingVerticalLine: (value) =>
+              FlLine(color: Colors.grey.withValues(alpha: 0.2), strokeWidth: 1, dashArray: [3, 2]),
+          verticalInterval: 1 / 24,
+          checkToShowVerticalLine: (value) {
+            if ((value * 24).round() == 6) return true;
+            if ((value * 24).round() == 12) return true;
+            if ((value * 24).round() == 18) return true;
+            return false;
+          },
         ),
+        borderData: FlBorderData(show: true, border: Border.all(width: 1, color: Colors.grey.withValues(alpha: 0.2))),
         groupsSpace: 4,
         barGroups: getHeartRateBars(),
         minY: 0,
@@ -261,11 +212,7 @@ class HeartRateCardWidgetState extends State<HeartRateCardWidget> with SingleTic
   }
 
   Widget bottomTitles(double value, TitleMeta meta) {
-    final style = TextStyle(
-      color: Colors.grey.withValues(alpha: 0.6),
-      fontSize: 14,
-      fontWeight: FontWeight.bold,
-    );
+    final style = TextStyle(color: Colors.grey.withValues(alpha: 0.6), fontSize: 14, fontWeight: FontWeight.bold);
     String text;
     if (value == 0) {
       text = '00';
@@ -282,10 +229,7 @@ class HeartRateCardWidgetState extends State<HeartRateCardWidget> with SingleTic
     return SideTitleWidget(
       meta: meta,
       space: 0,
-      child: Text(
-        text,
-        style: style,
-      ),
+      child: Text(text, style: style),
     );
   }
 
@@ -295,26 +239,21 @@ class HeartRateCardWidgetState extends State<HeartRateCardWidget> with SingleTic
       space: 6,
       child: Text(
         value.toInt() % meta.appliedInterval == 0 ? value.toInt().toString() : '',
-        style: fs14ls1.copyWith(
-          color: Theme.of(context).extension<CarpColors>()!.grey600,
-        ),
+        style: fs14ls1.copyWith(color: Theme.of(context).extension<CarpColors>()!.grey600),
         maxLines: 1,
       ),
     );
   }
 
   List<BarChartGroupData> getHeartRateBars() => widget.model.hourlyHeartRate.entries
-      .map((value) => BarChartGroupData(
-            x: value.key,
-            barRods: [
-              BarChartRodData(
-                fromY: value.value.min,
-                toY: value.value.max ?? 0,
-                color: CACHET.HEART_RATE_RED,
-                width: 6,
-              ),
-            ],
-          ))
+      .map(
+        (value) => BarChartGroupData(
+          x: value.key,
+          barRods: [
+            BarChartRodData(fromY: value.value.min, toY: value.value.max ?? 0, color: CACHET.HEART_RATE_RED, width: 6),
+          ],
+        ),
+      )
       .toList();
 }
 

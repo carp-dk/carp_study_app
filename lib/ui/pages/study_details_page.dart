@@ -24,10 +24,7 @@ class StudyDetailsPage extends StatelessWidget {
                 children: [
                   IconButton(
                     padding: const EdgeInsets.only(left: 26, right: 10, top: 16, bottom: 16),
-                    icon: Icon(
-                      Icons.arrow_back_ios,
-                      color: Theme.of(context).extension<CarpColors>()!.grey600,
-                    ),
+                    icon: Icon(Icons.arrow_back_ios, color: Theme.of(context).extension<CarpColors>()!.grey600),
                     onPressed: () {
                       if (context.canPop()) {
                         context.pop();
@@ -38,8 +35,10 @@ class StudyDetailsPage extends StatelessWidget {
                   ),
                   Padding(
                     padding: const EdgeInsets.symmetric(vertical: 10.0),
-                    child: Text(locale.translate(model.title),
-                        style: fs20fw700.copyWith(color: Theme.of(context).extension<CarpColors>()!.primary)),
+                    child: Text(
+                      locale.translate(model.title),
+                      style: fs20fw700.copyWith(color: Theme.of(context).extension<CarpColors>()!.primary),
+                    ),
                   ),
                 ],
               ),
@@ -49,64 +48,61 @@ class StudyDetailsPage extends StatelessWidget {
                   children: [
                     Padding(
                       padding: const EdgeInsets.symmetric(vertical: 16.0),
-                      child: LayoutBuilder(builder: (context, constraints) {
-                        final screenHeight = MediaQuery.of(context).size.height;
-                        final screenWidth = MediaQuery.of(context).size.height;
-                        return ConstrainedBox(
-                            constraints: BoxConstraints(
-                              maxWidth: screenHeight,
-                              maxHeight: screenWidth,
-                            ),
-                            child: FittedBox(
-                              fit: BoxFit.contain,
-                              child: model.image,
-                            ));
-                      }),
+                      child: LayoutBuilder(
+                        builder: (context, constraints) {
+                          final screenHeight = MediaQuery.of(context).size.height;
+                          final screenWidth = MediaQuery.of(context).size.height;
+                          return ConstrainedBox(
+                            constraints: BoxConstraints(maxWidth: screenHeight, maxHeight: screenWidth),
+                            child: FittedBox(fit: BoxFit.contain, child: model.image),
+                          );
+                        },
+                      ),
                     ),
-                    _buildSectionCard(
-                      context,
-                      [
-                        _buildActionListTile(
-                          context: context,
-                          leading: Icon(Icons.mail, color: Theme.of(context).extension<CarpColors>()!.primary),
-                          trailing: const Icon(Icons.arrow_forward_ios, color: CACHET.GREY_6),
-                          title: locale.translate('pages.profile.contact'),
-                          onTap: () async {
-                            _sendEmailToContactResearcher(
-                              locale.translate(model.responsibleEmail),
-                              'Support for study: ${locale.translate(model.title)} - User: ${model.responsibleName}',
+                    _buildSectionCard(context, [
+                      _buildActionListTile(
+                        context: context,
+                        leading: Icon(Icons.mail, color: Theme.of(context).extension<CarpColors>()!.primary),
+                        trailing: const Icon(Icons.arrow_forward_ios, color: CACHET.GREY_6),
+                        title: locale.translate('pages.profile.contact'),
+                        onTap: () async {
+                          _sendEmailToContactResearcher(
+                            locale.translate(model.responsibleEmail),
+                            'Support for study: ${locale.translate(model.title)} - User: ${model.responsibleName}',
+                          );
+                        },
+                      ),
+                      _buildActionListTile(
+                        context: context,
+                        leading: Icon(Icons.policy, color: Theme.of(context).extension<CarpColors>()!.primary),
+                        trailing: const Icon(Icons.arrow_forward_ios, color: CACHET.GREY_6),
+                        title: locale.translate('pages.about.study.privacy'),
+                        onTap: () async {
+                          try {
+                            await launchUrl(Uri.parse(locale.translate(model.privacyPolicyUrl)));
+                          } catch (error) {
+                            warning(
+                              "Could not launch study description URL - ${locale.translate(model.privacyPolicyUrl)}",
                             );
-                          },
-                        ),
-                        _buildActionListTile(
-                            context: context,
-                            leading: Icon(Icons.policy, color: Theme.of(context).extension<CarpColors>()!.primary),
-                            trailing: const Icon(Icons.arrow_forward_ios, color: CACHET.GREY_6),
-                            title: locale.translate('pages.about.study.privacy'),
-                            onTap: () async {
-                              try {
-                                await launchUrl(Uri.parse(locale.translate(model.privacyPolicyUrl)));
-                              } catch (error) {
-                                warning(
-                                    "Could not launch study description URL - ${locale.translate(model.privacyPolicyUrl)}");
-                              }
-                            }),
-                        _buildActionListTile(
-                          context: context,
-                          leading: Icon(Icons.public, color: Theme.of(context).extension<CarpColors>()!.primary),
-                          trailing: const Icon(Icons.arrow_forward_ios, color: CACHET.GREY_6),
-                          title: locale.translate('pages.about.study.website'),
-                          onTap: () async {
-                            try {
-                              await launchUrl(Uri.parse(locale.translate(model.studyDescriptionUrl)));
-                            } catch (error) {
-                              warning(
-                                  "Could not launch study description URL - ${locale.translate(model.studyDescriptionUrl)}");
-                            }
-                          },
-                        ),
-                      ],
-                    ),
+                          }
+                        },
+                      ),
+                      _buildActionListTile(
+                        context: context,
+                        leading: Icon(Icons.public, color: Theme.of(context).extension<CarpColors>()!.primary),
+                        trailing: const Icon(Icons.arrow_forward_ios, color: CACHET.GREY_6),
+                        title: locale.translate('pages.about.study.website'),
+                        onTap: () async {
+                          try {
+                            await launchUrl(Uri.parse(locale.translate(model.studyDescriptionUrl)));
+                          } catch (error) {
+                            warning(
+                              "Could not launch study description URL - ${locale.translate(model.studyDescriptionUrl)}",
+                            );
+                          }
+                        },
+                      ),
+                    ]),
                     Padding(
                       padding: const EdgeInsets.only(top: 16.0),
                       child: Column(
@@ -149,9 +145,7 @@ class StudyDetailsPage extends StatelessWidget {
                         ],
                       ),
                     ),
-                    Divider(
-                      color: Theme.of(context).extension<CarpColors>()!.grey300,
-                    ),
+                    Divider(color: Theme.of(context).extension<CarpColors>()!.grey300),
                     Padding(
                       padding: const EdgeInsets.only(top: 16.0),
                       child: Column(
@@ -197,9 +191,7 @@ class StudyDetailsPage extends StatelessWidget {
     return Card(
       margin: EdgeInsets.zero,
       color: Theme.of(context).extension<CarpColors>()!.white,
-      shape: RoundedRectangleBorder(
-        borderRadius: BorderRadius.circular(8.0),
-      ),
+      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(8.0)),
       child: Padding(
         padding: const EdgeInsets.all(8.0),
         child: Column(
@@ -213,7 +205,7 @@ class StudyDetailsPage extends StatelessWidget {
     );
   }
 
-// Helper method to build a ListTile for actions with an icon
+  // Helper method to build a ListTile for actions with an icon
   Widget _buildActionListTile({
     required BuildContext context,
     required Icon leading,
@@ -232,8 +224,11 @@ class StudyDetailsPage extends StatelessWidget {
 
   // Sends and email to the researcher with the name of the study + user id
   void _sendEmailToContactResearcher(String email, String subject) async {
-    final url =
-        Uri(scheme: 'mailto', path: email, queryParameters: {'subject': subject}).toString().replaceAll("+", "%20");
+    final url = Uri(
+      scheme: 'mailto',
+      path: email,
+      queryParameters: {'subject': subject},
+    ).toString().replaceAll("+", "%20");
     try {
       await launchUrl(Uri.parse(url));
     } finally {}

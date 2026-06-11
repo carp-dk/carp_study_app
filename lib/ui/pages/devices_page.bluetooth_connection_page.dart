@@ -7,7 +7,7 @@ class BluetoothConnectionPage extends StatefulWidget {
   final DeviceViewModel device;
 
   const BluetoothConnectionPage(CurrentStep currentStep, {super.key, required this.device})
-      : _currentStep = currentStep;
+    : _currentStep = currentStep;
 
   final CurrentStep _currentStep;
 
@@ -64,9 +64,7 @@ class _BluetoothConnectionPageState extends State<BluetoothConnectionPage> {
                           Expanded(
                             child: Padding(
                               padding: const EdgeInsets.all(8.0),
-                              child: SizedBox(
-                                child: _buildStepContent(locale),
-                              ),
+                              child: SizedBox(child: _buildStepContent(locale)),
                             ),
                           ),
                           Padding(
@@ -86,9 +84,7 @@ class _BluetoothConnectionPageState extends State<BluetoothConnectionPage> {
             if (isConnecting)
               Container(
                 color: Colors.black26,
-                child: const Center(
-                  child: CircularProgressIndicator(),
-                ),
+                child: const Center(child: CircularProgressIndicator()),
               ),
           ],
         ),
@@ -113,9 +109,7 @@ class _BluetoothConnectionPageState extends State<BluetoothConnectionPage> {
             Flexible(
               child: Text(
                 stepTitleMap[currentStep] ?? '',
-                style: fs22fw700.copyWith(
-                  color: Theme.of(context).primaryColor,
-                ),
+                style: fs22fw700.copyWith(color: Theme.of(context).primaryColor),
                 textAlign: TextAlign.center,
               ),
             ),
@@ -137,22 +131,30 @@ class _BluetoothConnectionPageState extends State<BluetoothConnectionPage> {
 
   List<Widget> _buildActionButtons(RPLocalizations locale) {
     Widget buildTranslatedButton(
-        String key, VoidCallback onPressed, bool enabled, ButtonStyle? buttonStyle, TextStyle? buttonTextStyle) {
+      String key,
+      VoidCallback onPressed,
+      bool enabled,
+      ButtonStyle? buttonStyle,
+      TextStyle? buttonTextStyle,
+    ) {
       return ElevatedButton(
         onPressed: enabled ? onPressed : null,
-        child: Text(
-          locale.translate(key).toUpperCase(),
-          style: buttonTextStyle,
-        ),
+        child: Text(locale.translate(key).toUpperCase(), style: buttonTextStyle),
         style: buttonStyle,
       );
     }
 
     final stepButtonConfigs = {
       CurrentStep.scan: [
-        buildTranslatedButton("cancel", () {
-          context.pop(true);
-        }, true, null, null),
+        buildTranslatedButton(
+          "cancel",
+          () {
+            context.pop(true);
+          },
+          true,
+          null,
+          null,
+        ),
         buildTranslatedButton(
           "next",
           _connectDevice(),
@@ -161,15 +163,19 @@ class _BluetoothConnectionPageState extends State<BluetoothConnectionPage> {
             backgroundColor: Theme.of(context).extension<CarpColors>()!.primary,
             padding: const EdgeInsets.symmetric(horizontal: 30, vertical: 12),
           ),
-          TextStyle(
-            color: Colors.white,
-          ),
+          TextStyle(color: Colors.white),
         ),
       ],
       CurrentStep.instructions: [
-        buildTranslatedButton("settings", () {
-          Platform.isAndroid ? OpenSettingsPlusAndroid().bluetooth() : OpenSettingsPlusIOS().bluetooth();
-        }, true, null, null),
+        buildTranslatedButton(
+          "settings",
+          () {
+            Platform.isAndroid ? OpenSettingsPlusAndroid().bluetooth() : OpenSettingsPlusIOS().bluetooth();
+          },
+          true,
+          null,
+          null,
+        ),
         buildTranslatedButton(
           "ok",
           () {
@@ -180,15 +186,19 @@ class _BluetoothConnectionPageState extends State<BluetoothConnectionPage> {
             backgroundColor: Theme.of(context).extension<CarpColors>()!.primary,
             padding: const EdgeInsets.symmetric(horizontal: 30, vertical: 12),
           ),
-          TextStyle(
-            color: Colors.white,
-          ),
+          TextStyle(color: Colors.white),
         ),
       ],
       CurrentStep.done: [
-        buildTranslatedButton("back", () {
-          setState(() => currentStep = CurrentStep.scan);
-        }, true, null, null),
+        buildTranslatedButton(
+          "back",
+          () {
+            setState(() => currentStep = CurrentStep.scan);
+          },
+          true,
+          null,
+          null,
+        ),
         buildTranslatedButton(
           "done",
           () {
@@ -200,9 +210,7 @@ class _BluetoothConnectionPageState extends State<BluetoothConnectionPage> {
             backgroundColor: Theme.of(context).extension<CarpColors>()!.primary,
             padding: const EdgeInsets.symmetric(horizontal: 30, vertical: 12),
           ),
-          TextStyle(
-            color: Colors.white,
-          ),
+          TextStyle(color: Colors.white),
         ),
       ],
     };
@@ -270,10 +278,7 @@ class _BluetoothConnectionPageState extends State<BluetoothConnectionPage> {
     };
   }
 
-  Widget stepContent(
-    CurrentStep currentStep,
-    DeviceViewModel device,
-  ) {
+  Widget stepContent(CurrentStep currentStep, DeviceViewModel device) {
     if (currentStep == CurrentStep.scan) {
       return scanWidget(device, context);
     } else if (currentStep == CurrentStep.instructions) {
@@ -320,9 +325,7 @@ class _BluetoothConnectionPageState extends State<BluetoothConnectionPage> {
                                 selected: bluetoothDevice.key == selected,
                                 title: Text(
                                   bluetoothDevice.value.device.platformName,
-                                  style: fs22fw700.copyWith(
-                                    fontSize: 20,
-                                  ),
+                                  style: fs22fw700.copyWith(fontSize: 20),
                                 ),
                                 selectedTileColor: Theme.of(context).primaryColor.withValues(alpha: 0.2),
                               ),
@@ -346,9 +349,7 @@ class _BluetoothConnectionPageState extends State<BluetoothConnectionPage> {
             child: Text.rich(
               TextSpan(
                 children: [
-                  TextSpan(
-                    text: locale.translate("pages.devices.connection.step.start.1"),
-                  ),
+                  TextSpan(text: locale.translate("pages.devices.connection.step.start.1")),
                   TextSpan(
                     text: locale.translate("pages.devices.connection.instructions"),
                     style: TextStyle(
@@ -361,17 +362,13 @@ class _BluetoothConnectionPageState extends State<BluetoothConnectionPage> {
                         setState(() => currentStep = CurrentStep.instructions);
                       },
                   ),
-                  TextSpan(
-                    text: locale.translate(
-                      "pages.devices.connection.step.start.2",
-                    ),
-                  ),
+                  TextSpan(text: locale.translate("pages.devices.connection.step.start.2")),
                 ],
               ),
               style: fs22fw700.copyWith(color: Theme.of(context).extension<CarpColors>()!.grey900),
               textAlign: TextAlign.center,
             ),
-          )
+          ),
         ],
       ),
     );
@@ -389,7 +386,7 @@ class _BluetoothConnectionPageState extends State<BluetoothConnectionPage> {
         break;
 
       case PolarDeviceManager _
-          when device.type == PolarDevice.DEVICE_TYPE && device.polarDeviceType == PolarDeviceType.SENSE:
+          when device.type == PolarDevice.DEVICE_TYPE && device.polarDeviceType == PolarDeviceType.Verity:
         assetImage = AssetImage('assets/instructions/polar_sense_instructions.png');
         break;
 
@@ -447,9 +444,10 @@ class _BluetoothConnectionPageState extends State<BluetoothConnectionPage> {
             child: Column(
               children: [
                 Image(
-                    image: const AssetImage('assets/icons/connection_done.png'),
-                    width: MediaQuery.of(context).size.height * 0.2,
-                    height: MediaQuery.of(context).size.height * 0.2),
+                  image: const AssetImage('assets/icons/connection_done.png'),
+                  width: MediaQuery.of(context).size.height * 0.2,
+                  height: MediaQuery.of(context).size.height * 0.2,
+                ),
                 Padding(
                   padding: const EdgeInsets.only(top: 32),
                   child: Text(

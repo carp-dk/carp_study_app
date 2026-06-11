@@ -44,10 +44,7 @@ class StudyPageState extends State<StudyPage> {
                           }
                           bloc.deploymentService.getStudyDeploymentStatus(widget.model.studyDeploymentId);
                         },
-                        child: ListView.builder(
-                          itemCount: cards.length,
-                          itemBuilder: (context, index) => cards[index],
-                        ),
+                        child: ListView.builder(itemCount: cards.length, itemBuilder: (context, index) => cards[index]),
                       );
                     },
                   );
@@ -64,13 +61,15 @@ class StudyPageState extends State<StudyPage> {
     final items = <Widget>[];
     final updateCard = _hasUpdateCard();
     items.add(updateCard);
-    items.add(_studyCard(
-      context,
-      widget.model.studyDescriptionMessage,
-      onTap: () {
-        context.push(StudyDetailsPage.route);
-      },
-    ));
+    items.add(
+      _studyCard(
+        context,
+        widget.model.studyDescriptionMessage,
+        onTap: () {
+          context.push(StudyDetailsPage.route);
+        },
+      ),
+    );
     items.add(_studyStatusCard());
     if (LocalSettings().isAnonymous) {
       items.add(AnonymousCard());
@@ -79,9 +78,11 @@ class StudyPageState extends State<StudyPage> {
       items.add(_buildAnnouncementsTitle(context));
       // Show newest announcements first: sort by timestamp descending
       final messages = List<Message>.from(widget.model.messages)..sort((a, b) => b.timestamp.compareTo(a.timestamp));
-      items.addAll(messages.map((message) {
-        return _announcementCard(context, message);
-      }).toList());
+      items.addAll(
+        messages.map((message) {
+          return _announcementCard(context, message);
+        }).toList(),
+      );
     }
     return items;
   }
@@ -89,63 +90,50 @@ class StudyPageState extends State<StudyPage> {
   Widget _hasUpdateCard() {
     RPLocalizations locale = RPLocalizations.of(context)!;
     return FutureBuilder<bool?>(
-        future: bloc.getAppHasUpdate(),
-        builder: (context, snapshot) {
-          if (snapshot.data == true) {
-            return StudiesMaterial(
-              backgroundColor: Theme.of(context).extension<CarpColors>()!.grey50!,
-              elevation: 8,
-              child: Padding(
-                padding: const EdgeInsets.only(left: 16.0),
-                child: Row(
-                  children: [
-                    Expanded(
-                      child: Padding(
-                        padding: const EdgeInsets.all(8.0),
-                        child: Text(
-                          locale.translate('pages.about.app_update'),
-                          style: fs16fw600.copyWith(
-                            color: Theme.of(context).extension<CarpColors>()!.grey900,
-                          ),
-                        ),
+      future: bloc.getAppHasUpdate(),
+      builder: (context, snapshot) {
+        if (snapshot.data == true) {
+          return StudiesMaterial(
+            backgroundColor: Theme.of(context).extension<CarpColors>()!.grey50!,
+            elevation: 8,
+            child: Padding(
+              padding: const EdgeInsets.only(left: 16.0),
+              child: Row(
+                children: [
+                  Expanded(
+                    child: Padding(
+                      padding: const EdgeInsets.all(8.0),
+                      child: Text(
+                        locale.translate('pages.about.app_update'),
+                        style: fs16fw600.copyWith(color: Theme.of(context).extension<CarpColors>()!.grey900),
                       ),
                     ),
-                    Padding(
-                      padding: const EdgeInsets.only(right: 16),
-                      child: ElevatedButton(
-                        onPressed: () async {
-                          _redirectToUpdateStore();
-                        },
-                        style: ElevatedButton.styleFrom(
-                          backgroundColor: CACHET.DEPLOYMENT_DEPLOYING,
-                          padding: const EdgeInsets.symmetric(
-                            horizontal: 30,
-                            vertical: 12,
-                          ),
-                        ),
-                        child: Text(
-                          locale.translate("get"),
-                          style: TextStyle(
-                            color: Colors.white,
-                          ),
-                        ),
+                  ),
+                  Padding(
+                    padding: const EdgeInsets.only(right: 16),
+                    child: ElevatedButton(
+                      onPressed: () async {
+                        _redirectToUpdateStore();
+                      },
+                      style: ElevatedButton.styleFrom(
+                        backgroundColor: CACHET.DEPLOYMENT_DEPLOYING,
+                        padding: const EdgeInsets.symmetric(horizontal: 30, vertical: 12),
                       ),
+                      child: Text(locale.translate("get"), style: TextStyle(color: Colors.white)),
                     ),
-                  ],
-                ),
+                  ),
+                ],
               ),
-            );
-          } else {
-            return SizedBox.shrink();
-          }
-        });
+            ),
+          );
+        } else {
+          return SizedBox.shrink();
+        }
+      },
+    );
   }
 
-  Widget _studyCard(
-    BuildContext context,
-    Message message, {
-    Function? onTap,
-  }) {
+  Widget _studyCard(BuildContext context, Message message, {Function? onTap}) {
     RPLocalizations locale = RPLocalizations.of(context)!;
 
     // Initialization the language of the timeago package
@@ -178,8 +166,10 @@ class StudyPageState extends State<StudyPage> {
                 ),
               Padding(
                 padding: const EdgeInsets.symmetric(vertical: 8.0),
-                child: Text(locale.translate(message.title!),
-                    style: fs24fw700.copyWith(color: Theme.of(context).extension<CarpColors>()!.primary)),
+                child: Text(
+                  locale.translate(message.title!),
+                  style: fs24fw700.copyWith(color: Theme.of(context).extension<CarpColors>()!.primary),
+                ),
               ),
               if (message.subTitle != null && message.subTitle!.isNotEmpty)
                 Row(
@@ -187,22 +177,23 @@ class StudyPageState extends State<StudyPage> {
                     Expanded(
                       child: Text(
                         locale.translate(message.subTitle!),
-                        style: fs16fw400.copyWith(
-                          color: Theme.of(context).extension<CarpColors>()!.grey700,
-                        ),
+                        style: fs16fw400.copyWith(color: Theme.of(context).extension<CarpColors>()!.grey700),
                       ),
                     ),
                   ],
                 ),
               if (message.message != null && message.message!.isNotEmpty)
-                Row(children: [
-                  Expanded(
+                Row(
+                  children: [
+                    Expanded(
                       child: Text(
-                    "${locale.translate(message.message!).substring(0, (message.message!.length > 150) ? 150 : null)}...",
-                    style: fs16fw400.copyWith(color: Theme.of(context).extension<CarpColors>()!.grey900),
-                    textAlign: TextAlign.start,
-                  )),
-                ]),
+                        "${locale.translate(message.message!).substring(0, (message.message!.length > 150) ? 150 : null)}...",
+                        style: fs16fw400.copyWith(color: Theme.of(context).extension<CarpColors>()!.grey900),
+                        textAlign: TextAlign.start,
+                      ),
+                    ),
+                  ],
+                ),
             ],
           ),
         ),
@@ -220,42 +211,32 @@ class StudyPageState extends State<StudyPage> {
           return StudiesMaterial(
             child: Padding(
               padding: const EdgeInsets.symmetric(vertical: 28),
-              child: Center(
-                child: CircularProgressIndicator(),
-              ),
+              child: Center(child: CircularProgressIndicator()),
             ),
           );
         } else if (snapshot.hasError) {
           return StudiesMaterial(
             child: Padding(
               padding: const EdgeInsets.symmetric(vertical: 28),
-              child: Text(
-                'Error: ${snapshot.error}',
-                textAlign: TextAlign.center,
-              ),
+              child: Text('Error: ${snapshot.error}', textAlign: TextAlign.center),
             ),
           ); // Show an error message if the future fails
         } else if (!snapshot.hasData || snapshot.data == null) {
           return Padding(
             padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 28),
-            child: Center(
-              child: CircularProgressIndicator(),
-            ),
+            child: Center(child: CircularProgressIndicator()),
           ); // Handle the case where data is null
         }
 
-        final deploymentStatus = snapshot.data!.status;
+        // `status` may be null; fall back to the domain default.
+        final deploymentStatus = snapshot.data!.status ?? StudyDeploymentStatusTypes.Invited;
 
         return StudiesMaterial(
           margin: const EdgeInsets.all(16.0),
           backgroundColor: Theme.of(context).extension<CarpColors>()!.grey50!,
-          shape: RoundedRectangleBorder(
-            borderRadius: BorderRadius.circular(8),
-          ),
+          shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(8)),
           child: Container(
-            decoration: BoxDecoration(
-              borderRadius: BorderRadius.circular(16.0),
-            ),
+            decoration: BoxDecoration(borderRadius: BorderRadius.circular(16.0)),
             child: Row(
               children: [
                 Expanded(
@@ -267,10 +248,7 @@ class StudyPageState extends State<StudyPage> {
                           children: [
                             Padding(
                               padding: const EdgeInsets.symmetric(horizontal: 6.0, vertical: 4),
-                              child: CircleAvatar(
-                                radius: 18,
-                                backgroundColor: studyStatusColors[deploymentStatus],
-                              ),
+                              child: CircleAvatar(radius: 18, backgroundColor: studyStatusColors[deploymentStatus]),
                             ),
                             Padding(
                               padding: const EdgeInsets.symmetric(horizontal: 6.0),
@@ -320,11 +298,13 @@ class StudyPageState extends State<StudyPage> {
             mainAxisAlignment: MainAxisAlignment.start,
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              Text(locale.translate('Announcements'),
-                  style: fs24fw700.copyWith(
-                    color: Theme.of(context).extension<CarpColors>()!.grey900,
-                    fontWeight: FontWeight.bold,
-                  )),
+              Text(
+                locale.translate('Announcements'),
+                style: fs24fw700.copyWith(
+                  color: Theme.of(context).extension<CarpColors>()!.grey900,
+                  fontWeight: FontWeight.bold,
+                ),
+              ),
             ],
           ),
         ),
@@ -332,11 +312,7 @@ class StudyPageState extends State<StudyPage> {
     );
   }
 
-  Widget _announcementCard(
-    BuildContext context,
-    Message message, {
-    Function? onTap,
-  }) {
+  Widget _announcementCard(BuildContext context, Message message, {Function? onTap}) {
     RPLocalizations locale = RPLocalizations.of(context)!;
 
     // Initialization the language of the timeago package
@@ -368,9 +344,7 @@ class StudyPageState extends State<StudyPage> {
                         child: Text(
                           locale.translate(message.title!),
                           overflow: TextOverflow.ellipsis,
-                          style: fs20fw700.copyWith(
-                            color: Theme.of(context).extension<CarpColors>()!.grey900,
-                          ),
+                          style: fs20fw700.copyWith(color: Theme.of(context).extension<CarpColors>()!.grey900),
                         ),
                       ),
                     ),
@@ -392,18 +366,14 @@ class StudyPageState extends State<StudyPage> {
                         Expanded(
                           child: Text(
                             locale.translate(message.subTitle!),
-                            style: fs16fw400.copyWith(
-                              color: Theme.of(context).extension<CarpColors>()!.grey700,
-                            ),
+                            style: fs16fw400.copyWith(color: Theme.of(context).extension<CarpColors>()!.grey700),
                           ),
                         ),
                       Spacer(),
                       Text(
                         timeago.format(message.timestamp.toLocal()),
-                        style: fs10fw600.copyWith(
-                          color: Theme.of(context).extension<CarpColors>()!.grey600,
-                        ),
-                      )
+                        style: fs10fw600.copyWith(color: Theme.of(context).extension<CarpColors>()!.grey600),
+                      ),
                     ],
                   ),
                 ),
@@ -411,13 +381,14 @@ class StudyPageState extends State<StudyPage> {
                   Row(
                     children: [
                       Expanded(
-                          child: Text(
-                        locale.translate(message.message!).length > 150
-                            ? '${locale.translate(message.message!).substring(0, 150)}...'
-                            : locale.translate(message.message!),
-                        style: fs16fw400,
-                        textAlign: TextAlign.start,
-                      )),
+                        child: Text(
+                          locale.translate(message.message!).length > 150
+                              ? '${locale.translate(message.message!).substring(0, 150)}...'
+                              : locale.translate(message.message!),
+                          style: fs16fw400,
+                          textAlign: TextAlign.start,
+                        ),
+                      ),
                     ],
                   ),
               ],

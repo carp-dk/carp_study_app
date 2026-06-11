@@ -24,13 +24,7 @@ class LocationUsageDialog {
         child: SingleChildScrollView(
           child: Column(
             mainAxisSize: MainAxisSize.min,
-            children: [
-              Text(
-                locale.translate(message),
-                style: fs16fw400,
-                textAlign: TextAlign.justify,
-              ),
-            ],
+            children: [Text(locale.translate(message), style: fs16fw400, textAlign: TextAlign.justify)],
           ),
         ),
       ),
@@ -43,9 +37,7 @@ class LocationUsageDialog {
             backgroundColor: WidgetStateProperty.all(Theme.of(context).primaryColor),
             foregroundColor: WidgetStateProperty.all(Theme.of(context).colorScheme.onPrimary),
           ),
-          child: Text(
-            locale.translate("dialog.location.continue"),
-          ),
+          child: Text(locale.translate("dialog.location.continue")),
         ),
       ],
     );
@@ -53,12 +45,7 @@ class LocationUsageDialog {
     return Scaffold(
       body: Column(
         crossAxisAlignment: CrossAxisAlignment.center,
-        children: [
-          Expanded(
-            flex: 4,
-            child: locationUsageDialog,
-          ),
-        ],
+        children: [Expanded(flex: 4, child: locationUsageDialog)],
       ),
     );
   }

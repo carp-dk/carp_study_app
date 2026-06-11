@@ -8,7 +8,7 @@ class HealthServiceConnectPage extends StatelessWidget {
     RPLocalizations locale = RPLocalizations.of(context)!;
 
     DeviceViewModel healthServive = bloc.deploymentDevices
-        .where((element) => element.deviceManager is OnlineServiceManager && element.type == HealthService.DEVICE_TYPE)
+        .where((element) => element.deviceManager is ServiceManager && element.type == HealthService.DEVICE_TYPE)
         .first;
 
     return Scaffold(
@@ -17,10 +17,7 @@ class HealthServiceConnectPage extends StatelessWidget {
         child: Container(
           child: Column(
             children: [
-              Padding(
-                padding: const EdgeInsets.symmetric(vertical: 8.0, horizontal: 18),
-                child: const CarpAppBar(),
-              ),
+              Padding(padding: const EdgeInsets.symmetric(vertical: 8.0, horizontal: 18), child: const CarpAppBar()),
               Expanded(
                 child: Padding(
                   padding: const EdgeInsets.symmetric(horizontal: 24.0),
@@ -44,9 +41,7 @@ class HealthServiceConnectPage extends StatelessWidget {
                           children: [
                             TextSpan(
                               text: "${locale.translate("pages.devices.type.health.instructions.page2.part1")} ",
-                              style: fs22fw700.copyWith(
-                                color: Theme.of(context).extension<CarpColors>()!.grey900,
-                              ),
+                              style: fs22fw700.copyWith(color: Theme.of(context).extension<CarpColors>()!.grey900),
                             ),
                             TextSpan(
                               text:
@@ -57,9 +52,7 @@ class HealthServiceConnectPage extends StatelessWidget {
                             ),
                             TextSpan(
                               text: "${locale.translate("pages.devices.type.health.instructions.page2.part2")} ",
-                              style: fs22fw700.copyWith(
-                                color: Theme.of(context).extension<CarpColors>()!.grey900,
-                              ),
+                              style: fs22fw700.copyWith(color: Theme.of(context).extension<CarpColors>()!.grey900),
                             ),
                             TextSpan(
                               text: "${locale.translate("pages.devices.type.health.instructions.page2.allow")} ",
@@ -71,9 +64,7 @@ class HealthServiceConnectPage extends StatelessWidget {
                               text: Platform.isAndroid
                                   ? locale.translate("pages.devices.type.health.instructions.page2.part3.android")
                                   : locale.translate("pages.devices.type.health.instructions.page2.part3.ios"),
-                              style: fs22fw700.copyWith(
-                                color: Theme.of(context).extension<CarpColors>()!.grey900,
-                              ),
+                              style: fs22fw700.copyWith(color: Theme.of(context).extension<CarpColors>()!.grey900),
                             ),
                           ],
                         ),
@@ -100,12 +91,7 @@ class HealthServiceConnectPage extends StatelessWidget {
               },
             ),
             ElevatedButton(
-              child: const Text(
-                "Next",
-                style: TextStyle(
-                  color: Colors.white,
-                ),
-              ),
+              child: const Text("Next", style: TextStyle(color: Colors.white)),
               style: ElevatedButton.styleFrom(
                 backgroundColor: Theme.of(context).extension<CarpColors>()!.primary,
                 padding: const EdgeInsets.symmetric(horizontal: 30, vertical: 12),

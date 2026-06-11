@@ -42,26 +42,21 @@ class InformedConsentState extends State<InformedConsentPage> {
     return Scaffold(
       key: _scaffoldKey,
       body: FutureBuilder<RPOrderedTask?>(
-        future: widget.model.getInformedConsent(localization.locale).then(
-          (document) async {
-            // No consent document configured for this study → mark accepted
-            // and navigate to /study. Set _submitted so dispose() doesn't tear
-            // the study back down.
-            if (document == null && !_submitted) {
-              _submitted = true;
-              await bloc.informedConsentHasBeenAccepted();
-              if (mounted) context.go(CarpStudyAppState.homeRoute);
-            }
-            return document;
-          },
-        ),
+        future: widget.model.getInformedConsent(localization.locale).then((document) async {
+          // No consent document configured for this study → mark accepted
+          // and navigate to /study. Set _submitted so dispose() doesn't tear
+          // the study back down.
+          if (document == null && !_submitted) {
+            _submitted = true;
+            await bloc.informedConsentHasBeenAccepted();
+            if (mounted) context.go(CarpStudyAppState.homeRoute);
+          }
+          return document;
+        }),
         builder: (context, snapshot) {
           if (snapshot.connectionState == ConnectionState.done) {
             if (snapshot.hasData) {
-              return RPUITask(
-                task: snapshot.data!,
-                onSubmit: resultCallback,
-              );
+              return RPUITask(task: snapshot.data!, onSubmit: resultCallback);
             }
           }
 

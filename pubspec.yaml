@@ -4,30 +4,30 @@ publish_to: "none"
 version: 4.3.0+1
 
 environment:
-  sdk: ">=3.2.0 <4.0.0"
-  flutter: ">=3.16.0"
+  sdk: ">=3.8.0 <4.0.0"
+  flutter: ">=3.32.0"
 
 dependencies:
   flutter:
     sdk: flutter
 
-  carp_serializable: ^2.0.0
-  carp_core: ^1.9.0
-  carp_mobile_sensing: ^1.13.0
-  carp_context_package: ^1.10.0
-  carp_connectivity_package: ^1.7.0
-  carp_survey_package: ^1.8.2
-  carp_audio_package: ^1.10.0
-  carp_polar_package: ^1.6.1
-  carp_health_package: ^3.2.0
-  carp_movesense_package: ^1.7.2
+  carp_serializable: ^2.0.1
+  carp_core: ^2.1.2
+  carp_mobile_sensing: ^2.1.1
+  carp_context_package: ^2.0.0
+  carp_connectivity_package: ^2.0.0
+  carp_survey_package: ^2.0.0
+  carp_audio_package: ^2.0.0
+  carp_polar_package: ^2.0.0
+  carp_health_package: ^4.0.0
+  carp_movesense_package: ^2.0.0
   carp_themes_package: ^0.0.5
 
-  carp_webservices: ^3.8.0
-  carp_backend: ^1.9.2
+  carp_webservices: ^4.0.0
+  carp_backend: ^2.0.0
 
   research_package: ^2.2.0
-  cognition_package: ^1.6.1
+  cognition_package: ^1.7.0
 
   url_launcher: ^6.1.5
   timeago: ^3.1.0
@@ -46,8 +46,8 @@ dependencies:
   go_router: ^15.0.0
   flutter_svg: ^2.0.4
   flutter_blue_plus: ^1.15.5
-  permission_handler: ^11.0.1
-  connectivity_plus: ^6.0.0
+  permission_handler: ^12.0.3
+  connectivity_plus: ^7.0.0
   open_settings_plus: ^0.4.0
   appcheck: ^1.5.2
   flutter_plugin_android_lifecycle: ^2.0.24
@@ -119,6 +119,13 @@ dev_dependencies:
 #  3. run 'dart run flutter_launcher_icons:main'
 
 flutter:
+  # Route all iOS native deps through CocoaPods. The Polar BLE SDK (via the
+  # `polar` plugin) and Movesense (`mdsflutter`, CocoaPods-only) both pull in
+  # SwiftProtobuf; with Swift Package Manager enabled Polar resolves it via SPM
+  # while Movesense uses CocoaPods, producing duplicate-symbol link errors.
+  config:
+    enable-swift-package-manager: false
+
   uses-material-design: true
 
   assets:

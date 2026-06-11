@@ -1,7 +1,7 @@
 import 'exports.dart';
 
 @GenerateNiceMocks([
-  MockSpec<SmartphoneDeploymentController>(),
+  MockSpec<SmartphoneStudyController>(),
   MockSpec<HeartRateCardViewModel>(),
   MockSpec<HourlyHeartRate>(),
   MockSpec<PolarHRSample>(),
@@ -13,7 +13,7 @@ void main() {
   setUp(() {});
   group("HeartRateCardViewModel", () {
     test('initializes HeartRateCardViewModel', skip: true, () {
-      final controller = MockSmartphoneDeploymentController();
+      final controller = MockSmartphoneStudyController();
       final model = MockHeartRateCardViewModel();
       final dataModel = MockHourlyHeartRate();
       when(model.createModel()).thenReturn(dataModel);
@@ -25,7 +25,7 @@ void main() {
     });
     group('init', () {
       group('should listen to heart rate events', () {
-        final mockSmartphoneDeploymentController = MockSmartphoneDeploymentController();
+        final mockSmartphoneStudyController = MockSmartphoneStudyController();
         final mockPolarHRSample = MockPolarHRSample();
         final mockPolarHRDatum = MockPolarHR();
         final mockMeasurement = MockMeasurement();
@@ -33,9 +33,9 @@ void main() {
         final heartRateStreamController = StreamController<MockMeasurement>.broadcast();
 
         setUp(() {
-          when(mockSmartphoneDeploymentController.measurements).thenAnswer((_) => heartRateStreamController.stream);
+          when(mockSmartphoneStudyController.measurements).thenAnswer((_) => heartRateStreamController.stream);
 
-          viewModel.init(mockSmartphoneDeploymentController);
+          viewModel.init(mockSmartphoneStudyController);
         });
         tearDownAll(() {
           heartRateStreamController.close();
@@ -52,8 +52,10 @@ void main() {
             await Future<void>.delayed(const Duration(milliseconds: 100));
             expect(viewModel.currentHeartRate, equals(80.0));
             expect(viewModel.dayMinMax, equals(HeartRateMinMaxPrHour(80, 80)));
-            expect(viewModel.hourlyHeartRate,
-                equals((HourlyHeartRate().addHeartRate(DateTime.now().hour, 80)).hourlyHeartRate));
+            expect(
+              viewModel.hourlyHeartRate,
+              equals((HourlyHeartRate().addHeartRate(DateTime.now().hour, 80)).hourlyHeartRate),
+            );
           });
           test('with multiple events', () async {
             // Add a heart rate data point to the stream
@@ -74,9 +76,12 @@ void main() {
             expect(viewModel.currentHeartRate, equals(60));
             expect(viewModel.dayMinMax, equals(HeartRateMinMaxPrHour(60, 90)));
             expect(
-                viewModel.hourlyHeartRate,
-                equals((HourlyHeartRate().addHeartRate(DateTime.now().hour, 60).addHeartRate(DateTime.now().hour, 90))
-                    .hourlyHeartRate));
+              viewModel.hourlyHeartRate,
+              equals(
+                (HourlyHeartRate().addHeartRate(DateTime.now().hour, 60).addHeartRate(DateTime.now().hour, 90))
+                    .hourlyHeartRate,
+              ),
+            );
           });
           test('with events with data that is 0', () async {
             // Add a heart rate data point to the stream

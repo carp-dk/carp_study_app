@@ -35,14 +35,10 @@ class DialogTitle extends StatelessWidget {
               children: [
                 Flexible(
                   child: Text(
-                    locale.translate(
-                          title,
-                        ) +
+                    locale.translate(title) +
                         (deviceName != null ? " ${locale.translate(deviceName!)} " : "") +
                         (titleEnd != null ? ' ${locale.translate(titleEnd!)}' : ""),
-                    style: fs18fw700.copyWith(
-                      color: Theme.of(context).primaryColor,
-                    ),
+                    style: fs18fw700.copyWith(color: Theme.of(context).primaryColor),
                     textAlign: TextAlign.center,
                   ),
                 ),

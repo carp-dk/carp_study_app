@@ -7,8 +7,14 @@ class ChartsLegend extends StatelessWidget {
   final String? heroTag;
   final List<Color> colors;
 
-  const ChartsLegend(
-      {super.key, this.heroTag, this.iconAssetName, required this.title, this.values = const [], required this.colors});
+  const ChartsLegend({
+    super.key,
+    this.heroTag,
+    this.iconAssetName,
+    required this.title,
+    this.values = const [],
+    required this.colors,
+  });
 
   @override
   Widget build(BuildContext context) {

@@ -39,7 +39,8 @@ import 'package:qr_code_scanner_plus/qr_code_scanner_plus.dart' as qr;
 
 // the CARP packages
 import 'package:carp_serializable/carp_serializable.dart';
-import 'package:carp_core/carp_core.dart';
+// Both carp_core and carp_mobile_sensing export `Smartphone`; hide carp_core's.
+import 'package:carp_core/carp_core.dart' hide Smartphone;
 import 'package:carp_mobile_sensing/carp_mobile_sensing.dart';
 import 'package:carp_audio_package/media.dart';
 //import 'package:carp_connectivity_package/connectivity.dart';

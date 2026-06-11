@@ -5,13 +5,13 @@ part of carp_study_app;
 /// Note that a view model is a [ChangeNotifier] and will notify its listeners
 /// if changed, including any [ListenableBuilder] widgets.
 abstract class ViewModel extends ChangeNotifier {
-  SmartphoneDeploymentController? _controller;
+  SmartphoneStudyController? _controller;
 
-  SmartphoneDeploymentController? get controller => _controller;
+  SmartphoneStudyController? get controller => _controller;
 
   /// Initialize this view model before use.
   @mustCallSuper
-  void init(SmartphoneDeploymentController ctrl) {
+  void init(SmartphoneStudyController ctrl) {
     _controller = ctrl;
   }
 
@@ -65,7 +65,7 @@ abstract class SerializableViewModel<D extends DataModel> extends ViewModel {
 
   @override
   @mustCallSuper
-  void init(SmartphoneDeploymentController ctrl) {
+  void init(SmartphoneStudyController ctrl) {
     super.init(ctrl);
     _model = createModel();
 
@@ -208,7 +208,7 @@ class CarpStudyAppViewModel extends ViewModel {
   ParticipantDataPageViewModel get participantDataPageViewModel => _participantDataPageViewModel;
 
   @override
-  void init(SmartphoneDeploymentController ctrl) {
+  void init(SmartphoneStudyController ctrl) {
     super.init(ctrl);
     _taskListPageViewModel.init(ctrl);
     _studyPageViewModel.init(ctrl);

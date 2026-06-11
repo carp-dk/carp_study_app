@@ -13,8 +13,9 @@ class ActivityCardViewModel extends SerializableViewModel<WeeklyActivities> {
       controller?.measurements.where((measurement) => measurement.data is Activity);
 
   final DateTime _startOfWeek = DateTime.now().subtract(Duration(days: DateTime.now().weekday - 1));
-  final DateTime _endOfWeek =
-      DateTime.now().subtract(Duration(days: DateTime.now().weekday - 1)).add(Duration(days: 6));
+  final DateTime _endOfWeek = DateTime.now()
+      .subtract(Duration(days: DateTime.now().weekday - 1))
+      .add(Duration(days: 6));
 
   String get startOfWeek => DateFormat('dd').format(_startOfWeek);
 
@@ -27,7 +28,7 @@ class ActivityCardViewModel extends SerializableViewModel<WeeklyActivities> {
   String get currentYear => DateFormat('yyyy').format(DateTime(DateTime.now().year));
 
   @override
-  void init(SmartphoneDeploymentController ctrl) {
+  void init(SmartphoneStudyController ctrl) {
     super.init(ctrl);
 
     // listen for activity events and count the minutes
@@ -77,11 +78,7 @@ class WeeklyActivities extends DataModel {
   }
 
   /// Increase the number of minutes of doing [activityType] on [weekday] with [minutes].
-  void increaseActivityDuration(
-    ActivityType activityType,
-    int weekday,
-    int minutes,
-  ) {
+  void increaseActivityDuration(ActivityType activityType, int weekday, int minutes) {
     activities[activityType]![weekday] = (activities[activityType]![weekday] ?? 0) + minutes;
   }
 
@@ -93,8 +90,10 @@ class WeeklyActivities extends DataModel {
   @override
   String toString() {
     String str = '  TYPE\t| day | min.\n';
-    activities.forEach((type, data) =>
-        data.forEach((day, minutes) => str += '${type.toString().split(".").last}\t|  $day  |  $minutes\n'));
+    activities.forEach(
+      (type, data) =>
+          data.forEach((day, minutes) => str += '${type.toString().split(".").last}\t|  $day  |  $minutes\n'),
+    );
     return str;
   }
 }

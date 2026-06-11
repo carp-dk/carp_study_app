@@ -42,28 +42,30 @@ class LocalResourceManager
   RPOrderedTask? get informedConsent => _informedConsent;
 
   @override
-  Future<RPOrderedTask?> getInformedConsent({bool refresh = false}) async {
+  Future<RPOrderedTask?> getConsentDocument({bool refresh = false}) async {
     if (_informedConsent == null) {
       try {
         var jsonString = await rootBundle.loadString('$basePath/resources/consent.json');
         Map<String, dynamic> jsonMap = json.decode(jsonString) as Map<String, dynamic>;
         _informedConsent = RPOrderedTask.fromJson(jsonMap);
       } catch (error) {
-        warning("$runtimeType - Could not load a local informed consent. "
-            "It should be added as an asset resource in 'carp/resources/consent.json'. $error");
+        warning(
+          "$runtimeType - Could not load a local informed consent. "
+          "It should be added as an asset resource in 'carp/resources/consent.json'. $error",
+        );
       }
     }
     return _informedConsent;
   }
 
   @override
-  Future<bool> setInformedConsent(RPOrderedTask informedConsent) async {
+  Future<bool> setConsentDocument(RPOrderedTask informedConsent) async {
     _informedConsent = informedConsent;
     return true;
   }
 
   @override
-  Future<bool> deleteInformedConsent() async {
+  Future<bool> deleteConsentDocument() async {
     _informedConsent = null;
     return true;
   }
@@ -71,10 +73,7 @@ class LocalResourceManager
   // LOCALIZATION
 
   @override
-  Future<Map<String, String>> getLocalizations(
-    Locale locale, {
-    bool refresh = false,
-  }) async {
+  Future<Map<String, String>> getLocalizations(Locale locale, {bool refresh = false}) async {
     if (_translations == null) {
       var path = '$basePath/lang/${locale.languageCode}.json';
       var jsonString = await rootBundle.loadString(path);
@@ -86,10 +85,7 @@ class LocalResourceManager
   }
 
   @override
-  Future<bool> setLocalizations(
-    Locale locale,
-    Map<String, dynamic> localizations,
-  ) {
+  Future<bool> setLocalizations(Locale locale, Map<String, dynamic> localizations) {
     throw UnimplementedError();
   }
 
@@ -104,11 +100,7 @@ class LocalResourceManager
   // MESSAGES
 
   @override
-  Future<List<Message>> getMessages({
-    DateTime? start,
-    DateTime? end,
-    int? count = 20,
-  }) async {
+  Future<List<Message>> getMessages({DateTime? start, DateTime? end, int? count = 20}) async {
     if (_messages.isEmpty) {
       final assetManifest = await AssetManifest.loadFromAssetBundle(rootBundle);
       final files = assetManifest.listAssets().where((string) => string.startsWith("$basePath/messages/")).toList();
@@ -152,17 +144,20 @@ class LocalResourceManager
           if (!(_protocol!.dataEndPoint!.type == DataEndPointTypes.FILE ||
               _protocol!.dataEndPoint!.type == DataEndPointTypes.SQLITE)) {
             warning(
-                "$runtimeType - Local protocol is trying to use a non-local data endpoint of type: '${_protocol!.dataEndPoint!.type}'. "
-                "This will not work. Replacing this data endpoint to use a local SQLite backend instead. "
-                "You can also change this in the local protocol stored in the 'carp/resources/protocol.json' file.");
+              "$runtimeType - Local protocol is trying to use a non-local data endpoint of type: '${_protocol!.dataEndPoint!.type}'. "
+              "This will not work. Replacing this data endpoint to use a local SQLite backend instead. "
+              "You can also change this in the local protocol stored in the 'carp/resources/protocol.json' file.",
+            );
 
             _protocol!.dataEndPoint = SQLiteDataEndPoint();
           }
         }
       } catch (error) {
-        warning("$runtimeType - Could not load a local study protocol. "
-            "It should be added as an asset resource in 'carp/resources/protocol.json'.\n"
-            "Error: $error");
+        warning(
+          "$runtimeType - Could not load a local study protocol. "
+          "It should be added as an asset resource in 'carp/resources/protocol.json'.\n"
+          "Error: $error",
+        );
       }
     }
     return _protocol;
