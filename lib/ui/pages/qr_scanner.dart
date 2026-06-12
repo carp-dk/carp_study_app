@@ -118,7 +118,7 @@ class _QRViewExampleState extends State<QRViewExample> {
       final qrcode = scanData.code;
 
       if (qrcode != null && Uri.tryParse(qrcode)?.hasAbsolutePath == true) {
-        await bloc.backend.authenticateWithMagicLink(qrcode).then((_) {
+        await bloc.auth.authenticateWithMagicLink(qrcode).then((_) {
           context.go('/');
           Navigator.of(context).pop();
         });

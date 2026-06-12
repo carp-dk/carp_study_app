@@ -15,8 +15,8 @@ class InformedConsentViewModel extends ViewModel {
   /// local [locale].
   Future<RPOrderedTask?> getInformedConsent(Locale locale) async {
     if (_informedConsent == null) {
-      await bloc.localizationLoader.load(locale);
-      _informedConsent = await bloc.getInformedConsent();
+      await bloc.resources.localizationLoader.load(locale);
+      _informedConsent = await bloc.consent.getDocument();
     }
     return _informedConsent;
   }
@@ -25,5 +25,5 @@ class InformedConsentViewModel extends ViewModel {
   /// Returns once the upload to the backend has completed, so callers can
   /// safely route to a page whose redirect re-queries the backend.
   Future<void> informedConsentHasBeenAccepted(RPTaskResult informedConsentResult) =>
-      bloc.informedConsentHasBeenAccepted(informedConsentResult);
+      bloc.consent.accept(informedConsentResult);
 }

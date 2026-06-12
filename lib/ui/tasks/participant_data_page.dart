@@ -702,7 +702,7 @@ class ParticipantDataPageState extends State<ParticipantDataPage> {
       }
     }
 
-    bloc.setParticipantData(bloc.study!.studyDeploymentId, participantData, bloc.study!.participantRoleName);
+    bloc.study.setParticipantData(participantData);
   }
 
   Future<void> _showCancelConfirmationDialog() {

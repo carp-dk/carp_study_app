@@ -3,35 +3,45 @@ part of carp_study_app;
 /// The view model for the [StudyPage]. Mainly holds the list of messages like
 /// news articles to be shown as part of the study.
 class StudyPageViewModel extends ViewModel {
-  String get title => bloc.deployment?.studyDescription?.title ?? 'Unnamed';
-  String get description => bloc.deployment?.studyDescription?.description ?? '';
-  String get purpose => bloc.deployment?.studyDescription?.purpose ?? '';
+  StudyPageViewModel({StudyService? studyService, MessageService? messageService})
+    : _studyService = studyService,
+      _messageService = messageService;
+
+  final StudyService? _studyService;
+  final MessageService? _messageService;
+
+  StudyService get _study => _studyService ?? bloc.study;
+  MessageService get _messages => _messageService ?? bloc.messages;
+
+  String get title => _study.deployment?.studyDescription?.title ?? 'Unnamed';
+  String get description => _study.deployment?.studyDescription?.description ?? '';
+  String get purpose => _study.deployment?.studyDescription?.purpose ?? '';
   Image get image => Image.asset('assets/images/exercise.png');
-  String? get userID => bloc.study?.participantId;
-  String get studyDeploymentId => bloc.deployment?.studyDeploymentId ?? '';
-  String get responsibleName => bloc.deployment?.studyDescription?.responsible?.name ?? '';
-  String get responsibleEmail => bloc.deployment?.studyDescription?.responsible?.email ?? '';
-  String get studyDescriptionUrl => bloc.deployment?.studyDescription?.studyDescriptionUrl ?? '';
+  String? get userID => _study.study?.participantId;
+  String get studyDeploymentId => _study.deployment?.studyDeploymentId ?? '';
+  String get responsibleName => _study.deployment?.studyDescription?.responsible?.name ?? '';
+  String get responsibleEmail => _study.deployment?.studyDescription?.responsible?.email ?? '';
+  String get studyDescriptionUrl => _study.deployment?.studyDescription?.studyDescriptionUrl ?? '';
   String get privacyPolicyUrl =>
-      bloc.deployment?.studyDescription?.privacyPolicyUrl ?? 'https://carp.dk/privacy-policy-app/';
+      _study.deployment?.studyDescription?.privacyPolicyUrl ?? 'https://carp.dk/privacy-policy-app/';
 
-  String get piTitle => bloc.deployment?.responsible?.title ?? '';
-  String get piName => bloc.deployment?.responsible?.name ?? '';
-  String get piAddress => bloc.deployment?.responsible?.address ?? '';
-  String get piEmail => bloc.deployment?.responsible?.email ?? '';
+  String get piTitle => _study.deployment?.responsible?.title ?? '';
+  String get piName => _study.deployment?.responsible?.name ?? '';
+  String get piAddress => _study.deployment?.responsible?.address ?? '';
+  String get piEmail => _study.deployment?.responsible?.email ?? '';
   String get piAffiliation =>
-      bloc.deployment?.responsible?.affiliation ?? 'Department of Health Technology, Technical University of Denmark';
+      _study.deployment?.responsible?.affiliation ?? 'Department of Health Technology, Technical University of Denmark';
 
-  String get participantRole => bloc.study?.participantRoleName ?? '';
-  String get deviceRole => bloc.deployment?.deviceRoleName ?? '';
+  String get participantRole => _study.study?.participantRoleName ?? '';
+  String get deviceRole => _study.deployment?.deviceRoleName ?? '';
 
-  Future<StudyDeploymentStatus?> get studyDeploymentStatus => bloc.studyDeploymentStatus;
+  Future<StudyDeploymentStatus?> get studyDeploymentStatus => _study.refreshDeploymentStatus();
 
   /// The stream of messages (count)
-  Stream<int> get messageStream => bloc.messageStream;
+  Stream<int> get messageStream => _messages.stream;
 
   /// The list of messages to be displayed.
-  List<Message> get messages => bloc.messages.reversed.toList();
+  List<Message> get messages => _messages.messages.reversed.toList();
 
   /// Get the image based on [imagePath]. Can be both an asset and a network
   /// image. See [Message.imagePath].
@@ -55,7 +65,7 @@ class StudyPageViewModel extends ViewModel {
     title: title,
     message: description,
     type: MessageType.announcement,
-    timestamp: bloc.studyStartTimestamp ?? DateTime.now(),
+    timestamp: _study.studyStartTimestamp ?? DateTime.now(),
     image: 'assets/images/kids.png',
   );
 }

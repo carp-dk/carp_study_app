@@ -60,8 +60,16 @@ import 'package:carp_movesense_package/carp_movesense_package.dart';
 import 'package:carp_themes_package/carp_themes_package.dart';
 
 part 'blocs/app_bloc.dart';
+part 'blocs/app_config.dart';
 part 'blocs/util.dart';
 part 'blocs/sensing.dart';
+
+part 'services/resource_manager_factory.dart';
+part 'services/system_info_service.dart';
+part 'services/auth_service.dart';
+part 'services/study_service.dart';
+part 'services/message_service.dart';
+part 'services/consent_service.dart';
 
 part 'data/local_settings.dart';
 part 'data/carp_backend.dart';

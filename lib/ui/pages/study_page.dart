@@ -37,12 +37,10 @@ class StudyPageState extends State<StudyPage> {
                       final cards = _buildCards(context);
                       return RefreshIndicator(
                         onRefresh: () async {
-                          await bloc.refreshMessages();
-                          final status = await Sensing().tryDeployment();
-                          if (status == StudyStatus.Deployed) {
-                            bloc.start();
-                          }
-                          bloc.deploymentService.getStudyDeploymentStatus(widget.model.studyDeploymentId);
+                          await bloc.messages.refresh();
+                          await bloc.study.tryDeployment();
+                          await bloc.study.start();
+                          await bloc.study.refreshDeploymentStatus();
                         },
                         child: ListView.builder(itemCount: cards.length, itemBuilder: (context, index) => cards[index]),
                       );
@@ -90,7 +88,7 @@ class StudyPageState extends State<StudyPage> {
   Widget _hasUpdateCard() {
     RPLocalizations locale = RPLocalizations.of(context)!;
     return FutureBuilder<bool?>(
-      future: bloc.getAppHasUpdate(),
+      future: bloc.system.getAppHasUpdate(),
       builder: (context, snapshot) {
         if (snapshot.data == true) {
           return StudiesMaterial(
@@ -205,7 +203,7 @@ class StudyPageState extends State<StudyPage> {
     RPLocalizations locale = RPLocalizations.of(context)!;
 
     return FutureBuilder<StudyDeploymentStatus?>(
-      future: bloc.studyDeploymentStatus,
+      future: bloc.study.refreshDeploymentStatus(),
       builder: (context, snapshot) {
         if (snapshot.connectionState == ConnectionState.waiting) {
           return StudiesMaterial(

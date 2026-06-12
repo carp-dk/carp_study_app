@@ -28,13 +28,14 @@ class CarpBackend {
   }
 
   /// The URI of the CAWS server - depending on deployment mode.
-  Uri get uri => Uri(scheme: 'https', host: uris[bloc.deploymentMode]);
+  Uri get uri => Uri(scheme: 'https', host: uris[AppConfig().deploymentMode]);
 
   /// The URI of the CAWS authentication service.
   ///
   /// Of the form:
   ///    https://dev.carp.dk/auth/realms/Carp/
-  Uri get authUri => Uri(scheme: 'https', host: uris[bloc.deploymentMode], pathSegments: ['auth', 'realms', 'Carp']);
+  Uri get authUri =>
+      Uri(scheme: 'https', host: uris[AppConfig().deploymentMode], pathSegments: ['auth', 'realms', 'Carp']);
 
   /// The CAWS app configuration.
   late final CarpApp _app = CarpApp(name: "CAWS @ DTU", uri: uri);
@@ -207,7 +208,7 @@ class CarpBackend {
 
       info(
         '$runtimeType - Informed consent document uploaded successfully for '
-        'deployment id: ${bloc.study?.studyDeploymentId}',
+        'deployment id: ${LocalSettings().study?.studyDeploymentId}',
       );
     } on Exception {
       warning('$runtimeType - Informed consent upload failed for username: $username');

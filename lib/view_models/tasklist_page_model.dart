@@ -38,8 +38,8 @@ class TaskListPageViewModel extends ViewModel {
   /// This is calculated from the study deployment status creation date from the
   /// [StudyDeploymentStatus].
   /// Returns 0 if the study deployment status is not available.
-  int get daysInStudy => (Sensing().studyDeploymentStatus != null)
-      ? DateTime.now().difference(Sensing().studyDeploymentStatus!.createdOn).inDays
+  int get daysInStudy => (bloc.study.cachedDeploymentStatus != null)
+      ? DateTime.now().difference(bloc.study.cachedDeploymentStatus!.createdOn).inDays
       : 0;
 
   /// The number of tasks completed so far.

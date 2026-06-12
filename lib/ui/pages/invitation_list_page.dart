@@ -15,11 +15,11 @@ class _InvitationListPageState extends State<InvitationListPage> {
   @override
   void initState() {
     super.initState();
-    _invitationsFuture = bloc.backend.getInvitations();
+    _invitationsFuture = bloc.auth.getInvitations();
   }
 
   Future<void> _refresh() async {
-    final next = bloc.backend.getInvitations();
+    final next = bloc.auth.getInvitations();
     setState(() {
       _invitationsFuture = next;
     });

@@ -1,26 +1,34 @@
 part of carp_study_app;
 
 class ProfilePageViewModel extends ViewModel {
-  String get userId => bloc.user?.id ?? bloc.study?.participantId ?? '';
-  String get username => bloc.user?.username ?? '';
-  String get firstName => bloc.user?.firstName ?? '';
-  String get lastName => bloc.user?.lastName ?? '';
+  ProfilePageViewModel({AuthService? authService, StudyService? studyService})
+    : _authService = authService,
+      _studyService = studyService;
+
+  final AuthService? _authService;
+  final StudyService? _studyService;
+
+  AuthService get _auth => _authService ?? bloc.auth;
+  StudyService get _study => _studyService ?? bloc.study;
+
+  String get userId => _auth.user?.id ?? _study.study?.participantId ?? '';
+  String get username => _auth.username;
+  String get firstName => _auth.user?.firstName ?? '';
+  String get lastName => _auth.user?.lastName ?? '';
   String get fullName => '$firstName $lastName';
-  String get email => bloc.user?.email ?? '';
+  String get email => _auth.user?.email ?? '';
 
-  String get studyId => bloc.deployment?.studyId ?? '';
-  String get studyDeploymentId => bloc.deployment?.studyDeploymentId ?? '';
-  String get studyDeploymentTitle => bloc.deployment?.studyDescription?.title ?? '';
-  String get participantId => bloc.study?.participantId ?? '';
-  String get participantRole => bloc.study?.participantRoleName ?? '';
-  String get deviceRole => bloc.deployment?.deviceRoleName ?? '';
+  String get studyId => _study.deployment?.studyId ?? '';
+  String get studyDeploymentId => _study.deployment?.studyDeploymentId ?? '';
+  String get studyDeploymentTitle => _study.deployment?.studyDescription?.title ?? '';
+  String get participantId => _study.study?.participantId ?? '';
+  String get participantRole => _study.study?.participantRoleName ?? '';
+  String get deviceRole => _study.deployment?.deviceRoleName ?? '';
 
-  String get responsibleEmail => bloc.deployment?.studyDescription?.responsible?.email ?? 'study@carp.dk';
+  String get responsibleEmail => _study.deployment?.studyDescription?.responsible?.email ?? 'study@carp.dk';
   String get privacyPolicyUrl =>
-      bloc.deployment?.studyDescription?.privacyPolicyUrl ?? 'https://carp.dk/privacy-policy-app/';
-  String get studyDescriptionUrl => bloc.deployment?.studyDescription?.studyDescriptionUrl ?? '';
+      _study.deployment?.studyDescription?.privacyPolicyUrl ?? 'https://carp.dk/privacy-policy-app/';
+  String get studyDescriptionUrl => _study.deployment?.studyDescription?.studyDescriptionUrl ?? '';
   String get deviceID => DeviceInfoService().deviceID ?? '';
-  String get currentServer => bloc.backend.uri.toString();
-
-  ProfilePageViewModel();
+  String get currentServer => _auth.serverUri.toString();
 }

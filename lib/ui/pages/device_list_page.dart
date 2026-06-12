@@ -16,18 +16,18 @@ class DeviceListPageState extends State<DeviceListPage> {
   StreamSubscription<BluetoothAdapterState>? bluetoothStateStream;
   BluetoothAdapterState? bluetoothAdapterState;
 
-  final List<DeviceViewModel> _smartphoneDevice = bloc.deploymentDevices
+  final List<DeviceViewModel> _smartphoneDevice = bloc.study.deploymentDevices
       .where((element) => element.deviceManager is SmartphoneDeviceManager)
       .toList();
 
-  final List<DeviceViewModel> _hardwareDevices = bloc.deploymentDevices
+  final List<DeviceViewModel> _hardwareDevices = bloc.study.deploymentDevices
       .where(
         (element) =>
             element.deviceManager is HardwareDeviceManager && element.deviceManager is! SmartphoneDeviceManager,
       )
       .toList();
 
-  final List<DeviceViewModel> _onlineServices = bloc.deploymentDevices
+  final List<DeviceViewModel> _onlineServices = bloc.study.deploymentDevices
       .where((element) => element.deviceManager is ServiceManager)
       .toList();
 

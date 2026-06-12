@@ -146,7 +146,7 @@ class ProfilePageState extends State<ProfilePage> {
                       leading: const Icon(Icons.power_settings_new, color: CACHET.RED_1),
                       title: locale.translate('pages.profile.log_out'),
                       onTap: () async {
-                        bool isConnected = await bloc.checkConnectivity();
+                        bool isConnected = await bloc.system.checkConnectivity();
                         if (isConnected) {
                           _showLogoutConfirmationDialog();
                         } else {

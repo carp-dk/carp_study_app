@@ -10,7 +10,7 @@ class MessageDetailsPage extends StatelessWidget {
   Widget build(BuildContext context) {
     RPLocalizations locale = RPLocalizations.of(context)!;
 
-    Message message = bloc.messages.firstWhere(
+    Message message = bloc.messages.messages.firstWhere(
       (element) => element.id == messageId,
       orElse: () {
         return Message(

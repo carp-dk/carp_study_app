@@ -7,7 +7,7 @@ class HealthServiceConnectPage extends StatelessWidget {
   Widget build(BuildContext context) {
     RPLocalizations locale = RPLocalizations.of(context)!;
 
-    DeviceViewModel healthServive = bloc.deploymentDevices
+    DeviceViewModel healthServive = bloc.study.deploymentDevices
         .where((element) => element.deviceManager is ServiceManager && element.type == HealthService.DEVICE_TYPE)
         .first;
 

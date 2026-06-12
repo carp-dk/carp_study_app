@@ -28,8 +28,9 @@ class DataVisualizationPageViewModel extends ViewModel {
   Stream<UserTask> get userTaskEvents => AppTaskController().userTaskEvents;
 
   /// The number of days the user has been part of this study.
-  int get daysInStudy =>
-      (bloc.studyStartTimestamp != null) ? DateTime.now().difference(bloc.studyStartTimestamp!).inDays + 1 : 0;
+  int get daysInStudy => (bloc.study.studyStartTimestamp != null)
+      ? DateTime.now().difference(bloc.study.studyStartTimestamp!).inDays + 1
+      : 0;
 
   /// The number of tasks completed so far.
   int get taskCompleted => AppTaskController().userTaskQueue.where((task) => task.state == UserTaskState.done).length;

@@ -40,12 +40,12 @@ class HomePageState extends State<HomePage> {
 
   Future<void> _maybeRunSetup() async {
     if (_setupDone || _setupInFlight || !mounted) return;
-    if (!bloc.hasStudyBeenDeployed) return;
+    if (!bloc.study.hasStudy) return;
 
     _setupInFlight = true;
     try {
       // Defer configureStudy (and its OS permission prompts) until consent.
-      if (!await bloc.hasInformedConsentBeenAccepted) {
+      if (!await bloc.consent.hasBeenAccepted) {
         if (!mounted) return;
         final loc = GoRouterState.of(context).matchedLocation;
         if (loc != InformedConsentPage.route) {
@@ -54,23 +54,34 @@ class HomePageState extends State<HomePage> {
         return;
       }
 
-      _setupDone = true;
-
       // Run setup and HC check in parallel so the HC dialog doesn't gate sensing.
       await Future.wait([
-        bloc.configureStudy().whenComplete(() {
+        bloc.configureStudy().then((_) {
           if (mounted) CarpStudyApp.reloadLocale(context);
-          bloc.start();
         }),
         if (Platform.isAndroid) _checkHealthConnectInstallation(),
       ]);
+      _setupDone = true;
+    } catch (error) {
+      // Setup stays retryable - surface the failure and try again on the
+      // next trigger.
+      warning('$runtimeType - Study setup failed - $error');
+      _showSetupFailedSnackBar();
     } finally {
       _setupInFlight = false;
     }
   }
 
+  void _showSetupFailedSnackBar() {
+    if (!mounted) return;
+    final locale = RPLocalizations.of(context);
+    ScaffoldMessenger.of(context).showSnackBar(
+      SnackBar(content: Text(locale?.translate('pages.home.setup_failed') ?? 'Could not set up the study.')),
+    );
+  }
+
   Future<void> _checkHealthConnectInstallation() async {
-    bool isInstalled = await bloc.isHealthInstalled();
+    bool isInstalled = await bloc.system.isHealthInstalled();
     if (!isInstalled && mounted) {
       await showDialog<void>(
         context: context,
@@ -85,7 +96,7 @@ class HomePageState extends State<HomePage> {
     RPLocalizations locale = RPLocalizations.of(context)!;
 
     // Save the localization for the app
-    bloc.localization = locale;
+    bloc.config.localization = locale;
 
     // Listen for user task notification clicked in the OS
     AppTaskController().userTaskEvents.listen((userTask) {

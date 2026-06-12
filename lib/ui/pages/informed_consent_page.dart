@@ -48,7 +48,7 @@ class InformedConsentState extends State<InformedConsentPage> {
           // the study back down.
           if (document == null && !_submitted) {
             _submitted = true;
-            await bloc.informedConsentHasBeenAccepted();
+            await bloc.consent.accept();
             if (mounted) context.go(CarpStudyAppState.homeRoute);
           }
           return document;

@@ -55,10 +55,10 @@ class _LoginPageState extends State<LoginPage> {
                 decoration: BoxDecoration(color: const Color(0xff006398), borderRadius: BorderRadius.circular(100)),
                 child: TextButton(
                   onPressed: () async {
-                    bool isConnected = await bloc.checkConnectivity();
+                    bool isConnected = await bloc.system.checkConnectivity();
                     if (isConnected) {
-                      await bloc.backend.initialize();
-                      await bloc.backend.authenticate();
+                      await bloc.auth.initialize();
+                      await bloc.auth.authenticate();
                       if (context.mounted) context.go(CarpStudyAppState.homeRoute);
                     } else {
                       showDialog<bool>(
@@ -83,12 +83,12 @@ class _LoginPageState extends State<LoginPage> {
                   ),
                 ),
               ),
-              if (bloc.backend.isAuthenticated)
+              if (bloc.auth.isAuthenticated)
                 TextButton(
                   onPressed: () {
                     showDialog<bool>(context: context, builder: (context) => const LogoutMessage()).then((value) async {
                       if (value == true) {
-                        await bloc.backend.signOut();
+                        await bloc.auth.signOut();
                         setState(() {});
                       }
                     });

@@ -26,7 +26,7 @@ class Sensing {
 
   /// The deployment service used in this app.
   DeploymentService get deploymentService =>
-      bloc.deploymentMode == DeploymentMode.local ? SmartphoneDeploymentService() : CarpDeploymentService();
+      AppConfig().deploymentMode == DeploymentMode.local ? SmartphoneDeploymentService() : CarpDeploymentService();
 
   /// The study running on this phone.
   /// Only available after [addStudy] is called.
@@ -86,7 +86,9 @@ class Sensing {
     SamplingPackageRegistry().register(PolarSamplingPackage());
     SamplingPackageRegistry().register(MovesenseSamplingPackage());
 
-    // create and register external data managers
+    // Create and register external data managers.
+    // The CARP data manager is needed in both LOCAL and CARP deployments,
+    // since a local study protocol may still upload to CAWS.
     DataManagerRegistry().register(CarpDataManagerFactory());
 
     // register the special-purpose audio user task factory
@@ -95,15 +97,10 @@ class Sensing {
 
   /// Initialize and set up sensing.
   Future<void> initialize() async {
-    info('Initializing $runtimeType - mode: ${bloc.deploymentMode}');
+    info('Initializing $runtimeType - mode: ${AppConfig().deploymentMode}');
 
     // Set up the devices available on this phone
     DeviceController().registerAllAvailableDevices();
-
-    // Register the CARP data manager for uploading data back to CAWS.
-    // This is needed in both LOCAL and CARP deployments, since a local study
-    // protocol may still upload to CAWS
-    DataManagerRegistry().register(CarpDataManagerFactory());
 
     // Create and configure a client manager for this phone
     await SmartPhoneClientManager().configure(
@@ -117,15 +114,14 @@ class Sensing {
     info('$runtimeType initialized');
   }
 
-  /// Add the study to the client manager and deploy it.
-  Future<StudyStatus> addStudy() async {
+  /// Add the [study] to the client manager and deploy it.
+  Future<StudyStatus> addStudy(SmartphoneStudy study) async {
     assert(
       SmartPhoneClientManager().isConfigured,
       'The client manager is not yet configured. Call SmartPhoneClientManager().configure() before adding a study.',
     );
-    assert(bloc.study != null, 'No study is provided. Cannot start deployment w/o a study.');
 
-    _study = await SmartPhoneClientManager().addStudy(bloc.study!);
+    _study = await SmartPhoneClientManager().addStudy(study);
 
     return await tryDeployment();
   }
@@ -167,23 +163,24 @@ class Sensing {
   /// Translate the title and description of all AppTask in the study protocol
   /// of the current master deployment.
   void translateStudyProtocol([RPLocalizations? localization]) {
-    bloc.localization ??= localization;
+    final config = AppConfig();
+    config.localization ??= localization;
 
-    // Fast out is no localization
-    if (bloc.localization == null) return;
+    // Fast out if no localization
+    if (config.localization == null) return;
 
-    // Fast out, if not configured or no protocol.
-    if (study?.status != StudyStatus.Deployed || controller?.deployment == null) {
+    // Fast out, if not deployed or no protocol.
+    if (!(study?.isDeployed ?? false) || controller?.deployment == null) {
       return;
     }
 
     for (var task in controller!.deployment!.tasks) {
       if (task is AppTask) {
-        task.title = bloc.localization!.translate(task.title);
-        task.description = bloc.localization!.translate(task.description);
+        task.title = config.localization!.translate(task.title);
+        task.description = config.localization!.translate(task.description);
       }
     }
 
-    info("$runtimeType - Study protocol translated to locale '${bloc.localization!.locale}'");
+    info("$runtimeType - Study protocol translated to locale '${config.localization!.locale}'");
   }
 }

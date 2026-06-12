@@ -49,7 +49,7 @@ class TaskListPageState extends State<TaskListPage> with TickerProviderStateMixi
   void initState() {
     super.initState();
     _tabController = TabController(length: 2, vsync: this);
-    bloc.getParticipantDataListFromDeployment().then((value) {
+    bloc.study.getParticipantDataListFromDeployment().then((value) {
       setState(() {
         showParticipantDataCard = value.isEmpty;
       });

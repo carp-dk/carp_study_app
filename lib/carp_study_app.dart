@@ -35,13 +35,13 @@ class CarpStudyAppState extends State<CarpStudyApp> {
       final loc = state.matchedLocation;
 
       // 1) Not authenticated → login page.
-      if (bloc.deploymentMode != DeploymentMode.local && !bloc.backend.isAuthenticated) {
+      if (bloc.config.deploymentMode != DeploymentMode.local && !bloc.auth.isAuthenticated) {
         return LoginPage.route;
       }
 
-      // 2) No study deployed → user belongs on the invitation list (or its
+      // 2) No study selected → user belongs on the invitation list (or its
       // details page). Anywhere else gets bounced to the list.
-      if (!bloc.hasStudyBeenDeployed) {
+      if (!bloc.study.hasStudy) {
         if (loc == InvitationListPage.route || loc.startsWith('${InvitationDetailsPage.route}/')) {
           return null;
         }
@@ -158,7 +158,7 @@ class CarpStudyAppState extends State<CarpStudyApp> {
   /// Research Package translations, incl. both local language assets plus
   /// translations of informed consent and surveys downloaded from CARP
   final RPLocalizationsDelegate rpLocalizationsDelegate = RPLocalizationsDelegate(
-    loaders: [const AssetLocalizationLoader(), bloc.localizationLoader],
+    loaders: [const AssetLocalizationLoader(), bloc.resources.localizationLoader],
   );
 
   @override
@@ -191,7 +191,7 @@ class CarpStudyAppState extends State<CarpStudyApp> {
         }
         return supportedLocales.first; // default to EN
       },
-      locale: bloc.localization?.locale,
+      locale: bloc.config.localization?.locale,
       theme: carpTheme.copyWith(
         extensions: [carpTheme.extension<CarpColors>()!.copyWith(primary: studyAppColors?.primary)],
       ),
