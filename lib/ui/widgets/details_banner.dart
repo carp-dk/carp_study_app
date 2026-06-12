@@ -6,19 +6,14 @@ class DetailsBanner extends StatelessWidget {
   final String? imagePath;
 
   @override
-  Widget build(
-    BuildContext context,
-  ) {
+  Widget build(BuildContext context) {
     RPLocalizations locale = RPLocalizations.of(context)!;
     return Column(
       mainAxisAlignment: MainAxisAlignment.start,
       children: [
         // only show this widget if there is an image = imagePath is not null and not empty
         if (imagePath != null && imagePath!.isNotEmpty)
-          SizedBox(
-            height: 300,
-            child: bloc.appViewModel.studyPageViewModel.getMessageImage(imagePath),
-          ),
+          SizedBox(height: 300, child: bloc.appViewModel.studyPageViewModel.getMessageImage(imagePath)),
         Padding(
           padding: const EdgeInsets.all(16),
           child: Stack(

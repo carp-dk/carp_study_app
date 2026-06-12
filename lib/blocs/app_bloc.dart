@@ -91,9 +91,11 @@ class StudyAppBLoC extends ChangeNotifier {
     const deb = String.fromEnvironment('debug-level', defaultValue: 'info');
     debugLevel = DebugLevel.values.where((element) => element.name == deb).first;
 
-    info('$runtimeType created. '
-        'DeploymentMode: ${deploymentMode.name}, '
-        'DebugLevel: ${debugLevel.name}');
+    info(
+      '$runtimeType created. '
+      'DeploymentMode: ${deploymentMode.name}, '
+      'DebugLevel: ${debugLevel.name}',
+    );
   }
 
   LocalizationManager get localizationManager =>
@@ -215,10 +217,12 @@ class StudyAppBLoC extends ChangeNotifier {
     if (deploymentMode != DeploymentMode.local) return;
 
     if (hasStudyBeenDeployed) {
-      info('Running in local deployment mode. Note that the local protocol has '
-          'already been deployed and the cached version will be loaded and used. '
-          'If you want to reload a modified protocol, delete the app with the '
-          'cached protocol from the phone before running it.');
+      info(
+        'Running in local deployment mode. Note that the local protocol has '
+        'already been deployed and the cached version will be loaded and used. '
+        'If you want to reload a modified protocol, delete the app with the '
+        'cached protocol from the phone before running it.',
+      );
     } else {
       debug('$runtimeType - deploying local protocol');
 
@@ -229,17 +233,17 @@ class StudyAppBLoC extends ChangeNotifier {
       // Deploy this protocol using the on-phone deployment service.
       final status = await SmartphoneDeploymentService().createStudyDeployment(protocol!);
 
+      // The primary device (the smartphone) is found in the device status list.
+      final primaryDeviceRoleName = status.deviceStatusList
+          .firstWhere((deviceStatus) => deviceStatus.device is PrimaryDeviceConfiguration)
+          .device
+          .roleName;
+
       // Save the participant and study on the phone for use across app restart.
-      var participant = Participant(
-        studyDeploymentId: status.studyDeploymentId,
-        deviceRoleName: status.primaryDeviceStatus?.device.roleName,
-      );
+      var participant = Participant(studyDeploymentId: status.studyDeploymentId, deviceRoleName: primaryDeviceRoleName);
       LocalSettings().participant = participant;
 
-      bloc.study = SmartphoneStudy(
-        studyDeploymentId: status.studyDeploymentId,
-        deviceRoleName: status.primaryDeviceStatus!.device.roleName,
-      );
+      bloc.study = SmartphoneStudy(studyDeploymentId: status.studyDeploymentId, deviceRoleName: primaryDeviceRoleName);
     }
   }
 
@@ -247,10 +251,7 @@ class StudyAppBLoC extends ChangeNotifier {
   ///
   /// If a [context] is provided, the translation for this study is re-loaded
   /// and applied in the app.
-  void setStudyInvitation(
-    ActiveParticipationInvitation invitation, [
-    BuildContext? context,
-  ]) {
+  void setStudyInvitation(ActiveParticipationInvitation invitation, [BuildContext? context]) {
     // create and save the participant info based on this invitation
     var participant = Participant.fromParticipationInvitation(invitation);
     LocalSettings().participant = participant;
@@ -308,23 +309,15 @@ class StudyAppBLoC extends ChangeNotifier {
       (deployment == null) ? [] : await participationService.getParticipantDataList([deployment!.studyDeploymentId]);
 
   /// Set the participant data for this study.
-  void setParticipantData(
-    String studyDeploymentId,
-    Map<String, Data> data, [
-    String? inputByParticipantRole,
-  ]) =>
-      participationService.setParticipantData(
-        studyDeploymentId,
-        data,
-        inputByParticipantRole,
-      );
+  void setParticipantData(String studyDeploymentId, Map<String, Data> data, [String? inputByParticipantRole]) =>
+      participationService.setParticipantData(studyDeploymentId, data, inputByParticipantRole);
 
   /// Does this app use location permissions?
   bool get usingLocationPermissions => true;
 
   /// Get the informed consent for this study.
   Future<RPOrderedTask?> getInformedConsent({bool refresh = false}) =>
-      informedConsentManager.getInformedConsent(refresh: refresh);
+      informedConsentManager.getConsentDocument(refresh: refresh);
 
   /// Has the informed consent been accepted by the user?
   ///
@@ -386,10 +379,13 @@ class StudyAppBLoC extends ChangeNotifier {
   /// Does this [deployment] have any measures?
   bool hasMeasures() => (deployment == null)
       ? false
-      : (deployment!.measures.any((measure) => (measure.type != SurveyUserTask.VIDEO_TYPE &&
-          measure.type != SurveyUserTask.IMAGE_TYPE &&
-          measure.type != SurveyUserTask.AUDIO_TYPE &&
-          measure.type != SurveyUserTask.SURVEY_TYPE)));
+      : (deployment!.measures.any(
+          (measure) =>
+              (measure.type != AppTask.VIDEO_TYPE &&
+              measure.type != AppTask.IMAGE_TYPE &&
+              measure.type != AppTask.AUDIO_TYPE &&
+              measure.type != AppTask.SURVEY_TYPE),
+        ));
 
   /// Does this [deployment] have the measure of type [type]?
   bool hasMeasure(String type) {
@@ -425,11 +421,11 @@ class StudyAppBLoC extends ChangeNotifier {
   /// Start sensing.
   Future<void> start() async {
     assert(Sensing().controller != null, 'No Study Controller - the study has not been deployed.');
-    if (!Sensing().isRunning) Sensing().controller?.start();
+    if (!Sensing().isRunning) Sensing().controller?.resume();
   }
 
   /// Stop sensing.
-  void stop() => Sensing().controller?.stop();
+  void stop() => Sensing().controller?.pause();
 
   /// Dispose the entire sensing.
   @override

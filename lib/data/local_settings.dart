@@ -80,30 +80,26 @@ class LocalSettings {
   SmartphoneStudy? get study {
     if (_study != null) return _study;
     var jsonString = Settings().preferences?.getString(studyKey);
-    return _study =
-        (jsonString == null) ? null : _$SmartphoneStudyFromJson(json.decode(jsonString) as Map<String, dynamic>);
+    return _study = (jsonString == null)
+        ? null
+        : _$SmartphoneStudyFromJson(json.decode(jsonString) as Map<String, dynamic>);
   }
 
   set study(SmartphoneStudy? study) {
     assert(
-        study != null,
-        'Cannot set the study to null in Settings. '
-        "Use the 'eraseStudyDeployment()' method to erase study deployment information.");
+      study != null,
+      'Cannot set the study to null in Settings. '
+      "Use the 'eraseStudyDeployment()' method to erase study deployment information.",
+    );
     _study = study;
-    Settings().preferences?.setString(
-          studyKey,
-          json.encode(_$SmartphoneStudyToJson(study!)),
-        );
+    Settings().preferences?.setString(studyKey, json.encode(_$SmartphoneStudyToJson(study!)));
   }
 
   bool get hasSeenBluetoothConnectionInstructions =>
       Settings().preferences?.getBool('hasSeenBluetoothConnectionInstructions') ?? false;
 
   set hasSeenBluetoothConnectionInstructions(bool seen) {
-    Settings().preferences?.setBool(
-          'hasSeenBluetoothConnectionInstructions',
-          seen,
-        );
+    Settings().preferences?.setBool('hasSeenBluetoothConnectionInstructions', seen);
   }
 
   bool get isAnonymous => Settings().preferences!.getBool('isAnonymous') ?? false;
@@ -138,17 +134,17 @@ class LocalSettings {
 
 // Need to create our own JSON serializers here, since SmartphoneStudy is not made serializable
 Map<String, dynamic> _$SmartphoneStudyToJson(SmartphoneStudy study) => <String, dynamic>{
-      'studyId': study.studyId,
-      'studyDeploymentId': study.studyDeploymentId,
-      'deviceRoleName': study.deviceRoleName,
-      'participantId': study.participantId,
-      'participantRoleName': study.participantRoleName,
-    };
+  'studyId': study.studyId,
+  'studyDeploymentId': study.studyDeploymentId,
+  'deviceRoleName': study.deviceRoleName,
+  'participantId': study.participantId,
+  'participantRoleName': study.participantRoleName,
+};
 
 SmartphoneStudy _$SmartphoneStudyFromJson(Map<String, dynamic> json) => SmartphoneStudy(
-      studyId: json['studyId'] as String?,
-      studyDeploymentId: json['studyDeploymentId'] as String,
-      deviceRoleName: json['deviceRoleName'] as String,
-      participantId: json['participantId'] as String?,
-      participantRoleName: json['participantRoleName'] as String?,
-    );
+  studyId: json['studyId'] as String?,
+  studyDeploymentId: json['studyDeploymentId'] as String,
+  deviceRoleName: json['deviceRoleName'] as String,
+  participantId: json['participantId'] as String?,
+  participantRoleName: json['participantRoleName'] as String?,
+);

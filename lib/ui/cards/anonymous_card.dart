@@ -11,13 +11,9 @@ class AnonymousCard extends StatelessWidget {
       color: Theme.of(context).extension<CarpColors>()!.grey50,
       elevation: 0,
       margin: const EdgeInsets.all(16.0),
-      shape: RoundedRectangleBorder(
-        borderRadius: BorderRadius.circular(8),
-      ),
+      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(8)),
       child: Container(
-        decoration: BoxDecoration(
-          borderRadius: BorderRadius.circular(16.0),
-        ),
+        decoration: BoxDecoration(borderRadius: BorderRadius.circular(16.0)),
         child: Row(
           children: [
             Expanded(
@@ -32,10 +28,7 @@ class AnonymousCard extends StatelessWidget {
                           child: CircleAvatar(
                             radius: 18,
                             backgroundColor: CACHET.ANONYMOUS,
-                            child: Icon(
-                              Icons.info_outline,
-                              color: Colors.white,
-                            ),
+                            child: Icon(Icons.info_outline, color: Colors.white),
                           ),
                         ),
                         Padding(

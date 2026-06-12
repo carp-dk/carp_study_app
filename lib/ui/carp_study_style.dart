@@ -44,23 +44,24 @@ class StudyAppColors extends ThemeExtension<StudyAppColors> {
   final Color? grey950;
 
   @override
-  StudyAppColors copyWith(
-      {Color? primary,
-      Color? warningColor,
-      Color? backgroundGray,
-      Color? tabBarBackground,
-      Color? white,
-      Color? grey50,
-      Color? grey100,
-      Color? grey200,
-      Color? grey300,
-      Color? grey400,
-      Color? grey500,
-      Color? grey600,
-      Color? grey700,
-      Color? grey800,
-      Color? grey900,
-      Color? grey950}) {
+  StudyAppColors copyWith({
+    Color? primary,
+    Color? warningColor,
+    Color? backgroundGray,
+    Color? tabBarBackground,
+    Color? white,
+    Color? grey50,
+    Color? grey100,
+    Color? grey200,
+    Color? grey300,
+    Color? grey400,
+    Color? grey500,
+    Color? grey600,
+    Color? grey700,
+    Color? grey800,
+    Color? grey900,
+    Color? grey950,
+  }) {
     return StudyAppColors(
       primary: primary ?? this.primary,
       warningColor: warningColor ?? this.warningColor,
@@ -126,51 +127,39 @@ ThemeData carpStudyTheme = ThemeData.light().copyWith(
       grey800: const Color(0xff2C2C2E),
       grey900: const Color(0xff1C1C1E),
       grey950: const Color(0xff0E0E0E),
-    )
+    ),
   ],
   primaryColor: const Color(0xff006398),
   colorScheme: const ColorScheme.light().copyWith(
-      secondary: const Color(0xFFFAFAFA),
-      primary: const Color(0xFF206FA2),
-      tertiary: const ui.Color.fromARGB(255, 230, 230, 230)),
+    secondary: const Color(0xFFFAFAFA),
+    primary: const Color(0xFF206FA2),
+    tertiary: const ui.Color.fromARGB(255, 230, 230, 230),
+  ),
   //accentColor: Color(0xFFFAFAFA), //Color(0xffcce8fa),
   hoverColor: const Color(0xFFF1F9FF),
   scaffoldBackgroundColor: const Color(0xFFFFFFFF),
-  textTheme: ThemeData.light()
-      .textTheme
+  textTheme: ThemeData.light().textTheme
       .copyWith(
-        bodySmall: ThemeData.light().textTheme.bodySmall!.copyWith(
-              fontWeight: FontWeight.w500,
-              fontSize: 14.0,
-            ),
-        bodyLarge: ThemeData.light().textTheme.bodyLarge!.copyWith(
-              fontWeight: FontWeight.w500,
-              fontSize: 18.0,
-            ),
-        bodyMedium: ThemeData.light().textTheme.bodyMedium!.copyWith(
-              fontWeight: FontWeight.w400,
-              fontSize: 16.0,
-            ),
-        titleMedium: ThemeData.light()
-            .textTheme
-            .titleMedium!
-            .copyWith(fontWeight: FontWeight.w600, fontSize: 20.0, color: const Color(0xFF206FA2)),
-        titleLarge: ThemeData.light().textTheme.titleLarge!.copyWith(
-              fontWeight: FontWeight.w500,
-              fontSize: 20.0,
-            ),
+        bodySmall: ThemeData.light().textTheme.bodySmall!.copyWith(fontWeight: FontWeight.w500, fontSize: 14.0),
+        bodyLarge: ThemeData.light().textTheme.bodyLarge!.copyWith(fontWeight: FontWeight.w500, fontSize: 18.0),
+        bodyMedium: ThemeData.light().textTheme.bodyMedium!.copyWith(fontWeight: FontWeight.w400, fontSize: 16.0),
+        titleMedium: ThemeData.light().textTheme.titleMedium!.copyWith(
+          fontWeight: FontWeight.w600,
+          fontSize: 20.0,
+          color: const Color(0xFF206FA2),
+        ),
+        titleLarge: ThemeData.light().textTheme.titleLarge!.copyWith(fontWeight: FontWeight.w500, fontSize: 20.0),
         headlineMedium: ThemeData.light().textTheme.headlineMedium!.copyWith(
-              fontWeight: FontWeight.w700,
-              fontSize: 30.0,
-            ),
-        labelLarge: ThemeData.light()
-            .textTheme
-            .labelLarge!
-            .copyWith(fontWeight: FontWeight.w500, fontSize: 16.0, color: Colors.white),
+          fontWeight: FontWeight.w700,
+          fontSize: 30.0,
+        ),
+        labelLarge: ThemeData.light().textTheme.labelLarge!.copyWith(
+          fontWeight: FontWeight.w500,
+          fontSize: 16.0,
+          color: Colors.white,
+        ),
       )
-      .apply(
-        fontFamily: 'OpenSans',
-      ),
+      .apply(fontFamily: 'OpenSans'),
   pageTransitionsTheme: const PageTransitionsTheme(
     builders: <TargetPlatform, PageTransitionsBuilder>{
       TargetPlatform.android: CupertinoPageTransitionsBuilder(),
@@ -198,7 +187,7 @@ ThemeData carpStudyDarkTheme = ThemeData.dark().copyWith(
       grey800: const Color(0xffF2F2F7),
       grey900: const Color(0xffF2F2F7),
       grey950: const Color(0xff0E0E0E),
-    )
+    ),
   ],
   primaryColor: const Color(0xff0379ff),
   colorScheme: const ColorScheme.dark().copyWith(
@@ -208,38 +197,26 @@ ThemeData carpStudyDarkTheme = ThemeData.dark().copyWith(
   ),
   // accentColor: Color(0xff4C4C4C),
   disabledColor: const Color(0xffcce8fa),
-  textTheme: ThemeData.dark()
-      .textTheme
+  textTheme: ThemeData.dark().textTheme
       .copyWith(
-        bodySmall: ThemeData.dark().textTheme.bodySmall!.copyWith(
-              fontWeight: FontWeight.w500,
-              fontSize: 14.0,
-            ),
-        bodyLarge: ThemeData.dark().textTheme.bodyLarge!.copyWith(
-              fontWeight: FontWeight.w500,
-              fontSize: 18.0,
-            ),
-        bodyMedium: ThemeData.dark().textTheme.bodyMedium!.copyWith(
-              fontWeight: FontWeight.w400,
-              fontSize: 16.0,
-            ),
+        bodySmall: ThemeData.dark().textTheme.bodySmall!.copyWith(fontWeight: FontWeight.w500, fontSize: 14.0),
+        bodyLarge: ThemeData.dark().textTheme.bodyLarge!.copyWith(fontWeight: FontWeight.w500, fontSize: 18.0),
+        bodyMedium: ThemeData.dark().textTheme.bodyMedium!.copyWith(fontWeight: FontWeight.w400, fontSize: 16.0),
         titleMedium: ThemeData.dark().textTheme.titleMedium!.copyWith(
-              fontWeight: FontWeight.w600,
-              fontSize: 20.0,
-              color: const Color(0xff81C7F3),
-            ),
-        titleLarge: ThemeData.dark().textTheme.titleLarge!.copyWith(
-              fontWeight: FontWeight.w500,
-              fontSize: 20.0,
-            ),
+          fontWeight: FontWeight.w600,
+          fontSize: 20.0,
+          color: const Color(0xff81C7F3),
+        ),
+        titleLarge: ThemeData.dark().textTheme.titleLarge!.copyWith(fontWeight: FontWeight.w500, fontSize: 20.0),
         headlineMedium: ThemeData.dark().textTheme.headlineMedium!.copyWith(
-              fontWeight: FontWeight.w700,
-              fontSize: 30.0,
-            ),
-        labelLarge: ThemeData.dark()
-            .textTheme
-            .labelLarge!
-            .copyWith(fontWeight: FontWeight.w500, fontSize: 16.0, color: Colors.grey.shade800),
+          fontWeight: FontWeight.w700,
+          fontSize: 30.0,
+        ),
+        labelLarge: ThemeData.dark().textTheme.labelLarge!.copyWith(
+          fontWeight: FontWeight.w500,
+          fontSize: 16.0,
+          color: Colors.grey.shade800,
+        ),
       )
       .apply(
         fontFamily: 'OpenSans',

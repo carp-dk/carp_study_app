@@ -45,20 +45,21 @@ class _QRViewExampleState extends State<QRViewExample> {
                           margin: const EdgeInsets.all(8),
                           height: 30,
                           child: ElevatedButton(
-                              onPressed: () async {
-                                await controller?.flipCamera();
-                                setState(() {});
+                            onPressed: () async {
+                              await controller?.flipCamera();
+                              setState(() {});
+                            },
+                            child: FutureBuilder(
+                              future: controller?.getCameraInfo(),
+                              builder: (context, snapshot) {
+                                if (snapshot.data != null) {
+                                  return Icon(Icons.cameraswitch);
+                                } else {
+                                  return const Text('loading');
+                                }
                               },
-                              child: FutureBuilder(
-                                future: controller?.getCameraInfo(),
-                                builder: (context, snapshot) {
-                                  if (snapshot.data != null) {
-                                    return Icon(Icons.cameraswitch);
-                                  } else {
-                                    return const Text('loading');
-                                  }
-                                },
-                              )),
+                            ),
+                          ),
                         ),
                         Container(
                           margin: const EdgeInsets.all(8),
@@ -75,7 +76,7 @@ class _QRViewExampleState extends State<QRViewExample> {
                   ],
                 ),
               ),
-            )
+            ),
           ],
         ),
       ),
@@ -84,15 +85,21 @@ class _QRViewExampleState extends State<QRViewExample> {
 
   Widget _buildQrView(BuildContext context) {
     // For this example we check how width or tall the device is and change the scanArea and overlay accordingly.
-    var scanArea =
-        (MediaQuery.of(context).size.width < 400 || MediaQuery.of(context).size.height < 400) ? 150.0 : 300.0;
+    var scanArea = (MediaQuery.of(context).size.width < 400 || MediaQuery.of(context).size.height < 400)
+        ? 150.0
+        : 300.0;
     // To ensure the Scanner view is properly sizes after rotation
     // we need to listen for Flutter SizeChanged notification and update controller
     return qr.QRView(
       key: qrKey,
       onQRViewCreated: _onQRViewCreated,
       overlay: qr.QrScannerOverlayShape(
-          borderColor: Colors.red, borderRadius: 10, borderLength: 30, borderWidth: 10, cutOutSize: scanArea),
+        borderColor: Colors.red,
+        borderRadius: 10,
+        borderLength: 30,
+        borderWidth: 10,
+        cutOutSize: scanArea,
+      ),
       onPermissionSet: (ctrl, p) => _onPermissionSet(context, ctrl, p),
     );
   }
@@ -121,9 +128,7 @@ class _QRViewExampleState extends State<QRViewExample> {
 
   void _onPermissionSet(BuildContext context, qr.QRViewController ctrl, bool p) {
     if (!p) {
-      ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(content: Text('no Permission')),
-      );
+      ScaffoldMessenger.of(context).showSnackBar(const SnackBar(content: Text('no Permission')));
     }
   }
 }

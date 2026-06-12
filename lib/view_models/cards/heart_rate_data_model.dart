@@ -28,24 +28,22 @@ class HeartRateCardViewModel extends SerializableViewModel<HourlyHeartRate> {
       .map((measurement) => (measurement.data as MovesenseHR).hr);
 
   @override
-  void init(SmartphoneDeploymentController ctrl) {
+  void init(SmartphoneStudyController ctrl) {
     super.init(ctrl);
 
     if (polarHRStream != null) _group.add(polarHRStream!);
     if (movesenseHRStream != null) _group.add(movesenseHRStream!);
 
-    heartRateStream?.listen(
-      (hr) {
-        if (!(hr > 0)) {
-          model.currentHeartRate = null;
-          return;
-        }
-        model.addHeartRate(DateTime.now().hour, hr);
-        if (hr > (model.maxHeartRate ?? 0)) model.maxHeartRate = hr;
-        if (hr < (model.minHeartRate ?? 100000)) model.minHeartRate = hr;
-        model.resetDataAtMidnight();
-      },
-    );
+    heartRateStream?.listen((hr) {
+      if (!(hr > 0)) {
+        model.currentHeartRate = null;
+        return;
+      }
+      model.addHeartRate(DateTime.now().hour, hr);
+      if (hr > (model.maxHeartRate ?? 0)) model.maxHeartRate = hr;
+      if (hr < (model.minHeartRate ?? 100000)) model.minHeartRate = hr;
+      model.resetDataAtMidnight();
+    });
   }
 }
 

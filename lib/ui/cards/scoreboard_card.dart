@@ -14,12 +14,7 @@ class ScoreboardCardState extends State<ScoreboardCard> {
 
     return SliverPersistentHeader(
       pinned: false,
-      delegate: ScoreboardPersistentHeaderDelegate(
-        model: widget.model,
-        locale: locale,
-        minExtent: 40,
-        maxExtent: 110,
-      ),
+      delegate: ScoreboardPersistentHeaderDelegate(model: widget.model, locale: locale, minExtent: 40, maxExtent: 110),
     );
   }
 }
@@ -51,38 +46,52 @@ class ScoreboardPersistentHeaderDelegate extends SliverPersistentHeaderDelegate 
     double offsetForShrink = 50;
 
     List<Widget> childrenDays = [
-      Text(model.daysInStudy.toString(),
-          style: fs36fw800.copyWith(
-              fontSize: calculateScrollAwareSizing(shrinkOffset, fs20fw800.fontSize!, fs36fw800.fontSize!),
-              color: Theme.of(context).extension<CarpColors>()!.grey900)),
+      Text(
+        model.daysInStudy.toString(),
+        style: fs36fw800.copyWith(
+          fontSize: calculateScrollAwareSizing(shrinkOffset, fs20fw800.fontSize!, fs36fw800.fontSize!),
+          color: Theme.of(context).extension<CarpColors>()!.grey900,
+        ),
+      ),
       if (shrinkOffset < offsetForShrink)
-        Text(locale.translate('cards.scoreboard.days'),
-            style: fs12fw700.copyWith(color: Theme.of(context).extension<CarpColors>()!.grey900)),
+        Text(
+          locale.translate('cards.scoreboard.days'),
+          style: fs12fw700.copyWith(color: Theme.of(context).extension<CarpColors>()!.grey900),
+        ),
       if (shrinkOffset > offsetForShrink)
         Padding(
           padding: const EdgeInsets.only(left: 8.0),
-          child: Text(locale.translate('cards.scoreboard.days-short'),
-              style: fs12fw700.copyWith(color: Theme.of(context).extension<CarpColors>()!.grey900)),
-        )
+          child: Text(
+            locale.translate('cards.scoreboard.days-short'),
+            style: fs12fw700.copyWith(color: Theme.of(context).extension<CarpColors>()!.grey900),
+          ),
+        ),
     ];
 
     List<Widget> childrenTasks = [
-      Text(model.taskCompleted.toString(),
-          style: fs36fw800.copyWith(
-              fontSize: calculateScrollAwareSizing(shrinkOffset, fs20fw800.fontSize!, fs36fw800.fontSize!),
-              color: Theme.of(context).extension<CarpColors>()!.primary)),
+      Text(
+        model.taskCompleted.toString(),
+        style: fs36fw800.copyWith(
+          fontSize: calculateScrollAwareSizing(shrinkOffset, fs20fw800.fontSize!, fs36fw800.fontSize!),
+          color: Theme.of(context).extension<CarpColors>()!.primary,
+        ),
+      ),
       if (shrinkOffset < offsetForShrink)
-        Text(locale.translate('cards.scoreboard.tasks'),
-            style: fs12fw700.copyWith(color: Theme.of(context).extension<CarpColors>()!.primary)),
+        Text(
+          locale.translate('cards.scoreboard.tasks'),
+          style: fs12fw700.copyWith(color: Theme.of(context).extension<CarpColors>()!.primary),
+        ),
       if (shrinkOffset > offsetForShrink)
         Expanded(
           flex: 0,
           child: Padding(
             padding: const EdgeInsets.only(left: 8.0),
-            child: Text(locale.translate('cards.scoreboard.tasks-short'),
-                style: fs12fw700.copyWith(color: Theme.of(context).extension<CarpColors>()!.primary)),
+            child: Text(
+              locale.translate('cards.scoreboard.tasks-short'),
+              style: fs12fw700.copyWith(color: Theme.of(context).extension<CarpColors>()!.primary),
+            ),
           ),
-        )
+        ),
     ];
 
     return Container(
@@ -100,14 +109,8 @@ class ScoreboardPersistentHeaderDelegate extends SliverPersistentHeaderDelegate 
             children: [
               Expanded(
                 child: shrinkOffset < offsetForShrink
-                    ? Column(
-                        mainAxisAlignment: MainAxisAlignment.center,
-                        children: childrenDays,
-                      )
-                    : Row(
-                        mainAxisAlignment: MainAxisAlignment.center,
-                        children: childrenDays,
-                      ),
+                    ? Column(mainAxisAlignment: MainAxisAlignment.center, children: childrenDays)
+                    : Row(mainAxisAlignment: MainAxisAlignment.center, children: childrenDays),
               ),
               // A vertical divider line with rounded corners that spans from 10% to 90% of the height
               Expanded(
@@ -123,15 +126,9 @@ class ScoreboardPersistentHeaderDelegate extends SliverPersistentHeaderDelegate 
               ),
               Expanded(
                 child: shrinkOffset < offsetForShrink
-                    ? Column(
-                        mainAxisAlignment: MainAxisAlignment.center,
-                        children: childrenTasks,
-                      )
-                    : Row(
-                        mainAxisAlignment: MainAxisAlignment.center,
-                        children: childrenTasks,
-                      ),
-              )
+                    ? Column(mainAxisAlignment: MainAxisAlignment.center, children: childrenTasks)
+                    : Row(mainAxisAlignment: MainAxisAlignment.center, children: childrenTasks),
+              ),
             ],
           );
         },
@@ -158,10 +155,8 @@ class ScoreboardPersistentHeaderDelegate extends SliverPersistentHeaderDelegate 
   }
 
   @override
-  FloatingHeaderSnapConfiguration get snapConfiguration => FloatingHeaderSnapConfiguration(
-        curve: Curves.linear,
-        duration: const Duration(milliseconds: 100),
-      );
+  FloatingHeaderSnapConfiguration get snapConfiguration =>
+      FloatingHeaderSnapConfiguration(curve: Curves.linear, duration: const Duration(milliseconds: 100));
 
   @override
   OverScrollHeaderStretchConfiguration get stretchConfiguration => OverScrollHeaderStretchConfiguration();

@@ -8,14 +8,15 @@ class EnableBluetoothDialog extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return AlertDialog(
-        scrollable: true,
-        titlePadding: const EdgeInsets.symmetric(vertical: 4),
-        insetPadding: const EdgeInsets.symmetric(vertical: 24, horizontal: 40),
-        title: const DialogTitle(title: "pages.devices.connection.enable_bluetooth.title"),
-        content: SizedBox(
-          height: MediaQuery.of(context).size.height * 0.45,
-          child: enableBluetoothInstructions(context, device),
-        ));
+      scrollable: true,
+      titlePadding: const EdgeInsets.symmetric(vertical: 4),
+      insetPadding: const EdgeInsets.symmetric(vertical: 24, horizontal: 40),
+      title: const DialogTitle(title: "pages.devices.connection.enable_bluetooth.title"),
+      content: SizedBox(
+        height: MediaQuery.of(context).size.height * 0.45,
+        child: enableBluetoothInstructions(context, device),
+      ),
+    );
   }
 
   Widget enableBluetoothInstructions(BuildContext context, DeviceViewModel device) {
@@ -31,9 +32,7 @@ class EnableBluetoothDialog extends StatelessWidget {
                   style: fs16fw400,
                   textAlign: TextAlign.justify,
                 ),
-                Padding(
-                  padding: EdgeInsets.symmetric(vertical: 16.0),
-                ),
+                Padding(padding: EdgeInsets.symmetric(vertical: 16.0)),
                 Text(
                   locale.translate("pages.devices.connection.enable_bluetooth.message2"),
                   style: fs16fw400,
@@ -44,7 +43,8 @@ class EnableBluetoothDialog extends StatelessWidget {
                     padding: EdgeInsets.symmetric(vertical: 16.0),
                     child: Image(
                       image: AssetImage(
-                          'assets/instructions/${Localizations.localeOf(context).languageCode}/bluetooth_enable_connections_bar.png'),
+                        'assets/instructions/${Localizations.localeOf(context).languageCode}/bluetooth_enable_connections_bar.png',
+                      ),
                     ),
                   ),
                 Text(

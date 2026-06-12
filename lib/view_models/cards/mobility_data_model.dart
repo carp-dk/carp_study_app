@@ -11,8 +11,9 @@ class MobilityCardViewModel extends SerializableViewModel<WeeklyMobility> {
       controller?.measurements.where((measurement) => measurement.data is Mobility);
 
   final DateTime _startOfWeek = DateTime.now().subtract(Duration(days: DateTime.now().weekday - 1));
-  final DateTime _endOfWeek =
-      DateTime.now().subtract(Duration(days: DateTime.now().weekday - 1)).add(Duration(days: 6));
+  final DateTime _endOfWeek = DateTime.now()
+      .subtract(Duration(days: DateTime.now().weekday - 1))
+      .add(Duration(days: 6));
 
   String get startOfWeek => DateFormat('dd').format(_startOfWeek);
 
@@ -26,7 +27,7 @@ class MobilityCardViewModel extends SerializableViewModel<WeeklyMobility> {
 
   MobilityCardViewModel();
   @override
-  void init(SmartphoneDeploymentController ctrl) {
+  void init(SmartphoneStudyController ctrl) {
     super.init(ctrl);
 
     // listen for mobility events and update the features
@@ -59,8 +60,12 @@ class WeeklyMobility extends DataModel {
   void setMobilityFeatures(Mobility data) {
     DateTime day = data.date ?? DateTime.now();
 
-    weekMobility[day.weekday] = DailyMobility(day.weekday, data.numberOfPlaces ?? 0,
-        data.homeStay != null && data.homeStay! > 0 ? (100 * (data.homeStay!)).toInt() : 0, data.distanceTraveled ?? 0);
+    weekMobility[day.weekday] = DailyMobility(
+      day.weekday,
+      data.numberOfPlaces ?? 0,
+      data.homeStay != null && data.homeStay! > 0 ? (100 * (data.homeStay!)).toInt() : 0,
+      data.distanceTraveled ?? 0,
+    );
   }
 
   @override

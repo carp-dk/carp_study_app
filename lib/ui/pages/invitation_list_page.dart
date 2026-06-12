@@ -40,21 +40,12 @@ class _InvitationListPageState extends State<InvitationListPage> {
             if (snapshot.hasData) {
               child = SliverFixedExtentList(
                 itemExtent: 150,
-                delegate: SliverChildBuilderDelegate(
-                  (context, index) {
-                    return Container(
-                      child: InvitationMaterial(
-                        invitation: snapshot.data![index],
-                      ),
-                    );
-                  },
-                  childCount: snapshot.data!.length,
-                ),
+                delegate: SliverChildBuilderDelegate((context, index) {
+                  return Container(child: InvitationMaterial(invitation: snapshot.data![index]));
+                }, childCount: snapshot.data!.length),
               );
             } else {
-              child = const SliverToBoxAdapter(
-                child: Center(child: CircularProgressIndicator()),
-              );
+              child = const SliverToBoxAdapter(child: Center(child: CircularProgressIndicator()));
             }
 
             return CustomScrollView(
@@ -88,10 +79,7 @@ class _InvitationListPageState extends State<InvitationListPage> {
                             child: Text(
                               locale.translate('invitation.invitations'),
                               textAlign: TextAlign.center,
-                              style: const TextStyle(
-                                fontWeight: FontWeight.bold,
-                                fontSize: 22.0,
-                              ),
+                              style: const TextStyle(fontWeight: FontWeight.bold, fontSize: 22.0),
                             ),
                           ),
                         ],
@@ -107,10 +95,7 @@ class _InvitationListPageState extends State<InvitationListPage> {
                       child: Text(
                         locale.translate('invitation.subtitle'),
                         textAlign: TextAlign.left,
-                        style: const TextStyle(
-                          fontWeight: FontWeight.bold,
-                          fontSize: 14.0,
-                        ),
+                        style: const TextStyle(fontWeight: FontWeight.bold, fontSize: 14.0),
                       ),
                     ),
                   ),
@@ -128,19 +113,14 @@ class _InvitationListPageState extends State<InvitationListPage> {
 class InvitationMaterial extends StatelessWidget {
   final ActiveParticipationInvitation invitation;
 
-  const InvitationMaterial({
-    super.key,
-    required this.invitation,
-  });
+  const InvitationMaterial({super.key, required this.invitation});
 
   @override
   Widget build(BuildContext context) {
     RPLocalizations locale = RPLocalizations.of(context)!;
     return StudiesMaterial(
       backgroundColor: Theme.of(context).extension<CarpColors>()!.white!,
-      shape: RoundedRectangleBorder(
-        borderRadius: BorderRadius.circular(12.0),
-      ),
+      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12.0)),
       child: InkWell(
         onTap: () {
           context.push('${InvitationDetailsPage.route}/${invitation.participation.participantId}');

@@ -24,8 +24,6 @@ class InformedConsentViewModel extends ViewModel {
   /// Called when the informed consent has been accepted by the user.
   /// Returns once the upload to the backend has completed, so callers can
   /// safely route to a page whose redirect re-queries the backend.
-  Future<void> informedConsentHasBeenAccepted(
-    RPTaskResult informedConsentResult,
-  ) =>
+  Future<void> informedConsentHasBeenAccepted(RPTaskResult informedConsentResult) =>
       bloc.informedConsentHasBeenAccepted(informedConsentResult);
 }

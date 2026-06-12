@@ -26,7 +26,7 @@ class StudyProgressCardViewModel extends ViewModel {
   StudyProgressCardViewModel() : super();
 
   @override
-  Future<void> init(SmartphoneDeploymentController ctrl) async {
+  Future<void> init(SmartphoneStudyController ctrl) async {
     super.init(ctrl);
     updateProgress();
   }

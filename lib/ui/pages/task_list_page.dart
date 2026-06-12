@@ -118,50 +118,38 @@ class TaskListPageState extends State<TaskListPage> with TickerProviderStateMixi
                                   unselectedLabelColor: Theme.of(context).extension<CarpColors>()!.grey900,
                                   dividerColor: Colors.transparent,
                                   indicator: ShapeDecoration(
-                                    shape: RoundedRectangleBorder(
-                                      borderRadius: BorderRadius.circular(8),
-                                    ),
+                                    shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(8)),
                                     color: Theme.of(context).extension<CarpColors>()!.white,
                                   ),
                                   tabs: [
                                     Container(
                                       width: double.infinity,
-                                      child: Tab(
-                                        text: locale.translate('pages.task_list.pending'),
-                                      ),
+                                      child: Tab(text: locale.translate('pages.task_list.pending')),
                                     ),
                                     Container(
                                       width: double.infinity,
-                                      child: Tab(
-                                        text: locale.translate('pages.task_list.completed'),
-                                      ),
+                                      child: Tab(text: locale.translate('pages.task_list.completed')),
                                     ),
                                   ],
                                 ),
                               ),
                             ),
                           ),
-                          if (showParticipantDataCard)
-                            SliverToBoxAdapter(
-                              child: _buildParticipantDataCard(),
-                            ),
+                          if (showParticipantDataCard) SliverToBoxAdapter(child: _buildParticipantDataCard()),
                           SliverList(
-                            delegate: SliverChildBuilderDelegate(
-                              (BuildContext context, int index) {
-                                UserTask userTask = widget.model.tasks[index];
-                                if (_tabController.index == 0) {
-                                  if (userTask.availableForUser) {
-                                    return _buildAvailableTaskCard(context, userTask);
-                                  }
-                                } else if (_tabController.index == 1) {
-                                  if (userTask.state == UserTaskState.done || userTask.state == UserTaskState.expired) {
-                                    return _buildCompletedTaskCard(context, userTask);
-                                  }
+                            delegate: SliverChildBuilderDelegate((BuildContext context, int index) {
+                              UserTask userTask = widget.model.tasks[index];
+                              if (_tabController.index == 0) {
+                                if (userTask.availableForUser) {
+                                  return _buildAvailableTaskCard(context, userTask);
                                 }
-                                return const SizedBox.shrink();
-                              },
-                              childCount: widget.model.tasks.length,
-                            ),
+                              } else if (_tabController.index == 1) {
+                                if (userTask.state == UserTaskState.done || userTask.state == UserTaskState.expired) {
+                                  return _buildCompletedTaskCard(context, userTask);
+                                }
+                              }
+                              return const SizedBox.shrink();
+                            }, childCount: widget.model.tasks.length),
                           ),
                         ],
                       );
@@ -182,10 +170,7 @@ class TaskListPageState extends State<TaskListPage> with TickerProviderStateMixi
         hasBorder: true,
         borderColor: taskTypeColors["ExpectedParticipantData"]!,
         shape: RoundedRectangleBorder(
-          borderRadius: BorderRadius.horizontal(
-            left: Radius.circular(2.0),
-            right: Radius.circular(8.0),
-          ),
+          borderRadius: BorderRadius.horizontal(left: Radius.circular(2.0), right: Radius.circular(8.0)),
         ),
         backgroundColor: Theme.of(context).extension<CarpColors>()!.grey50!,
         child: Padding(
@@ -201,8 +186,10 @@ class TaskListPageState extends State<TaskListPage> with TickerProviderStateMixi
                     children: [
                       Row(
                         children: [
-                          Icon(taskTypeIcons["ExpectedParticipantData"]!.icon,
-                              color: taskTypeColors["ExpectedParticipantData"]),
+                          Icon(
+                            taskTypeIcons["ExpectedParticipantData"]!.icon,
+                            color: taskTypeColors["ExpectedParticipantData"],
+                          ),
                           Padding(
                             padding: const EdgeInsets.only(left: 4.0),
                             child: Text(
@@ -223,17 +210,12 @@ class TaskListPageState extends State<TaskListPage> with TickerProviderStateMixi
                           children: [
                             Text(
                               "Participant Data",
-                              style: const TextStyle(
-                                fontWeight: FontWeight.bold,
-                                fontSize: 16.0,
-                              ),
+                              style: const TextStyle(fontWeight: FontWeight.bold, fontSize: 16.0),
                             ),
                             const SizedBox(height: 4.0),
                             Padding(
                               padding: const EdgeInsets.only(right: 20),
-                              child: Text(
-                                "Fill in the required participant data to continue with the study.",
-                              ),
+                              child: Text("Fill in the required participant data to continue with the study."),
                             ),
                           ],
                         ),
@@ -261,10 +243,7 @@ class TaskListPageState extends State<TaskListPage> with TickerProviderStateMixi
           hasBorder: true,
           borderColor: taskTypeColors[userTask.type]!,
           shape: RoundedRectangleBorder(
-            borderRadius: BorderRadius.horizontal(
-              left: Radius.circular(2.0),
-              right: Radius.circular(8.0),
-            ),
+            borderRadius: BorderRadius.horizontal(left: Radius.circular(2.0), right: Radius.circular(8.0)),
           ),
           backgroundColor: userTask.expiresIn != null && userTask.expiresIn!.inHours < 24
               ? CACHET.TASK_TO_EXPIRE_BACKGROUND
@@ -289,10 +268,7 @@ class TaskListPageState extends State<TaskListPage> with TickerProviderStateMixi
                               padding: const EdgeInsets.only(left: 4.0),
                               child: Text(
                                 userTask.type[0].toUpperCase() + userTask.type.substring(1),
-                                style: TextStyle(
-                                  color: taskTypeColors[userTask.type],
-                                  fontWeight: FontWeight.bold,
-                                ),
+                                style: TextStyle(color: taskTypeColors[userTask.type], fontWeight: FontWeight.bold),
                               ),
                             ),
                             Spacer(),
@@ -315,7 +291,7 @@ class TaskListPageState extends State<TaskListPage> with TickerProviderStateMixi
                                   fontSize: 12.0,
                                 ),
                               ),
-                            )
+                            ),
                           ],
                         ),
                         const SizedBox(height: 8.0),
@@ -326,17 +302,12 @@ class TaskListPageState extends State<TaskListPage> with TickerProviderStateMixi
                             children: [
                               Text(
                                 locale.translate(userTask.title),
-                                style: const TextStyle(
-                                  fontWeight: FontWeight.bold,
-                                  fontSize: 16.0,
-                                ),
+                                style: const TextStyle(fontWeight: FontWeight.bold, fontSize: 16.0),
                               ),
                               const SizedBox(height: 4.0),
                               Padding(
                                 padding: const EdgeInsets.only(right: 20),
-                                child: Text(
-                                  locale.translate(userTask.description),
-                                ),
+                                child: Text(locale.translate(userTask.description)),
                               ),
                               Padding(
                                 padding: const EdgeInsets.only(top: 8.0),
@@ -347,10 +318,7 @@ class TaskListPageState extends State<TaskListPage> with TickerProviderStateMixi
                                       padding: const EdgeInsets.only(right: 20),
                                       child: Text(
                                         _estimatedTimeSubtitle(userTask),
-                                        style: TextStyle(
-                                          color: Colors.grey,
-                                          fontSize: 12.0,
-                                        ),
+                                        style: TextStyle(color: Colors.grey, fontSize: 12.0),
                                       ),
                                     ),
                                   ],
@@ -376,13 +344,14 @@ class TaskListPageState extends State<TaskListPage> with TickerProviderStateMixi
             } else {
               Timer(const Duration(seconds: 10), () {
                 userTask.onDone();
-                ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+                ScaffoldMessenger.of(context).showSnackBar(
+                  SnackBar(
                     backgroundColor: Theme.of(context).extension<CarpColors>()!.grey700,
                     content: Text(locale.translate('Done!')),
-                    shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(4),
-                    ),
-                    duration: const Duration(seconds: 1)));
+                    shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(4)),
+                    duration: const Duration(seconds: 1),
+                  ),
+                );
               });
             }
           }
@@ -405,13 +374,7 @@ class TaskListPageState extends State<TaskListPage> with TickerProviderStateMixi
         } else if (taskTypeIcons[userTask.type] != null && userTask.state == UserTaskState.started) {
           return Padding(
             padding: const EdgeInsets.all(4),
-            child: SizedBox(
-              child: CircularProgressIndicator(
-                strokeWidth: 3,
-              ),
-              height: 14,
-              width: 14,
-            ),
+            child: SizedBox(child: CircularProgressIndicator(strokeWidth: 3), height: 14, width: 14),
           );
         } else if (taskTypeIcons[userTask.type] != null && userTask.state == UserTaskState.done) {
           return Icon(originalIcon.icon, color: CACHET.TASK_COMPLETED_BLUE);
@@ -459,10 +422,7 @@ class TaskListPageState extends State<TaskListPage> with TickerProviderStateMixi
           backgroundColor: Theme.of(context).extension<CarpColors>()!.grey50!,
           hasBorder: true,
           shape: RoundedRectangleBorder(
-            borderRadius: BorderRadius.horizontal(
-              left: Radius.circular(2.0),
-              right: Radius.circular(8.0),
-            ),
+            borderRadius: BorderRadius.horizontal(left: Radius.circular(2.0), right: Radius.circular(8.0)),
           ),
           borderColor: (userTask.state == UserTaskState.done) ? CACHET.TASK_COMPLETED_BLUE : CACHET.GREY_6,
           child: Padding(
@@ -503,7 +463,7 @@ class TaskListPageState extends State<TaskListPage> with TickerProviderStateMixi
                                     : Colors.grey,
                                 fontSize: 12.0,
                               ),
-                            )
+                            ),
                           ],
                         ),
                         const SizedBox(height: 8.0),
@@ -514,10 +474,7 @@ class TaskListPageState extends State<TaskListPage> with TickerProviderStateMixi
                             children: [
                               Text(
                                 locale.translate(userTask.title),
-                                style: const TextStyle(
-                                  fontWeight: FontWeight.bold,
-                                  fontSize: 16.0,
-                                ),
+                                style: const TextStyle(fontWeight: FontWeight.bold, fontSize: 16.0),
                               ),
                             ],
                           ),
@@ -544,157 +501,67 @@ class TaskListPageState extends State<TaskListPage> with TickerProviderStateMixi
         Ink(
           width: 60,
           height: 60,
-          decoration: const ShapeDecoration(
-            color: CACHET.GREY_1,
-            shape: CircleBorder(),
-          ),
-          child: const Icon(
-            Icons.playlist_add_check,
-            color: Colors.white,
-          ),
+          decoration: const ShapeDecoration(color: CACHET.GREY_1, shape: CircleBorder()),
+          child: const Icon(Icons.playlist_add_check, color: Colors.white),
         ),
         Padding(
-            padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 5),
-            child: Text(
-              locale.translate("pages.task_list.no_tasks"),
-              style: fs16fw600,
-              textAlign: TextAlign.center,
-            ))
+          padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 5),
+          child: Text(locale.translate("pages.task_list.no_tasks"), style: fs16fw600, textAlign: TextAlign.center),
+        ),
       ],
     );
   }
 
   static Map<String, Icon> taskTypeIcons = {
-    SurveyUserTask.SURVEY_TYPE: const Icon(
-      Icons.workspaces,
-      color: CACHET.TASK_BLUE,
-    ),
-    SurveyUserTask.COGNITIVE_ASSESSMENT_TYPE: const Icon(
-      Icons.psychology,
-      color: CACHET.LIGHT_PURPLE,
-    ),
-    SurveyUserTask.AUDIO_TYPE: const Icon(
-      Icons.hearing,
-      color: CACHET.GREEN,
-    ),
-    SurveyUserTask.VIDEO_TYPE: const Icon(
-      Icons.videocam,
-      color: CACHET.LIGHT_BLUE,
-    ),
-    SurveyUserTask.IMAGE_TYPE: const Icon(
-      Icons.image,
-      color: CACHET.YELLOW,
-    ),
-    HealthUserTask.HEALTH_ASSESSMENT_TYPE: const Icon(
-      Icons.favorite_rounded,
-      color: CACHET.RED_1,
-    ),
-    BackgroundSensingUserTask.SENSING_TYPE: const Icon(
-      Icons.sensors,
-      color: CACHET.LIGHT_BROWN,
-    ),
-    "ExpectedParticipantData": const Icon(
-      Icons.dataset,
-      color: CACHET.TASK_INPUT_DATA,
-    ),
+    AppTask.SURVEY_TYPE: const Icon(Icons.workspaces, color: CACHET.TASK_BLUE),
+    AppTask.COGNITIVE_ASSESSMENT_TYPE: const Icon(Icons.psychology, color: CACHET.LIGHT_PURPLE),
+    AppTask.AUDIO_TYPE: const Icon(Icons.hearing, color: CACHET.GREEN),
+    AppTask.VIDEO_TYPE: const Icon(Icons.videocam, color: CACHET.LIGHT_BLUE),
+    AppTask.IMAGE_TYPE: const Icon(Icons.image, color: CACHET.YELLOW),
+    AppTask.HEALTH_ASSESSMENT_TYPE: const Icon(Icons.favorite_rounded, color: CACHET.RED_1),
+    AppTask.SENSING_TYPE: const Icon(Icons.sensors, color: CACHET.LIGHT_BROWN),
+    "ExpectedParticipantData": const Icon(Icons.dataset, color: CACHET.TASK_INPUT_DATA),
   };
 
   static Map<String, Color> taskTypeColors = {
-    SurveyUserTask.SURVEY_TYPE: CACHET.TASK_BLUE,
-    SurveyUserTask.COGNITIVE_ASSESSMENT_TYPE: CACHET.LIGHT_PURPLE,
-    SurveyUserTask.AUDIO_TYPE: CACHET.GREEN,
-    SurveyUserTask.VIDEO_TYPE: CACHET.LIGHT_BLUE,
-    SurveyUserTask.IMAGE_TYPE: CACHET.YELLOW,
-    HealthUserTask.HEALTH_ASSESSMENT_TYPE: CACHET.RED_1,
-    BackgroundSensingUserTask.SENSING_TYPE: CACHET.LIGHT_BROWN,
+    AppTask.SURVEY_TYPE: CACHET.TASK_BLUE,
+    AppTask.COGNITIVE_ASSESSMENT_TYPE: CACHET.LIGHT_PURPLE,
+    AppTask.AUDIO_TYPE: CACHET.GREEN,
+    AppTask.VIDEO_TYPE: CACHET.LIGHT_BLUE,
+    AppTask.IMAGE_TYPE: CACHET.YELLOW,
+    AppTask.HEALTH_ASSESSMENT_TYPE: CACHET.RED_1,
+    AppTask.SENSING_TYPE: CACHET.LIGHT_BROWN,
     "ExpectedParticipantData": CACHET.TASK_INPUT_DATA,
   };
 
   static Map<String, Icon> measureTypeIcons = {
-    DeviceSamplingPackage.FREE_MEMORY: const Icon(
-      Icons.memory,
-      color: CACHET.GREY_4,
-    ),
-    DeviceSamplingPackage.DEVICE_INFORMATION: const Icon(
-      Icons.phone_android,
-      color: CACHET.GREY_4,
-    ),
-    DeviceSamplingPackage.BATTERY_STATE: const Icon(
-      Icons.battery_charging_full,
-      color: CACHET.GREEN,
-    ),
-    SensorSamplingPackage.STEP_COUNT: const Icon(
-      Icons.directions_walk,
-      color: CACHET.LIGHT_PURPLE,
-    ),
-    SensorSamplingPackage.ACCELERATION: const Icon(
-      Icons.adb,
-      color: CACHET.GREY_4,
-    ),
-    SensorSamplingPackage.ROTATION: const Icon(
-      Icons.adb,
-      color: CACHET.GREY_4,
-    ),
-    SensorSamplingPackage.AMBIENT_LIGHT: const Icon(
-      Icons.highlight,
-      color: CACHET.YELLOW,
-    ),
-    MediaSamplingPackage.AUDIO: const Icon(
-      Icons.mic,
-      color: CACHET.GREEN,
-    ),
-    MediaSamplingPackage.NOISE: const Icon(
-      Icons.hearing,
-      color: CACHET.YELLOW,
-    ),
-    MediaSamplingPackage.VIDEO: const Icon(
-      Icons.videocam,
-      color: CACHET.LIGHT_BLUE,
-    ),
-    MediaSamplingPackage.IMAGE: const Icon(
-      Icons.image,
-      color: CACHET.YELLOW,
-    ),
-    DeviceSamplingPackage.SCREEN_EVENT: const Icon(
-      Icons.screen_lock_portrait,
-      color: CACHET.LIGHT_PURPLE,
-    ),
-    ContextSamplingPackage.LOCATION: const Icon(
-      Icons.location_searching,
-      color: CACHET.CYAN,
-    ),
-    ContextSamplingPackage.ACTIVITY: const Icon(
-      Icons.local_fire_department,
-      color: CACHET.ORANGE,
-    ),
-    ContextSamplingPackage.WEATHER: const Icon(
-      Icons.cloud,
-      color: CACHET.LIGHT_BLUE,
-    ),
-    ContextSamplingPackage.AIR_QUALITY: const Icon(
-      Icons.air,
-      color: CACHET.GREY_3,
-    ),
-    ContextSamplingPackage.GEOFENCE: const Icon(
-      Icons.location_on,
-      color: CACHET.CYAN,
-    ),
-    ContextSamplingPackage.MOBILITY: const Icon(
-      Icons.location_on,
-      color: CACHET.ORANGE,
-    ),
-    SurveySamplingPackage.SURVEY: const Icon(
-      Icons.workspaces,
-      color: CACHET.ORANGE,
-    ),
+    DeviceSamplingPackage.FREE_MEMORY: const Icon(Icons.memory, color: CACHET.GREY_4),
+    DeviceSamplingPackage.DEVICE_INFORMATION: const Icon(Icons.phone_android, color: CACHET.GREY_4),
+    DeviceSamplingPackage.BATTERY_STATE: const Icon(Icons.battery_charging_full, color: CACHET.GREEN),
+    CarpDataTypes.STEP_COUNT: const Icon(Icons.directions_walk, color: CACHET.LIGHT_PURPLE),
+    SensorSamplingPackage.ACCELERATION: const Icon(Icons.adb, color: CACHET.GREY_4),
+    SensorSamplingPackage.ROTATION: const Icon(Icons.adb, color: CACHET.GREY_4),
+    SensorSamplingPackage.AMBIENT_LIGHT: const Icon(Icons.highlight, color: CACHET.YELLOW),
+    MediaSamplingPackage.AUDIO: const Icon(Icons.mic, color: CACHET.GREEN),
+    MediaSamplingPackage.NOISE: const Icon(Icons.hearing, color: CACHET.YELLOW),
+    MediaSamplingPackage.VIDEO: const Icon(Icons.videocam, color: CACHET.LIGHT_BLUE),
+    MediaSamplingPackage.IMAGE: const Icon(Icons.image, color: CACHET.YELLOW),
+    DeviceSamplingPackage.SCREEN_EVENT: const Icon(Icons.screen_lock_portrait, color: CACHET.LIGHT_PURPLE),
+    ContextSamplingPackage.LOCATION: const Icon(Icons.location_searching, color: CACHET.CYAN),
+    ContextSamplingPackage.ACTIVITY: const Icon(Icons.local_fire_department, color: CACHET.ORANGE),
+    ContextSamplingPackage.WEATHER: const Icon(Icons.cloud, color: CACHET.LIGHT_BLUE),
+    ContextSamplingPackage.AIR_QUALITY: const Icon(Icons.air, color: CACHET.GREY_3),
+    ContextSamplingPackage.GEOFENCE: const Icon(Icons.location_on, color: CACHET.CYAN),
+    ContextSamplingPackage.MOBILITY: const Icon(Icons.location_on, color: CACHET.ORANGE),
+    SurveySamplingPackage.SURVEY: const Icon(Icons.workspaces, color: CACHET.ORANGE),
   };
 
   static Map<UserTaskState, Icon> get taskStateIcon => {
-        UserTaskState.initialized: const Icon(Icons.stream, color: CACHET.YELLOW),
-        UserTaskState.enqueued: const Icon(Icons.notifications, color: CACHET.YELLOW),
-        UserTaskState.dequeued: const Icon(Icons.stop, color: CACHET.YELLOW),
-        UserTaskState.started: const Icon(Icons.play_arrow, color: CACHET.GREY_4),
-        UserTaskState.canceled: const Icon(Icons.pause, color: CACHET.GREY_4),
-        UserTaskState.done: const Icon(Icons.check, color: CACHET.GREEN),
-      };
+    UserTaskState.initialized: const Icon(Icons.stream, color: CACHET.YELLOW),
+    UserTaskState.enqueued: const Icon(Icons.notifications, color: CACHET.YELLOW),
+    UserTaskState.dequeued: const Icon(Icons.stop, color: CACHET.YELLOW),
+    UserTaskState.started: const Icon(Icons.play_arrow, color: CACHET.GREY_4),
+    UserTaskState.canceled: const Icon(Icons.pause, color: CACHET.GREY_4),
+    UserTaskState.done: const Icon(Icons.check, color: CACHET.GREEN),
+  };
 }

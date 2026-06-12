@@ -15,9 +15,9 @@ class _DataVisualizationPageState extends State<DataVisualizationPage> {
   Widget build(BuildContext context) {
     RPLocalizations locale = RPLocalizations.of(context)!;
     return Scaffold(
-        backgroundColor: Theme.of(context).extension<CarpColors>()!.backgroundGray,
-        body: SafeArea(
-            child: Column(
+      backgroundColor: Theme.of(context).extension<CarpColors>()!.backgroundGray,
+      body: SafeArea(
+        child: Column(
           crossAxisAlignment: CrossAxisAlignment.center,
           mainAxisAlignment: MainAxisAlignment.center,
           children: <Widget>[
@@ -35,11 +35,13 @@ class _DataVisualizationPageState extends State<DataVisualizationPage> {
                     mainAxisAlignment: MainAxisAlignment.start,
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
-                      Text(locale.translate('pages.data_viz.title'),
-                          style: fs24fw700.copyWith(
-                            color: Theme.of(context).extension<CarpColors>()!.grey900,
-                            fontWeight: FontWeight.bold,
-                          )),
+                      Text(
+                        locale.translate('pages.data_viz.title'),
+                        style: fs24fw700.copyWith(
+                          color: Theme.of(context).extension<CarpColors>()!.grey900,
+                          fontWeight: FontWeight.bold,
+                        ),
+                      ),
                     ],
                   ),
                 ),
@@ -54,18 +56,20 @@ class _DataVisualizationPageState extends State<DataVisualizationPage> {
                   children: [
                     Padding(
                       padding: const EdgeInsets.symmetric(horizontal: 15, vertical: 24.0),
-                      child: Text(locale.translate('pages.data_viz.thanks'),
-                          style: fs16fw600.copyWith(
-                            color: Theme.of(context).extension<CarpColors>()!.grey600,
-                          )),
+                      child: Text(
+                        locale.translate('pages.data_viz.thanks'),
+                        style: fs16fw600.copyWith(color: Theme.of(context).extension<CarpColors>()!.grey600),
+                      ),
                     ),
                     ..._dataVizCards,
                   ],
                 ),
               ),
-            )
+            ),
           ],
-        )));
+        ),
+      ),
+    );
   }
 
   // The list of cards, depending on what measures are defined in the study.
@@ -103,7 +107,7 @@ class _DataVisualizationPageState extends State<DataVisualizationPage> {
       widgets.add(MediaCardWidget(mediaModelsList));
     }
 
-    if (bloc.hasMeasure(SensorSamplingPackage.STEP_COUNT)) {
+    if (bloc.hasMeasure(CarpDataTypes.STEP_COUNT)) {
       widgets.add(StepsCardWidget(widget.model.stepsCardDataModel));
     }
     if (bloc.hasMeasure(ContextSamplingPackage.ACTIVITY)) {

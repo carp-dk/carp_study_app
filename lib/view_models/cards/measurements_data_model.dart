@@ -10,9 +10,8 @@ class MeasurementsCardViewModel extends ViewModel {
   Stream<Measurement>? get quietMeasureEvents =>
       controller?.measurements.where((measurement) => measurement.dataType.name != 'sensor');
 
-  /// The total sampling size
-  int get samplingSize => controller?.samplingSize == null ? 0 : controller!.samplingSize;
-  // samplingTable.values.fold(0, (prev, element) => prev + element);
+  /// The total sampling size, derived from the per-type counts in [samplingTable].
+  int get samplingSize => _samplingTable.values.fold(0, (sum, count) => sum + count);
 
   /// A table with sampling size of each measure type
   Map<String, int> get samplingTable {
@@ -31,15 +30,16 @@ class MeasurementsCardViewModel extends ViewModel {
     Map<String, int> sortedTasksTable = {}..addEntries(mapEntries);
 
     // and map to the [TaskCount] model
-    List<MeasureCount> tasksList =
-        sortedTasksTable.entries.map((entry) => MeasureCount(entry.key, entry.value)).toList();
+    List<MeasureCount> tasksList = sortedTasksTable.entries
+        .map((entry) => MeasureCount(entry.key, entry.value))
+        .toList();
 
     return tasksList;
   }
 
   MeasurementsCardViewModel() : super();
 
-  // void init(SmartphoneDeploymentController controller) {
+  // void init(SmartphoneStudyController controller) {
   //   super.init(controller);
 
   //   // listen to incoming events in order to count the measure types

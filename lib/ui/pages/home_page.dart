@@ -99,9 +99,7 @@ class HomePageState extends State<HomePage> {
 
     return Scaffold(
       backgroundColor: Theme.of(context).extension<CarpColors>()!.backgroundGray,
-      body: SafeArea(
-        child: widget.child,
-      ),
+      body: SafeArea(child: widget.child),
       bottomNavigationBar: BottomNavigationBar(
         backgroundColor: Theme.of(context).extension<CarpColors>()!.white,
         type: BottomNavigationBarType.fixed,
@@ -109,22 +107,25 @@ class HomePageState extends State<HomePage> {
         //unselectedItemColor: Theme.of(context).primaryColor.withOpacity(0.8),
         items: <BottomNavigationBarItem>[
           BottomNavigationBarItem(
-              icon: const Icon(Icons.announcement),
-              label: locale.translate('app_home.nav_bar_item.about'),
-              activeIcon: const Icon(Icons.announcement)),
+            icon: const Icon(Icons.announcement),
+            label: locale.translate('app_home.nav_bar_item.about'),
+            activeIcon: const Icon(Icons.announcement),
+          ),
           BottomNavigationBarItem(
             icon: const Icon(Icons.playlist_add_check),
             label: locale.translate('app_home.nav_bar_item.tasks'),
             activeIcon: const Icon(Icons.playlist_add_check),
           ),
           BottomNavigationBarItem(
-              icon: const Icon(Icons.leaderboard),
-              label: locale.translate('app_home.nav_bar_item.data'),
-              activeIcon: const Icon(Icons.leaderboard)),
+            icon: const Icon(Icons.leaderboard),
+            label: locale.translate('app_home.nav_bar_item.data'),
+            activeIcon: const Icon(Icons.leaderboard),
+          ),
           BottomNavigationBarItem(
-              icon: const Icon(Icons.devices_other),
-              label: locale.translate('app_home.nav_bar_item.devices'),
-              activeIcon: const Icon(Icons.devices_other)),
+            icon: const Icon(Icons.devices_other),
+            label: locale.translate('app_home.nav_bar_item.devices'),
+            activeIcon: const Icon(Icons.devices_other),
+          ),
         ],
         currentIndex: _calculateSelectedIndex(context),
         onTap: (int idx) => _onItemTapped(idx, context),

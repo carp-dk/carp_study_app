@@ -38,17 +38,19 @@ class EnableInternetConnectionDialog extends StatelessWidget {
                   textAlign: TextAlign.justify,
                 ),
                 Padding(
-                    padding: EdgeInsets.symmetric(vertical: 16.0),
-                    child: Text(
-                      locale.translate("pages.login.internet_connection.enable_internet_connections.wifi_message"),
-                      style: fs16fw400,
-                      textAlign: TextAlign.justify,
-                    )),
+                  padding: EdgeInsets.symmetric(vertical: 16.0),
+                  child: Text(
+                    locale.translate("pages.login.internet_connection.enable_internet_connections.wifi_message"),
+                    style: fs16fw400,
+                    textAlign: TextAlign.justify,
+                  ),
+                ),
                 Padding(
                   padding: EdgeInsets.symmetric(vertical: 16.0),
                   child: Image(
                     image: AssetImage(
-                        'assets/instructions/${Localizations.localeOf(context).languageCode}/enable_wifi_android.png'),
+                      'assets/instructions/${Localizations.localeOf(context).languageCode}/enable_wifi_android.png',
+                    ),
                   ),
                 ),
                 Padding(
@@ -63,7 +65,8 @@ class EnableInternetConnectionDialog extends StatelessWidget {
                   padding: EdgeInsets.symmetric(vertical: 16.0),
                   child: Image(
                     image: AssetImage(
-                        'assets/instructions/${Localizations.localeOf(context).languageCode}/enable_mobile_data_android.png'),
+                      'assets/instructions/${Localizations.localeOf(context).languageCode}/enable_mobile_data_android.png',
+                    ),
                   ),
                 ),
               ],
@@ -109,35 +112,41 @@ class EnableInternetConnectionDialog extends StatelessWidget {
                   textAlign: TextAlign.justify,
                 ),
                 Padding(
-                    padding: EdgeInsets.symmetric(vertical: 16.0),
-                    child: Text(
-                      locale.translate("pages.login.internet_connection.enable_internet_connections.wifi_message"),
-                      style: fs16fw400,
-                      textAlign: TextAlign.justify,
-                    )),
-                Padding(
                   padding: EdgeInsets.symmetric(vertical: 16.0),
-                  child: Image(
-                    image: AssetImage(
-                        'assets/instructions/${Localizations.localeOf(context).languageCode}/enable_wifi_ios.png'),
+                  child: Text(
+                    locale.translate("pages.login.internet_connection.enable_internet_connections.wifi_message"),
+                    style: fs16fw400,
+                    textAlign: TextAlign.justify,
                   ),
                 ),
                 Padding(
                   padding: EdgeInsets.symmetric(vertical: 16.0),
-                  child: Column(children: [
-                    Text(
-                      locale
-                          .translate("pages.login.internet_connection.enable_internet_connections.mobile_data_message"),
-                      style: fs16fw400,
-                      textAlign: TextAlign.justify,
+                  child: Image(
+                    image: AssetImage(
+                      'assets/instructions/${Localizations.localeOf(context).languageCode}/enable_wifi_ios.png',
                     ),
-                  ]),
+                  ),
+                ),
+                Padding(
+                  padding: EdgeInsets.symmetric(vertical: 16.0),
+                  child: Column(
+                    children: [
+                      Text(
+                        locale.translate(
+                          "pages.login.internet_connection.enable_internet_connections.mobile_data_message",
+                        ),
+                        style: fs16fw400,
+                        textAlign: TextAlign.justify,
+                      ),
+                    ],
+                  ),
                 ),
                 Padding(
                   padding: EdgeInsets.symmetric(vertical: 16.0),
                   child: Image(
                     image: AssetImage(
-                        'assets/instructions/${Localizations.localeOf(context).languageCode}/enable_mobile_data_ios.png'),
+                      'assets/instructions/${Localizations.localeOf(context).languageCode}/enable_mobile_data_ios.png',
+                    ),
                   ),
                 ),
               ],

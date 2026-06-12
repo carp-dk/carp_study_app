@@ -4,24 +4,25 @@ class MessageDetailsPage extends StatelessWidget {
   static const String route = '/message';
   final String messageId;
 
-  const MessageDetailsPage({
-    super.key,
-    required this.messageId,
-  });
+  const MessageDetailsPage({super.key, required this.messageId});
 
   @override
   Widget build(BuildContext context) {
     RPLocalizations locale = RPLocalizations.of(context)!;
 
-    Message message = bloc.messages.firstWhere((element) => element.id == messageId, orElse: () {
-      return Message(
+    Message message = bloc.messages.firstWhere(
+      (element) => element.id == messageId,
+      orElse: () {
+        return Message(
           id: '0',
           title: 'Unknown message',
           subTitle: 'Unknown message',
           type: MessageType.announcement,
           timestamp: DateTime.now(),
-          image: './assets/images/kids.png');
-    });
+          image: './assets/images/kids.png',
+        );
+      },
+    );
 
     return Scaffold(
       body: SafeArea(
@@ -37,10 +38,7 @@ class MessageDetailsPage extends StatelessWidget {
                 children: [
                   IconButton(
                     padding: const EdgeInsets.only(left: 26, right: 10, top: 16, bottom: 16),
-                    icon: Icon(
-                      Icons.arrow_back_ios,
-                      color: Theme.of(context).extension<CarpColors>()!.grey600,
-                    ),
+                    icon: Icon(Icons.arrow_back_ios, color: Theme.of(context).extension<CarpColors>()!.grey600),
                     onPressed: () {
                       if (context.canPop()) {
                         context.pop();
@@ -51,8 +49,10 @@ class MessageDetailsPage extends StatelessWidget {
                   ),
                   Padding(
                     padding: const EdgeInsets.symmetric(vertical: 10.0),
-                    child: Text(locale.translate(message.title!),
-                        style: fs20fw700.copyWith(color: Theme.of(context).extension<CarpColors>()!.grey900)),
+                    child: Text(
+                      locale.translate(message.title!),
+                      style: fs20fw700.copyWith(color: Theme.of(context).extension<CarpColors>()!.grey900),
+                    ),
                   ),
                   Spacer(),
                   Padding(
@@ -62,8 +62,10 @@ class MessageDetailsPage extends StatelessWidget {
                       borderRadius: BorderRadius.circular(100.0),
                       child: Padding(
                         padding: const EdgeInsets.symmetric(horizontal: 12.0, vertical: 6.0),
-                        child: Text(locale.translate(message.type.toString().split('.').last.toLowerCase()),
-                            style: fs16fw600.copyWith(color: Colors.white)),
+                        child: Text(
+                          locale.translate(message.type.toString().split('.').last.toLowerCase()),
+                          style: fs16fw600.copyWith(color: Colors.white),
+                        ),
                       ),
                     ),
                   ),
@@ -76,24 +78,26 @@ class MessageDetailsPage extends StatelessWidget {
                     message.subTitle != null
                         ? Padding(
                             padding: const EdgeInsets.symmetric(horizontal: 10.0, vertical: 6.0),
-                            child: Text(locale.translate(message.subTitle!),
-                                style: fs16fw400.copyWith(color: Theme.of(context).extension<CarpColors>()!.grey700)),
+                            child: Text(
+                              locale.translate(message.subTitle!),
+                              style: fs16fw400.copyWith(color: Theme.of(context).extension<CarpColors>()!.grey700),
+                            ),
                           )
                         : const SizedBox.shrink(),
                     if (message.image != null && message.image!.isNotEmpty)
-                      LayoutBuilder(builder: (context, constraints) {
-                        final screenHeight = MediaQuery.of(context).size.height;
-                        final screenWidth = MediaQuery.of(context).size.height;
-                        return ConstrainedBox(
-                          constraints: BoxConstraints(
-                            maxWidth: screenHeight,
-                            maxHeight: screenWidth,
-                          ),
-                          child: FittedBox(
+                      LayoutBuilder(
+                        builder: (context, constraints) {
+                          final screenHeight = MediaQuery.of(context).size.height;
+                          final screenWidth = MediaQuery.of(context).size.height;
+                          return ConstrainedBox(
+                            constraints: BoxConstraints(maxWidth: screenHeight, maxHeight: screenWidth),
+                            child: FittedBox(
                               fit: BoxFit.contain,
-                              child: bloc.appViewModel.studyPageViewModel.getMessageImage(message.image)),
-                        );
-                      }),
+                              child: bloc.appViewModel.studyPageViewModel.getMessageImage(message.image),
+                            ),
+                          );
+                        },
+                      ),
                     // DetailsBanner(message.title ?? '', message.image),
                     Padding(
                       padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 16),
@@ -105,7 +109,7 @@ class MessageDetailsPage extends StatelessWidget {
                               locale.translate(message.message!),
                               style: fs16fw400.copyWith(color: Theme.of(context).extension<CarpColors>()!.grey900),
                               textAlign: TextAlign.justify,
-                            )
+                            ),
                         ],
                       ),
                     ),

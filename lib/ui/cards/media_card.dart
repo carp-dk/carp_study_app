@@ -47,16 +47,19 @@ class MediaCardWidgetState extends State<MediaCardWidget> {
                                         '${entry.value.tasksDone} ${locale.translate('cards.${entry.value.taskType}.title')}',
                                         style: fs16fw400ls1.copyWith(fontSize: 14),
                                       ),
-                                      LayoutBuilder(builder: (BuildContext context, BoxConstraints constraints) {
-                                        return HorizontalBar(
+                                      LayoutBuilder(
+                                        builder: (BuildContext context, BoxConstraints constraints) {
+                                          return HorizontalBar(
                                             parentWidth: constraints.maxWidth,
                                             names: entry.value.taskCount
                                                 .map((task) => locale.translate(task.title))
                                                 .toList(),
                                             values: entry.value.taskCount.map((task) => task.size).toList(),
                                             colors: CACHET.COLOR_LIST,
-                                            height: 18);
-                                      }),
+                                            height: 18,
+                                          );
+                                        },
+                                      ),
                                     ],
                                   ),
                                 )
@@ -68,7 +71,7 @@ class MediaCardWidgetState extends State<MediaCardWidget> {
                   ],
                 ),
               ],
-            )
+            ),
           ],
         ),
       ),
