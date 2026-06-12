@@ -83,6 +83,21 @@ class StudyService {
       );
       return;
     }
+
+    // The controller initializes its executor asynchronously after the device
+    // deployment is received, and resume() before that is silently ignored -
+    // so wait for the executor to be ready.
+    const retryDelay = Duration(milliseconds: 100);
+    var waited = Duration.zero;
+    while (controller.executor.state == ExecutorState.Created && waited < const Duration(seconds: 30)) {
+      await Future<void>.delayed(retryDelay);
+      waited += retryDelay;
+    }
+    if (controller.executor.state == ExecutorState.Created) {
+      warning('$runtimeType - Cannot start sensing - the study executor was never initialized.');
+      return;
+    }
+
     if (!isRunning) controller.resume();
   }
 

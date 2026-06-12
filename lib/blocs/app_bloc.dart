@@ -141,12 +141,13 @@ class StudyAppBLoC extends ChangeNotifier {
     // early out if already configuring or configured
     if (_state == StudyAppState.configuring || isConfigured) return;
 
+    final previousState = _state;
     _state = StudyAppState.configuring;
 
     try {
       await study.configure();
     } catch (error) {
-      _state = StudyAppState.initialized;
+      _state = previousState;
       warning('$runtimeType - Study configuration failed - $error');
       rethrow;
     }
