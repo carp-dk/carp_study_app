@@ -1,5 +1,6 @@
 import 'package:carp_backend/carp_backend.dart';
 import 'package:carp_context_package/carp_context_package.dart';
+import 'package:carp_core/carp_core.dart' as core;
 import 'package:carp_webservices/carp_auth/carp_auth.dart';
 import 'package:cognition_package/cognition_package.dart';
 import 'package:fake_async/fake_async.dart';
@@ -166,12 +167,32 @@ void main() {
       expect(auth.friendlyUsername, 'John');
     });
 
-    test('delegates authentication state and invitations to the backend', () {
+    test('delegates authentication state to the backend', () {
       when(backend.isAuthenticated).thenReturn(true);
-      when(backend.invitations).thenReturn([]);
 
       expect(auth.isAuthenticated, isTrue);
       expect(auth.invitations, isEmpty);
+    });
+
+    test('getInvitations keeps only invitations assigned to a smartphone', () async {
+      ActiveParticipationInvitation invitation(PrimaryDeviceConfiguration? device) {
+        final invitation = ActiveParticipationInvitation(
+          Participation('dep-1', 'participant-1', AssignedTo()),
+          StudyInvitation('Test study'),
+        );
+        if (device != null) invitation.assignedDevices = [AssignedPrimaryDevice(device: device)];
+        return invitation;
+      }
+
+      final forPhone = invitation(Smartphone());
+      final forOtherDevice = invitation(core.Smartphone(roleName: 'web'));
+      final unassigned = invitation(null);
+      when(backend.getInvitations()).thenAnswer((_) async => [forPhone, forOtherDevice, unassigned]);
+
+      final invitations = await auth.getInvitations();
+
+      expect(invitations, [forPhone, unassigned]);
+      expect(auth.invitations, [forPhone, unassigned]);
     });
   });
 

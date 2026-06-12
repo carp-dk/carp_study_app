@@ -27,11 +27,20 @@ class AuthService {
   /// The URI of the CAWS server used in this deployment.
   Uri get serverUri => _backend.uri;
 
-  /// The list of invitations for this user, as last fetched by [getInvitations].
-  List<ActiveParticipationInvitation> get invitations => _backend.invitations;
+  List<ActiveParticipationInvitation> _invitations = [];
 
-  /// Get / refresh the list of active invitations for this user from CAWS.
-  Future<List<ActiveParticipationInvitation>> getInvitations() => _backend.getInvitations();
+  /// The list of invitations for this user, as last fetched by [getInvitations].
+  List<ActiveParticipationInvitation> get invitations => _invitations;
+
+  /// Get / refresh the list of active invitations for this user from CAWS,
+  /// keeping only invitations assigned to a smartphone (and not, e.g., a
+  /// web browser).
+  Future<List<ActiveParticipationInvitation>> getInvitations() async {
+    final all = await _backend.getInvitations();
+    return _invitations = all
+        .where((invitation) => invitation.assignedDevices?.any((device) => device.device is! Smartphone) != true)
+        .toList();
+  }
 
   /// Authenticate using a web view.
   Future<void> authenticate() => _backend.authenticate();

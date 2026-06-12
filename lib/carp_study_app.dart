@@ -169,6 +169,7 @@ class CarpStudyAppState extends State<CarpStudyApp> {
   );
 
   StudyAppState _previousBlocState = bloc.state;
+  String? _previousDeploymentId = bloc.study.study?.studyDeploymentId;
 
   @override
   void initState() {
@@ -182,13 +183,19 @@ class CarpStudyAppState extends State<CarpStudyApp> {
     super.dispose();
   }
 
-  /// Re-load translations once the study is configured, since configuration
-  /// downloads the study-specific translations.
+  /// Re-load translations when a (new) study is set or has been configured,
+  /// since both make new study-specific translations available.
   void _onAppStateChanged() {
-    if (bloc.state == StudyAppState.configured && _previousBlocState != StudyAppState.configured && mounted) {
+    final configured = bloc.state == StudyAppState.configured;
+    final deploymentId = bloc.study.study?.studyDeploymentId;
+
+    if (mounted &&
+        ((configured && _previousBlocState != StudyAppState.configured) || deploymentId != _previousDeploymentId)) {
       reloadLocale();
     }
+
     _previousBlocState = bloc.state;
+    _previousDeploymentId = deploymentId;
   }
 
   @override

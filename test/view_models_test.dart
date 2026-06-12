@@ -112,6 +112,44 @@ void main() {
     });
   });
 
+  group('InvitationsViewModel', () {
+    late MockAuthService auth;
+    late InvitationsViewModel model;
+
+    setUp(() {
+      auth = MockAuthService();
+      model = InvitationsViewModel(authService: auth);
+    });
+
+    test('loads invitations and notifies', () async {
+      final invitation = ActiveParticipationInvitation(
+        Participation('dep-1', 'participant-1', AssignedTo()),
+        StudyInvitation('Test study'),
+      );
+      when(auth.getInvitations()).thenAnswer((_) async => [invitation]);
+      var notified = false;
+      model.addListener(() => notified = true);
+
+      expect(model.isLoading, isTrue);
+      await model.loadInvitations();
+
+      expect(model.isLoading, isFalse);
+      expect(model.invitations, [invitation]);
+      expect(model.getInvitation('participant-1'), invitation);
+      expect(notified, isTrue);
+    });
+
+    test('reports an error when loading fails', () async {
+      when(auth.getInvitations()).thenAnswer((_) async => throw Exception('offline'));
+
+      await model.loadInvitations();
+
+      expect(model.hasError, isTrue);
+      expect(model.isLoading, isFalse);
+      expect(model.invitations, isEmpty);
+    });
+  });
+
   group('ProfilePageViewModel', () {
     test('is empty-safe when signed out and nothing is deployed', () {
       final backend = MockCarpBackend();

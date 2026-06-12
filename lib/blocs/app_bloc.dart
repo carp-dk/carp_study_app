@@ -131,9 +131,9 @@ class StudyAppBLoC extends ChangeNotifier {
 
   /// Set the active study in the app based on an [invitation].
   ///
-  /// If a [context] is provided, the translation for this study is re-loaded
-  /// and applied in the app.
-  void setStudyInvitation(ActiveParticipationInvitation invitation, [BuildContext? context]) {
+  /// The study translations are re-loaded by the app, which listens for the
+  /// study change.
+  void setStudyInvitation(ActiveParticipationInvitation invitation) {
     // create and save the participant info based on this invitation
     LocalSettings().participant = Participant.fromParticipationInvitation(invitation);
 
@@ -147,8 +147,6 @@ class StudyAppBLoC extends ChangeNotifier {
     notifyListeners();
 
     info('Invitation received - study: ${study.study}');
-
-    if (context != null) CarpStudyApp.reloadLocale(context);
 
     // Routes to the consent page - or, if this participant has already
     // consented (e.g. on another phone), configures and starts the study.
@@ -248,7 +246,6 @@ class StudyAppBLoC extends ChangeNotifier {
   @override
   void dispose() {
     messages.dispose();
-    _userTaskNotificationSubscription?.cancel();
     Sensing().controller?.dispose();
     super.dispose();
   }

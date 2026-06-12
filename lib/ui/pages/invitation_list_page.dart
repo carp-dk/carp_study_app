@@ -10,20 +10,10 @@ class InvitationListPage extends StatefulWidget {
 }
 
 class _InvitationListPageState extends State<InvitationListPage> {
-  late Future<List<ActiveParticipationInvitation>> _invitationsFuture;
-
   @override
   void initState() {
     super.initState();
-    _invitationsFuture = bloc.auth.getInvitations();
-  }
-
-  Future<void> _refresh() async {
-    final next = bloc.auth.getInvitations();
-    setState(() {
-      _invitationsFuture = next;
-    });
-    await next;
+    widget.model.loadInvitations();
   }
 
   @override
@@ -32,20 +22,21 @@ class _InvitationListPageState extends State<InvitationListPage> {
     return Scaffold(
       backgroundColor: Theme.of(context).extension<CarpColors>()!.backgroundGray,
       body: RefreshIndicator(
-        onRefresh: _refresh,
-        child: FutureBuilder<List<ActiveParticipationInvitation>>(
-          future: _invitationsFuture,
-          builder: (context, snapshot) {
+        onRefresh: widget.model.loadInvitations,
+        child: ListenableBuilder(
+          listenable: widget.model,
+          builder: (context, _) {
             Widget child;
-            if (snapshot.hasData) {
+            if (widget.model.isLoading) {
+              child = const SliverToBoxAdapter(child: Center(child: CircularProgressIndicator()));
+            } else {
+              final invitations = widget.model.invitations;
               child = SliverFixedExtentList(
                 itemExtent: 150,
                 delegate: SliverChildBuilderDelegate((context, index) {
-                  return Container(child: InvitationMaterial(invitation: snapshot.data![index]));
-                }, childCount: snapshot.data!.length),
+                  return Container(child: InvitationMaterial(invitation: invitations[index]));
+                }, childCount: invitations.length),
               );
-            } else {
-              child = const SliverToBoxAdapter(child: Center(child: CircularProgressIndicator()));
             }
 
             return CustomScrollView(
@@ -72,7 +63,7 @@ class _InvitationListPageState extends State<InvitationListPage> {
                             bottom: 0,
                             child: IconButton(
                               icon: const Icon(Icons.arrow_back_ios),
-                              onPressed: () => bloc.signOutAndLeaveStudy(),
+                              onPressed: () => widget.model.signOut(),
                             ),
                           ),
                           Center(
