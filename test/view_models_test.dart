@@ -66,6 +66,52 @@ void main() {
     });
   });
 
+  group('LoginViewModel', () {
+    late MockAuthService auth;
+    late MockSystemInfoService system;
+    late LoginViewModel model;
+
+    setUp(() {
+      auth = MockAuthService();
+      system = MockSystemInfoService();
+      model = LoginViewModel(authService: auth, systemInfoService: system);
+    });
+
+    test('signIn is offline without authenticating when there is no connectivity', () async {
+      when(system.checkConnectivity()).thenAnswer((_) async => false);
+
+      expect(await model.signIn(), SignInResult.offline);
+      verifyNever(auth.authenticate());
+    });
+
+    test('signIn initializes, authenticates, and reports success', () async {
+      when(system.checkConnectivity()).thenAnswer((_) async => true);
+      when(auth.isAuthenticated).thenReturn(true);
+
+      expect(await model.signIn(), SignInResult.success);
+      verifyInOrder([auth.initialize(), auth.authenticate()]);
+    });
+
+    test('signIn reports failure when authentication did not stick', () async {
+      when(system.checkConnectivity()).thenAnswer((_) async => true);
+      when(auth.isAuthenticated).thenReturn(false);
+
+      expect(await model.signIn(), SignInResult.failed);
+    });
+
+    test('signInWithMagicLink rejects non-link codes without signing in', () async {
+      expect(await model.signInWithMagicLink('not a link'), isFalse);
+      verifyNever(auth.authenticateWithMagicLink(any));
+    });
+
+    test('signInWithMagicLink authenticates with a valid link', () async {
+      when(auth.isAuthenticated).thenReturn(true);
+
+      expect(await model.signInWithMagicLink('https://carp.dk/magic'), isTrue);
+      verify(auth.authenticateWithMagicLink('https://carp.dk/magic')).called(1);
+    });
+  });
+
   group('ProfilePageViewModel', () {
     test('is empty-safe when signed out and nothing is deployed', () {
       final backend = MockCarpBackend();

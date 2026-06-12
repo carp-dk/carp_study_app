@@ -14,9 +14,25 @@ class ConsentService extends ChangeNotifier {
   final StudyService _studyService;
   final AppConfig _config;
   final CarpBackend _backend;
+  bool? _accepted;
 
   /// Get the informed consent document for this study.
   Future<RPOrderedTask?> getDocument({bool refresh = false}) => _manager.getConsentDocument(refresh: refresh);
+
+  /// The last known consent status, as cached by [refreshStatus] or [accept].
+  /// Null until the status has been checked. Used by the router redirect,
+  /// which needs a synchronous answer.
+  bool? get isAccepted => _accepted;
+
+  /// Check [hasBeenAccepted], cache the answer in [isAccepted], and notify.
+  Future<bool> refreshStatus() async {
+    _accepted = await hasBeenAccepted;
+    notifyListeners();
+    return _accepted!;
+  }
+
+  /// Forget the cached consent status, e.g. when leaving a study.
+  void reset() => _accepted = null;
 
   /// Has the informed consent been accepted by the user?
   ///
@@ -48,6 +64,7 @@ class ConsentService extends ChangeNotifier {
     if (result != null && _config.deploymentMode != DeploymentMode.local) {
       await _backend.uploadInformedConsent(result);
     }
+    _accepted = true;
     notifyListeners();
   }
 }

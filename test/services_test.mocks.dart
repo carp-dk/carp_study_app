@@ -11,6 +11,7 @@ import 'package:carp_study_app/main.dart' as _i4;
 import 'package:carp_webservices/carp_auth/carp_auth.dart' as _i3;
 import 'package:carp_webservices/carp_services/carp_services.dart' as _i2;
 import 'package:mockito/mockito.dart' as _i1;
+import 'package:mockito/src/dummies.dart' as _i9;
 import 'package:research_package/research_package.dart' as _i8;
 
 // ignore_for_file: type=lint
@@ -185,4 +186,131 @@ class MockCarpBackend extends _i1.Mock implements _i4.CarpBackend {
             returnValueForMissingStub: null,
           )
           as _i7.Future<_i5.InformedConsentInput?>?);
+}
+
+/// A class which mocks [AuthService].
+///
+/// See the documentation for Mockito's code generation for more information.
+class MockAuthService extends _i1.Mock implements _i4.AuthService {
+  @override
+  bool get isAuthenticated =>
+      (super.noSuchMethod(Invocation.getter(#isAuthenticated), returnValue: false, returnValueForMissingStub: false)
+          as bool);
+
+  @override
+  String get username =>
+      (super.noSuchMethod(
+            Invocation.getter(#username),
+            returnValue: _i9.dummyValue<String>(this, Invocation.getter(#username)),
+            returnValueForMissingStub: _i9.dummyValue<String>(this, Invocation.getter(#username)),
+          )
+          as String);
+
+  @override
+  String get friendlyUsername =>
+      (super.noSuchMethod(
+            Invocation.getter(#friendlyUsername),
+            returnValue: _i9.dummyValue<String>(this, Invocation.getter(#friendlyUsername)),
+            returnValueForMissingStub: _i9.dummyValue<String>(this, Invocation.getter(#friendlyUsername)),
+          )
+          as String);
+
+  @override
+  Uri get serverUri =>
+      (super.noSuchMethod(
+            Invocation.getter(#serverUri),
+            returnValue: _FakeUri_0(this, Invocation.getter(#serverUri)),
+            returnValueForMissingStub: _FakeUri_0(this, Invocation.getter(#serverUri)),
+          )
+          as Uri);
+
+  @override
+  List<_i5.ActiveParticipationInvitation> get invitations =>
+      (super.noSuchMethod(
+            Invocation.getter(#invitations),
+            returnValue: <_i5.ActiveParticipationInvitation>[],
+            returnValueForMissingStub: <_i5.ActiveParticipationInvitation>[],
+          )
+          as List<_i5.ActiveParticipationInvitation>);
+
+  @override
+  _i7.Future<void> initialize() =>
+      (super.noSuchMethod(
+            Invocation.method(#initialize, []),
+            returnValue: _i7.Future<void>.value(),
+            returnValueForMissingStub: _i7.Future<void>.value(),
+          )
+          as _i7.Future<void>);
+
+  @override
+  _i7.Future<List<_i5.ActiveParticipationInvitation>> getInvitations() =>
+      (super.noSuchMethod(
+            Invocation.method(#getInvitations, []),
+            returnValue: _i7.Future<List<_i5.ActiveParticipationInvitation>>.value(
+              <_i5.ActiveParticipationInvitation>[],
+            ),
+            returnValueForMissingStub: _i7.Future<List<_i5.ActiveParticipationInvitation>>.value(
+              <_i5.ActiveParticipationInvitation>[],
+            ),
+          )
+          as _i7.Future<List<_i5.ActiveParticipationInvitation>>);
+
+  @override
+  _i7.Future<void> authenticate() =>
+      (super.noSuchMethod(
+            Invocation.method(#authenticate, []),
+            returnValue: _i7.Future<void>.value(),
+            returnValueForMissingStub: _i7.Future<void>.value(),
+          )
+          as _i7.Future<void>);
+
+  @override
+  _i7.Future<void> authenticateWithMagicLink(String? uri) =>
+      (super.noSuchMethod(
+            Invocation.method(#authenticateWithMagicLink, [uri]),
+            returnValue: _i7.Future<void>.value(),
+            returnValueForMissingStub: _i7.Future<void>.value(),
+          )
+          as _i7.Future<void>);
+
+  @override
+  _i7.Future<void> signOut() =>
+      (super.noSuchMethod(
+            Invocation.method(#signOut, []),
+            returnValue: _i7.Future<void>.value(),
+            returnValueForMissingStub: _i7.Future<void>.value(),
+          )
+          as _i7.Future<void>);
+}
+
+/// A class which mocks [SystemInfoService].
+///
+/// See the documentation for Mockito's code generation for more information.
+class MockSystemInfoService extends _i1.Mock implements _i4.SystemInfoService {
+  @override
+  _i7.Future<bool> checkConnectivity() =>
+      (super.noSuchMethod(
+            Invocation.method(#checkConnectivity, []),
+            returnValue: _i7.Future<bool>.value(false),
+            returnValueForMissingStub: _i7.Future<bool>.value(false),
+          )
+          as _i7.Future<bool>);
+
+  @override
+  _i7.Future<bool> isHealthInstalled() =>
+      (super.noSuchMethod(
+            Invocation.method(#isHealthInstalled, []),
+            returnValue: _i7.Future<bool>.value(false),
+            returnValueForMissingStub: _i7.Future<bool>.value(false),
+          )
+          as _i7.Future<bool>);
+
+  @override
+  _i7.Future<bool?> getAppHasUpdate() =>
+      (super.noSuchMethod(
+            Invocation.method(#getAppHasUpdate, []),
+            returnValue: _i7.Future<bool?>.value(),
+            returnValueForMissingStub: _i7.Future<bool?>.value(),
+          )
+          as _i7.Future<bool?>);
 }

@@ -1,7 +1,8 @@
 part of carp_study_app;
 
 class QRViewExample extends StatefulWidget {
-  const QRViewExample({super.key});
+  final LoginViewModel model;
+  const QRViewExample({required this.model, super.key});
 
   @override
   State<StatefulWidget> createState() => _QRViewExampleState();
@@ -10,6 +11,7 @@ class QRViewExample extends StatefulWidget {
 class _QRViewExampleState extends State<QRViewExample> {
   qr.Barcode? result;
   qr.QRViewController? controller;
+  StreamSubscription<qr.Barcode>? _scanSubscription;
   final GlobalKey qrKey = GlobalKey(debugLabel: 'QR');
 
   // In order to get hot reload to work we need to pause the camera if the platform
@@ -21,6 +23,12 @@ class _QRViewExampleState extends State<QRViewExample> {
       controller!.pauseCamera();
     }
     controller!.resumeCamera();
+  }
+
+  @override
+  void dispose() {
+    _scanSubscription?.cancel();
+    super.dispose();
   }
 
   @override
@@ -108,7 +116,7 @@ class _QRViewExampleState extends State<QRViewExample> {
     setState(() {
       this.controller = controller;
     });
-    controller.scannedDataStream.listen((scanData) async {
+    _scanSubscription = controller.scannedDataStream.listen((scanData) async {
       await controller.pauseCamera();
       if (result != null) return;
       setState(() {
@@ -116,13 +124,12 @@ class _QRViewExampleState extends State<QRViewExample> {
       });
 
       final qrcode = scanData.code;
+      if (qrcode == null) return;
 
-      if (qrcode != null && Uri.tryParse(qrcode)?.hasAbsolutePath == true) {
-        await bloc.auth.authenticateWithMagicLink(qrcode).then((_) {
-          context.go('/');
-          Navigator.of(context).pop();
-        });
-      }
+      await widget.model.signInWithMagicLink(qrcode);
+      if (!mounted) return;
+      context.go('/');
+      Navigator.of(context).pop();
     });
   }
 

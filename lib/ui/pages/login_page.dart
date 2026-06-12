@@ -2,20 +2,14 @@ part of carp_study_app;
 
 class LoginPage extends StatefulWidget {
   static const String route = '/login';
-  const LoginPage({super.key});
+  final LoginViewModel model;
+  const LoginPage({required this.model, super.key});
 
   @override
   State<LoginPage> createState() => _LoginPageState();
 }
 
 class _LoginPageState extends State<LoginPage> {
-  final GlobalKey webViewKey = GlobalKey();
-
-  @override
-  void initState() {
-    super.initState();
-  }
-
   @override
   Widget build(BuildContext context) {
     RPLocalizations locale = RPLocalizations.of(context)!;
@@ -39,7 +33,10 @@ class _LoginPageState extends State<LoginPage> {
                 decoration: BoxDecoration(color: const Color(0xff006398), borderRadius: BorderRadius.circular(100)),
                 child: TextButton(
                   onPressed: () {
-                    showDialog<void>(context: context, builder: (context) => QRViewExample());
+                    showDialog<void>(
+                      context: context,
+                      builder: (context) => QRViewExample(model: widget.model),
+                    );
                   },
                   child: Text(
                     locale.translate("scan"),
@@ -55,12 +52,11 @@ class _LoginPageState extends State<LoginPage> {
                 decoration: BoxDecoration(color: const Color(0xff006398), borderRadius: BorderRadius.circular(100)),
                 child: TextButton(
                   onPressed: () async {
-                    bool isConnected = await bloc.system.checkConnectivity();
-                    if (isConnected) {
-                      await bloc.auth.initialize();
-                      await bloc.auth.authenticate();
-                      if (context.mounted) context.go(CarpStudyAppState.homeRoute);
-                    } else {
+                    final result = await widget.model.signIn();
+                    if (!context.mounted) return;
+                    if (result == SignInResult.success) {
+                      context.go(CarpStudyAppState.homeRoute);
+                    } else if (result == SignInResult.offline) {
                       showDialog<bool>(
                         context: context,
                         builder: (context) => PopScope(
@@ -83,13 +79,13 @@ class _LoginPageState extends State<LoginPage> {
                   ),
                 ),
               ),
-              if (bloc.auth.isAuthenticated)
+              if (widget.model.isAuthenticated)
                 TextButton(
                   onPressed: () {
                     showDialog<bool>(context: context, builder: (context) => const LogoutMessage()).then((value) async {
                       if (value == true) {
-                        await bloc.auth.signOut();
-                        setState(() {});
+                        await widget.model.signOut();
+                        if (mounted) setState(() {});
                       }
                     });
                   },

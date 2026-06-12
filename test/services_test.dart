@@ -58,7 +58,7 @@ class _FakeConsentManager extends InformedConsentManager {
   Future<bool> deleteConsentDocument() async => true;
 }
 
-@GenerateNiceMocks([MockSpec<CarpBackend>()])
+@GenerateNiceMocks([MockSpec<CarpBackend>(), MockSpec<AuthService>(), MockSpec<SystemInfoService>()])
 void main() {
   setUpAll(() async {
     CarpMobileSensing.ensureInitialized();
@@ -199,6 +199,20 @@ void main() {
 
       await consent.accept();
       expect(await consent.hasBeenAccepted, isTrue);
+    });
+
+    test('caches the consent status for synchronous reads', () async {
+      LocalSettings().participant = Participant(studyDeploymentId: 'dep-cache');
+
+      expect(consent.isAccepted, isNull);
+      expect(await consent.refreshStatus(), isFalse);
+      expect(consent.isAccepted, isFalse);
+
+      await consent.accept();
+      expect(consent.isAccepted, isTrue);
+
+      consent.reset();
+      expect(consent.isAccepted, isNull);
     });
 
     test('accept notifies listeners', () async {

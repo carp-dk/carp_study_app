@@ -30,6 +30,7 @@ enum StudyAppState {
 class StudyAppBLoC extends ChangeNotifier {
   StudyAppState _state = StudyAppState.created;
   final CarpStudyAppViewModel _appViewModel = CarpStudyAppViewModel();
+  StreamSubscription<UserTask>? _userTaskNotificationSubscription;
 
   /// App-wide configuration (deployment mode, debug level, localization).
   final AppConfig config = AppConfig();
@@ -75,7 +76,27 @@ class StudyAppBLoC extends ChangeNotifier {
     );
 
     // The coordinator is the sole router-notifier - forward service changes.
-    consent.addListener(notifyListeners);
+    // Once consent is given, the study can be configured and started.
+    consent.addListener(_onConsentChanged);
+  }
+
+  void _onConsentChanged() {
+    notifyListeners();
+    if (consent.isAccepted == true) unawaited(_tryConfigureStudy());
+  }
+
+  /// Run [configureStudy], surfacing a failure to the user instead of
+  /// throwing. Used by the setup flow, where no caller can handle the error.
+  Future<void> _tryConfigureStudy() async {
+    try {
+      await configureStudy();
+    } catch (error) {
+      final context = scaffoldKey.currentContext;
+      final locale = context != null ? RPLocalizations.of(context) : null;
+      scaffoldKey.currentState?.showSnackBar(
+        SnackBar(content: Text(locale?.translate('pages.home.setup_failed') ?? 'Could not set up the study.')),
+      );
+    }
   }
 
   /// Initialize this BLOC. Called before being used for anything.
@@ -102,6 +123,10 @@ class StudyAppBLoC extends ChangeNotifier {
     _state = StudyAppState.initialized;
     notifyListeners();
     debug('$runtimeType initialized - deployment mode: ${config.deploymentMode.name}');
+
+    // For a returning user, check consent - via [_onConsentChanged] this
+    // routes to the consent page or configures and starts the study.
+    if (study.hasStudy) unawaited(consent.refreshStatus());
   }
 
   /// Set the active study in the app based on an [invitation].
@@ -124,6 +149,10 @@ class StudyAppBLoC extends ChangeNotifier {
     info('Invitation received - study: ${study.study}');
 
     if (context != null) CarpStudyApp.reloadLocale(context);
+
+    // Routes to the consent page - or, if this participant has already
+    // consented (e.g. on another phone), configures and starts the study.
+    unawaited(consent.refreshStatus());
   }
 
   /// Configure the study deployment and start sensing.
@@ -156,12 +185,25 @@ class StudyAppBLoC extends ChangeNotifier {
 
     messages.start();
 
+    _listenToUserTaskNotifications();
+
     info('Study configuration done.');
 
     _state = StudyAppState.configured;
     notifyListeners();
 
     await study.start();
+  }
+
+  /// Open the task page when the user taps a user-task notification from
+  /// the OS. The subscription is created once and cancelled in [leaveStudy].
+  void _listenToUserTaskNotifications() {
+    _userTaskNotificationSubscription ??= AppTaskController().userTaskEvents.listen((userTask) {
+      if (userTask.state == UserTaskState.notified) {
+        userTask.onStart();
+        if (userTask.hasWidget) _rootNavigatorKey.currentContext?.push('/task/${userTask.id}');
+      }
+    });
   }
 
   /// Leave the study deployed on this phone.
@@ -178,9 +220,12 @@ class StudyAppBLoC extends ChangeNotifier {
   Future<void> leaveStudy() async {
     info('Leaving study ${study.study}');
 
-    // clear the UI data models and stop message polling
+    // clear the UI data models, message polling, and notification handling
     appViewModel.clear();
     messages.stop();
+    await _userTaskNotificationSubscription?.cancel();
+    _userTaskNotificationSubscription = null;
+    consent.reset();
 
     // stop sensing and remove all deployment info
     await study.remove();
@@ -203,6 +248,7 @@ class StudyAppBLoC extends ChangeNotifier {
   @override
   void dispose() {
     messages.dispose();
+    _userTaskNotificationSubscription?.cancel();
     Sensing().controller?.dispose();
     super.dispose();
   }

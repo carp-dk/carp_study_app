@@ -48,13 +48,20 @@ class CarpStudyAppState extends State<CarpStudyApp> {
         return InvitationListPage.route;
       }
 
-      // 3) Fully onboarded.
+      // 3) Study selected but consent known to be pending → consent page.
+      // (null means the consent status is still being checked - stay put.)
+      if (!bloc.isConfiguring && bloc.consent.isAccepted == false) {
+        return loc == InformedConsentPage.route ? null : InformedConsentPage.route;
+      }
+
+      // 4) Fully onboarded.
       return null;
     },
     routes: <RouteBase>[
       ShellRoute(
         navigatorKey: _shellNavigatorKey,
-        builder: (BuildContext context, GoRouterState state, Widget child) => HomePage(child: child),
+        builder: (BuildContext context, GoRouterState state, Widget child) =>
+            HomePage(model: bloc.appViewModel.homePageViewModel, child: child),
         routes: [
           // Home is just a landing slot — the top-level redirect always moves
           // the user to the right place based on bloc state.
@@ -131,7 +138,7 @@ class CarpStudyAppState extends State<CarpStudyApp> {
       GoRoute(
         path: LoginPage.route,
         parentNavigatorKey: _rootNavigatorKey,
-        builder: (context, state) => const LoginPage(),
+        builder: (context, state) => LoginPage(model: bloc.appViewModel.loginViewModel),
       ),
       GoRoute(
         path: '${MessageDetailsPage.route}/:messageId',
@@ -157,9 +164,32 @@ class CarpStudyAppState extends State<CarpStudyApp> {
 
   /// Research Package translations, incl. both local language assets plus
   /// translations of informed consent and surveys downloaded from CARP
-  final RPLocalizationsDelegate rpLocalizationsDelegate = RPLocalizationsDelegate(
+  final RPLocalizationsDelegate rpLocalizationsDelegate = _AppLocalizationsDelegate(
     loaders: [const AssetLocalizationLoader(), bloc.resources.localizationLoader],
   );
+
+  StudyAppState _previousBlocState = bloc.state;
+
+  @override
+  void initState() {
+    super.initState();
+    bloc.addListener(_onAppStateChanged);
+  }
+
+  @override
+  void dispose() {
+    bloc.removeListener(_onAppStateChanged);
+    super.dispose();
+  }
+
+  /// Re-load translations once the study is configured, since configuration
+  /// downloads the study-specific translations.
+  void _onAppStateChanged() {
+    if (bloc.state == StudyAppState.configured && _previousBlocState != StudyAppState.configured && mounted) {
+      reloadLocale();
+    }
+    _previousBlocState = bloc.state;
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -199,6 +229,19 @@ class CarpStudyAppState extends State<CarpStudyApp> {
       debugShowCheckedModeBanner: true,
       routerConfig: _router,
     );
+  }
+}
+
+/// Loads the RP translations and captures the loaded localization in
+/// [AppConfig], where non-UI layers (e.g. protocol translation) read it.
+class _AppLocalizationsDelegate extends RPLocalizationsDelegate {
+  _AppLocalizationsDelegate({required super.loaders});
+
+  @override
+  Future<RPLocalizations> load(Locale locale) async {
+    final localizations = await super.load(locale);
+    AppConfig().localization = localizations;
+    return localizations;
   }
 }
 

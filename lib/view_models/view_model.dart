@@ -187,6 +187,8 @@ class HourlyMeasure {
 
 /// The view model for the entire app.
 class CarpStudyAppViewModel extends ViewModel {
+  final HomePageViewModel _homePageViewModel = HomePageViewModel();
+  final LoginViewModel _loginViewModel = LoginViewModel();
   final DataVisualizationPageViewModel _dataVisualizationPageViewModel = DataVisualizationPageViewModel();
   final StudyPageViewModel _studyPageViewModel = StudyPageViewModel();
   final TaskListPageViewModel _taskListPageViewModel = TaskListPageViewModel();
@@ -198,6 +200,8 @@ class CarpStudyAppViewModel extends ViewModel {
 
   CarpStudyAppViewModel() : super();
 
+  HomePageViewModel get homePageViewModel => _homePageViewModel;
+  LoginViewModel get loginViewModel => _loginViewModel;
   DataVisualizationPageViewModel get dataVisualizationPageViewModel => _dataVisualizationPageViewModel;
   StudyPageViewModel get studyPageViewModel => _studyPageViewModel;
   TaskListPageViewModel get taskListPageViewModel => _taskListPageViewModel;
@@ -210,6 +214,7 @@ class CarpStudyAppViewModel extends ViewModel {
   @override
   void init(SmartphoneStudyController ctrl) {
     super.init(ctrl);
+    _homePageViewModel.init(ctrl);
     _taskListPageViewModel.init(ctrl);
     _studyPageViewModel.init(ctrl);
     _dataVisualizationPageViewModel.init(ctrl);
@@ -223,6 +228,7 @@ class CarpStudyAppViewModel extends ViewModel {
 
   @override
   void clear() {
+    _homePageViewModel.clear();
     _taskListPageViewModel.clear();
     _studyPageViewModel.clear();
     _dataVisualizationPageViewModel.clear();
@@ -237,6 +243,7 @@ class CarpStudyAppViewModel extends ViewModel {
 
   @override
   void dispose() {
+    _homePageViewModel.dispose();
     _taskListPageViewModel.dispose();
     _studyPageViewModel.dispose();
     _dataVisualizationPageViewModel.dispose();

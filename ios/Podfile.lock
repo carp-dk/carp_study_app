@@ -71,7 +71,7 @@ PODS:
     - Flutter
   - pedometer (4.2.0):
     - Flutter
-  - permission_handler_apple (9.3.0):
+  - permission_handler_apple (9.4.8):
     - Flutter
   - polar (0.0.1):
     - Flutter
@@ -269,7 +269,7 @@ SPEC CHECKSUMS:
   open_settings_plus: d19f91e8a04649358a51c19b484ce2e637149d70
   package_info_plus: af8e2ca6888548050f16fa2f1938db7b5a5df499
   pedometer: 6806036696085739f36b4e4e5374135e86220a59
-  permission_handler_apple: 4ed2196e43d0651e8ff7ca3483a069d469701f2d
+  permission_handler_apple: 92d754bbaa7361d436db2d6c3c1c2a0fdcec462e
   polar: e6c15a5007d85ab02ce12973c152545bcba861cd
   PolarBleSdk: 1d56bb7a3ca0a6df04cb4f652fdccb26064df011
   qr_code_scanner_plus: 1fb59fd4576edb53ec7560c3746f454dee54300c

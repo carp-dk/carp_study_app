@@ -1,89 +1,36 @@
 part of carp_study_app;
 
-/// The home page of the app.
+/// The home page of the app - the navigation bar around the shell pages.
 ///
-/// Shown once the onboarding process is done.
+/// Shown once the onboarding process is done. All setup orchestration
+/// (consent gating, study configuration, starting sensing) is owned by the
+/// [StudyAppBLoC] and the router redirect - not this page.
 class HomePage extends StatefulWidget {
+  final HomePageViewModel model;
   final Widget child;
-  const HomePage({required this.child, super.key});
+  const HomePage({required this.model, required this.child, super.key});
 
   @override
   HomePageState createState() => HomePageState();
 }
 
 class HomePageState extends State<HomePage> {
-  bool _setupDone = false;
-  bool _setupInFlight = false;
-
   @override
   void initState() {
     super.initState();
-    // Re-run setup when bloc notifies (e.g. after consent submission).
-    bloc.addListener(_onBlocChanged);
+    widget.model.addListener(_onModelChanged);
   }
 
   @override
   void dispose() {
-    bloc.removeListener(_onBlocChanged);
+    widget.model.removeListener(_onModelChanged);
     super.dispose();
   }
 
-  void _onBlocChanged() {
-    _maybeRunSetup();
-  }
-
-  @override
-  void didChangeDependencies() {
-    super.didChangeDependencies();
-    _maybeRunSetup();
-  }
-
-  Future<void> _maybeRunSetup() async {
-    if (_setupDone || _setupInFlight || !mounted) return;
-    if (!bloc.study.hasStudy) return;
-
-    _setupInFlight = true;
-    try {
-      // Defer configureStudy (and its OS permission prompts) until consent.
-      if (!await bloc.consent.hasBeenAccepted) {
-        if (!mounted) return;
-        final loc = GoRouterState.of(context).matchedLocation;
-        if (loc != InformedConsentPage.route) {
-          context.go(InformedConsentPage.route);
-        }
-        return;
-      }
-
-      // Run setup and HC check in parallel so the HC dialog doesn't gate sensing.
-      await Future.wait([
-        bloc.configureStudy().then((_) {
-          if (mounted) CarpStudyApp.reloadLocale(context);
-        }),
-        if (Platform.isAndroid) _checkHealthConnectInstallation(),
-      ]);
-      _setupDone = true;
-    } catch (error) {
-      // Setup stays retryable - surface the failure and try again on the
-      // next trigger.
-      warning('$runtimeType - Study setup failed - $error');
-      _showSetupFailedSnackBar();
-    } finally {
-      _setupInFlight = false;
-    }
-  }
-
-  void _showSetupFailedSnackBar() {
-    if (!mounted) return;
-    final locale = RPLocalizations.of(context);
-    ScaffoldMessenger.of(context).showSnackBar(
-      SnackBar(content: Text(locale?.translate('pages.home.setup_failed') ?? 'Could not set up the study.')),
-    );
-  }
-
-  Future<void> _checkHealthConnectInstallation() async {
-    bool isInstalled = await bloc.system.isHealthInstalled();
-    if (!isInstalled && mounted) {
-      await showDialog<void>(
+  void _onModelChanged() {
+    if (widget.model.shouldPromptHealthConnectInstall && mounted) {
+      widget.model.healthConnectPromptShown();
+      showDialog<void>(
         context: context,
         barrierDismissible: true,
         builder: (context) => InstallHealthConnectDialog(context),
@@ -95,19 +42,6 @@ class HomePageState extends State<HomePage> {
   Widget build(BuildContext context) {
     RPLocalizations locale = RPLocalizations.of(context)!;
 
-    // Save the localization for the app
-    bloc.config.localization = locale;
-
-    // Listen for user task notification clicked in the OS
-    AppTaskController().userTaskEvents.listen((userTask) {
-      if (userTask.state == UserTaskState.notified) {
-        userTask.onStart();
-        if (userTask.hasWidget) {
-          _rootNavigatorKey.currentContext?.push('/task/${userTask.id}');
-        }
-      }
-    });
-
     return Scaffold(
       backgroundColor: Theme.of(context).extension<CarpColors>()!.backgroundGray,
       body: SafeArea(child: widget.child),
@@ -115,7 +49,6 @@ class HomePageState extends State<HomePage> {
         backgroundColor: Theme.of(context).extension<CarpColors>()!.white,
         type: BottomNavigationBarType.fixed,
         selectedItemColor: Theme.of(context).extension<CarpColors>()!.primary,
-        //unselectedItemColor: Theme.of(context).primaryColor.withOpacity(0.8),
         items: <BottomNavigationBarItem>[
           BottomNavigationBarItem(
             icon: const Icon(Icons.announcement),
