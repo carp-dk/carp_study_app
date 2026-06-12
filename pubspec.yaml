@@ -108,6 +108,8 @@ dev_dependencies:
   build_runner: any
   flutter_test:
     sdk: flutter
+  integration_test:
+    sdk: flutter
   mockito: any
   flutter_lints: any
 
