@@ -33,14 +33,9 @@ class CarpStudyAppState extends State<CarpStudyApp> {
     errorBuilder: (context, state) => const ErrorPage(),
     redirect: (context, state) async {
       final loc = state.matchedLocation;
-      debugPrint(
-        '[redirect] loc=$loc auth=${bloc.backend.isAuthenticated} '
-        'studyDeployed=${bloc.hasStudyBeenDeployed}',
-      );
 
       // 1) Not authenticated → login page.
       if (bloc.deploymentMode != DeploymentMode.local && !bloc.backend.isAuthenticated) {
-        debugPrint('[redirect] → /login (not authenticated)');
         return LoginPage.route;
       }
 
@@ -48,15 +43,12 @@ class CarpStudyAppState extends State<CarpStudyApp> {
       // details page). Anywhere else gets bounced to the list.
       if (!bloc.hasStudyBeenDeployed) {
         if (loc == InvitationListPage.route || loc.startsWith('${InvitationDetailsPage.route}/')) {
-          debugPrint('[redirect] → null (already on invitation route)');
           return null;
         }
-        debugPrint('[redirect] → /invitations (no study)');
         return InvitationListPage.route;
       }
 
       // 3) Fully onboarded.
-      debugPrint('[redirect] → null (fully onboarded)');
       return null;
     },
     routes: <RouteBase>[

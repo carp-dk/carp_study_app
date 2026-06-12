@@ -145,11 +145,6 @@ class Sensing {
 
     translateStudyProtocol();
 
-    // Mirror each measurement to the console only in debug to avoid spamming logs.
-    if (Settings().debugLevel.index >= DebugLevel.debug.index) {
-      controller?.measurements.listen((measurement) => debugPrint(toJsonString(measurement)));
-    }
-
     info('$runtimeType - Study added, deployment id: $studyDeploymentId');
     return status;
   }
