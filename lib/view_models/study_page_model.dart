@@ -96,6 +96,18 @@ class StudyPageViewModel extends ViewModel {
   /// The list of messages to be displayed.
   List<Message> get messages => _messages.messages.reversed.toList();
 
+  /// The message with [id], or a placeholder if it is not found.
+  Message messageById(String id) =>
+      _messages.byId(id) ??
+      Message(
+        id: '0',
+        title: 'Unknown message',
+        subTitle: 'Unknown message',
+        type: MessageType.announcement,
+        timestamp: DateTime.now(),
+        image: './assets/images/kids.png',
+      );
+
   /// Get the image based on [imagePath]. Can be both an asset and a network
   /// image. See [Message.imagePath].
   ///

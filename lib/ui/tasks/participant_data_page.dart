@@ -702,7 +702,7 @@ class ParticipantDataPageState extends State<ParticipantDataPage> {
       }
     }
 
-    bloc.study.setParticipantData(participantData);
+    widget.model.setParticipantData(participantData);
   }
 
   Future<void> _showCancelConfirmationDialog() {

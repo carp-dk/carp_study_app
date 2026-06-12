@@ -26,4 +26,10 @@ class InformedConsentViewModel extends ViewModel {
   /// safely route to a page whose redirect re-queries the backend.
   Future<void> informedConsentHasBeenAccepted(RPTaskResult informedConsentResult) =>
       bloc.consent.accept(informedConsentResult);
+
+  /// Accept consent for a study that has no consent document.
+  Future<void> acceptWithoutDocument() => bloc.consent.accept();
+
+  /// The user abandoned the consent flow - leave the study.
+  void abandonConsent() => bloc.leaveStudy();
 }

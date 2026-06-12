@@ -6,7 +6,8 @@ part of carp_study_app;
 ///  * Any online services (connected services)
 class DeviceListPage extends StatefulWidget {
   static const String route = '/devices';
-  const DeviceListPage({super.key});
+  final DeviceListPageViewModel model;
+  const DeviceListPage({required this.model, super.key});
 
   @override
   DeviceListPageState createState() => DeviceListPageState();
@@ -16,20 +17,9 @@ class DeviceListPageState extends State<DeviceListPage> {
   StreamSubscription<BluetoothAdapterState>? bluetoothStateStream;
   BluetoothAdapterState? bluetoothAdapterState;
 
-  final List<DeviceViewModel> _smartphoneDevice = bloc.study.deploymentDevices
-      .where((element) => element.deviceManager is SmartphoneDeviceManager)
-      .toList();
-
-  final List<DeviceViewModel> _hardwareDevices = bloc.study.deploymentDevices
-      .where(
-        (element) =>
-            element.deviceManager is HardwareDeviceManager && element.deviceManager is! SmartphoneDeviceManager,
-      )
-      .toList();
-
-  final List<DeviceViewModel> _onlineServices = bloc.study.deploymentDevices
-      .where((element) => element.deviceManager is ServiceManager)
-      .toList();
+  late final List<DeviceViewModel> _smartphoneDevice = widget.model.smartphoneDevice;
+  late final List<DeviceViewModel> _hardwareDevices = widget.model.hardwareDevices;
+  late final List<DeviceViewModel> _onlineServices = widget.model.onlineServices;
 
   @override
   void initState() {

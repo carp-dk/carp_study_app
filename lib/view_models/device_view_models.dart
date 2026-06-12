@@ -2,8 +2,29 @@ part of carp_study_app;
 
 /// The view model for the [DeviceListPage].
 class DeviceListPageViewModel extends ViewModel {
-  final List<DeviceViewModel> _devices = [];
-  List<DeviceViewModel> get devices => _devices;
+  DeviceListPageViewModel({StudyService? studyService}) : _studyService = studyService;
+
+  final StudyService? _studyService;
+  StudyService get _study => _studyService ?? bloc.study;
+
+  /// The smartphone (primary) device of this deployment.
+  List<DeviceViewModel> get smartphoneDevice =>
+      _study.deploymentDevices.where((device) => device.deviceManager is SmartphoneDeviceManager).toList();
+
+  /// The hardware devices (connected devices) of this deployment.
+  List<DeviceViewModel> get hardwareDevices => _study.deploymentDevices
+      .where(
+        (device) => device.deviceManager is HardwareDeviceManager && device.deviceManager is! SmartphoneDeviceManager,
+      )
+      .toList();
+
+  /// The online services of this deployment.
+  List<DeviceViewModel> get onlineServices =>
+      _study.deploymentDevices.where((device) => device.deviceManager is ServiceManager).toList();
+
+  /// The Health service of this deployment, if any.
+  DeviceViewModel? get healthService =>
+      onlineServices.where((device) => device.type == HealthService.DEVICE_TYPE).firstOrNull;
 }
 
 /// The view model for each device - [DeviceManager].

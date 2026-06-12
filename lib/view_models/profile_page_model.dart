@@ -1,15 +1,27 @@
 part of carp_study_app;
 
 class ProfilePageViewModel extends ViewModel {
-  ProfilePageViewModel({AuthService? authService, StudyService? studyService})
+  ProfilePageViewModel({AuthService? authService, StudyService? studyService, SystemInfoService? systemInfoService})
     : _authService = authService,
-      _studyService = studyService;
+      _studyService = studyService,
+      _systemInfoService = systemInfoService;
 
   final AuthService? _authService;
   final StudyService? _studyService;
+  final SystemInfoService? _systemInfoService;
 
   AuthService get _auth => _authService ?? bloc.auth;
   StudyService get _study => _studyService ?? bloc.study;
+  SystemInfoService get _system => _systemInfoService ?? bloc.system;
+
+  /// Is the phone connected to the internet?
+  Future<bool> checkConnectivity() => _system.checkConnectivity();
+
+  /// Sign out and leave the study.
+  Future<void> signOutAndLeaveStudy() => bloc.signOutAndLeaveStudy();
+
+  /// Leave the study, returning to the invitation list.
+  Future<void> leaveStudy() => bloc.leaveStudy();
 
   String get userId => _auth.user?.id ?? _study.study?.participantId ?? '';
   String get username => _auth.username;

@@ -103,8 +103,10 @@ class CarpStudyAppState extends State<CarpStudyApp> {
           GoRoute(
             path: DeviceListPage.route,
             parentNavigatorKey: _shellNavigatorKey,
-            pageBuilder: (context, state) =>
-                const CustomTransitionPage(child: DeviceListPage(), transitionsBuilder: bottomNavigationBarAnimation),
+            pageBuilder: (context, state) => CustomTransitionPage(
+              child: DeviceListPage(model: bloc.appViewModel.devicesPageViewModel),
+              transitionsBuilder: bottomNavigationBarAnimation,
+            ),
           ),
           GoRoute(
             path: ProfilePage.route,

@@ -146,7 +146,7 @@ class ProfilePageState extends State<ProfilePage> {
                       leading: const Icon(Icons.power_settings_new, color: CACHET.RED_1),
                       title: locale.translate('pages.profile.log_out'),
                       onTap: () async {
-                        bool isConnected = await bloc.system.checkConnectivity();
+                        bool isConnected = await widget.model.checkConnectivity();
                         if (isConnected) {
                           _showLogoutConfirmationDialog();
                         } else {
@@ -251,7 +251,7 @@ class ProfilePageState extends State<ProfilePage> {
               child: Text(locale.translate("YES")),
               onPressed: () async {
                 if (builderContext.mounted) {
-                  await bloc.signOutAndLeaveStudy();
+                  await widget.model.signOutAndLeaveStudy();
                   builderContext.pop();
                   builderContext.go(CarpStudyAppState.homeRoute);
                 }
@@ -284,7 +284,7 @@ class ProfilePageState extends State<ProfilePage> {
               child: Text(locale.translate("YES")),
               onPressed: () async {
                 if (builderContext.mounted) {
-                  await bloc.leaveStudy();
+                  await widget.model.leaveStudy();
                   builderContext.pop();
                   builderContext.go(InvitationListPage.route);
                 }
