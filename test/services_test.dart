@@ -59,7 +59,13 @@ class _FakeConsentManager extends InformedConsentManager {
   Future<bool> deleteConsentDocument() async => true;
 }
 
-@GenerateNiceMocks([MockSpec<CarpBackend>(), MockSpec<AuthService>(), MockSpec<SystemInfoService>()])
+@GenerateNiceMocks([
+  MockSpec<CarpBackend>(),
+  MockSpec<AuthService>(),
+  MockSpec<SystemInfoService>(),
+  MockSpec<UserTask>(),
+  MockSpec<StudyService>(),
+])
 void main() {
   setUpAll(() async {
     CarpMobileSensing.ensureInitialized();

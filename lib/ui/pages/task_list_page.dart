@@ -43,21 +43,42 @@ class _SliverAppBarDelegate extends SliverPersistentHeaderDelegate {
 class TaskListPageState extends State<TaskListPage> with TickerProviderStateMixin {
   late TabController _tabController;
 
-  bool showParticipantDataCard = false;
-
   @override
   void initState() {
     super.initState();
     _tabController = TabController(length: 2, vsync: this);
-    bloc.study.getParticipantDataListFromDeployment().then((value) {
-      setState(() {
-        showParticipantDataCard = value.isEmpty;
-      });
-    });
+    widget.model.addListener(_onModelChanged);
+    widget.model.checkParticipantData();
 
     _tabController.addListener(() {
       setState(() {});
     });
+  }
+
+  @override
+  void dispose() {
+    widget.model.removeListener(_onModelChanged);
+    _tabController.dispose();
+    super.dispose();
+  }
+
+  void _onModelChanged() {
+    if (!mounted) return;
+
+    final autoCompleted = widget.model.autoCompletedTask;
+    if (autoCompleted != null) {
+      widget.model.autoCompletedTaskShown();
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(
+          backgroundColor: Theme.of(context).extension<CarpColors>()!.grey700,
+          content: Text(RPLocalizations.of(context)!.translate('Done!')),
+          shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(4)),
+          duration: const Duration(seconds: 1),
+        ),
+      );
+    }
+
+    setState(() {});
   }
 
   @override
@@ -135,7 +156,8 @@ class TaskListPageState extends State<TaskListPage> with TickerProviderStateMixi
                               ),
                             ),
                           ),
-                          if (showParticipantDataCard) SliverToBoxAdapter(child: _buildParticipantDataCard()),
+                          if (widget.model.showParticipantDataCard)
+                            SliverToBoxAdapter(child: _buildParticipantDataCard()),
                           SliverList(
                             delegate: SliverChildBuilderDelegate((BuildContext context, int index) {
                               UserTask userTask = widget.model.tasks[index];
@@ -336,24 +358,8 @@ class TaskListPageState extends State<TaskListPage> with TickerProviderStateMixi
           ),
         ),
         onTap: () {
-          // only start if not already started, done, or expired
-          if (userTask.state == UserTaskState.enqueued || userTask.state == UserTaskState.canceled) {
-            userTask.onStart();
-            if (userTask.hasWidget) {
-              context.push('/task/${userTask.id}');
-            } else {
-              Timer(const Duration(seconds: 10), () {
-                userTask.onDone();
-                ScaffoldMessenger.of(context).showSnackBar(
-                  SnackBar(
-                    backgroundColor: Theme.of(context).extension<CarpColors>()!.grey700,
-                    content: Text(locale.translate('Done!')),
-                    shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(4)),
-                    duration: const Duration(seconds: 1),
-                  ),
-                );
-              });
-            }
+          if (widget.model.startUserTask(userTask)) {
+            context.push('/task/${userTask.id}');
           }
         },
       ),

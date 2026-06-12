@@ -1,5 +1,7 @@
 import 'package:carp_backend/carp_backend.dart';
+import 'package:carp_audio_package/media.dart';
 import 'package:cognition_package/cognition_package.dart';
+import 'package:fake_async/fake_async.dart';
 import 'package:research_package/research_package.dart';
 
 import 'exports.dart';
@@ -175,6 +177,84 @@ void main() {
       expect(model.hasError, isTrue);
       expect(model.isLoading, isFalse);
       expect(model.invitations, isEmpty);
+    });
+  });
+
+  group('TaskListPageViewModel', () {
+    MockUserTask backgroundTask() {
+      final task = MockUserTask();
+      when(task.state).thenReturn(UserTaskState.enqueued);
+      when(task.hasWidget).thenReturn(false);
+      when(task.id).thenReturn('task-1');
+      return task;
+    }
+
+    test('startUserTask auto-completes a background task after 10 seconds', () {
+      fakeAsync((async) {
+        final task = backgroundTask();
+        final model = TaskListPageViewModel(studyService: StudyService());
+
+        expect(model.startUserTask(task), isFalse);
+        verify(task.onStart()).called(1);
+        verifyNever(task.onDone());
+
+        async.elapse(const Duration(seconds: 11));
+
+        verify(task.onDone()).called(1);
+        expect(model.autoCompletedTask, task);
+      });
+    });
+
+    test('startUserTask does not start an already done task', () {
+      final task = MockUserTask();
+      when(task.state).thenReturn(UserTaskState.done);
+
+      expect(TaskListPageViewModel(studyService: StudyService()).startUserTask(task), isFalse);
+      verifyNever(task.onStart());
+    });
+
+    test('clear cancels pending auto-complete timers', () {
+      fakeAsync((async) {
+        final task = backgroundTask();
+        final model = TaskListPageViewModel(studyService: StudyService());
+
+        model.startUserTask(task);
+        model.clear();
+        async.elapse(const Duration(seconds: 11));
+
+        verifyNever(task.onDone());
+        expect(model.autoCompletedTask, isNull);
+      });
+    });
+
+    test('checkParticipantData shows the card when no data is set', () async {
+      final model = TaskListPageViewModel(studyService: StudyService());
+      var notified = false;
+      model.addListener(() => notified = true);
+
+      await model.checkParticipantData(); // no deployment - data list is empty
+
+      expect(model.showParticipantDataCard, isTrue);
+      expect(notified, isTrue);
+    });
+  });
+
+  group('DataVisualizationPageViewModel', () {
+    test('precomputes card availability from the deployment on init', () {
+      final study = MockStudyService();
+      when(study.hasUserTasks()).thenReturn(true);
+      when(study.hasMeasure(PolarSamplingPackage.HR)).thenReturn(true);
+      when(study.hasMeasure(MediaSamplingPackage.AUDIO)).thenReturn(true);
+      final model = DataVisualizationPageViewModel(studyService: study);
+
+      model.init(MockSmartphoneStudyController());
+
+      expect(model.hasUserTasks, isTrue);
+      expect(model.hasHeartRateMeasure, isTrue);
+      expect(model.hasAudioMeasure, isTrue);
+      expect(model.hasVideoMeasure, isFalse);
+      expect(model.hasStepsMeasure, isFalse);
+      expect(model.hasMobilityMeasure, isFalse);
     });
   });
 

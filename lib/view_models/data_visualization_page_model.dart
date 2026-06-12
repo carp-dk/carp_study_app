@@ -1,6 +1,30 @@
 part of carp_study_app;
 
 class DataVisualizationPageViewModel extends ViewModel {
+  DataVisualizationPageViewModel({StudyService? studyService}) : _studyService = studyService;
+
+  final StudyService? _studyService;
+  StudyService get _study => _studyService ?? bloc.study;
+
+  bool _hasUserTasks = false;
+  bool _hasHeartRateMeasure = false;
+  bool _hasAudioMeasure = false;
+  bool _hasVideoMeasure = false;
+  bool _hasImageMeasure = false;
+  bool _hasStepsMeasure = false;
+  bool _hasActivityMeasure = false;
+  bool _hasMobilityMeasure = false;
+
+  // Card availability for the current deployment, computed once in [init].
+  bool get hasUserTasks => _hasUserTasks;
+  bool get hasHeartRateMeasure => _hasHeartRateMeasure;
+  bool get hasAudioMeasure => _hasAudioMeasure;
+  bool get hasVideoMeasure => _hasVideoMeasure;
+  bool get hasImageMeasure => _hasImageMeasure;
+  bool get hasStepsMeasure => _hasStepsMeasure;
+  bool get hasActivityMeasure => _hasActivityMeasure;
+  bool get hasMobilityMeasure => _hasMobilityMeasure;
+
   final ActivityCardViewModel _activityCardDataModel = ActivityCardViewModel();
   final StepsCardViewModel _stepsCardDataModel = StepsCardViewModel();
   final MeasurementsCardViewModel _measuresCardDataModel = MeasurementsCardViewModel();
@@ -35,11 +59,19 @@ class DataVisualizationPageViewModel extends ViewModel {
   /// The number of tasks completed so far.
   int get taskCompleted => AppTaskController().userTaskQueue.where((task) => task.state == UserTaskState.done).length;
 
-  DataVisualizationPageViewModel();
-
   @override
   void init(SmartphoneStudyController ctrl) {
     super.init(ctrl);
+
+    _hasUserTasks = _study.hasUserTasks();
+    _hasHeartRateMeasure = _study.hasMeasure(PolarSamplingPackage.HR) || _study.hasMeasure(MovesenseSamplingPackage.HR);
+    _hasAudioMeasure = _study.hasMeasure(MediaSamplingPackage.AUDIO);
+    _hasVideoMeasure = _study.hasMeasure(MediaSamplingPackage.VIDEO);
+    _hasImageMeasure = _study.hasMeasure(MediaSamplingPackage.IMAGE);
+    _hasStepsMeasure = _study.hasMeasure(CarpDataTypes.STEP_COUNT);
+    _hasActivityMeasure = _study.hasMeasure(ContextSamplingPackage.ACTIVITY);
+    _hasMobilityMeasure = _study.hasMeasure(ContextSamplingPackage.MOBILITY);
+
     _activityCardDataModel.init(ctrl);
     _stepsCardDataModel.init(ctrl);
     _heartRateCardDataModel.init(ctrl);
