@@ -82,12 +82,13 @@ class StudyAppBLoC extends ChangeNotifier {
 
   void _onConsentChanged() {
     notifyListeners();
-    if (consent.isAccepted == true) unawaited(_tryConfigureStudy());
+    if (consent.isAccepted == true) unawaited(tryConfigureStudy());
   }
 
   /// Run [configureStudy], surfacing a failure to the user instead of
-  /// throwing. Used by the setup flow, where no caller can handle the error.
-  Future<void> _tryConfigureStudy() async {
+  /// throwing. Used by the setup flow and retry affordances, where no
+  /// caller can handle the error.
+  Future<void> tryConfigureStudy() async {
     try {
       await configureStudy();
     } catch (error) {

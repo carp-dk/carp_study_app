@@ -64,6 +64,34 @@ void main() {
       // The service keeps them newest first; the page shows them reversed.
       expect(model.messages.map((m) => m.id), ['old', 'new']);
     });
+
+    test('refresh completes safely when the study is not yet deployed', () async {
+      final manager = _FakeMessageManager()..toReturn = [Message(id: 'a', timestamp: DateTime(2024, 1, 1))];
+      final messages = MessageService(manager);
+      final model = StudyPageViewModel(studyService: StudyService(), messageService: messages);
+
+      await model.refresh(); // no deployment, no controller - must not throw
+
+      expect(model.messages.length, 1);
+    });
+
+    test('init checks for an app update and notifies', () async {
+      final system = MockSystemInfoService();
+      when(system.getAppHasUpdate()).thenAnswer((_) async => true);
+      final model = StudyPageViewModel(
+        studyService: StudyService(),
+        messageService: MessageService(_FakeMessageManager()),
+        systemInfoService: system,
+      );
+      var notified = false;
+      model.addListener(() => notified = true);
+
+      model.init(MockSmartphoneStudyController());
+      await Future<void>.delayed(Duration.zero);
+
+      expect(model.appUpdateAvailable, isTrue);
+      expect(notified, isTrue);
+    });
   });
 
   group('LoginViewModel', () {

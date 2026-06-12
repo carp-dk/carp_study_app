@@ -3,15 +3,68 @@ part of carp_study_app;
 /// The view model for the [StudyPage]. Mainly holds the list of messages like
 /// news articles to be shown as part of the study.
 class StudyPageViewModel extends ViewModel {
-  StudyPageViewModel({StudyService? studyService, MessageService? messageService})
+  StudyPageViewModel({StudyService? studyService, MessageService? messageService, SystemInfoService? systemInfoService})
     : _studyService = studyService,
-      _messageService = messageService;
+      _messageService = messageService,
+      _systemInfoService = systemInfoService;
 
   final StudyService? _studyService;
   final MessageService? _messageService;
+  final SystemInfoService? _systemInfoService;
+  bool _attachedToApp = false;
+  bool _appUpdateAvailable = false;
 
   StudyService get _study => _studyService ?? bloc.study;
   MessageService get _messages => _messageService ?? bloc.messages;
+  SystemInfoService get _system => _systemInfoService ?? bloc.system;
+
+  // Relay app-state changes (e.g. configuration completing) to the page, so
+  // it only needs to listen to this view model. Attached lazily since the
+  // global bloc is not available while this view model is constructed.
+  @override
+  void addListener(VoidCallback listener) {
+    if (!_attachedToApp) {
+      _attachedToApp = true;
+      bloc.addListener(notifyListeners);
+    }
+    super.addListener(listener);
+  }
+
+  /// Is the app fully configured with the study?
+  bool get isConfigured => bloc.isConfigured;
+
+  /// Is the user signed in anonymously?
+  bool get isAnonymousUser => LocalSettings().isAnonymous;
+
+  /// Is a newer version of this app available? Checked once on [init].
+  bool get appUpdateAvailable => _appUpdateAvailable;
+
+  @override
+  void init(SmartphoneStudyController ctrl) {
+    super.init(ctrl);
+    unawaited(_checkAppUpdate());
+  }
+
+  Future<void> _checkAppUpdate() async {
+    try {
+      _appUpdateAvailable = await _system.getAppHasUpdate() ?? false;
+    } catch (error) {
+      _appUpdateAvailable = false;
+    }
+    notifyListeners();
+  }
+
+  /// Re-fetch messages, re-try deployment if needed, (re)start sensing, and
+  /// refresh the deployment status. Used on pull-to-refresh.
+  Future<void> refresh() async {
+    await _messages.refresh();
+    await _study.tryDeployment();
+    await _study.start();
+    await _study.refreshDeploymentStatus();
+  }
+
+  /// Retry study configuration after a failure.
+  Future<void> retryConfiguration() => bloc.tryConfigureStudy();
 
   String get title => _study.deployment?.studyDescription?.title ?? 'Unnamed';
   String get description => _study.deployment?.studyDescription?.description ?? '';
