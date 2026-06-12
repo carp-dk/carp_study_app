@@ -1,4 +1,5 @@
 import 'package:carp_backend/carp_backend.dart';
+import 'package:carp_context_package/carp_context_package.dart';
 import 'package:carp_webservices/carp_auth/carp_auth.dart';
 import 'package:cognition_package/cognition_package.dart';
 import 'package:fake_async/fake_async.dart';
@@ -225,6 +226,56 @@ void main() {
       ).thenAnswer((_) async => InformedConsentInput(userId: '42', name: 'jdoe', consent: '{}', signatureImage: ''));
 
       expect(await consent.hasBeenAccepted, isTrue);
+    });
+  });
+
+  group('Old-namespace CAWS compatibility', () {
+    test('a pre-CAMS-2.x deployment status with CAMS device types deserializes', () {
+      Sensing(); // registers the sampling packages and old-namespace device aliases
+
+      // The shape CAWS returns for deployments created before CAMS 2.x -
+      // device types are in the old 'dk.cachet.carp.common.application.devices'
+      // namespace, while CAMS 2.x registers them as 'dk.carp.cams.devices'.
+      final json = {
+        '__type': 'dk.cachet.carp.deployments.application.StudyDeploymentStatus.Running',
+        'createdOn': '2026-06-10T12:46:37.103476598Z',
+        'studyDeploymentId': '3014e5bc-7f79-45e9-afc3-02a38bfc888f',
+        'deviceStatusList': [
+          {
+            '__type': 'dk.cachet.carp.deployments.application.DeviceDeploymentStatus.Deployed',
+            'device': {
+              '__type': 'dk.cachet.carp.common.application.devices.Smartphone',
+              'isPrimaryDevice': true,
+              'roleName': 'Primary Phone',
+            },
+          },
+          {
+            '__type': 'dk.cachet.carp.deployments.application.DeviceDeploymentStatus.Registered',
+            'device': {
+              '__type': 'dk.cachet.carp.common.application.devices.LocationService',
+              'accuracy': 'balanced',
+              'distance': 10,
+              'interval': 60000000,
+              'roleName': 'Location Service',
+              'isOptional': true,
+              'defaultSamplingConfiguration': <String, dynamic>{},
+            },
+            'canBeDeployed': false,
+            'remainingDevicesToRegisterToObtainDeployment': <String>[],
+            'remainingDevicesToRegisterBeforeDeployment': <String>[],
+          },
+        ],
+        'participantStatusList': <Map<String, dynamic>>[],
+      };
+
+      final status = StudyDeploymentStatus.fromJson(json);
+
+      expect(status.deviceStatusList.length, 2);
+      expect(status.deviceStatusList[0].device, isA<Smartphone>());
+      expect(status.deviceStatusList[1].device, isA<LocationService>());
+      // The aliased instances carry the CAMS 2.x type, so device-manager
+      // lookups by type string work.
+      expect(status.deviceStatusList[1].device.type, 'dk.carp.cams.devices.LocationService');
     });
   });
 

@@ -86,6 +86,21 @@ class Sensing {
     SamplingPackageRegistry().register(PolarSamplingPackage());
     SamplingPackageRegistry().register(MovesenseSamplingPackage());
 
+    // CAWS deployments created before CAMS 2.x serialize device types in the
+    // old namespace - register the device types under it as well.
+    const oldDeviceNamespace = 'dk.cachet.carp.common.application.devices';
+    for (final device in <DeviceConfiguration>[
+      Smartphone(),
+      LocationService(),
+      WeatherService(apiKey: ''),
+      AirQualityService(apiKey: ''),
+      HealthService(),
+      PolarDevice(),
+      MovesenseDevice(),
+    ]) {
+      FromJsonFactory().register(device, type: '$oldDeviceNamespace.${device.runtimeType}');
+    }
+
     // Create and register external data managers.
     // The CARP data manager is needed in both LOCAL and CARP deployments,
     // since a local study protocol may still upload to CAWS.
