@@ -50,6 +50,40 @@ void main() {
       'Movesense ECG Device',
     };
 
+    // The data-collection (Measure) types the protocol declares across all
+    // tasks - the sensors/services actually sampled, plus CAMS control types.
+    const expectedDataTypes = {
+      // device & sensor sampling
+      'dk.cachet.carp.ambientlight',
+      'dk.cachet.carp.stepcount',
+      'dk.cachet.carp.freememory',
+      'dk.cachet.carp.deviceinformation',
+      'dk.cachet.carp.batterystate',
+      'dk.cachet.carp.screenevent',
+      'dk.cachet.carp.activity',
+      // context services
+      'dk.cachet.carp.location',
+      'dk.cachet.carp.mobility',
+      'dk.cachet.carp.weather',
+      'dk.cachet.carp.airquality',
+      // wearables
+      'dk.cachet.carp.polar.hr',
+      'dk.cachet.carp.movesense.hr',
+      'dk.cachet.carp.movesense.state',
+      // health
+      'dk.cachet.carp.health',
+      // app tasks / media / survey
+      'dk.cachet.carp.audio',
+      'dk.cachet.carp.image',
+      'dk.cachet.carp.survey',
+      // CAMS control & app-task lifecycle
+      'dk.cachet.carp.error',
+      'dk.cachet.carp.heartbeat',
+      'dk.cachet.carp.triggeredtask',
+      'dk.cachet.carp.completedtask',
+      'dk.cachet.carp.completedapptask',
+    };
+
     void expectDemoProtocol(SmartphoneStudyProtocol protocol) {
       // Primary device: a single Smartphone.
       expect(protocol.primaryDevices.map((d) => d.runtimeType.toString()), ['Smartphone']);
@@ -64,6 +98,24 @@ void main() {
       // Task graph is fully parsed.
       expect(protocol.tasks.length, 21);
       expect(protocol.taskControls.length, 21);
+
+      // Data-collection types: the protocol declares all the expected sensor/
+      // service/app-task measures (it also adds dynamic per-task
+      // 'completedapptask.<name>' lifecycle measures, which we don't pin), and
+      // every expected type is provided by a registered sampling package - i.e.
+      // the app can actually collect it. A namespace/registration regression in
+      // any package would drop a type from one side or the other.
+      final declaredTypes = {
+        for (final task in protocol.tasks) ...?task.measures?.map((m) => m.type),
+      };
+      expect(declaredTypes, containsAll(expectedDataTypes));
+
+      final supportedTypes = SamplingPackageRegistry().dataTypes.map((d) => d.type).toSet();
+      expect(
+        expectedDataTypes.difference(supportedTypes),
+        isEmpty,
+        reason: 'these declared data types are not registered in any sampling package',
+      );
     }
 
     // CAMS 2.x must parse protocols serialized under the old (CAMS 1.x) device
