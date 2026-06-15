@@ -3,20 +3,27 @@ part of carp_study_app;
 /// The view model for the [StudyPage]. Mainly holds the list of messages like
 /// news articles to be shown as part of the study.
 class StudyPageViewModel extends ViewModel {
-  StudyPageViewModel({StudyService? studyService, MessageService? messageService, SystemInfoService? systemInfoService})
-    : _studyService = studyService,
-      _messageService = messageService,
-      _systemInfoService = systemInfoService;
+  StudyPageViewModel({
+    StudyService? studyService,
+    MessageService? messageService,
+    SystemInfoService? systemInfoService,
+    AuthService? authService,
+  }) : _studyService = studyService,
+       _messageService = messageService,
+       _systemInfoService = systemInfoService,
+       _authService = authService;
 
   final StudyService? _studyService;
   final MessageService? _messageService;
   final SystemInfoService? _systemInfoService;
+  final AuthService? _authService;
   bool _attachedToApp = false;
   bool _appUpdateAvailable = false;
 
   StudyService get _study => _studyService ?? bloc.study;
   MessageService get _messages => _messageService ?? bloc.messages;
   SystemInfoService get _system => _systemInfoService ?? bloc.system;
+  AuthService get _auth => _authService ?? bloc.auth;
 
   // Relay app-state changes (e.g. configuration completing) to the page, so
   // it only needs to listen to this view model. Attached lazily since the
@@ -34,7 +41,7 @@ class StudyPageViewModel extends ViewModel {
   bool get isConfigured => bloc.isConfigured;
 
   /// Is the user signed in anonymously?
-  bool get isAnonymousUser => LocalSettings().isAnonymous;
+  bool get isAnonymousUser => _auth.isAnonymous;
 
   /// Is a newer version of this app available? Checked once on [init].
   bool get appUpdateAvailable => _appUpdateAvailable;

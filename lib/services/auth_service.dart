@@ -13,6 +13,10 @@ class AuthService {
   /// Has the user been authenticated?
   bool get isAuthenticated => _backend.isAuthenticated;
 
+  /// Did the user authenticate anonymously (via a magic link / QR code)
+  /// rather than a full CAWS login?
+  bool get isAnonymous => LocalSettings().isAnonymous;
+
   /// The signed in user. Returns null if no user is signed in.
   CarpUser? get user => _backend.user;
 

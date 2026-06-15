@@ -14,6 +14,9 @@ class ProfilePageViewModel extends ViewModel {
   StudyService get _study => _studyService ?? bloc.study;
   SystemInfoService get _system => _systemInfoService ?? bloc.system;
 
+  /// Did the user authenticate anonymously (magic link / QR)?
+  bool get isAnonymous => _auth.isAnonymous;
+
   /// Is the phone connected to the internet?
   Future<bool> checkConnectivity() => _system.checkConnectivity();
 
