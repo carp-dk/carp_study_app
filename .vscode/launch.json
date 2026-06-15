@@ -52,6 +52,22 @@
         "debug-level=debug"
       ],
       "flutterMode": "debug"
+    },
+    {
+      // end-to-end join-study flow on a device/simulator (local deployment).
+      // The test also forces local + debug internally, so it runs correctly
+      // even without these defines.
+      "name": "Integration - join study flow (LOCAL)",
+      "request": "launch",
+      "type": "dart",
+      "program": "integration_test/join_study_flow_test.dart",
+      "toolArgs": [
+        "--dart-define",
+        "deployment-mode=local",
+        "--dart-define",
+        "debug-level=debug"
+      ],
+      "flutterMode": "debug"
     }
   ]
 }

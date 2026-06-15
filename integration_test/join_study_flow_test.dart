@@ -116,10 +116,12 @@ void main() {
     'join study flow: deploy, consent gate, configure, start sensing',
     timeout: const Timeout(Duration(minutes: 5)),
     (tester) async {
-      if (AppConfig().deploymentMode != DeploymentMode.local) {
-        markTestSkipped('This test must run with --dart-define=deployment-mode=local');
-        return;
-      }
+      // This exercises the local-mode join flow, so force local deployment and
+      // debug logging regardless of how the suite is launched - otherwise a run
+      // without --dart-define=deployment-mode=local defaults to production and
+      // the test would silently skip. Set before bloc.initialize() reads them.
+      AppConfig().deploymentMode = DeploymentMode.local;
+      AppConfig().debugLevel = DebugLevel.debug;
 
       mockSimulatorPlatformChannels();
 
