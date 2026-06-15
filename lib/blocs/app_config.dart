@@ -15,10 +15,11 @@ enum DeploymentMode {
   dev,
 }
 
-/// App-wide configuration parsed from compile-time environment variables.
+/// App-wide configuration parsed once from compile-time environment variables.
 ///
-/// Deliberately dependency-free so that lower layers ([Sensing], [CarpBackend])
-/// can read configuration without depending on the global [bloc].
+/// A static, dependency-free holder so that lower layers ([Sensing],
+/// [CarpBackend]) can read configuration without depending on the global
+/// [bloc] - and without anything needing to instantiate it.
 ///
 /// The configuration is set using two environment variables:
 ///
@@ -29,24 +30,20 @@ enum DeploymentMode {
 /// option in `flutter run`. For example:
 ///
 ///  `flutter run --dart-define=deployment-mode=local,debug-level=info`
-class AppConfig {
-  static final AppConfig _instance = AppConfig._();
-  factory AppConfig() => _instance;
-
-  AppConfig._() {
-    const dep = String.fromEnvironment('deployment-mode', defaultValue: 'production');
-    deploymentMode = DeploymentMode.values.firstWhere((mode) => mode.name == dep);
-
-    const deb = String.fromEnvironment('debug-level', defaultValue: 'info');
-    debugLevel = DebugLevel.values.firstWhere((level) => level.name == deb);
-  }
-
+///
+/// Note: `String.fromEnvironment` only reads the `--dart-define` value in a
+/// const context, hence the explicit `const` below.
+abstract class AppConfig {
   /// What kind of deployment are we running?
-  late DeploymentMode deploymentMode;
+  static DeploymentMode deploymentMode = DeploymentMode.values.firstWhere(
+    (mode) => mode.name == const String.fromEnvironment('deployment-mode', defaultValue: 'production'),
+  );
 
   /// Debug level for the app and CAMS.
-  late DebugLevel debugLevel;
+  static DebugLevel debugLevel = DebugLevel.values.firstWhere(
+    (level) => level.name == const String.fromEnvironment('debug-level', defaultValue: 'info'),
+  );
 
   /// The localization (language) of this app.
-  RPLocalizations? localization;
+  static RPLocalizations? localization;
 }

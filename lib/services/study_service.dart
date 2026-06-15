@@ -7,11 +7,8 @@ part of carp_study_app;
 /// in [LocalSettings] and the CAWS service copies are seeded from the [study]
 /// setter - do not set them directly.
 class StudyService {
-  StudyService({AppConfig? config, ResourceManagerFactory? resources})
-    : _config = config ?? AppConfig(),
-      _resources = resources ?? ResourceManagerFactory();
+  StudyService({ResourceManagerFactory? resources}) : _resources = resources ?? ResourceManagerFactory();
 
-  final AppConfig _config;
   final ResourceManagerFactory _resources;
 
   /// The study running on this phone, typically set based on an invitation.
@@ -23,7 +20,7 @@ class StudyService {
   set study(SmartphoneStudy? study) {
     if (study == null) return;
     LocalSettings().study = study;
-    if (_config.deploymentMode != DeploymentMode.local) CarpBackend().study = study;
+    if (AppConfig.deploymentMode != DeploymentMode.local) CarpBackend().study = study;
   }
 
   /// Has a study been selected on this phone (i.e., an invitation accepted)?
@@ -142,7 +139,7 @@ class StudyService {
   /// This method will deploy the protocol in the local SmartphoneDeploymentService
   /// which later will be used for deployment. See [Sensing.deploymentService].
   Future<void> deployLocalProtocol() async {
-    if (_config.deploymentMode != DeploymentMode.local) return;
+    if (AppConfig.deploymentMode != DeploymentMode.local) return;
 
     if (hasStudy) {
       info(

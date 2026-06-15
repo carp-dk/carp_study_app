@@ -120,8 +120,8 @@ void main() {
       // debug logging regardless of how the suite is launched - otherwise a run
       // without --dart-define=deployment-mode=local defaults to production and
       // the test would silently skip. Set before bloc.initialize() reads them.
-      AppConfig().deploymentMode = DeploymentMode.local;
-      AppConfig().debugLevel = DebugLevel.debug;
+      AppConfig.deploymentMode = DeploymentMode.local;
+      AppConfig.debugLevel = DebugLevel.debug;
 
       mockSimulatorPlatformChannels();
 

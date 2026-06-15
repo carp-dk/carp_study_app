@@ -75,15 +75,13 @@ void main() {
   });
 
   setUp(() {
-    AppConfig().deploymentMode = DeploymentMode.local;
+    AppConfig.deploymentMode = DeploymentMode.local;
   });
 
   group('AppConfig', () {
-    test('defaults to production/info when no environment is given', () {
-      // The singleton was created without --dart-define values in tests.
-      expect(AppConfig(), same(AppConfig()));
-      expect(AppConfig().debugLevel, DebugLevel.info);
-      expect(AppConfig().localization, isNull);
+    test('defaults to info debug level when no environment is given', () {
+      // No --dart-define values are set in tests, so the default applies.
+      expect(AppConfig.debugLevel, DebugLevel.info);
     });
   });
 
@@ -253,7 +251,7 @@ void main() {
 
     test('non-local mode asks the backend and is false when it fails', () async {
       LocalSettings().study = SmartphoneStudy(studyDeploymentId: 'dep-1', deviceRoleName: 'phone');
-      AppConfig().deploymentMode = DeploymentMode.test;
+      AppConfig.deploymentMode = DeploymentMode.test;
       when(backend.getInformedConsentByRole('dep-1', null)).thenAnswer((_) async => throw Exception('offline'));
 
       expect(await consent.hasBeenAccepted, isFalse);
@@ -261,7 +259,7 @@ void main() {
 
     test('non-local mode is true when the backend has a consent document', () async {
       LocalSettings().study = SmartphoneStudy(studyDeploymentId: 'dep-1', deviceRoleName: 'phone');
-      AppConfig().deploymentMode = DeploymentMode.test;
+      AppConfig.deploymentMode = DeploymentMode.test;
       when(
         backend.getInformedConsentByRole('dep-1', null),
       ).thenAnswer((_) async => InformedConsentInput(userId: '42', name: 'jdoe', consent: '{}', signatureImage: ''));

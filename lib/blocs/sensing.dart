@@ -26,7 +26,7 @@ class Sensing {
 
   /// The deployment service used in this app.
   DeploymentService get deploymentService =>
-      AppConfig().deploymentMode == DeploymentMode.local ? SmartphoneDeploymentService() : CarpDeploymentService();
+      AppConfig.deploymentMode == DeploymentMode.local ? SmartphoneDeploymentService() : CarpDeploymentService();
 
   /// The study running on this phone.
   /// Only available after [addStudy] is called.
@@ -112,7 +112,7 @@ class Sensing {
 
   /// Initialize and set up sensing.
   Future<void> initialize() async {
-    info('Initializing $runtimeType - mode: ${AppConfig().deploymentMode}');
+    info('Initializing $runtimeType - mode: ${AppConfig.deploymentMode}');
 
     // Set up the devices available on this phone
     DeviceController().registerAllAvailableDevices();
@@ -178,11 +178,10 @@ class Sensing {
   /// Translate the title and description of all AppTask in the study protocol
   /// of the current master deployment.
   void translateStudyProtocol([RPLocalizations? localization]) {
-    final config = AppConfig();
-    config.localization ??= localization;
+    AppConfig.localization ??= localization;
 
     // Fast out if no localization
-    if (config.localization == null) return;
+    if (AppConfig.localization == null) return;
 
     // Fast out, if not deployed or no protocol.
     if (!(study?.isDeployed ?? false) || controller?.deployment == null) {
@@ -191,11 +190,11 @@ class Sensing {
 
     for (var task in controller!.deployment!.tasks) {
       if (task is AppTask) {
-        task.title = config.localization!.translate(task.title);
-        task.description = config.localization!.translate(task.description);
+        task.title = AppConfig.localization!.translate(task.title);
+        task.description = AppConfig.localization!.translate(task.description);
       }
     }
 
-    info("$runtimeType - Study protocol translated to locale '${config.localization!.locale}'");
+    info("$runtimeType - Study protocol translated to locale '${AppConfig.localization!.locale}'");
   }
 }

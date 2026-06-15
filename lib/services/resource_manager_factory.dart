@@ -5,11 +5,7 @@ part of carp_study_app;
 ///
 /// Instances are created once and cached.
 class ResourceManagerFactory {
-  ResourceManagerFactory({AppConfig? config}) : _config = config ?? AppConfig();
-
-  final AppConfig _config;
-
-  bool get _local => _config.deploymentMode == DeploymentMode.local;
+  bool get _local => AppConfig.deploymentMode == DeploymentMode.local;
 
   late final LocalizationManager localizationManager =
       (_local ? LocalResourceManager() : CarpResourceManager()) as LocalizationManager;

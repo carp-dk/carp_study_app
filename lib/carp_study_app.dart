@@ -35,7 +35,7 @@ class CarpStudyAppState extends State<CarpStudyApp> {
       final loc = state.matchedLocation;
 
       // 1) Not authenticated → login page.
-      if (bloc.config.deploymentMode != DeploymentMode.local && !bloc.auth.isAuthenticated) {
+      if (AppConfig.deploymentMode != DeploymentMode.local && !bloc.auth.isAuthenticated) {
         return LoginPage.route;
       }
 
@@ -230,7 +230,7 @@ class CarpStudyAppState extends State<CarpStudyApp> {
         }
         return supportedLocales.first; // default to EN
       },
-      locale: bloc.config.localization?.locale,
+      locale: AppConfig.localization?.locale,
       theme: carpTheme.copyWith(
         extensions: [carpTheme.extension<CarpColors>()!.copyWith(primary: studyAppColors?.primary)],
       ),
@@ -249,7 +249,7 @@ class _AppLocalizationsDelegate extends RPLocalizationsDelegate {
   @override
   Future<RPLocalizations> load(Locale locale) async {
     final localizations = await super.load(locale);
-    AppConfig().localization = localizations;
+    AppConfig.localization = localizations;
     return localizations;
   }
 }

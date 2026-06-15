@@ -36,7 +36,7 @@ void main() {
     ResearchPackage.ensureInitialized();
     CognitionPackage.ensureInitialized();
     await initTestSettings();
-    AppConfig().deploymentMode = DeploymentMode.local;
+    AppConfig.deploymentMode = DeploymentMode.local;
   });
 
   group('StudyPageViewModel', () {

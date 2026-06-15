@@ -32,11 +32,8 @@ class StudyAppBLoC extends ChangeNotifier {
   final CarpStudyAppViewModel _appViewModel = CarpStudyAppViewModel();
   StreamSubscription<UserTask>? _userTaskNotificationSubscription;
 
-  /// App-wide configuration (deployment mode, debug level, localization).
-  final AppConfig config = AppConfig();
-
   /// The resource managers matching the current deployment mode.
-  late final ResourceManagerFactory resources = ResourceManagerFactory(config: config);
+  late final ResourceManagerFactory resources = ResourceManagerFactory();
 
   /// Device- and platform-level checks.
   late final SystemInfoService system = SystemInfoService();
@@ -45,13 +42,13 @@ class StudyAppBLoC extends ChangeNotifier {
   late final AuthService auth = AuthService();
 
   /// The study running on this phone and its deployment.
-  late final StudyService study = StudyService(config: config, resources: resources);
+  late final StudyService study = StudyService(resources: resources);
 
   /// The messages shown in the app, kept refreshed by polling.
   late final MessageService messages = MessageService(resources.messageManager);
 
   /// The informed consent flow.
-  late final ConsentService consent = ConsentService(resources.informedConsentManager, study, config: config);
+  late final ConsentService consent = ConsentService(resources.informedConsentManager, study);
 
   /// The state of this BloC.
   StudyAppState get state => _state;
@@ -71,8 +68,8 @@ class StudyAppBLoC extends ChangeNotifier {
   StudyAppBLoC() : super() {
     info(
       '$runtimeType created. '
-      'DeploymentMode: ${config.deploymentMode.name}, '
-      'DebugLevel: ${config.debugLevel.name}',
+      'DeploymentMode: ${AppConfig.deploymentMode.name}, '
+      'DebugLevel: ${AppConfig.debugLevel.name}',
     );
 
     // The coordinator is the sole router-notifier - forward service changes.
@@ -104,14 +101,14 @@ class StudyAppBLoC extends ChangeNotifier {
   Future<void> initialize() async {
     if (isInitialized) return;
 
-    Settings().debugLevel = config.debugLevel;
+    Settings().debugLevel = AppConfig.debugLevel;
     await Settings().init();
 
     CarpResourceManager().initialize();
 
     Sensing();
 
-    if (config.deploymentMode != DeploymentMode.local) {
+    if (AppConfig.deploymentMode != DeploymentMode.local) {
       // Initialize and use the CAWS backend if not in local deployment mode
       if (await system.checkConnectivity()) {
         await auth.initialize();
@@ -123,7 +120,7 @@ class StudyAppBLoC extends ChangeNotifier {
 
     _state = StudyAppState.initialized;
     notifyListeners();
-    debug('$runtimeType initialized - deployment mode: ${config.deploymentMode.name}');
+    debug('$runtimeType initialized - deployment mode: ${AppConfig.deploymentMode.name}');
 
     // For a returning user, check consent - via [_onConsentChanged] this
     // routes to the consent page or configures and starts the study.

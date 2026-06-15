@@ -6,13 +6,10 @@ part of carp_study_app;
 /// Notifies its listeners when consent is accepted. Listen via the global
 /// [bloc], which chains service notifications to the router.
 class ConsentService extends ChangeNotifier {
-  ConsentService(this._manager, this._studyService, {AppConfig? config, CarpBackend? backend})
-    : _config = config ?? AppConfig(),
-      _backend = backend ?? CarpBackend();
+  ConsentService(this._manager, this._studyService, {CarpBackend? backend}) : _backend = backend ?? CarpBackend();
 
   final InformedConsentManager _manager;
   final StudyService _studyService;
-  final AppConfig _config;
   final CarpBackend _backend;
   bool? _accepted;
 
@@ -41,7 +38,7 @@ class ConsentService extends ChangeNotifier {
   /// backend and falls back to the locally stored flag.
   Future<bool> get hasBeenAccepted async {
     final study = _studyService.study;
-    if (_config.deploymentMode == DeploymentMode.local || study == null) {
+    if (AppConfig.deploymentMode == DeploymentMode.local || study == null) {
       return LocalSettings().participant?.hasInformedConsentBeenAccepted ?? false;
     }
     try {
@@ -61,7 +58,7 @@ class ConsentService extends ChangeNotifier {
     var participant = LocalSettings().participant;
     participant?.hasInformedConsentBeenAccepted = true;
     LocalSettings().participant = participant;
-    if (result != null && _config.deploymentMode != DeploymentMode.local) {
+    if (result != null && AppConfig.deploymentMode != DeploymentMode.local) {
       await _backend.uploadInformedConsent(result);
     }
     _accepted = true;
