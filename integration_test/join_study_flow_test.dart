@@ -183,6 +183,22 @@ void main() {
 
       // And the user lands on the study page.
       await pumpUntil(tester, () => find.byType(StudyPage).evaluate().isNotEmpty, reason: 'study page to be shown');
+
+      // Signing out tears down sensing, clears auth, erases the study, and
+      // returns to the initial state - the router sends the user back to the
+      // invitation flow.
+      await bloc.signOutAndLeaveStudy();
+
+      expect(bloc.state, StudyAppState.initialized);
+      expect(bloc.study.hasStudy, isFalse);
+      expect(bloc.study.isRunning, isFalse);
+      expect(bloc.auth.isAuthenticated, isFalse);
+
+      await pumpUntil(
+        tester,
+        () => find.byType(InvitationListPage).evaluate().isNotEmpty,
+        reason: 'invitation list after signing out',
+      );
     },
   );
 }

@@ -3,16 +3,13 @@
 // Do not manually edit this file.
 
 // ignore_for_file: no_leading_underscores_for_library_prefixes
-import 'dart:async' as _i7;
-import 'dart:ui' as _i8;
+import 'dart:async' as _i6;
 
-import 'package:carp_core/carp_core.dart' as _i4;
+import 'package:carp_core/carp_core.dart' as _i3;
 import 'package:carp_mobile_sensing/carp_mobile_sensing.dart' as _i2;
-import 'package:carp_polar_package/carp_polar_package.dart' as _i9;
-import 'package:carp_study_app/main.dart' as _i3;
 import 'package:mockito/mockito.dart' as _i1;
-import 'package:mockito/src/dummies.dart' as _i6;
-import 'package:permission_handler/permission_handler.dart' as _i5;
+import 'package:mockito/src/dummies.dart' as _i5;
+import 'package:permission_handler/permission_handler.dart' as _i4;
 
 // ignore_for_file: type=lint
 // ignore_for_file: avoid_redundant_argument_values
@@ -29,75 +26,72 @@ import 'package:permission_handler/permission_handler.dart' as _i5;
 // ignore_for_file: subtype_of_sealed_class
 // ignore_for_file: invalid_use_of_internal_member
 
-class _FakeSmartphoneStudy_0 extends _i1.SmartFake implements _i2.SmartphoneStudy {
-  _FakeSmartphoneStudy_0(Object parent, Invocation parentInvocation) : super(parent, parentInvocation);
+class _FakeSmartphoneStudy_0 extends _i1.SmartFake
+    implements _i2.SmartphoneStudy {
+  _FakeSmartphoneStudy_0(Object parent, Invocation parentInvocation)
+    : super(parent, parentInvocation);
 }
 
-class _FakeSmartphoneDeploymentExecutor_1 extends _i1.SmartFake implements _i2.SmartphoneDeploymentExecutor {
-  _FakeSmartphoneDeploymentExecutor_1(Object parent, Invocation parentInvocation) : super(parent, parentInvocation);
-}
-
-class _FakeHeartRateMinMaxPrHour_2 extends _i1.SmartFake implements _i3.HeartRateMinMaxPrHour {
-  _FakeHeartRateMinMaxPrHour_2(Object parent, Invocation parentInvocation) : super(parent, parentInvocation);
-}
-
-class _FakeHourlyHeartRate_3 extends _i1.SmartFake implements _i3.HourlyHeartRate {
-  _FakeHourlyHeartRate_3(Object parent, Invocation parentInvocation) : super(parent, parentInvocation);
-}
-
-class _FakeDateTime_4 extends _i1.SmartFake implements DateTime {
-  _FakeDateTime_4(Object parent, Invocation parentInvocation) : super(parent, parentInvocation);
-}
-
-class _FakeDataType_5 extends _i1.SmartFake implements _i4.DataType {
-  _FakeDataType_5(Object parent, Invocation parentInvocation) : super(parent, parentInvocation);
-}
-
-class _FakeData_6 extends _i1.SmartFake implements _i4.Data {
-  _FakeData_6(Object parent, Invocation parentInvocation) : super(parent, parentInvocation);
-}
-
-class _FakeDataModel_7 extends _i1.SmartFake implements _i3.DataModel {
-  _FakeDataModel_7(Object parent, Invocation parentInvocation) : super(parent, parentInvocation);
+class _FakeSmartphoneDeploymentExecutor_1 extends _i1.SmartFake
+    implements _i2.SmartphoneDeploymentExecutor {
+  _FakeSmartphoneDeploymentExecutor_1(
+    Object parent,
+    Invocation parentInvocation,
+  ) : super(parent, parentInvocation);
 }
 
 /// A class which mocks [SmartphoneStudyController].
 ///
 /// See the documentation for Mockito's code generation for more information.
-class MockSmartphoneStudyController extends _i1.Mock implements _i2.SmartphoneStudyController {
+class MockSmartphoneStudyController extends _i1.Mock
+    implements _i2.SmartphoneStudyController {
   @override
   _i2.SmartphoneStudy get study =>
       (super.noSuchMethod(
             Invocation.getter(#study),
-            returnValue: _FakeSmartphoneStudy_0(this, Invocation.getter(#study)),
-            returnValueForMissingStub: _FakeSmartphoneStudy_0(this, Invocation.getter(#study)),
+            returnValue: _FakeSmartphoneStudy_0(
+              this,
+              Invocation.getter(#study),
+            ),
+            returnValueForMissingStub: _FakeSmartphoneStudy_0(
+              this,
+              Invocation.getter(#study),
+            ),
           )
           as _i2.SmartphoneStudy);
 
   @override
-  List<_i4.DeviceConfiguration<_i4.DeviceRegistration>> get remainingDevicesToRegister =>
+  List<_i3.DeviceConfiguration<_i3.DeviceRegistration>>
+  get remainingDevicesToRegister =>
       (super.noSuchMethod(
             Invocation.getter(#remainingDevicesToRegister),
-            returnValue: <_i4.DeviceConfiguration<_i4.DeviceRegistration>>[],
-            returnValueForMissingStub: <_i4.DeviceConfiguration<_i4.DeviceRegistration>>[],
+            returnValue: <_i3.DeviceConfiguration<_i3.DeviceRegistration>>[],
+            returnValueForMissingStub:
+                <_i3.DeviceConfiguration<_i3.DeviceRegistration>>[],
           )
-          as List<_i4.DeviceConfiguration<_i4.DeviceRegistration>>);
+          as List<_i3.DeviceConfiguration<_i3.DeviceRegistration>>);
 
   @override
-  Map<_i5.Permission, _i5.PermissionStatus> get permissions =>
+  Map<_i4.Permission, _i4.PermissionStatus> get permissions =>
       (super.noSuchMethod(
             Invocation.getter(#permissions),
-            returnValue: <_i5.Permission, _i5.PermissionStatus>{},
-            returnValueForMissingStub: <_i5.Permission, _i5.PermissionStatus>{},
+            returnValue: <_i4.Permission, _i4.PermissionStatus>{},
+            returnValueForMissingStub: <_i4.Permission, _i4.PermissionStatus>{},
           )
-          as Map<_i5.Permission, _i5.PermissionStatus>);
+          as Map<_i4.Permission, _i4.PermissionStatus>);
 
   @override
   _i2.SmartphoneDeploymentExecutor get executor =>
       (super.noSuchMethod(
             Invocation.getter(#executor),
-            returnValue: _FakeSmartphoneDeploymentExecutor_1(this, Invocation.getter(#executor)),
-            returnValueForMissingStub: _FakeSmartphoneDeploymentExecutor_1(this, Invocation.getter(#executor)),
+            returnValue: _FakeSmartphoneDeploymentExecutor_1(
+              this,
+              Invocation.getter(#executor),
+            ),
+            returnValueForMissingStub: _FakeSmartphoneDeploymentExecutor_1(
+              this,
+              Invocation.getter(#executor),
+            ),
           )
           as _i2.SmartphoneDeploymentExecutor);
 
@@ -105,439 +99,107 @@ class MockSmartphoneStudyController extends _i1.Mock implements _i2.SmartphoneSt
   String get privacySchemaName =>
       (super.noSuchMethod(
             Invocation.getter(#privacySchemaName),
-            returnValue: _i6.dummyValue<String>(this, Invocation.getter(#privacySchemaName)),
-            returnValueForMissingStub: _i6.dummyValue<String>(this, Invocation.getter(#privacySchemaName)),
+            returnValue: _i5.dummyValue<String>(
+              this,
+              Invocation.getter(#privacySchemaName),
+            ),
+            returnValueForMissingStub: _i5.dummyValue<String>(
+              this,
+              Invocation.getter(#privacySchemaName),
+            ),
           )
           as String);
 
   @override
-  _i7.Stream<_i4.Measurement> get measurements =>
+  _i6.Stream<_i3.Measurement> get measurements =>
       (super.noSuchMethod(
             Invocation.getter(#measurements),
-            returnValue: _i7.Stream<_i4.Measurement>.empty(),
-            returnValueForMissingStub: _i7.Stream<_i4.Measurement>.empty(),
+            returnValue: _i6.Stream<_i3.Measurement>.empty(),
+            returnValueForMissingStub: _i6.Stream<_i3.Measurement>.empty(),
           )
-          as _i7.Stream<_i4.Measurement>);
+          as _i6.Stream<_i3.Measurement>);
 
   @override
-  _i7.Stream<_i4.Measurement> measurementsByType(String? type) =>
+  _i6.Stream<_i3.Measurement> measurementsByType(String? type) =>
       (super.noSuchMethod(
             Invocation.method(#measurementsByType, [type]),
-            returnValue: _i7.Stream<_i4.Measurement>.empty(),
-            returnValueForMissingStub: _i7.Stream<_i4.Measurement>.empty(),
+            returnValue: _i6.Stream<_i3.Measurement>.empty(),
+            returnValueForMissingStub: _i6.Stream<_i3.Measurement>.empty(),
           )
-          as _i7.Stream<_i4.Measurement>);
+          as _i6.Stream<_i3.Measurement>);
 
   @override
-  _i7.Future<void> tryRegisterConnectedDevice(_i4.DeviceConfiguration<_i4.DeviceRegistration>? device) =>
+  _i6.Future<void> tryRegisterConnectedDevice(
+    _i3.DeviceConfiguration<_i3.DeviceRegistration>? device,
+  ) =>
       (super.noSuchMethod(
             Invocation.method(#tryRegisterConnectedDevice, [device]),
-            returnValue: _i7.Future<void>.value(),
-            returnValueForMissingStub: _i7.Future<void>.value(),
+            returnValue: _i6.Future<void>.value(),
+            returnValueForMissingStub: _i6.Future<void>.value(),
           )
-          as _i7.Future<void>);
+          as _i6.Future<void>);
 
   @override
-  _i7.Future<void> tryRegisterRemainingDevicesToRegister() =>
+  _i6.Future<void> tryRegisterRemainingDevicesToRegister() =>
       (super.noSuchMethod(
             Invocation.method(#tryRegisterRemainingDevicesToRegister, []),
-            returnValue: _i7.Future<void>.value(),
-            returnValueForMissingStub: _i7.Future<void>.value(),
+            returnValue: _i6.Future<void>.value(),
+            returnValueForMissingStub: _i6.Future<void>.value(),
           )
-          as _i7.Future<void>);
+          as _i6.Future<void>);
 
   @override
-  _i7.Future<void> tryUnregisterDisconnectedDevice(_i4.DeviceConfiguration<_i4.DeviceRegistration>? device) =>
+  _i6.Future<void> tryUnregisterDisconnectedDevice(
+    _i3.DeviceConfiguration<_i3.DeviceRegistration>? device,
+  ) =>
       (super.noSuchMethod(
             Invocation.method(#tryUnregisterDisconnectedDevice, [device]),
-            returnValue: _i7.Future<void>.value(),
-            returnValueForMissingStub: _i7.Future<void>.value(),
+            returnValue: _i6.Future<void>.value(),
+            returnValueForMissingStub: _i6.Future<void>.value(),
           )
-          as _i7.Future<void>);
+          as _i6.Future<void>);
 
   @override
-  _i7.Future<void> tryReregisterDevice(_i4.DeviceConfiguration<_i4.DeviceRegistration>? device) =>
+  _i6.Future<void> tryReregisterDevice(
+    _i3.DeviceConfiguration<_i3.DeviceRegistration>? device,
+  ) =>
       (super.noSuchMethod(
             Invocation.method(#tryReregisterDevice, [device]),
-            returnValue: _i7.Future<void>.value(),
-            returnValueForMissingStub: _i7.Future<void>.value(),
+            returnValue: _i6.Future<void>.value(),
+            returnValueForMissingStub: _i6.Future<void>.value(),
           )
-          as _i7.Future<void>);
+          as _i6.Future<void>);
 
   @override
-  _i7.Future<void> askForAllPermissions() =>
+  _i6.Future<void> askForAllPermissions() =>
       (super.noSuchMethod(
             Invocation.method(#askForAllPermissions, []),
-            returnValue: _i7.Future<void>.value(),
-            returnValueForMissingStub: _i7.Future<void>.value(),
+            returnValue: _i6.Future<void>.value(),
+            returnValueForMissingStub: _i6.Future<void>.value(),
           )
-          as _i7.Future<void>);
+          as _i6.Future<void>);
 
   @override
-  void restart() => super.noSuchMethod(Invocation.method(#restart, []), returnValueForMissingStub: null);
+  void restart() => super.noSuchMethod(
+    Invocation.method(#restart, []),
+    returnValueForMissingStub: null,
+  );
 
   @override
-  void resume() => super.noSuchMethod(Invocation.method(#resume, []), returnValueForMissingStub: null);
+  void resume() => super.noSuchMethod(
+    Invocation.method(#resume, []),
+    returnValueForMissingStub: null,
+  );
 
   @override
-  void pause() => super.noSuchMethod(Invocation.method(#pause, []), returnValueForMissingStub: null);
+  void pause() => super.noSuchMethod(
+    Invocation.method(#pause, []),
+    returnValueForMissingStub: null,
+  );
 
   @override
-  void dispose() => super.noSuchMethod(Invocation.method(#dispose, []), returnValueForMissingStub: null);
-}
-
-/// A class which mocks [HeartRateCardViewModel].
-///
-/// See the documentation for Mockito's code generation for more information.
-class MockHeartRateCardViewModel extends _i1.Mock implements _i3.HeartRateCardViewModel {
-  @override
-  Map<int, _i3.HeartRateMinMaxPrHour> get hourlyHeartRate =>
-      (super.noSuchMethod(
-            Invocation.getter(#hourlyHeartRate),
-            returnValue: <int, _i3.HeartRateMinMaxPrHour>{},
-            returnValueForMissingStub: <int, _i3.HeartRateMinMaxPrHour>{},
-          )
-          as Map<int, _i3.HeartRateMinMaxPrHour>);
-
-  @override
-  _i3.HeartRateMinMaxPrHour get dayMinMax =>
-      (super.noSuchMethod(
-            Invocation.getter(#dayMinMax),
-            returnValue: _FakeHeartRateMinMaxPrHour_2(this, Invocation.getter(#dayMinMax)),
-            returnValueForMissingStub: _FakeHeartRateMinMaxPrHour_2(this, Invocation.getter(#dayMinMax)),
-          )
-          as _i3.HeartRateMinMaxPrHour);
-
-  @override
-  _i3.HourlyHeartRate get model =>
-      (super.noSuchMethod(
-            Invocation.getter(#model),
-            returnValue: _FakeHourlyHeartRate_3(this, Invocation.getter(#model)),
-            returnValueForMissingStub: _FakeHourlyHeartRate_3(this, Invocation.getter(#model)),
-          )
-          as _i3.HourlyHeartRate);
-
-  @override
-  _i7.Future<String> get filename =>
-      (super.noSuchMethod(
-            Invocation.getter(#filename),
-            returnValue: _i7.Future<String>.value(_i6.dummyValue<String>(this, Invocation.getter(#filename))),
-            returnValueForMissingStub: _i7.Future<String>.value(
-              _i6.dummyValue<String>(this, Invocation.getter(#filename)),
-            ),
-          )
-          as _i7.Future<String>);
-
-  @override
-  bool get hasListeners =>
-      (super.noSuchMethod(Invocation.getter(#hasListeners), returnValue: false, returnValueForMissingStub: false)
-          as bool);
-
-  @override
-  _i3.HourlyHeartRate createModel() =>
-      (super.noSuchMethod(
-            Invocation.method(#createModel, []),
-            returnValue: _FakeHourlyHeartRate_3(this, Invocation.method(#createModel, [])),
-            returnValueForMissingStub: _FakeHourlyHeartRate_3(this, Invocation.method(#createModel, [])),
-          )
-          as _i3.HourlyHeartRate);
-
-  @override
-  void init(_i2.SmartphoneStudyController? ctrl) =>
-      super.noSuchMethod(Invocation.method(#init, [ctrl]), returnValueForMissingStub: null);
-
-  @override
-  void clear() => super.noSuchMethod(Invocation.method(#clear, []), returnValueForMissingStub: null);
-
-  @override
-  void dispose() => super.noSuchMethod(Invocation.method(#dispose, []), returnValueForMissingStub: null);
-
-  @override
-  _i7.Future<bool> save() =>
-      (super.noSuchMethod(
-            Invocation.method(#save, []),
-            returnValue: _i7.Future<bool>.value(false),
-            returnValueForMissingStub: _i7.Future<bool>.value(false),
-          )
-          as _i7.Future<bool>);
-
-  @override
-  bool delete() =>
-      (super.noSuchMethod(Invocation.method(#delete, []), returnValue: false, returnValueForMissingStub: false)
-          as bool);
-
-  @override
-  _i7.Future<_i3.HourlyHeartRate?> restore() =>
-      (super.noSuchMethod(
-            Invocation.method(#restore, []),
-            returnValue: _i7.Future<_i3.HourlyHeartRate?>.value(),
-            returnValueForMissingStub: _i7.Future<_i3.HourlyHeartRate?>.value(),
-          )
-          as _i7.Future<_i3.HourlyHeartRate?>);
-
-  @override
-  void addListener(_i8.VoidCallback? listener) =>
-      super.noSuchMethod(Invocation.method(#addListener, [listener]), returnValueForMissingStub: null);
-
-  @override
-  void removeListener(_i8.VoidCallback? listener) =>
-      super.noSuchMethod(Invocation.method(#removeListener, [listener]), returnValueForMissingStub: null);
-
-  @override
-  void notifyListeners() =>
-      super.noSuchMethod(Invocation.method(#notifyListeners, []), returnValueForMissingStub: null);
-}
-
-/// A class which mocks [HourlyHeartRate].
-///
-/// See the documentation for Mockito's code generation for more information.
-class MockHourlyHeartRate extends _i1.Mock implements _i3.HourlyHeartRate {
-  @override
-  Map<int, _i3.HeartRateMinMaxPrHour> get hourlyHeartRate =>
-      (super.noSuchMethod(
-            Invocation.getter(#hourlyHeartRate),
-            returnValue: <int, _i3.HeartRateMinMaxPrHour>{},
-            returnValueForMissingStub: <int, _i3.HeartRateMinMaxPrHour>{},
-          )
-          as Map<int, _i3.HeartRateMinMaxPrHour>);
-
-  @override
-  DateTime get lastUpdated =>
-      (super.noSuchMethod(
-            Invocation.getter(#lastUpdated),
-            returnValue: _FakeDateTime_4(this, Invocation.getter(#lastUpdated)),
-            returnValueForMissingStub: _FakeDateTime_4(this, Invocation.getter(#lastUpdated)),
-          )
-          as DateTime);
-
-  @override
-  set hourlyHeartRate(Map<int, _i3.HeartRateMinMaxPrHour>? value) =>
-      super.noSuchMethod(Invocation.setter(#hourlyHeartRate, value), returnValueForMissingStub: null);
-
-  @override
-  set lastUpdated(DateTime? value) =>
-      super.noSuchMethod(Invocation.setter(#lastUpdated, value), returnValueForMissingStub: null);
-
-  @override
-  set currentHeartRate(double? value) =>
-      super.noSuchMethod(Invocation.setter(#currentHeartRate, value), returnValueForMissingStub: null);
-
-  @override
-  set maxHeartRate(double? value) =>
-      super.noSuchMethod(Invocation.setter(#maxHeartRate, value), returnValueForMissingStub: null);
-
-  @override
-  set minHeartRate(double? value) =>
-      super.noSuchMethod(Invocation.setter(#minHeartRate, value), returnValueForMissingStub: null);
-
-  @override
-  _i3.HourlyHeartRate resetDataAtMidnight() =>
-      (super.noSuchMethod(
-            Invocation.method(#resetDataAtMidnight, []),
-            returnValue: _FakeHourlyHeartRate_3(this, Invocation.method(#resetDataAtMidnight, [])),
-            returnValueForMissingStub: _FakeHourlyHeartRate_3(this, Invocation.method(#resetDataAtMidnight, [])),
-          )
-          as _i3.HourlyHeartRate);
-
-  @override
-  _i3.HourlyHeartRate addHeartRate(int? hour, double? heartRate) =>
-      (super.noSuchMethod(
-            Invocation.method(#addHeartRate, [hour, heartRate]),
-            returnValue: _FakeHourlyHeartRate_3(this, Invocation.method(#addHeartRate, [hour, heartRate])),
-            returnValueForMissingStub: _FakeHourlyHeartRate_3(
-              this,
-              Invocation.method(#addHeartRate, [hour, heartRate]),
-            ),
-          )
-          as _i3.HourlyHeartRate);
-
-  @override
-  _i3.HourlyHeartRate fromJson(Map<String, dynamic>? json) =>
-      (super.noSuchMethod(
-            Invocation.method(#fromJson, [json]),
-            returnValue: _FakeHourlyHeartRate_3(this, Invocation.method(#fromJson, [json])),
-            returnValueForMissingStub: _FakeHourlyHeartRate_3(this, Invocation.method(#fromJson, [json])),
-          )
-          as _i3.HourlyHeartRate);
-
-  @override
-  Map<String, dynamic> toJson() =>
-      (super.noSuchMethod(
-            Invocation.method(#toJson, []),
-            returnValue: <String, dynamic>{},
-            returnValueForMissingStub: <String, dynamic>{},
-          )
-          as Map<String, dynamic>);
-}
-
-/// A class which mocks [PolarHRSample].
-///
-/// See the documentation for Mockito's code generation for more information.
-class MockPolarHRSample extends _i1.Mock implements _i9.PolarHRSample {
-  @override
-  int get hr => (super.noSuchMethod(Invocation.getter(#hr), returnValue: 0, returnValueForMissingStub: 0) as int);
-
-  @override
-  List<int> get rrsMs =>
-      (super.noSuchMethod(Invocation.getter(#rrsMs), returnValue: <int>[], returnValueForMissingStub: <int>[])
-          as List<int>);
-
-  @override
-  bool get contactStatus =>
-      (super.noSuchMethod(Invocation.getter(#contactStatus), returnValue: false, returnValueForMissingStub: false)
-          as bool);
-
-  @override
-  bool get contactStatusSupported =>
-      (super.noSuchMethod(
-            Invocation.getter(#contactStatusSupported),
-            returnValue: false,
-            returnValueForMissingStub: false,
-          )
-          as bool);
-
-  @override
-  Map<String, dynamic> toJson() =>
-      (super.noSuchMethod(
-            Invocation.method(#toJson, []),
-            returnValue: <String, dynamic>{},
-            returnValueForMissingStub: <String, dynamic>{},
-          )
-          as Map<String, dynamic>);
-}
-
-/// A class which mocks [PolarHR].
-///
-/// See the documentation for Mockito's code generation for more information.
-class MockPolarHR extends _i1.Mock implements _i9.PolarHR {
-  @override
-  Function get fromJsonFunction =>
-      (super.noSuchMethod(Invocation.getter(#fromJsonFunction), returnValue: () {}, returnValueForMissingStub: () {})
-          as Function);
-
-  @override
-  String get jsonType =>
-      (super.noSuchMethod(
-            Invocation.getter(#jsonType),
-            returnValue: _i6.dummyValue<String>(this, Invocation.getter(#jsonType)),
-            returnValueForMissingStub: _i6.dummyValue<String>(this, Invocation.getter(#jsonType)),
-          )
-          as String);
-
-  @override
-  List<_i9.PolarHRSample> get samples =>
-      (super.noSuchMethod(
-            Invocation.getter(#samples),
-            returnValue: <_i9.PolarHRSample>[],
-            returnValueForMissingStub: <_i9.PolarHRSample>[],
-          )
-          as List<_i9.PolarHRSample>);
-
-  @override
-  set sensorSpecificData(_i4.Data? value) =>
-      super.noSuchMethod(Invocation.setter(#sensorSpecificData, value), returnValueForMissingStub: null);
-
-  @override
-  _i4.DataType get dataType =>
-      (super.noSuchMethod(
-            Invocation.getter(#dataType),
-            returnValue: _FakeDataType_5(this, Invocation.getter(#dataType)),
-            returnValueForMissingStub: _FakeDataType_5(this, Invocation.getter(#dataType)),
-          )
-          as _i4.DataType);
-
-  @override
-  set $type(String? value) => super.noSuchMethod(Invocation.setter(#$type, value), returnValueForMissingStub: null);
-
-  @override
-  Map<String, dynamic> toJson() =>
-      (super.noSuchMethod(
-            Invocation.method(#toJson, []),
-            returnValue: <String, dynamic>{},
-            returnValueForMissingStub: <String, dynamic>{},
-          )
-          as Map<String, dynamic>);
-
-  @override
-  bool equivalentTo(_i4.Data? other) =>
-      (super.noSuchMethod(
-            Invocation.method(#equivalentTo, [other]),
-            returnValue: false,
-            returnValueForMissingStub: false,
-          )
-          as bool);
-}
-
-/// A class which mocks [Measurement].
-///
-/// See the documentation for Mockito's code generation for more information.
-class MockMeasurement extends _i1.Mock implements _i4.Measurement {
-  @override
-  int get sensorStartTime =>
-      (super.noSuchMethod(Invocation.getter(#sensorStartTime), returnValue: 0, returnValueForMissingStub: 0) as int);
-
-  @override
-  _i4.DataType get dataType =>
-      (super.noSuchMethod(
-            Invocation.getter(#dataType),
-            returnValue: _FakeDataType_5(this, Invocation.getter(#dataType)),
-            returnValueForMissingStub: _FakeDataType_5(this, Invocation.getter(#dataType)),
-          )
-          as _i4.DataType);
-
-  @override
-  _i4.Data get data =>
-      (super.noSuchMethod(
-            Invocation.getter(#data),
-            returnValue: _FakeData_6(this, Invocation.getter(#data)),
-            returnValueForMissingStub: _FakeData_6(this, Invocation.getter(#data)),
-          )
-          as _i4.Data);
-
-  @override
-  set sensorStartTime(int? value) =>
-      super.noSuchMethod(Invocation.setter(#sensorStartTime, value), returnValueForMissingStub: null);
-
-  @override
-  set sensorEndTime(int? value) =>
-      super.noSuchMethod(Invocation.setter(#sensorEndTime, value), returnValueForMissingStub: null);
-
-  @override
-  set taskControl(_i4.TaskControl? value) =>
-      super.noSuchMethod(Invocation.setter(#taskControl, value), returnValueForMissingStub: null);
-
-  @override
-  set data(_i4.Data? value) => super.noSuchMethod(Invocation.setter(#data, value), returnValueForMissingStub: null);
-
-  @override
-  Map<String, dynamic> toJson() =>
-      (super.noSuchMethod(
-            Invocation.method(#toJson, []),
-            returnValue: <String, dynamic>{},
-            returnValueForMissingStub: <String, dynamic>{},
-          )
-          as Map<String, dynamic>);
-}
-
-/// A class which mocks [DataModel].
-///
-/// See the documentation for Mockito's code generation for more information.
-class MockDataModel extends _i1.Mock implements _i3.DataModel {
-  @override
-  _i3.DataModel fromJson(Map<String, dynamic>? json) =>
-      (super.noSuchMethod(
-            Invocation.method(#fromJson, [json]),
-            returnValue: _FakeDataModel_7(this, Invocation.method(#fromJson, [json])),
-            returnValueForMissingStub: _FakeDataModel_7(this, Invocation.method(#fromJson, [json])),
-          )
-          as _i3.DataModel);
-
-  @override
-  Map<String, dynamic> toJson() =>
-      (super.noSuchMethod(
-            Invocation.method(#toJson, []),
-            returnValue: <String, dynamic>{},
-            returnValueForMissingStub: <String, dynamic>{},
-          )
-          as Map<String, dynamic>);
+  void dispose() => super.noSuchMethod(
+    Invocation.method(#dispose, []),
+    returnValueForMissingStub: null,
+  );
 }
