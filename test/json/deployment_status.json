@@ -60,7 +60,7 @@
             "__type": "dk.cachet.carp.deployments.application.DeviceDeploymentStatus.Registered",
             "device": {
                 "__type": "dk.cachet.carp.common.application.devices.WeatherService",
-                "apiKey": "12b6e28582eb9298577c734a31ba9f4f",
+                "apiKey": "",
                 "roleName": "Weather Service",
                 "isOptional": true,
                 "defaultSamplingConfiguration": {}
@@ -73,7 +73,7 @@
             "__type": "dk.cachet.carp.deployments.application.DeviceDeploymentStatus.Registered",
             "device": {
                 "__type": "dk.cachet.carp.common.application.devices.AirQualityService",
-                "apiKey": "9e538456b2b85c92647d8b65090e29f957638c77",
+                "apiKey": "",
                 "roleName": "Air Quality Service",
                 "isOptional": true,
                 "defaultSamplingConfiguration": {}
