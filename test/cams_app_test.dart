@@ -105,9 +105,7 @@ void main() {
       // every expected type is provided by a registered sampling package - i.e.
       // the app can actually collect it. A namespace/registration regression in
       // any package would drop a type from one side or the other.
-      final declaredTypes = {
-        for (final task in protocol.tasks) ...?task.measures?.map((m) => m.type),
-      };
+      final declaredTypes = {for (final task in protocol.tasks) ...?task.measures?.map((m) => m.type)};
       expect(declaredTypes, containsAll(expectedDataTypes));
 
       final supportedTypes = SamplingPackageRegistry().dataTypes.map((d) => d.type).toSet();
