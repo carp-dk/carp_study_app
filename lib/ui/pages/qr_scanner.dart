@@ -126,9 +126,14 @@ class _QRViewExampleState extends State<QRViewExample> {
       final qrcode = scanData.code;
       if (qrcode == null) return;
 
-      await widget.model.signInWithMagicLink(qrcode);
+      final success = await widget.model.signInWithMagicLink(qrcode);
       if (!mounted) return;
-      context.go('/');
+      if (success) {
+        final invitations = bloc.appViewModel.invitationsListViewModel;
+        await invitations.loadInvitations();
+        if (!mounted) return;
+        context.go(invitations.landingRoute);
+      }
       Navigator.of(context).pop();
     });
   }

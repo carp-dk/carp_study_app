@@ -178,6 +178,47 @@ void main() {
       expect(model.isLoading, isFalse);
       expect(model.invitations, isEmpty);
     });
+
+    ActiveParticipationInvitation invitation(String participantId) =>
+        ActiveParticipationInvitation(Participation('dep-1', participantId, AssignedTo()), StudyInvitation('Study'));
+
+    test('landingRoute targets the single invitation detail when there is exactly one', () async {
+      when(auth.getInvitations()).thenAnswer((_) async => [invitation('participant-1')]);
+      await model.loadInvitations();
+
+      expect(model.landingRoute, '${InvitationDetailsPage.route}/participant-1');
+    });
+
+    test('landingRoute targets the list for zero or multiple invitations', () async {
+      when(auth.getInvitations()).thenAnswer((_) async => []);
+      await model.loadInvitations();
+      expect(model.landingRoute, InvitationListPage.route);
+
+      when(auth.getInvitations()).thenAnswer((_) async => [invitation('a'), invitation('b')]);
+      await model.loadInvitations();
+      expect(model.landingRoute, InvitationListPage.route);
+    });
+
+    test('ensureInvitationsLoaded loads once; loadInvitations always refreshes', () async {
+      when(auth.getInvitations()).thenAnswer((_) async => []);
+
+      await model.ensureInvitationsLoaded();
+      await model.ensureInvitationsLoaded();
+      verify(auth.getInvitations()).called(1); // second call is a no-op
+
+      await model.loadInvitations(); // manual refresh still hits the backend
+      verify(auth.getInvitations()).called(1);
+    });
+
+    test('ensureInvitationsLoaded retries after a failed load', () async {
+      when(auth.getInvitations()).thenAnswer((_) async => throw Exception('offline'));
+      await model.ensureInvitationsLoaded();
+      expect(model.isLoaded, isFalse);
+
+      when(auth.getInvitations()).thenAnswer((_) async => [invitation('participant-1')]);
+      await model.ensureInvitationsLoaded(); // not loaded yet, so it retries
+      expect(model.isLoaded, isTrue);
+    });
   });
 
   group('TaskListPageViewModel', () {

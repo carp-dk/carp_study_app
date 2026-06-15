@@ -13,7 +13,7 @@ class _InvitationListPageState extends State<InvitationListPage> {
   @override
   void initState() {
     super.initState();
-    widget.model.loadInvitations();
+    widget.model.ensureInvitationsLoaded();
   }
 
   @override

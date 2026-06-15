@@ -55,7 +55,10 @@ class _LoginPageState extends State<LoginPage> {
                     final result = await widget.model.signIn();
                     if (!context.mounted) return;
                     if (result == SignInResult.success) {
-                      context.go(CarpStudyAppState.homeRoute);
+                      final invitations = bloc.appViewModel.invitationsListViewModel;
+                      await invitations.loadInvitations();
+                      if (!context.mounted) return;
+                      context.go(invitations.landingRoute);
                     } else if (result == SignInResult.offline) {
                       showDialog<bool>(
                         context: context,
