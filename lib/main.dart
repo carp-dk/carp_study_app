@@ -158,15 +158,15 @@ part 'main.g.dart';
 
 late CarpStudyApp app;
 void main() async {
-  // Initialize CAMS and related packages (loading json deserialization functions)
-  CarpMobileSensing.ensureInitialized();
-  CognitionPackage.ensureInitialized();
-  CarpDataManager.ensureInitialized();
-
   // Make sure to have an instance of the WidgetsBinding, which is required
   // to use platform channels to call native code.
   // See also >> https://stackoverflow.com/questions/63873338/what-does-widgetsflutterbinding-ensureinitialized-do/63873689
   WidgetsFlutterBinding.ensureInitialized();
+
+  // Initialize CAMS and related packages (loading json deserialization functions)
+  CarpMobileSensing.ensureInitialized();
+  CognitionPackage.ensureInitialized();
+  CarpDataManager.ensureInitialized();
 
   await bloc.initialize();
 
