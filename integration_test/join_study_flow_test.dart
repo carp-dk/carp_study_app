@@ -99,73 +99,90 @@ String _diagnostics() =>
 void main() {
   IntegrationTestWidgetsFlutterBinding.ensureInitialized();
 
-  testWidgets('join study flow: deploy, consent gate, configure, start sensing', (tester) async {
-    if (AppConfig().deploymentMode != DeploymentMode.local) {
-      markTestSkipped('This test must run with --dart-define=deployment-mode=local');
-      return;
+  // Stop the study after the test so the bloc's periodic timers (message
+  // polling, view-model persistence) and the user-task subscription are
+  // cancelled - otherwise the isolate never goes idle and the run hangs
+  // after "All tests passed!". Also clears the persisted study so the next
+  // run starts clean.
+  tearDown(() async {
+    try {
+      await bloc.leaveStudy();
+    } catch (_) {
+      // best-effort cleanup - never mask the test result
     }
-
-    mockSimulatorPlatformChannels();
-
-    // Same package initialization as main().
-    CarpMobileSensing.ensureInitialized();
-    CognitionPackage.ensureInitialized();
-    CarpDataManager.ensureInitialized();
-
-    // Deploy a minimal study protocol on the local (on-phone) deployment
-    // service - the in-test equivalent of placing a protocol.json in
-    // assets/carp/resources/ for local mode.
-    await Settings().init();
-    final phone = Smartphone();
-    final protocol = SmartphoneStudyProtocol(name: 'Join flow integration test', ownerId: 'test')
-      ..addPrimaryDevice(phone)
-      ..addTaskControl(
-        ImmediateTrigger(),
-        BackgroundTask(measures: [Measure(type: DeviceSamplingPackage.BATTERY_STATE)]),
-        phone,
-      );
-    final status = await SmartphoneDeploymentService().createStudyDeployment(protocol);
-    final primaryDeviceRoleName = status.deviceStatusList
-        .firstWhere((deviceStatus) => deviceStatus.device is PrimaryDeviceConfiguration)
-        .device
-        .roleName;
-    LocalSettings().participant = Participant(
-      studyDeploymentId: status.studyDeploymentId,
-      deviceRoleName: primaryDeviceRoleName,
-    );
-    bloc.study.study = SmartphoneStudy(
-      studyDeploymentId: status.studyDeploymentId,
-      deviceRoleName: primaryDeviceRoleName,
-    );
-
-    await bloc.initialize();
-
-    // The study descriptor exists, but it is not deployed in the sensing
-    // runtime and consent has not been given yet.
-    expect(bloc.study.hasStudy, isTrue);
-    expect(bloc.study.isDeployed, isFalse);
-    expect(await bloc.consent.hasBeenAccepted, isFalse);
-
-    await tester.pumpWidget(const CarpStudyApp());
-
-    // The home page must gate on consent before configuring the study. With
-    // no local consent document, the consent page auto-accepts, which lets
-    // setup proceed: configure -> deploy -> verify -> start.
-    await pumpUntil(
-      tester,
-      () => LocalSettings().participant?.hasInformedConsentBeenAccepted ?? false,
-      reason: 'consent gate to accept',
-    );
-    await pumpUntil(tester, () => bloc.isConfigured, reason: 'study configuration to complete');
-
-    expect(await bloc.consent.hasBeenAccepted, isTrue);
-    expect(bloc.study.isDeployed, isTrue);
-    expect(bloc.study.deployment?.studyDeploymentId, status.studyDeploymentId);
-
-    // Sensing must actually have been started - the executor is resumed.
-    await pumpUntil(tester, () => bloc.study.isRunning, reason: 'sensing to start');
-
-    // And the user lands on the study page.
-    await pumpUntil(tester, () => find.byType(StudyPage).evaluate().isNotEmpty, reason: 'study page to be shown');
   });
+
+  testWidgets(
+    'join study flow: deploy, consent gate, configure, start sensing',
+    timeout: const Timeout(Duration(minutes: 5)),
+    (tester) async {
+      if (AppConfig().deploymentMode != DeploymentMode.local) {
+        markTestSkipped('This test must run with --dart-define=deployment-mode=local');
+        return;
+      }
+
+      mockSimulatorPlatformChannels();
+
+      // Same package initialization as main().
+      CarpMobileSensing.ensureInitialized();
+      CognitionPackage.ensureInitialized();
+      CarpDataManager.ensureInitialized();
+
+      // Deploy a minimal study protocol on the local (on-phone) deployment
+      // service - the in-test equivalent of placing a protocol.json in
+      // assets/carp/resources/ for local mode.
+      await Settings().init();
+      final phone = Smartphone();
+      final protocol = SmartphoneStudyProtocol(name: 'Join flow integration test', ownerId: 'test')
+        ..addPrimaryDevice(phone)
+        ..addTaskControl(
+          ImmediateTrigger(),
+          BackgroundTask(measures: [Measure(type: DeviceSamplingPackage.BATTERY_STATE)]),
+          phone,
+        );
+      final status = await SmartphoneDeploymentService().createStudyDeployment(protocol);
+      final primaryDeviceRoleName = status.deviceStatusList
+          .firstWhere((deviceStatus) => deviceStatus.device is PrimaryDeviceConfiguration)
+          .device
+          .roleName;
+      LocalSettings().participant = Participant(
+        studyDeploymentId: status.studyDeploymentId,
+        deviceRoleName: primaryDeviceRoleName,
+      );
+      bloc.study.study = SmartphoneStudy(
+        studyDeploymentId: status.studyDeploymentId,
+        deviceRoleName: primaryDeviceRoleName,
+      );
+
+      await bloc.initialize();
+
+      // The study descriptor exists, but it is not deployed in the sensing
+      // runtime and consent has not been given yet.
+      expect(bloc.study.hasStudy, isTrue);
+      expect(bloc.study.isDeployed, isFalse);
+      expect(await bloc.consent.hasBeenAccepted, isFalse);
+
+      await tester.pumpWidget(const CarpStudyApp());
+
+      // The home page must gate on consent before configuring the study. With
+      // no local consent document, the consent page auto-accepts, which lets
+      // setup proceed: configure -> deploy -> verify -> start.
+      await pumpUntil(
+        tester,
+        () => LocalSettings().participant?.hasInformedConsentBeenAccepted ?? false,
+        reason: 'consent gate to accept',
+      );
+      await pumpUntil(tester, () => bloc.isConfigured, reason: 'study configuration to complete');
+
+      expect(await bloc.consent.hasBeenAccepted, isTrue);
+      expect(bloc.study.isDeployed, isTrue);
+      expect(bloc.study.deployment?.studyDeploymentId, status.studyDeploymentId);
+
+      // Sensing must actually have been started - the executor is resumed.
+      await pumpUntil(tester, () => bloc.study.isRunning, reason: 'sensing to start');
+
+      // And the user lands on the study page.
+      await pumpUntil(tester, () => find.byType(StudyPage).evaluate().isNotEmpty, reason: 'study page to be shown');
+    },
+  );
 }
