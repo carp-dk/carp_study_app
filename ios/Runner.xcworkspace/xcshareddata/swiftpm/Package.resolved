@@ -1,6 +1,15 @@
 {
   "pins" : [
     {
+      "identity" : "carp-app-clip",
+      "kind" : "remoteSourceControl",
+      "location" : "https://github.com/carp-dk/carp-app-clip",
+      "state" : {
+        "branch" : "main",
+        "revision" : "35f35d08640ea4ab19aaee4a2522572e2cdb0f21"
+      }
+    },
+    {
       "identity" : "phonenumberkit",
       "kind" : "remoteSourceControl",
       "location" : "https://github.com/marmelroy/PhoneNumberKit.git",
