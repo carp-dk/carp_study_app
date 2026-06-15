@@ -48,7 +48,7 @@ class StudyAppBLoC extends ChangeNotifier {
   late final MessageService messages = MessageService(resources.messageManager);
 
   /// The informed consent flow.
-  late final ConsentService consent = ConsentService(resources.informedConsentManager, study);
+  late final ConsentService consent = ConsentService(resources.informedConsentManager);
 
   /// The state of this BloC.
   StudyAppState get state => _state;
@@ -124,7 +124,7 @@ class StudyAppBLoC extends ChangeNotifier {
 
     // For a returning user, check consent - via [_onConsentChanged] this
     // routes to the consent page or configures and starts the study.
-    if (study.hasStudy) unawaited(consent.refreshStatus());
+    if (study.hasStudy) unawaited(consent.refreshStatus(study.study));
   }
 
   /// Set the active study in the app based on an [invitation].
@@ -148,7 +148,7 @@ class StudyAppBLoC extends ChangeNotifier {
 
     // Routes to the consent page - or, if this participant has already
     // consented (e.g. on another phone), configures and starts the study.
-    unawaited(consent.refreshStatus());
+    unawaited(consent.refreshStatus(study.study));
   }
 
   /// Configure the study deployment and start sensing.

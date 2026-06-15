@@ -6,10 +6,9 @@ part of carp_study_app;
 /// Notifies its listeners when consent is accepted. Listen via the global
 /// [bloc], which chains service notifications to the router.
 class ConsentService extends ChangeNotifier {
-  ConsentService(this._manager, this._studyService, {CarpBackend? backend}) : _backend = backend ?? CarpBackend();
+  ConsentService(this._manager, {CarpBackend? backend}) : _backend = backend ?? CarpBackend();
 
   final InformedConsentManager _manager;
-  final StudyService _studyService;
   final CarpBackend _backend;
   bool? _accepted;
 
@@ -21,9 +20,10 @@ class ConsentService extends ChangeNotifier {
   /// which needs a synchronous answer.
   bool? get isAccepted => _accepted;
 
-  /// Check [hasBeenAccepted], cache the answer in [isAccepted], and notify.
-  Future<bool> refreshStatus() async {
-    _accepted = await hasBeenAccepted;
+  /// Check [hasBeenAccepted] for [study], cache the answer in [isAccepted],
+  /// and notify. The coordinator supplies the active study.
+  Future<bool> refreshStatus(SmartphoneStudy? study) async {
+    _accepted = await hasBeenAccepted(study);
     notifyListeners();
     return _accepted!;
   }
@@ -31,13 +31,12 @@ class ConsentService extends ChangeNotifier {
   /// Forget the cached consent status, e.g. when leaving a study.
   void reset() => _accepted = null;
 
-  /// Has the informed consent been accepted by the user?
+  /// Has the informed consent been accepted by the user for [study]?
   ///
   /// Consent is tied to the account, not the device, so the backend is the
   /// single source of truth in non-local deployments. Local mode has no
   /// backend and falls back to the locally stored flag.
-  Future<bool> get hasBeenAccepted async {
-    final study = _studyService.study;
+  Future<bool> hasBeenAccepted(SmartphoneStudy? study) async {
     if (AppConfig.deploymentMode == DeploymentMode.local || study == null) {
       return LocalSettings().participant?.hasInformedConsentBeenAccepted ?? false;
     }

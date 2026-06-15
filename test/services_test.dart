@@ -203,14 +203,12 @@ void main() {
   group('ConsentService', () {
     late _FakeConsentManager manager;
     late MockCarpBackend backend;
-    late StudyService studyService;
     late ConsentService consent;
 
     setUp(() {
       manager = _FakeConsentManager();
       backend = MockCarpBackend();
-      studyService = StudyService();
-      consent = ConsentService(manager, studyService, backend: backend);
+      consent = ConsentService(manager, backend: backend);
     });
 
     test('getDocument delegates to the consent manager', () async {
@@ -220,17 +218,17 @@ void main() {
 
     test('local mode falls back to the locally stored participant flag', () async {
       LocalSettings().participant = Participant(studyDeploymentId: 'dep-1');
-      expect(await consent.hasBeenAccepted, isFalse);
+      expect(await consent.hasBeenAccepted(null), isFalse);
 
       await consent.accept();
-      expect(await consent.hasBeenAccepted, isTrue);
+      expect(await consent.hasBeenAccepted(null), isTrue);
     });
 
     test('caches the consent status for synchronous reads', () async {
       LocalSettings().participant = Participant(studyDeploymentId: 'dep-cache');
 
       expect(consent.isAccepted, isNull);
-      expect(await consent.refreshStatus(), isFalse);
+      expect(await consent.refreshStatus(null), isFalse);
       expect(consent.isAccepted, isFalse);
 
       await consent.accept();
@@ -250,21 +248,21 @@ void main() {
     });
 
     test('non-local mode asks the backend and is false when it fails', () async {
-      LocalSettings().study = SmartphoneStudy(studyDeploymentId: 'dep-1', deviceRoleName: 'phone');
       AppConfig.deploymentMode = DeploymentMode.test;
+      final study = SmartphoneStudy(studyDeploymentId: 'dep-1', deviceRoleName: 'phone');
       when(backend.getInformedConsentByRole('dep-1', null)).thenAnswer((_) async => throw Exception('offline'));
 
-      expect(await consent.hasBeenAccepted, isFalse);
+      expect(await consent.hasBeenAccepted(study), isFalse);
     });
 
     test('non-local mode is true when the backend has a consent document', () async {
-      LocalSettings().study = SmartphoneStudy(studyDeploymentId: 'dep-1', deviceRoleName: 'phone');
       AppConfig.deploymentMode = DeploymentMode.test;
+      final study = SmartphoneStudy(studyDeploymentId: 'dep-1', deviceRoleName: 'phone');
       when(
         backend.getInformedConsentByRole('dep-1', null),
       ).thenAnswer((_) async => InformedConsentInput(userId: '42', name: 'jdoe', consent: '{}', signatureImage: ''));
 
-      expect(await consent.hasBeenAccepted, isTrue);
+      expect(await consent.hasBeenAccepted(study), isTrue);
     });
   });
 
