@@ -1,39 +1,10 @@
 PODS:
-  - AppAuth (2.0.0):
-    - AppAuth/Core (= 2.0.0)
-    - AppAuth/ExternalUserAgent (= 2.0.0)
-  - AppAuth/Core (2.0.0)
-  - AppAuth/ExternalUserAgent (2.0.0):
-    - AppAuth/Core
-  - "appcheck (1.5.4+1)":
-    - Flutter
-  - audio_session (0.0.1):
-    - Flutter
   - audio_streamer (0.0.1):
-    - Flutter
-  - audioplayers_darwin (0.0.1):
-    - Flutter
-    - FlutterMacOS
-  - battery_plus (1.0.0):
-    - Flutter
-  - camera_avfoundation (0.0.1):
-    - Flutter
-  - connectivity_plus (0.0.1):
     - Flutter
   - dchs_flutter_beacon (0.6.5):
     - Flutter
-  - device_info_plus (0.0.1):
-    - Flutter
   - Flutter (1.0.0)
   - flutter_activity_recognition (0.0.1):
-    - Flutter
-  - flutter_appauth (0.0.1):
-    - AppAuth (= 2.0.0)
-    - Flutter
-  - flutter_blue_plus_darwin (0.0.2):
-    - Flutter
-    - FlutterMacOS
-  - flutter_local_notifications (0.0.1):
     - Flutter
   - flutter_secure_storage (6.0.0):
     - Flutter
@@ -41,15 +12,10 @@ PODS:
     - Flutter
     - flutter_sound_core (= 9.30.0)
   - flutter_sound_core (9.30.0)
-  - flutter_timezone (0.0.1):
-    - Flutter
   - flutter_web_auth_2 (3.0.0):
     - Flutter
   - health (12.2.1):
     - Flutter
-  - just_audio (0.0.1):
-    - Flutter
-    - FlutterMacOS
   - location (0.0.1):
     - Flutter
   - mdsflutter (0.0.1):
@@ -57,17 +23,9 @@ PODS:
     - Movesense
     - SwiftProtobuf
   - Movesense (3.33.7)
-  - network_info_plus (0.0.1):
-    - Flutter
   - oidc_ios (0.0.1):
     - Flutter
   - open_settings_plus (0.0.1):
-    - Flutter
-  - package_info_plus (0.4.5):
-    - Flutter
-  - pedometer (4.2.0):
-    - Flutter
-  - permission_handler_apple (9.4.8):
     - Flutter
   - polar (0.0.1):
     - Flutter
@@ -76,69 +34,31 @@ PODS:
     - RxSwift (~> 6.8.0)
     - SwiftProtobuf (~> 1.0)
     - Zip (~> 2.1.2)
-  - qr_code_scanner_plus (0.2.6):
-    - Flutter
   - RxSwift (6.8.0)
   - screen_state (1.0.0):
     - Flutter
-  - sensors_plus (0.0.1):
-    - Flutter
-  - shared_preferences_foundation (0.0.1):
-    - Flutter
-    - FlutterMacOS
-  - sqflite_darwin (0.0.4):
-    - Flutter
-    - FlutterMacOS
   - SwiftProtobuf (1.38.0)
-  - url_launcher_ios (0.0.1):
-    - Flutter
-  - video_player_avfoundation (0.0.1):
-    - Flutter
-    - FlutterMacOS
   - Zip (2.1.2)
 
 DEPENDENCIES:
-  - appcheck (from `.symlinks/plugins/appcheck/ios`)
-  - audio_session (from `.symlinks/plugins/audio_session/ios`)
   - audio_streamer (from `.symlinks/plugins/audio_streamer/ios`)
-  - audioplayers_darwin (from `.symlinks/plugins/audioplayers_darwin/darwin`)
-  - battery_plus (from `.symlinks/plugins/battery_plus/ios`)
-  - camera_avfoundation (from `.symlinks/plugins/camera_avfoundation/ios`)
-  - connectivity_plus (from `.symlinks/plugins/connectivity_plus/ios`)
   - dchs_flutter_beacon (from `.symlinks/plugins/dchs_flutter_beacon/ios`)
-  - device_info_plus (from `.symlinks/plugins/device_info_plus/ios`)
   - Flutter (from `Flutter`)
   - flutter_activity_recognition (from `.symlinks/plugins/flutter_activity_recognition/ios`)
-  - flutter_appauth (from `.symlinks/plugins/flutter_appauth/ios`)
-  - flutter_blue_plus_darwin (from `.symlinks/plugins/flutter_blue_plus_darwin/darwin`)
-  - flutter_local_notifications (from `.symlinks/plugins/flutter_local_notifications/ios`)
   - flutter_secure_storage (from `.symlinks/plugins/flutter_secure_storage/ios`)
   - flutter_sound (from `.symlinks/plugins/flutter_sound/ios`)
-  - flutter_timezone (from `.symlinks/plugins/flutter_timezone/ios`)
   - flutter_web_auth_2 (from `.symlinks/plugins/flutter_web_auth_2/ios`)
   - health (from `.symlinks/plugins/health/ios`)
-  - just_audio (from `.symlinks/plugins/just_audio/darwin`)
   - location (from `.symlinks/plugins/location/ios`)
   - mdsflutter (from `.symlinks/plugins/mdsflutter/ios`)
   - Movesense (from `https://bitbucket.org/movesense/movesense-mobile-lib/`)
-  - network_info_plus (from `.symlinks/plugins/network_info_plus/ios`)
   - oidc_ios (from `.symlinks/plugins/oidc_ios/ios`)
   - open_settings_plus (from `.symlinks/plugins/open_settings_plus/ios`)
-  - package_info_plus (from `.symlinks/plugins/package_info_plus/ios`)
-  - pedometer (from `.symlinks/plugins/pedometer/ios`)
-  - permission_handler_apple (from `.symlinks/plugins/permission_handler_apple/ios`)
   - polar (from `.symlinks/plugins/polar/ios`)
-  - qr_code_scanner_plus (from `.symlinks/plugins/qr_code_scanner_plus/ios`)
   - screen_state (from `.symlinks/plugins/screen_state/ios`)
-  - sensors_plus (from `.symlinks/plugins/sensors_plus/ios`)
-  - shared_preferences_foundation (from `.symlinks/plugins/shared_preferences_foundation/darwin`)
-  - sqflite_darwin (from `.symlinks/plugins/sqflite_darwin/darwin`)
-  - url_launcher_ios (from `.symlinks/plugins/url_launcher_ios/ios`)
-  - video_player_avfoundation (from `.symlinks/plugins/video_player_avfoundation/darwin`)
 
 SPEC REPOS:
   trunk:
-    - AppAuth
     - flutter_sound_core
     - PolarBleSdk
     - RxSwift
@@ -146,80 +66,36 @@ SPEC REPOS:
     - Zip
 
 EXTERNAL SOURCES:
-  appcheck:
-    :path: ".symlinks/plugins/appcheck/ios"
-  audio_session:
-    :path: ".symlinks/plugins/audio_session/ios"
   audio_streamer:
     :path: ".symlinks/plugins/audio_streamer/ios"
-  audioplayers_darwin:
-    :path: ".symlinks/plugins/audioplayers_darwin/darwin"
-  battery_plus:
-    :path: ".symlinks/plugins/battery_plus/ios"
-  camera_avfoundation:
-    :path: ".symlinks/plugins/camera_avfoundation/ios"
-  connectivity_plus:
-    :path: ".symlinks/plugins/connectivity_plus/ios"
   dchs_flutter_beacon:
     :path: ".symlinks/plugins/dchs_flutter_beacon/ios"
-  device_info_plus:
-    :path: ".symlinks/plugins/device_info_plus/ios"
   Flutter:
     :path: Flutter
   flutter_activity_recognition:
     :path: ".symlinks/plugins/flutter_activity_recognition/ios"
-  flutter_appauth:
-    :path: ".symlinks/plugins/flutter_appauth/ios"
-  flutter_blue_plus_darwin:
-    :path: ".symlinks/plugins/flutter_blue_plus_darwin/darwin"
-  flutter_local_notifications:
-    :path: ".symlinks/plugins/flutter_local_notifications/ios"
   flutter_secure_storage:
     :path: ".symlinks/plugins/flutter_secure_storage/ios"
   flutter_sound:
     :path: ".symlinks/plugins/flutter_sound/ios"
-  flutter_timezone:
-    :path: ".symlinks/plugins/flutter_timezone/ios"
   flutter_web_auth_2:
     :path: ".symlinks/plugins/flutter_web_auth_2/ios"
   health:
     :path: ".symlinks/plugins/health/ios"
-  just_audio:
-    :path: ".symlinks/plugins/just_audio/darwin"
   location:
     :path: ".symlinks/plugins/location/ios"
   mdsflutter:
     :path: ".symlinks/plugins/mdsflutter/ios"
   Movesense:
     :git: https://bitbucket.org/movesense/movesense-mobile-lib/
-  network_info_plus:
-    :path: ".symlinks/plugins/network_info_plus/ios"
   oidc_ios:
     :path: ".symlinks/plugins/oidc_ios/ios"
   open_settings_plus:
     :path: ".symlinks/plugins/open_settings_plus/ios"
-  package_info_plus:
-    :path: ".symlinks/plugins/package_info_plus/ios"
-  pedometer:
-    :path: ".symlinks/plugins/pedometer/ios"
-  permission_handler_apple:
-    :path: ".symlinks/plugins/permission_handler_apple/ios"
   polar:
     :path: ".symlinks/plugins/polar/ios"
-  qr_code_scanner_plus:
-    :path: ".symlinks/plugins/qr_code_scanner_plus/ios"
   screen_state:
     :path: ".symlinks/plugins/screen_state/ios"
-  sensors_plus:
-    :path: ".symlinks/plugins/sensors_plus/ios"
-  shared_preferences_foundation:
-    :path: ".symlinks/plugins/shared_preferences_foundation/darwin"
-  sqflite_darwin:
-    :path: ".symlinks/plugins/sqflite_darwin/darwin"
-  url_launcher_ios:
-    :path: ".symlinks/plugins/url_launcher_ios/ios"
-  video_player_avfoundation:
-    :path: ".symlinks/plugins/video_player_avfoundation/darwin"
 
 CHECKOUT OPTIONS:
   Movesense:
@@ -227,48 +103,25 @@ CHECKOUT OPTIONS:
     :git: https://bitbucket.org/movesense/movesense-mobile-lib/
 
 SPEC CHECKSUMS:
-  AppAuth: 1c1a8afa7e12f2ec3a294d9882dfa5ab7d3cb063
-  appcheck: 3c94d0ffc94bd639938cac7427d5b13df2795404
-  audio_session: 9bb7f6c970f21241b19f5a3658097ae459681ba0
   audio_streamer: 2e472b9f81cec5e381c4cf7667afa3055dcb45a4
-  audioplayers_darwin: 835ced6edd4c9fc8ebb0a7cc9e294a91d99917d5
-  battery_plus: b42253f6d2dde71712f8c36fef456d99121c5977
-  camera_avfoundation: 5675ca25298b6f81fa0a325188e7df62cc217741
-  connectivity_plus: cb623214f4e1f6ef8fe7403d580fdad517d2f7dd
   dchs_flutter_beacon: 88d72cc467de508d621e454ea66c6231d0897d4c
-  device_info_plus: 21fcca2080fbcd348be798aa36c3e5ed849eefbe
   Flutter: cabc95a1d2626b1b06e7179b784ebcf0c0cde467
   flutter_activity_recognition: 52dfad4c1e9cec99f0841b3ed0efcc9d424b3deb
-  flutter_appauth: d4abcf54856e5d8ba82ed7646ffc83245d4aa448
-  flutter_blue_plus_darwin: 20a08bfeaa0f7804d524858d3d8744bcc1b6dbc3
-  flutter_local_notifications: a5a732f069baa862e728d839dd2ebb904737effb
   flutter_secure_storage: 1ed9476fba7e7a782b22888f956cce43e2c62f13
   flutter_sound: d95194f6476c9ad211d22b3a414d852c12c7ca44
   flutter_sound_core: 7f2626d249d3a57bfa6da892ef7e22d234482c1a
-  flutter_timezone: 7c838e17ffd4645d261e87037e5bebf6d38fe544
   flutter_web_auth_2: 5c8d9dcd7848b5a9efb086d24e7a9adcae979c80
   health: fe206e65f13a9b88623605fbd8af8f029e23dc35
-  just_audio: 4e391f57b79cad2b0674030a00453ca5ce817eed
   location: 155caecf9da4f280ab5fe4a55f94ceccfab838f8
   mdsflutter: bd3c0b3335d50947d1a192cf70f930e0fb04a766
   Movesense: 3006608dae30dfebfc084408d2e9676e5396da8d
-  network_info_plus: cf61925ab5205dce05a4f0895989afdb6aade5fc
   oidc_ios: 16966cad509ce6850ca4ca1216c5138bef2a8726
   open_settings_plus: d19f91e8a04649358a51c19b484ce2e637149d70
-  package_info_plus: af8e2ca6888548050f16fa2f1938db7b5a5df499
-  pedometer: 6806036696085739f36b4e4e5374135e86220a59
-  permission_handler_apple: 92d754bbaa7361d436db2d6c3c1c2a0fdcec462e
   polar: 0374f6063ade7e2dd85d626f87cbe2393d3eda7c
   PolarBleSdk: bfb57cf8350f0c53d441b8632ba6df363ce7c79f
-  qr_code_scanner_plus: 1fb59fd4576edb53ec7560c3746f454dee54300c
   RxSwift: 4e28be97cbcfeee614af26d83415febbf2bf6f45
   screen_state: 52d6e997d31bddba6417c60d9cdd22effd0320a7
-  sensors_plus: 6a11ed0c2e1d0bd0b20b4029d3bad27d96e0c65b
-  shared_preferences_foundation: 7036424c3d8ec98dfe75ff1667cb0cd531ec82bb
-  sqflite_darwin: 20b2a3a3b70e43edae938624ce550a3cbf66a3d0
   SwiftProtobuf: d724b5145bfc609d9a49c1e3e3a3dabb07273ffb
-  url_launcher_ios: 7a95fa5b60cc718a708b8f2966718e93db0cef1b
-  video_player_avfoundation: 3453f792138786248960ca029747fcd9f318ef52
   Zip: b3fef584b147b6e582b2256a9815c897d60ddc67
 
 PODFILE CHECKSUM: 45842edf150243fea66883d4dfad1e5ddb428147
