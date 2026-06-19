@@ -268,7 +268,7 @@ void main() {
 
   group('Old-namespace CAWS compatibility', () {
     test('a pre-CAMS-2.x deployment status with CAMS device types deserializes', () {
-      Sensing(); // registers the sampling packages and old-namespace device aliases
+      Sensing(); // registers the sampling packages
 
       // The shape CAWS returns for deployments created before CAMS 2.x -
       // device types are in the old 'dk.cachet.carp.common.application.devices'

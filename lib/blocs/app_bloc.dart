@@ -177,7 +177,7 @@ class StudyAppBLoC extends ChangeNotifier {
       rethrow;
     }
 
-    appViewModel.init(Sensing().controller!);
+    appViewModel.init(study.controller!);
 
     messages.start();
 
@@ -244,7 +244,7 @@ class StudyAppBLoC extends ChangeNotifier {
   @override
   void dispose() {
     messages.dispose();
-    Sensing().controller?.dispose();
+    study.controller?.dispose();
     super.dispose();
   }
 }
