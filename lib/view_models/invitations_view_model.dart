@@ -30,11 +30,17 @@ class InvitationsViewModel extends ViewModel {
   /// Load / refresh the list of invitations from CAWS. Always hits the
   /// backend - used for sign-in and pull-to-refresh.
   Future<void> loadInvitations() async {
+    logApp('InvitationsViewModel.loadInvitations() START');
     try {
       _invitations = await _auth.getInvitations();
       _error = null;
+      logApp(
+        'InvitationsViewModel.loadInvitations() DONE - ${_invitations!.length} invitation(s): '
+        '${_invitations!.map((i) => i.studyDeploymentId).toList()}',
+      );
     } catch (error) {
       warning('$runtimeType - Could not load invitations - $error');
+      logApp('InvitationsViewModel.loadInvitations() FAILED - $error');
       _error = error;
     }
     notifyListeners();
@@ -52,7 +58,10 @@ class InvitationsViewModel extends ViewModel {
       invitations.firstWhere((invitation) => invitation.participation.participantId == invitationId);
 
   /// Accept [invitation] and make it the active study in the app.
-  void accept(ActiveParticipationInvitation invitation) => bloc.setStudyInvitation(invitation);
+  void accept(ActiveParticipationInvitation invitation) {
+    logApp('InvitationsViewModel.accept() - deploymentId=${invitation.studyDeploymentId}');
+    bloc.setStudyInvitation(invitation);
+  }
 
   /// Sign out and return to the login page.
   Future<void> signOut() => bloc.signOutAndLeaveStudy();

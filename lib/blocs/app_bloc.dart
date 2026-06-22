@@ -78,6 +78,7 @@ class StudyAppBLoC extends ChangeNotifier {
   }
 
   void _onConsentChanged() {
+    logAppState('StudyAppBLoC._onConsentChanged() - consent.isAccepted=${consent.isAccepted}');
     notifyListeners();
     if (consent.isAccepted == true) unawaited(tryConfigureStudy());
   }
@@ -86,9 +87,11 @@ class StudyAppBLoC extends ChangeNotifier {
   /// throwing. Used by the setup flow and retry affordances, where no
   /// caller can handle the error.
   Future<void> tryConfigureStudy() async {
+    logAppState('StudyAppBLoC.tryConfigureStudy() START');
     try {
       await configureStudy();
     } catch (error) {
+      logAppState('StudyAppBLoC.tryConfigureStudy() FAILED - $error');
       final context = scaffoldKey.currentContext;
       final locale = context != null ? RPLocalizations.of(context) : null;
       scaffoldKey.currentState?.showSnackBar(
@@ -100,6 +103,7 @@ class StudyAppBLoC extends ChangeNotifier {
   /// Initialize this BLOC. Called before being used for anything.
   Future<void> initialize() async {
     if (isInitialized) return;
+    logAppState('StudyAppBLoC.initialize() START');
 
     Settings().debugLevel = AppConfig.debugLevel;
     await Settings().init();
@@ -122,9 +126,14 @@ class StudyAppBLoC extends ChangeNotifier {
     notifyListeners();
     debug('$runtimeType initialized - deployment mode: ${AppConfig.deploymentMode.name}');
 
+    logAppState('StudyAppBLoC.initialize() DONE');
+
     // For a returning user, check consent - via [_onConsentChanged] this
     // routes to the consent page or configures and starts the study.
-    if (study.hasStudy) unawaited(consent.refreshStatus(study.study));
+    if (study.hasStudy) {
+      logApp('StudyAppBLoC.initialize() - returning user has a persisted study, refreshing consent status');
+      unawaited(consent.refreshStatus(study.study));
+    }
   }
 
   /// Set the active study in the app based on an [invitation].
@@ -132,6 +141,11 @@ class StudyAppBLoC extends ChangeNotifier {
   /// The study translations are re-loaded by the app, which listens for the
   /// study change.
   void setStudyInvitation(ActiveParticipationInvitation invitation) {
+    logApp(
+      'StudyAppBLoC.setStudyInvitation() - accepting invitation: '
+      'deploymentId=${invitation.studyDeploymentId}, participantId=${invitation.participation.participantId}',
+    );
+
     // create and save the participant info based on this invitation
     LocalSettings().participant = Participant.fromParticipationInvitation(invitation);
 
@@ -145,6 +159,7 @@ class StudyAppBLoC extends ChangeNotifier {
     notifyListeners();
 
     info('Invitation received - study: ${study.study}');
+    logAppState('StudyAppBLoC.setStudyInvitation() DONE - study set, refreshing consent status');
 
     // Routes to the consent page - or, if this participant has already
     // consented (e.g. on another phone), configures and starts the study.
@@ -164,7 +179,11 @@ class StudyAppBLoC extends ChangeNotifier {
   /// to surface.
   Future<void> configureStudy() async {
     // early out if already configuring or configured
-    if (_state == StudyAppState.configuring || isConfigured) return;
+    if (_state == StudyAppState.configuring || isConfigured) {
+      logApp('StudyAppBLoC.configureStudy() - skipped, already ${_state.name}');
+      return;
+    }
+    logAppState('StudyAppBLoC.configureStudy() START');
 
     final previousState = _state;
     _state = StudyAppState.configuring;
@@ -174,6 +193,7 @@ class StudyAppBLoC extends ChangeNotifier {
     } catch (error) {
       _state = previousState;
       warning('$runtimeType - Study configuration failed - $error');
+      logAppState('StudyAppBLoC.configureStudy() FAILED - study.configure() threw - $error');
       rethrow;
     }
 
@@ -187,6 +207,7 @@ class StudyAppBLoC extends ChangeNotifier {
 
     _state = StudyAppState.configured;
     notifyListeners();
+    logAppState('StudyAppBLoC.configureStudy() DONE - now starting sensing');
 
     await study.start();
   }

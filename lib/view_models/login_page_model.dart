@@ -20,13 +20,16 @@ class LoginViewModel extends ViewModel {
 
   /// Sign in via the CAWS web view.
   Future<SignInResult> signIn() async {
+    logAppState('LoginViewModel.signIn() START');
     if (!await _system.checkConnectivity()) return SignInResult.offline;
 
     await _auth.initialize();
     await _auth.authenticate();
 
     notifyListeners();
-    return _auth.isAuthenticated ? SignInResult.success : SignInResult.failed;
+    final result = _auth.isAuthenticated ? SignInResult.success : SignInResult.failed;
+    logAppState('LoginViewModel.signIn() DONE - result=${result.name}');
+    return result;
   }
 
   /// Sign in anonymously using a scanned magic link.

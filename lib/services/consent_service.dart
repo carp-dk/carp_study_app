@@ -23,7 +23,9 @@ class ConsentService extends ChangeNotifier {
   /// Check [hasBeenAccepted] for [study], cache the answer in [isAccepted],
   /// and notify. The coordinator supplies the active study.
   Future<bool> refreshStatus(SmartphoneStudy? study) async {
+    logApp('ConsentService.refreshStatus() START - deploymentId=${study?.studyDeploymentId}');
     _accepted = await hasBeenAccepted(study);
+    logApp('ConsentService.refreshStatus() DONE - isAccepted=$_accepted');
     notifyListeners();
     return _accepted!;
   }

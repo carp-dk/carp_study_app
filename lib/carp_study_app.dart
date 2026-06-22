@@ -27,15 +27,17 @@ class CarpStudyAppState extends State<CarpStudyApp> {
   // changes notify the router via refreshListenable, which re-evaluates the
   // redirect at the current location and moves the user automatically.
   final GoRouter _router = GoRouter(
-    initialLocation: StudyPage.route,
+    initialLocation: homeRoute,
     navigatorKey: _rootNavigatorKey,
     refreshListenable: bloc,
     errorBuilder: (context, state) => const ErrorPage(),
     redirect: (context, state) async {
       final loc = state.matchedLocation;
+      logAppState('GoRouter.redirect() - evaluating at location: $loc');
 
       // 1) Not authenticated → login page.
       if (AppConfig.deploymentMode != DeploymentMode.local && !bloc.auth.isAuthenticated) {
+        logApp('GoRouter.redirect() - [1] not authenticated → ${LoginPage.route}');
         return LoginPage.route;
       }
 
@@ -43,8 +45,10 @@ class CarpStudyAppState extends State<CarpStudyApp> {
       // details page). Anywhere else gets bounced to the list.
       if (!bloc.study.hasStudy) {
         if (loc == InvitationListPage.route || loc.startsWith('${InvitationDetailsPage.route}/')) {
+          logApp('GoRouter.redirect() - [2] no study, already on invitation flow → stay');
           return null;
         }
+        logApp('GoRouter.redirect() - [2] no study → ${InvitationListPage.route}');
         return InvitationListPage.route;
       }
 

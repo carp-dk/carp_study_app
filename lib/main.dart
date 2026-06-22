@@ -61,6 +61,7 @@ import 'package:carp_themes_package/carp_themes_package.dart';
 
 part 'blocs/app_bloc.dart';
 part 'blocs/app_config.dart';
+part 'blocs/app_log.dart';
 part 'blocs/util.dart';
 part 'blocs/sensing.dart';
 

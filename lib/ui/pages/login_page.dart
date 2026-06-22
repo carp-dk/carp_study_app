@@ -58,6 +58,10 @@ class _LoginPageState extends State<LoginPage> {
                       final invitations = bloc.appViewModel.invitationsListViewModel;
                       await invitations.loadInvitations();
                       if (!context.mounted) return;
+                      logApp(
+                        'LoginPage - sign-in success, loaded ${invitations.invitations.length} invitation(s), '
+                        'navigating to landingRoute=${invitations.landingRoute}',
+                      );
                       context.go(invitations.landingRoute);
                     } else if (result == SignInResult.offline) {
                       showDialog<bool>(
