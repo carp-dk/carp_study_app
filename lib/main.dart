@@ -125,7 +125,7 @@ part 'ui/tasks/audio_task_page.dart';
 part 'ui/tasks/audio_page.dart';
 part 'ui/pages/study_details_page.dart';
 part 'ui/pages/message_details_page.dart';
-part 'ui/pages/invitation_page.dart';
+part 'ui/pages/invitation_details_page.dart';
 part 'ui/pages/invitation_list_page.dart';
 part 'ui/pages/process_message_page.dart';
 part 'ui/tasks/camera_task_page.dart';
