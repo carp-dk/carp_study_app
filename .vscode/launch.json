@@ -28,6 +28,32 @@
       "flutterMode": "debug"
     },
     {
+      // profile mode using the DEV CAWS instance - for measuring jank/perf
+      "name": "DEV (profile) - carp-studies-app",
+      "request": "launch",
+      "type": "dart",
+      "toolArgs": [
+        "--dart-define",
+        "deployment-mode=dev",
+        "--dart-define",
+        "debug-level=info"
+      ],
+      "flutterMode": "profile"
+    },
+    {
+      // release mode using the DEV CAWS instance - production-speed sanity check
+      "name": "DEV (release) - carp-studies-app",
+      "request": "launch",
+      "type": "dart",
+      "toolArgs": [
+        "--dart-define",
+        "deployment-mode=dev",
+        "--dart-define",
+        "debug-level=info"
+      ],
+      "flutterMode": "release"
+    },
+    {
       // debug mode using the TEST CAWS instance
       "name": "TEST - carp-studies-app",
       "request": "launch",
