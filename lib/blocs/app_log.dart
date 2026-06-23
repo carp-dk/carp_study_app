@@ -41,7 +41,10 @@ String _appStateSnapshot() {
   final settings = LocalSettings();
 
   line('bloc.state', _safe(() => bloc.state.name));
-  line('isInitialized/isConfiguring/isConfigured', _safe(() => '${bloc.isInitialized}/${bloc.isConfiguring}/${bloc.isConfigured}'));
+  line(
+    'isInitialized/isConfiguring/isConfigured',
+    _safe(() => '${bloc.isInitialized}/${bloc.isConfiguring}/${bloc.isConfigured}'),
+  );
   line('deploymentMode', _safe(() => AppConfig.deploymentMode.name));
   line('authenticated', _safe(() => bloc.auth.isAuthenticated));
   line('anonymous', _safe(() => bloc.auth.isAnonymous));
