@@ -71,7 +71,6 @@ class StudyService {
     if (study == null) throw StateError('No study set - cannot configure a study deployment.');
     logApp('StudyService.configure() - deploymentId=${study!.studyDeploymentId}, deviceRole=${study!.deviceRoleName}');
 
-    await Sensing().initialize(deploymentService);
     final status = await addStudy(study!);
 
     logApp('StudyService.configure() - addStudy returned status=$status, isDeployed=$isDeployed');

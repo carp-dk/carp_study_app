@@ -110,7 +110,7 @@ class StudyAppBLoC extends ChangeNotifier {
 
     CarpResourceManager().initialize();
 
-    Sensing();
+    await Sensing().initialize(study.deploymentService);
 
     if (AppConfig.deploymentMode != DeploymentMode.local) {
       // Initialize and use the CAWS backend if not in local deployment mode
