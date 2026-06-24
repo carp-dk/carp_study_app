@@ -23,7 +23,7 @@ class InformedConsentState extends State<InformedConsentPage> {
     _submitted = true;
     await widget.model.informedConsentHasBeenAccepted(result);
     if (!mounted) return;
-    context.go(CarpStudyAppState.homeRoute);
+    context.go(CarpAppState.homeRoute);
   }
 
   @override
@@ -49,7 +49,7 @@ class InformedConsentState extends State<InformedConsentPage> {
           if (document == null && !_submitted) {
             _submitted = true;
             await widget.model.acceptWithoutDocument();
-            if (mounted) context.go(CarpStudyAppState.homeRoute);
+            if (mounted) context.go(CarpAppState.homeRoute);
           }
           return document;
         }),

@@ -110,7 +110,7 @@ class AudioTaskPageState extends State<AudioTaskPage> {
             TextButton(
               child: Text(locale.translate("YES")),
               onPressed: () {
-                context.pushReplacement(CarpStudyAppState.homeRoute);
+                context.pushReplacement(CarpAppState.homeRoute);
               },
             ),
           ],

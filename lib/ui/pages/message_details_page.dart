@@ -31,7 +31,7 @@ class MessageDetailsPage extends StatelessWidget {
                       if (context.canPop()) {
                         context.pop();
                       } else {
-                        context.go(CarpStudyAppState.homeRoute);
+                        context.go(CarpAppState.homeRoute);
                       }
                     },
                   ),

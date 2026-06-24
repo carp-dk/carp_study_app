@@ -4,7 +4,7 @@ part of carp_study_app;
 ///
 /// Shown once the onboarding process is done. All setup orchestration
 /// (consent gating, study configuration, starting sensing) is owned by the
-/// [StudyAppBLoC] and the router redirect - not this page.
+/// [AppBloc] and the router redirect - not this page.
 class HomePage extends StatefulWidget {
   final HomePageViewModel model;
   final Widget child;
@@ -109,7 +109,7 @@ class HomePageState extends State<HomePage> {
         context.go(DeviceListPage.route);
         break;
       case -1:
-        context.go(CarpStudyAppState.homeRoute);
+        context.go(CarpAppState.homeRoute);
         break;
     }
   }

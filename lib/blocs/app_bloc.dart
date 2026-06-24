@@ -1,7 +1,7 @@
 part of carp_study_app;
 
-/// The state of the [StudyAppBLoC].
-enum StudyAppState {
+/// The state of the [AppBloc].
+enum AppState {
   /// The BLoC is created but not ready for use.
   created,
 
@@ -27,9 +27,9 @@ enum StudyAppState {
 ///
 /// Works as a [ChangeNotifier] and will notify its listeners (incl. the
 /// router) on important changes.
-class StudyAppBLoC extends ChangeNotifier {
-  StudyAppState _state = StudyAppState.created;
-  final CarpStudyAppViewModel _appViewModel = CarpStudyAppViewModel();
+class AppBloc extends ChangeNotifier {
+  AppState _state = AppState.created;
+  final AppViewModel _appViewModel = AppViewModel();
   StreamSubscription<UserTask>? _userTaskNotificationSubscription;
 
   /// The resource managers matching the current deployment mode.
@@ -51,21 +51,21 @@ class StudyAppBLoC extends ChangeNotifier {
   late final ConsentService consent = ConsentService(resources.informedConsentManager);
 
   /// The state of this BloC.
-  StudyAppState get state => _state;
+  AppState get state => _state;
 
-  bool get isInitialized => _state.index >= StudyAppState.initialized.index;
-  bool get isConfiguring => _state.index >= StudyAppState.configuring.index;
-  bool get isConfigured => _state.index >= StudyAppState.configured.index;
+  bool get isInitialized => _state.index >= AppState.initialized.index;
+  bool get isConfiguring => _state.index >= AppState.configuring.index;
+  bool get isConfigured => _state.index >= AppState.configured.index;
 
   /// The overall data model for this app
-  CarpStudyAppViewModel get appViewModel => _appViewModel;
+  AppViewModel get appViewModel => _appViewModel;
 
   // ScaffoldMessenger for showing snack bars
   final _scaffoldKey = GlobalKey<ScaffoldMessengerState>();
   GlobalKey<ScaffoldMessengerState> get scaffoldKey => _scaffoldKey;
 
   /// Create the BLoC for the app.
-  StudyAppBLoC() : super() {
+  AppBloc() : super() {
     info(
       '$runtimeType created. '
       'DeploymentMode: ${AppConfig.deploymentMode.name}, '
@@ -78,7 +78,7 @@ class StudyAppBLoC extends ChangeNotifier {
   }
 
   void _onConsentChanged() {
-    logAppState('StudyAppBLoC._onConsentChanged() - consent.isAccepted=${consent.isAccepted}');
+    logAppState('AppBloc._onConsentChanged() - consent.isAccepted=${consent.isAccepted}');
     notifyListeners();
     if (consent.isAccepted == true) unawaited(tryConfigureStudy());
   }
@@ -87,11 +87,11 @@ class StudyAppBLoC extends ChangeNotifier {
   /// throwing. Used by the setup flow and retry affordances, where no
   /// caller can handle the error.
   Future<void> tryConfigureStudy() async {
-    logAppState('StudyAppBLoC.tryConfigureStudy() START');
+    logAppState('AppBloc.tryConfigureStudy() START');
     try {
       await configureStudy();
     } catch (error) {
-      logAppState('StudyAppBLoC.tryConfigureStudy() FAILED - $error');
+      logAppState('AppBloc.tryConfigureStudy() FAILED - $error');
       final context = scaffoldKey.currentContext;
       final locale = context != null ? RPLocalizations.of(context) : null;
       scaffoldKey.currentState?.showSnackBar(
@@ -103,14 +103,12 @@ class StudyAppBLoC extends ChangeNotifier {
   /// Initialize this BLOC. Called before being used for anything.
   Future<void> initialize() async {
     if (isInitialized) return;
-    logAppState('StudyAppBLoC.initialize() START');
+    logAppState('AppBloc.initialize() START');
 
     Settings().debugLevel = AppConfig.debugLevel;
     await Settings().init();
 
     CarpResourceManager().initialize();
-
-    await Sensing().initialize(study.deploymentService);
 
     if (AppConfig.deploymentMode != DeploymentMode.local) {
       // Initialize and use the CAWS backend if not in local deployment mode
@@ -121,17 +119,18 @@ class StudyAppBLoC extends ChangeNotifier {
       // Deploy the local protocol if running in local mode
       await study.deployLocalProtocol();
     }
+    await Sensing().initialize(study.deploymentService);
 
-    _state = StudyAppState.initialized;
+    _state = AppState.initialized;
     notifyListeners();
     debug('$runtimeType initialized - deployment mode: ${AppConfig.deploymentMode.name}');
 
-    logAppState('StudyAppBLoC.initialize() DONE');
+    logAppState('AppBloc.initialize() DONE');
 
     // For a returning user, check consent - via [_onConsentChanged] this
     // routes to the consent page or configures and starts the study.
     if (study.hasStudy) {
-      logApp('StudyAppBLoC.initialize() - returning user has a persisted study, refreshing consent status');
+      logApp('AppBloc.initialize() - returning user has a persisted study, refreshing consent status');
       unawaited(consent.refreshStatus(study.study));
     }
   }
@@ -142,7 +141,7 @@ class StudyAppBLoC extends ChangeNotifier {
   /// study change.
   void setStudyInvitation(ActiveParticipationInvitation invitation) {
     logApp(
-      'StudyAppBLoC.setStudyInvitation() - accepting invitation: '
+      'AppBloc.setStudyInvitation() - accepting invitation: '
       'deploymentId=${invitation.studyDeploymentId}, participantId=${invitation.participation.participantId}',
     );
 
@@ -159,7 +158,7 @@ class StudyAppBLoC extends ChangeNotifier {
     notifyListeners();
 
     info('Invitation received - study: ${study.study}');
-    logAppState('StudyAppBLoC.setStudyInvitation() DONE - study set, refreshing consent status');
+    logAppState('AppBloc.setStudyInvitation() DONE - study set, refreshing consent status');
 
     // Routes to the consent page - or, if this participant has already
     // consented (e.g. on another phone), configures and starts the study.
@@ -179,21 +178,21 @@ class StudyAppBLoC extends ChangeNotifier {
   /// to surface.
   Future<void> configureStudy() async {
     // early out if already configuring or configured
-    if (_state == StudyAppState.configuring || isConfigured) {
-      logApp('StudyAppBLoC.configureStudy() - skipped, already ${_state.name}');
+    if (_state == AppState.configuring || isConfigured) {
+      logApp('AppBloc.configureStudy() - skipped, already ${_state.name}');
       return;
     }
-    logAppState('StudyAppBLoC.configureStudy() START');
+    logAppState('AppBloc.configureStudy() START');
 
     final previousState = _state;
-    _state = StudyAppState.configuring;
+    _state = AppState.configuring;
 
     try {
       await study.configure();
     } catch (error) {
       _state = previousState;
       warning('$runtimeType - Study configuration failed - $error');
-      logAppState('StudyAppBLoC.configureStudy() FAILED - study.configure() threw - $error');
+      logAppState('AppBloc.configureStudy() FAILED - study.configure() threw - $error');
       rethrow;
     }
 
@@ -205,9 +204,9 @@ class StudyAppBLoC extends ChangeNotifier {
 
     info('Study configuration done.');
 
-    _state = StudyAppState.configured;
+    _state = AppState.configured;
     notifyListeners();
-    logAppState('StudyAppBLoC.configureStudy() DONE - now starting sensing');
+    logAppState('AppBloc.configureStudy() DONE - now starting sensing');
 
     await study.start();
   }
@@ -247,7 +246,7 @@ class StudyAppBLoC extends ChangeNotifier {
     // stop sensing and remove all deployment info
     await study.remove();
 
-    _state = StudyAppState.initialized;
+    _state = AppState.initialized;
     notifyListeners();
   }
 

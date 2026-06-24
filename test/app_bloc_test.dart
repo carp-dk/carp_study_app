@@ -13,25 +13,25 @@ void main() {
     AppConfig.deploymentMode = DeploymentMode.local;
   });
 
-  group('StudyAppBLoC.configureStudy', () {
+  group('AppBloc.configureStudy', () {
     test('is atomic and retryable - a failed configuration resets the state', () async {
-      final bloc = StudyAppBLoC();
+      final bloc = AppBloc();
       LocalSettings().study = SmartphoneStudy(studyDeploymentId: 'dep-bloc-1', deviceRoleName: 'phone');
 
       // Sensing cannot be set up in a unit test environment, so the
       // configuration fails - the state must roll back instead of being
       // stuck in `configuring` (which would block any retry forever).
       await expectLater(bloc.configureStudy(), throwsA(anything));
-      expect(bloc.state, StudyAppState.created);
+      expect(bloc.state, AppState.created);
       expect(bloc.isConfiguring, isFalse);
 
       // A retry must run (and fail) again - not silently return.
       await expectLater(bloc.configureStudy(), throwsA(anything));
-      expect(bloc.state, StudyAppState.created);
+      expect(bloc.state, AppState.created);
     });
 
     test('throws when no study has been set', () async {
-      final bloc = StudyAppBLoC();
+      final bloc = AppBloc();
       await LocalSettings().eraseStudyDeployment();
 
       await expectLater(bloc.configureStudy(), throwsStateError);

@@ -191,7 +191,7 @@ void main() {
       // invitation flow.
       await bloc.signOutAndLeaveStudy();
 
-      expect(bloc.state, StudyAppState.initialized);
+      expect(bloc.state, AppState.initialized);
       expect(bloc.study.hasStudy, isFalse);
       expect(bloc.study.isRunning, isFalse);
       expect(bloc.auth.isAuthenticated, isFalse);

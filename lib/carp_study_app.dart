@@ -8,15 +8,15 @@ class CarpStudyApp extends StatefulWidget {
 
   /// Reload language translations and re-build the entire app.
   static void reloadLocale(BuildContext context) async {
-    CarpStudyAppState? state = context.findAncestorStateOfType<CarpStudyAppState>();
+    CarpAppState? state = context.findAncestorStateOfType<CarpAppState>();
     state?.reloadLocale();
   }
 
   @override
-  CarpStudyAppState createState() => CarpStudyAppState();
+  CarpAppState createState() => CarpAppState();
 }
 
-class CarpStudyAppState extends State<CarpStudyApp> {
+class CarpAppState extends State<CarpStudyApp> {
   /// The landing page once the onboarding process is done.
   static const String homeRoute = '/';
 
@@ -174,7 +174,7 @@ class CarpStudyAppState extends State<CarpStudyApp> {
     loaders: [const AssetLocalizationLoader(), bloc.resources.localizationLoader],
   );
 
-  StudyAppState _previousBlocState = bloc.state;
+  AppState _previousBlocState = bloc.state;
   String? _previousDeploymentId = bloc.study.study?.studyDeploymentId;
 
   @override
@@ -192,11 +192,11 @@ class CarpStudyAppState extends State<CarpStudyApp> {
   /// Re-load translations when a (new) study is set or has been configured,
   /// since both make new study-specific translations available.
   void _onAppStateChanged() {
-    final configured = bloc.state == StudyAppState.configured;
+    final configured = bloc.state == AppState.configured;
     final deploymentId = bloc.study.study?.studyDeploymentId;
 
     if (mounted &&
-        ((configured && _previousBlocState != StudyAppState.configured) || deploymentId != _previousDeploymentId)) {
+        ((configured && _previousBlocState != AppState.configured) || deploymentId != _previousDeploymentId)) {
       reloadLocale();
     }
 

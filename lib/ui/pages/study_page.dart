@@ -459,7 +459,7 @@ extension CopyWithAdditional on DateTime {
   }
 }
 
-/// Placeholder shown while [StudyAppBLoC.configureStudy] is running.
+/// Placeholder shown while [AppBloc.configureStudy] is running.
 class _ConfiguringStudyLoader extends StatelessWidget {
   const _ConfiguringStudyLoader();
 

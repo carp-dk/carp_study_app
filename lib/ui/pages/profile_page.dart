@@ -253,7 +253,7 @@ class ProfilePageState extends State<ProfilePage> {
                 if (builderContext.mounted) {
                   await widget.model.signOutAndLeaveStudy();
                   builderContext.pop();
-                  builderContext.go(CarpStudyAppState.homeRoute);
+                  builderContext.go(CarpAppState.homeRoute);
                 }
               },
             ),

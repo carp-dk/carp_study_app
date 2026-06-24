@@ -186,7 +186,7 @@ class HourlyMeasure {
 }
 
 /// The view model for the entire app.
-class CarpStudyAppViewModel extends ViewModel {
+class AppViewModel extends ViewModel {
   final HomePageViewModel _homePageViewModel = HomePageViewModel();
   final LoginViewModel _loginViewModel = LoginViewModel();
   final DataVisualizationPageViewModel _dataVisualizationPageViewModel = DataVisualizationPageViewModel();
@@ -198,7 +198,7 @@ class CarpStudyAppViewModel extends ViewModel {
   final InformedConsentViewModel _informedConsentViewModel = InformedConsentViewModel();
   final ParticipantDataPageViewModel _participantDataPageViewModel = ParticipantDataPageViewModel();
 
-  CarpStudyAppViewModel() : super();
+  AppViewModel() : super();
 
   HomePageViewModel get homePageViewModel => _homePageViewModel;
   LoginViewModel get loginViewModel => _loginViewModel;
