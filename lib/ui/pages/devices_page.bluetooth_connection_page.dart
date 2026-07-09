@@ -21,6 +21,7 @@ class _BluetoothConnectionPageState extends State<BluetoothConnectionPage> {
   CurrentStep currentStep;
   bool isConnecting = false;
   Timer? _connectionTimeoutTimer;
+  StreamSubscription<DeviceStatus>? _statusSubscription;
 
   @override
   initState() {
@@ -32,6 +33,7 @@ class _BluetoothConnectionPageState extends State<BluetoothConnectionPage> {
   void dispose() {
     FlutterBluePlus.stopScan();
     _connectionTimeoutTimer?.cancel();
+    _statusSubscription?.cancel();
     LocalSettings().hasSeenBluetoothConnectionInstructions = true;
     super.dispose();
   }
@@ -227,7 +229,9 @@ class _BluetoothConnectionPageState extends State<BluetoothConnectionPage> {
 
         FlutterBluePlus.stopScan();
         widget.device.connectToDevice(selectedDevice!);
-        widget.device.statusEvents.listen((state) {
+        // Repeated connect attempts must not stack listeners.
+        _statusSubscription?.cancel();
+        _statusSubscription = widget.device.statusEvents.listen((state) {
           if (state == DeviceStatus.connected) {
             _connectionTimeoutTimer?.cancel();
             if (mounted) {

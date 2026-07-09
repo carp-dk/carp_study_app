@@ -60,8 +60,17 @@ import 'package:carp_movesense_package/carp_movesense_package.dart';
 import 'package:carp_themes_package/carp_themes_package.dart';
 
 part 'blocs/app_bloc.dart';
+part 'blocs/app_config.dart';
+part 'blocs/app_log.dart';
 part 'blocs/util.dart';
 part 'blocs/sensing.dart';
+
+part 'services/resource_manager_factory.dart';
+part 'services/system_info_service.dart';
+part 'services/auth_service.dart';
+part 'services/study_service.dart';
+part 'services/message_service.dart';
+part 'services/consent_service.dart';
 
 part 'data/local_settings.dart';
 part 'data/carp_backend.dart';
@@ -71,6 +80,8 @@ part 'data/participant.dart';
 part 'data/local_participation_service.dart';
 
 part 'view_models/view_model.dart';
+part 'view_models/home_page_model.dart';
+part 'view_models/login_page_model.dart';
 part 'view_models/tasklist_page_model.dart';
 part 'view_models/study_page_model.dart';
 part 'view_models/profile_page_model.dart';
@@ -115,7 +126,7 @@ part 'ui/tasks/audio_task_page.dart';
 part 'ui/tasks/audio_page.dart';
 part 'ui/pages/study_details_page.dart';
 part 'ui/pages/message_details_page.dart';
-part 'ui/pages/invitation_page.dart';
+part 'ui/pages/invitation_details_page.dart';
 part 'ui/pages/invitation_list_page.dart';
 part 'ui/pages/process_message_page.dart';
 part 'ui/tasks/camera_task_page.dart';
@@ -148,15 +159,15 @@ part 'main.g.dart';
 
 late CarpStudyApp app;
 void main() async {
-  // Initialize CAMS and related packages (loading json deserialization functions)
-  CarpMobileSensing.ensureInitialized();
-  CognitionPackage.ensureInitialized();
-  CarpDataManager.ensureInitialized();
-
   // Make sure to have an instance of the WidgetsBinding, which is required
   // to use platform channels to call native code.
   // See also >> https://stackoverflow.com/questions/63873338/what-does-widgetsflutterbinding-ensureinitialized-do/63873689
   WidgetsFlutterBinding.ensureInitialized();
+
+  // Initialize CAMS and related packages (loading json deserialization functions)
+  CarpMobileSensing.ensureInitialized();
+  CognitionPackage.ensureInitialized();
+  CarpDataManager.ensureInitialized();
 
   await bloc.initialize();
 
@@ -165,4 +176,4 @@ void main() async {
 }
 
 /// The singleton BLoC.
-final bloc = StudyAppBLoC();
+final bloc = AppBloc();

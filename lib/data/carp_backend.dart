@@ -28,13 +28,14 @@ class CarpBackend {
   }
 
   /// The URI of the CAWS server - depending on deployment mode.
-  Uri get uri => Uri(scheme: 'https', host: uris[bloc.deploymentMode]);
+  Uri get uri => Uri(scheme: 'https', host: uris[AppConfig.deploymentMode]);
 
   /// The URI of the CAWS authentication service.
   ///
   /// Of the form:
   ///    https://dev.carp.dk/auth/realms/Carp/
-  Uri get authUri => Uri(scheme: 'https', host: uris[bloc.deploymentMode], pathSegments: ['auth', 'realms', 'Carp']);
+  Uri get authUri =>
+      Uri(scheme: 'https', host: uris[AppConfig.deploymentMode], pathSegments: ['auth', 'realms', 'Carp']);
 
   /// The CAWS app configuration.
   late final CarpApp _app = CarpApp(name: "CAWS @ DTU", uri: uri);
@@ -146,17 +147,7 @@ class CarpBackend {
   Future<List<ActiveParticipationInvitation>> getInvitations() async {
     CarpParticipationService().configureFrom(CarpService());
 
-    invitations = await CarpParticipationService().getActiveParticipationInvitations();
-
-    // Filter the invitations to only include those that
-    // have a smartphone as a device in [ActiveParticipationInvitation.assignedDevices] list
-    // (i.e. the invitation is for a smartphone).
-    // This is done to avoid showing invitations for other devices (e.g. [WebBrowser]).
-    invitations.removeWhere(
-      (invitation) => invitation.assignedDevices?.any((device) => device.device is! Smartphone) ?? false,
-    );
-
-    return invitations;
+    return invitations = await CarpParticipationService().getActiveParticipationInvitations();
   }
 
   /// Set the [study] used on this phone.
@@ -207,7 +198,7 @@ class CarpBackend {
 
       info(
         '$runtimeType - Informed consent document uploaded successfully for '
-        'deployment id: ${bloc.study?.studyDeploymentId}',
+        'deployment id: ${LocalSettings().study?.studyDeploymentId}',
       );
     } on Exception {
       warning('$runtimeType - Informed consent upload failed for username: $username');

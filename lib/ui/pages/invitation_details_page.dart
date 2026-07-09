@@ -135,7 +135,7 @@ class InvitationDetailsPage extends StatelessWidget {
                 decoration: BoxDecoration(color: const Color(0xff006398), borderRadius: BorderRadius.circular(100)),
                 child: TextButton(
                   onPressed: () {
-                    bloc.setStudyInvitation(invitation, context);
+                    model.accept(invitation);
                     context.go(StudyPage.route);
                   },
                   child: Text(
