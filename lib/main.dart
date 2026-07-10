@@ -101,6 +101,7 @@ part 'view_models/user_tasks.dart';
 
 part 'carp_study_app.dart';
 part 'ui/pages/informed_consent_page.dart';
+part 'ui/pages/app_shell.dart';
 part 'ui/pages/home_page.dart';
 part 'ui/pages/home_page.install_health_connect_dialog.dart';
 part 'ui/carp_study_style.dart';
@@ -146,6 +147,7 @@ part 'ui/widgets/location_usage_dialog.dart';
 
 part 'ui/cards/activity_card.dart';
 part 'ui/cards/anonymous_card.dart';
+part 'ui/cards/connections_status_card.dart';
 part 'ui/cards/distance_card.dart';
 part 'ui/cards/heart_rate_card.dart';
 part 'ui/cards/media_card.dart';

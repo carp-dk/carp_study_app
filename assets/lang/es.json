@@ -1,8 +1,8 @@
 {
     "app_home.nav_bar_item.tasks": "Tareas",
-    "app_home.nav_bar_item.about": "Acerca de",
-    "app_home.nav_bar_item.data": "Datos",
-    "app_home.nav_bar_item.devices": "Dispositivos",
+    "app_home.nav_bar_item.statistics": "Estadísticas",
+    "app_home.nav_bar_item.connections": "Conexiones",
+    "app_home.nav_bar_item.home": "Inicio",
     "pages.task_list.title": "MIS TAREAS",
     "pages.task_list.pending": "Pendientes",
     "pages.task_list.completed": "Completadas",

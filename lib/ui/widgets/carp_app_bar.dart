@@ -1,5 +1,23 @@
 part of carp_study_app;
 
+/// The page title shown under the [CarpAppBar] on every shell tab, so all
+/// tabs share the same title font and padding.
+class CarpPageTitle extends StatelessWidget {
+  final String title;
+  const CarpPageTitle(this.title, {super.key});
+
+  @override
+  Widget build(BuildContext context) {
+    return Padding(
+      padding: const EdgeInsets.fromLTRB(16, 8, 16, 16),
+      child: Align(
+        alignment: Alignment.centerLeft,
+        child: Text(title, style: fs24fw700.copyWith(color: Theme.of(context).extension<CarpColors>()!.grey900)),
+      ),
+    );
+  }
+}
+
 class CarpAppBar extends StatelessWidget {
   final bool hasProfileIcon;
   const CarpAppBar({super.key, this.hasProfileIcon = false});

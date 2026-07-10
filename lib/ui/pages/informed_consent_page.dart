@@ -1,7 +1,7 @@
 part of carp_study_app;
 
 class InformedConsentPage extends StatefulWidget {
-  static const String route = '/study/consent';
+  static const String route = '/consent';
   final InformedConsentViewModel model;
   const InformedConsentPage({super.key, required this.model});
 

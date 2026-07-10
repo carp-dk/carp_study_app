@@ -41,4 +41,13 @@ class SystemInfoService {
     );
     return result.canUpdate;
   }
+
+  /// Open this app's store listing (Play Store on Android, App Store on iOS).
+  Future<void> openAppStore() async {
+    final info = await PackageInfo.fromPlatform();
+    final url = Platform.isAndroid
+        ? Uri.parse('https://play.google.com/store/apps/details?id=${info.packageName}')
+        : Uri.parse('https://apps.apple.com/app/1569798025');
+    if (await canLaunchUrl(url)) await launchUrl(url);
+  }
 }

@@ -65,41 +65,41 @@ class CarpAppState extends State<CarpStudyApp> {
       ShellRoute(
         navigatorKey: _shellNavigatorKey,
         builder: (BuildContext context, GoRouterState state, Widget child) =>
-            HomePage(model: bloc.appViewModel.homePageViewModel, child: child),
+            CarpAppShell(model: bloc.appViewModel.homePageViewModel, child: child),
         routes: [
           // Home is just a landing slot — the top-level redirect always moves
           // the user to the right place based on bloc state.
-          GoRoute(path: homeRoute, parentNavigatorKey: _shellNavigatorKey, redirect: (_, _) => StudyPage.route),
+          GoRoute(path: homeRoute, parentNavigatorKey: _shellNavigatorKey, redirect: (_, _) => HomePage.route),
           GoRoute(
-            path: TaskListPage.route,
+            path: HomePage.route,
             parentNavigatorKey: _shellNavigatorKey,
             pageBuilder: (context, state) => CustomTransitionPage(
-              child: TaskListPage(model: bloc.appViewModel.taskListPageViewModel),
+              key: state.pageKey,
+              child: HomePage(model: bloc.appViewModel.homePageViewModel),
               transitionsBuilder: bottomNavigationBarAnimation,
             ),
           ),
           GoRoute(
-            path: StudyPage.route,
+            path: TaskListPage.route,
             parentNavigatorKey: _shellNavigatorKey,
             pageBuilder: (context, state) => CustomTransitionPage(
-              child: StudyPage(model: bloc.appViewModel.studyPageViewModel),
+              key: state.pageKey,
+              child: TaskListPage(model: bloc.appViewModel.taskListPageViewModel),
               transitionsBuilder: bottomNavigationBarAnimation,
             ),
-            routes: [
-              // /study/consent — nested so the parent StudyPage stays mounted
-              // underneath. parentNavigatorKey escapes the shell so the bottom
-              // nav doesn't bleed through during consent.
-              GoRoute(
-                path: 'consent',
-                parentNavigatorKey: _rootNavigatorKey,
-                builder: (context, state) => InformedConsentPage(model: bloc.appViewModel.informedConsentViewModel),
-              ),
-            ],
+          ),
+          // HomePage is the new study landing page; keep /study as a redirect
+          // alias so any legacy navigation lands on the Home tab.
+          GoRoute(
+            path: StudyPage.route,
+            parentNavigatorKey: _shellNavigatorKey,
+            redirect: (_, _) => HomePage.route,
           ),
           GoRoute(
             path: DataVisualizationPage.route,
             parentNavigatorKey: _shellNavigatorKey,
             pageBuilder: (context, state) => CustomTransitionPage(
+              key: state.pageKey,
               child: DataVisualizationPage(bloc.appViewModel.dataVisualizationPageViewModel),
               transitionsBuilder: bottomNavigationBarAnimation,
             ),
@@ -108,6 +108,7 @@ class CarpAppState extends State<CarpStudyApp> {
             path: DeviceListPage.route,
             parentNavigatorKey: _shellNavigatorKey,
             pageBuilder: (context, state) => CustomTransitionPage(
+              key: state.pageKey,
               child: DeviceListPage(model: bloc.appViewModel.devicesPageViewModel),
               transitionsBuilder: bottomNavigationBarAnimation,
             ),
@@ -116,11 +117,19 @@ class CarpAppState extends State<CarpStudyApp> {
             path: ProfilePage.route,
             parentNavigatorKey: _shellNavigatorKey,
             pageBuilder: (context, state) => CustomTransitionPage(
+              key: state.pageKey,
               child: ProfilePage(bloc.appViewModel.profilePageViewModel),
               transitionsBuilder: bottomNavigationBarAnimation,
             ),
           ),
         ],
+      ),
+      // Consent escapes the shell (root navigator) so the bottom nav doesn't
+      // bleed through while the user is completing informed consent.
+      GoRoute(
+        path: InformedConsentPage.route,
+        parentNavigatorKey: _rootNavigatorKey,
+        builder: (context, state) => InformedConsentPage(model: bloc.appViewModel.informedConsentViewModel),
       ),
       GoRoute(
         path: StudyDetailsPage.route,
@@ -258,9 +267,18 @@ class _AppLocalizationsDelegate extends RPLocalizationsDelegate {
   }
 }
 
-FadeTransition bottomNavigationBarAnimation(
+/// Fade between bottom-nav tabs: the incoming page fades and gently scales in.
+/// (On a tab switch the outgoing page is replaced, not popped, so only the
+/// incoming page animates - both tabs share the same gray background.)
+Widget bottomNavigationBarAnimation(
   BuildContext context,
   Animation<double> animation,
   Animation<double> secondaryAnimation,
   Widget child,
-) => FadeTransition(opacity: animation, child: child);
+) {
+  final fade = CurveTween(curve: Curves.easeOut).animate(animation);
+  return FadeTransition(
+    opacity: fade,
+    child: ScaleTransition(scale: Tween(begin: 0.98, end: 1.0).animate(fade), child: child),
+  );
+}

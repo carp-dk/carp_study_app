@@ -136,7 +136,7 @@ class InvitationDetailsPage extends StatelessWidget {
                 child: TextButton(
                   onPressed: () {
                     model.accept(invitation);
-                    context.go(StudyPage.route);
+                    context.go(HomePage.route);
                   },
                   child: Text(
                     locale.translate("invitation.accept_invite"),

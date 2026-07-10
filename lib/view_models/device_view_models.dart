@@ -35,6 +35,33 @@ class DeviceViewModel extends ViewModel {
   DeviceManager deviceManager;
   DeviceViewModel(this.deviceManager) : super();
 
+  StreamSubscription<DeviceStatus>? _statusSub;
+
+  // Bridge the device manager's status stream into ChangeNotifier
+  // notifications, so widgets listening to this view model rebuild when the
+  // device connects or disconnects. Subscribed on first listener and cancelled
+  // on the last, so the ephemeral instances from `deploymentDevices` don't leak.
+  @override
+  void addListener(VoidCallback listener) {
+    _statusSub ??= deviceManager.statusEvents.listen((_) => notifyListeners());
+    super.addListener(listener);
+  }
+
+  @override
+  void removeListener(VoidCallback listener) {
+    super.removeListener(listener);
+    if (!hasListeners) {
+      _statusSub?.cancel();
+      _statusSub = null;
+    }
+  }
+
+  @override
+  void dispose() {
+    _statusSub?.cancel();
+    super.dispose();
+  }
+
   /// The type of this device.
   String? get type => deviceManager.deviceType;
 
