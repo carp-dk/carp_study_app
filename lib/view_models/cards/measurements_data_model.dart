@@ -19,7 +19,7 @@ class MeasurementsCardViewModel extends ViewModel {
       String key = measurement.dataType.name;
       if (!_samplingTable.containsKey(key)) _samplingTable[key] = 0;
       _samplingTable[key] = _samplingTable[key]! + 1;
-    });
+    }, onError: onMeasurementStreamError);
     return _samplingTable;
   }
 

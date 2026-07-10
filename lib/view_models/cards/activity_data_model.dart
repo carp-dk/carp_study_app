@@ -48,7 +48,7 @@ class ActivityCardViewModel extends SerializableViewModel<WeeklyActivities> {
         // and then save the new activity
         _lastActivity = measurement;
       }
-    });
+    }, onError: onMeasurementStreamError);
   }
 }
 

@@ -34,7 +34,7 @@ class MobilityCardViewModel extends SerializableViewModel<WeeklyMobility> {
     mobilityEvents?.listen((measurement) {
       Mobility mobility = measurement.data as Mobility;
       model.setMobilityFeatures(mobility);
-    });
+    }, onError: onMeasurementStreamError);
   }
 }
 

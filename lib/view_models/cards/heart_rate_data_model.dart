@@ -43,7 +43,7 @@ class HeartRateCardViewModel extends SerializableViewModel<HourlyHeartRate> {
       if (hr > (model.maxHeartRate ?? 0)) model.maxHeartRate = hr;
       if (hr < (model.minHeartRate ?? 100000)) model.minHeartRate = hr;
       model.resetDataAtMidnight();
-    });
+    }, onError: onMeasurementStreamError);
   }
 }
 

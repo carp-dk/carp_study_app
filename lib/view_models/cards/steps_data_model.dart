@@ -43,7 +43,7 @@ class StepsCardViewModel extends SerializableViewModel<WeeklySteps> {
       }
 
       _lastStep = step;
-    });
+    }, onError: onMeasurementStreamError);
   }
 }
 

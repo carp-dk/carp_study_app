@@ -15,6 +15,14 @@ abstract class ViewModel extends ChangeNotifier {
     _controller = ctrl;
   }
 
+  /// Handle errors emitted on a measurement stream.
+  ///
+  /// Stream errors are not measurements and should not be handled in the data
+  /// path. View models should log and ignore them so sensing can continue.
+  void onMeasurementStreamError(Object error, [StackTrace? stackTrace]) {
+    warning('$runtimeType - measurement stream error: $error');
+  }
+
   /// Clear this view model, i.e. delete all data incl. cached data.
   @mustCallSuper
   void clear() {}
