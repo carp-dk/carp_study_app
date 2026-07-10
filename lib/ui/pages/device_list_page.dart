@@ -50,28 +50,7 @@ class DeviceListPageState extends State<DeviceListPage> {
               padding: const EdgeInsets.symmetric(vertical: 8.0, horizontal: 10),
               child: const CarpAppBar(hasProfileIcon: true),
             ),
-            Container(
-              color: Colors.transparent,
-              child: Padding(
-                padding: const EdgeInsets.symmetric(horizontal: 15),
-                child: Align(
-                  alignment: Alignment.centerLeft,
-                  child: Column(
-                    mainAxisAlignment: MainAxisAlignment.start,
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      Text(
-                        locale.translate('pages.devices.title'),
-                        style: fs24fw700.copyWith(
-                          color: Theme.of(context).extension<CarpColors>()!.grey900,
-                          fontWeight: FontWeight.bold,
-                        ),
-                      ),
-                    ],
-                  ),
-                ),
-              ),
-            ),
+            CarpPageTitle(locale.translate('pages.devices.title')),
             Container(
               color: Colors.transparent,
               child: Padding(
@@ -273,6 +252,15 @@ class DeviceListPageState extends State<DeviceListPage> {
     if (!(await service.deviceManager.hasPermissions())) {
       if (service.type == HealthService.DEVICE_TYPE) {
         Navigator.push(context, MaterialPageRoute<void>(builder: (context) => HealthServiceConnectPage()));
+      } else if (service.type == LocationService.DEVICE_TYPE) {
+        final status = await Permission.locationWhenInUse.request();
+        // Permanently denied/restricted: the OS won't prompt again, so send the
+        // user to Settings instead of silently doing nothing.
+        if (status.isPermanentlyDenied || status.isRestricted) {
+          await openAppSettings();
+          return;
+        }
+        if (!status.isGranted) return;
       } else {
         await service.deviceManager.requestPermissions();
       }

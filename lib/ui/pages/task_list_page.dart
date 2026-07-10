@@ -106,26 +106,7 @@ class TaskListPageState extends State<TaskListPage> with TickerProviderStateMixi
                     } else {
                       return CustomScrollView(
                         slivers: [
-                          SliverToBoxAdapter(
-                            child: Padding(
-                              padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 16),
-                              child: Align(
-                                alignment: Alignment.centerLeft,
-                                child: Text(
-                                  locale.translate('pages.task_list.title'),
-                                  style: fs24fw700.copyWith(
-                                    color: Theme.of(context).extension<CarpColors>()!.grey900,
-                                    fontWeight: FontWeight.bold,
-                                  ),
-                                ),
-                              ),
-                            ),
-                          ),
-                          // Scoreboard showing days in study and tasks completed
-                          SliverPadding(
-                            padding: const EdgeInsets.only(top: 4, bottom: 6, left: 40, right: 40),
-                            sliver: ScoreboardCard(widget.model),
-                          ),
+                          SliverToBoxAdapter(child: CarpPageTitle(locale.translate('pages.task_list.title'))),
                           // Tab holder
                           SliverPadding(
                             padding: const EdgeInsets.only(top: 8, bottom: 24, left: 64, right: 64),

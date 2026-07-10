@@ -97,16 +97,4 @@ class TaskListPageViewModel extends ViewModel {
 
   /// A stream of [UserTask]s as they are generated.
   Stream<UserTask> get userTaskEvents => AppTaskController().userTaskEvents;
-
-  /// The number of days the user has been part of this study.
-  ///
-  /// This is calculated from the study deployment status creation date from the
-  /// [StudyDeploymentStatus].
-  /// Returns 0 if the study deployment status is not available.
-  int get daysInStudy => (bloc.study.cachedDeploymentStatus != null)
-      ? DateTime.now().difference(bloc.study.cachedDeploymentStatus!.createdOn).inDays
-      : 0;
-
-  /// The number of tasks completed so far.
-  int get taskCompleted => AppTaskController().userTaskQueue.where((task) => task.state == UserTaskState.done).length;
 }

@@ -13,7 +13,6 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/gestures.dart';
 
 import 'package:flutter/material.dart';
-import 'package:flutter/rendering.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
 
@@ -152,7 +151,6 @@ part 'ui/cards/distance_card.dart';
 part 'ui/cards/heart_rate_card.dart';
 part 'ui/cards/media_card.dart';
 part 'ui/cards/mobility_card.dart';
-part 'ui/cards/scoreboard_card.dart';
 part 'ui/cards/steps_card.dart';
 part 'ui/cards/study_progress_card.dart';
 part 'ui/cards/survey_card.dart';

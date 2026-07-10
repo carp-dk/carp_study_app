@@ -25,28 +25,7 @@ class _DataVisualizationPageState extends State<DataVisualizationPage> {
               padding: const EdgeInsets.symmetric(vertical: 8.0, horizontal: 10),
               child: const CarpAppBar(hasProfileIcon: true),
             ),
-            Container(
-              color: Colors.transparent,
-              child: Padding(
-                padding: const EdgeInsets.symmetric(horizontal: 15),
-                child: Align(
-                  alignment: Alignment.centerLeft,
-                  child: Column(
-                    mainAxisAlignment: MainAxisAlignment.start,
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      Text(
-                        locale.translate('pages.data_viz.title'),
-                        style: fs24fw700.copyWith(
-                          color: Theme.of(context).extension<CarpColors>()!.grey900,
-                          fontWeight: FontWeight.bold,
-                        ),
-                      ),
-                    ],
-                  ),
-                ),
-              ),
-            ),
+            CarpPageTitle(locale.translate('pages.data_viz.title')),
             Expanded(
               flex: 4,
               child: SingleChildScrollView(
