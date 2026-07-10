@@ -33,7 +33,7 @@ class ProfilePageViewModel extends ViewModel {
   String get fullName => '$firstName $lastName';
   String get email => _auth.user?.email ?? '';
 
-  String get studyId => _study.deployment?.studyId ?? '';
+  String get studyId => _study.study?.studyId ?? '';
   String get studyDeploymentId => _study.deployment?.studyDeploymentId ?? '';
   String get studyDeploymentTitle => _study.deployment?.studyDescription?.title ?? '';
   String get participantId => _study.study?.participantId ?? '';
