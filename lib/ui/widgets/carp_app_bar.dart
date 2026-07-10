@@ -41,7 +41,7 @@ class CarpAppBar extends StatelessWidget {
                       icon: Icon(Icons.account_circle, color: Theme.of(context).primaryColor, size: 30),
                       tooltip: 'Profile',
                       onPressed: () {
-                        Navigator.push(context, SlidePageRoute(ProfilePage(ProfilePageViewModel())));
+                        Navigator.of(context, rootNavigator: true).push(SlidePageRoute(ProfilePage(ProfilePageViewModel())));
                       },
                     ),
                 ],

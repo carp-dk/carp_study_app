@@ -251,7 +251,10 @@ class DeviceListPageState extends State<DeviceListPage> {
 
     if (!(await service.deviceManager.hasPermissions())) {
       if (service.type == HealthService.DEVICE_TYPE) {
-        Navigator.push(context, MaterialPageRoute<void>(builder: (context) => HealthServiceConnectPage()));
+        Navigator.of(
+          context,
+          rootNavigator: true,
+        ).push(MaterialPageRoute<void>(builder: (context) => HealthServiceConnectPage()));
       } else if (service.type == LocationService.DEVICE_TYPE) {
         final status = await Permission.locationWhenInUse.request();
         // Permanently denied/restricted: the OS won't prompt again, so send the
@@ -294,8 +297,7 @@ class DeviceListPageState extends State<DeviceListPage> {
           if (disconnect) await device.disconnectFromDevice();
         } else {
           final hasSeenInstructions = LocalSettings().hasSeenBluetoothConnectionInstructions;
-          Navigator.push(
-            context,
+          Navigator.of(context, rootNavigator: true).push(
             MaterialPageRoute<void>(
               builder: (context) => BluetoothConnectionPage(
                 hasSeenInstructions ? CurrentStep.scan : CurrentStep.instructions,
