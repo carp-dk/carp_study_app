@@ -4,7 +4,11 @@ class SurveyCard extends StatefulWidget {
   final TaskCardViewModel model;
   final List<Color> colors;
 
-  const SurveyCard(this.model, {super.key, this.colors = CACHET.COLOR_LIST});
+  /// Show the card's own "SURVEYS" header. Off when a page section title
+  /// already labels the card (e.g. the home page).
+  final bool showTitle;
+
+  const SurveyCard(this.model, {super.key, this.colors = CACHET.COLOR_LIST, this.showTitle = true});
 
   @override
   State<SurveyCard> createState() => _SurveyCardState();
@@ -27,10 +31,11 @@ class _SurveyCardState extends State<SurveyCard> {
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            Padding(
-              padding: const EdgeInsets.only(left: 10.0),
-              child: Text(locale.translate('cards.survey.title').toUpperCase(), style: fs16fw400ls1),
-            ),
+            if (widget.showTitle)
+              Padding(
+                padding: const EdgeInsets.only(left: 10.0),
+                child: Text(locale.translate('cards.survey.title').toUpperCase(), style: fs16fw400ls1),
+              ),
             SizedBox(
               height: 160,
               width: MediaQuery.of(context).size.width * 0.9,

@@ -19,6 +19,9 @@ class HomePageViewModel extends ViewModel {
   SystemInfoService get _system => _systemInfoService ?? bloc.system;
   StudyService get _study => _studyService ?? bloc.study;
 
+  /// Per-survey completion counts for the "Completed Surveys" card.
+  final TaskCardViewModel surveys = TaskCardViewModel(AppTask.SURVEY_TYPE);
+
   bool _healthConnectPromptPending = false;
   bool _appUpdateAvailable = false;
   List<DeviceViewModel> _connectionSources = const [];
@@ -33,6 +36,13 @@ class HomePageViewModel extends ViewModel {
 
   /// The number of tasks completed so far.
   int get taskCompleted => AppTaskController().userTaskQueue.where((task) => task.state == UserTaskState.done).length;
+
+  /// The total number of tasks issued so far.
+  int get taskTotal => AppTaskController().userTaskQueue.length;
+
+  /// The deployment status of this study, or null if not deployed yet.
+  StudyDeploymentStatusTypes? get deploymentStatus =>
+      _study.cachedDeploymentStatus == null ? null : _study.cachedDeploymentStatus!.status ?? StudyDeploymentStatusTypes.Invited;
 
   /// Should the user be prompted to install Health Connect?
   /// One-shot - the shell calls [healthConnectPromptShown] once shown.
@@ -66,6 +76,18 @@ class HomePageViewModel extends ViewModel {
     _userTaskSub = AppTaskController().userTaskEvents.listen((_) => notifyListeners());
     unawaited(_checkHealthConnectInstallation());
     unawaited(_checkAppUpdate());
+    unawaited(_refreshDeploymentStatus());
+  }
+
+  // The cached status is only filled by an explicit refresh; without this the
+  // status card stays hidden and daysInStudy is 0.
+  Future<void> _refreshDeploymentStatus() async {
+    try {
+      await _study.refreshDeploymentStatus();
+    } catch (error) {
+      warning('$runtimeType - could not refresh deployment status - $error');
+    }
+    notifyListeners();
   }
 
   // Re-read the device list whenever the bloc notifies (e.g. configuration
