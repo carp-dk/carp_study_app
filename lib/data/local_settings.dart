@@ -56,7 +56,7 @@ class LocalSettings {
   /// study by using a specific device.
   ///
   /// The [participant] is typically set based on an invitation set in the
-  /// [StudyAppBLoC.setStudyInvitation] method.
+  /// [AppBloc.setStudyInvitation] method.
   Participant? get participant {
     if (_participant == null) {
       String? userString = Settings().preferences!.getString(participantKey);

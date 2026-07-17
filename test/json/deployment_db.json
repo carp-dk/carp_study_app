@@ -55,14 +55,14 @@
       "roleName": "Weather Service",
       "isOptional": true,
       "defaultSamplingConfiguration": {},
-      "apiKey": "12b6e28582eb9298577c734a31ba9f4f"
+      "apiKey": ""
     },
     {
       "__type": "dk.cachet.carp.common.application.devices.AirQualityService",
       "roleName": "Air Quality Service",
       "isOptional": true,
       "defaultSamplingConfiguration": {},
-      "apiKey": "9e538456b2b85c92647d8b65090e29f957638c77"
+      "apiKey": ""
     },
     {
       "__type": "dk.cachet.carp.common.application.devices.PolarDevice",
@@ -74,7 +74,7 @@
   "connectedDeviceRegistrations": {
     "Weather Service": {
       "__type": "dk.cachet.carp.common.application.devices.DefaultDeviceRegistration",
-      "deviceId": "12b6e28582eb9298577c734a31ba9f4f",
+      "deviceId": "REDACTED",
       "deviceDisplayName": "Weather Service (OW)",
       "registrationCreatedOn": "2024-05-06T09:09:44.524050Z"
     },
@@ -86,7 +86,7 @@
     },
     "Air Quality Service": {
       "__type": "dk.cachet.carp.common.application.devices.DefaultDeviceRegistration",
-      "deviceId": "9e538456b2b85c92647d8b65090e29f957638c77",
+      "deviceId": "REDACTED",
       "deviceDisplayName": "Air Quality Service (WAQI)",
       "registrationCreatedOn": "2024-05-06T09:09:44.595861Z"
     }

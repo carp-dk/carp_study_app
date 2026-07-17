@@ -10,19 +10,7 @@ class MessageDetailsPage extends StatelessWidget {
   Widget build(BuildContext context) {
     RPLocalizations locale = RPLocalizations.of(context)!;
 
-    Message message = bloc.messages.firstWhere(
-      (element) => element.id == messageId,
-      orElse: () {
-        return Message(
-          id: '0',
-          title: 'Unknown message',
-          subTitle: 'Unknown message',
-          type: MessageType.announcement,
-          timestamp: DateTime.now(),
-          image: './assets/images/kids.png',
-        );
-      },
-    );
+    Message message = bloc.appViewModel.studyPageViewModel.messageById(messageId);
 
     return Scaffold(
       body: SafeArea(
@@ -43,7 +31,7 @@ class MessageDetailsPage extends StatelessWidget {
                       if (context.canPop()) {
                         context.pop();
                       } else {
-                        context.go(CarpStudyAppState.homeRoute);
+                        context.go(CarpAppState.homeRoute);
                       }
                     },
                   ),

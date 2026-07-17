@@ -220,5 +220,6 @@
   "tasks.participant_data.phone_number.title": "Tilføj telefonnummer",
   "tasks.participant_data.phone_number.country": "Landekode",
   "tasks.participant_data.phone_number.phone_number": "Telefonnummer",
-  "tasks.participant_data.review.title": "Gennemse"
+  "tasks.participant_data.review.title": "Gennemse",
+  "pages.home.setup_failed": "Studiet kunne ikke konfigureres. Tjek din internetforbindelse og prøv igen."
 }

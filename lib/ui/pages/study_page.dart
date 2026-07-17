@@ -24,26 +24,26 @@ class StudyPageState extends State<StudyPage> {
               child: const CarpAppBar(hasProfileIcon: true),
             ),
             Flexible(
-              // Re-render when configureStudy completes; until then show loader.
+              // Re-render when configureStudy completes; until then show a
+              // loader, with pull-to-refresh as the retry affordance.
               child: ListenableBuilder(
-                listenable: bloc,
+                listenable: widget.model,
                 builder: (context, _) {
-                  if (!bloc.isConfigured) {
-                    return const _ConfiguringStudyLoader();
+                  if (!widget.model.isConfigured) {
+                    return RefreshIndicator(
+                      onRefresh: widget.model.retryConfiguration,
+                      child: const CustomScrollView(
+                        physics: AlwaysScrollableScrollPhysics(),
+                        slivers: [SliverFillRemaining(hasScrollBody: false, child: _ConfiguringStudyLoader())],
+                      ),
+                    );
                   }
                   return StreamBuilder<int>(
                     stream: widget.model.messageStream,
                     builder: (context, AsyncSnapshot<int> snapshot) {
                       final cards = _buildCards(context);
                       return RefreshIndicator(
-                        onRefresh: () async {
-                          await bloc.refreshMessages();
-                          final status = await Sensing().tryDeployment();
-                          if (status == StudyStatus.Deployed) {
-                            bloc.start();
-                          }
-                          bloc.deploymentService.getStudyDeploymentStatus(widget.model.studyDeploymentId);
-                        },
+                        onRefresh: widget.model.refresh,
                         child: ListView.builder(itemCount: cards.length, itemBuilder: (context, index) => cards[index]),
                       );
                     },
@@ -59,8 +59,7 @@ class StudyPageState extends State<StudyPage> {
 
   List<Widget> _buildCards(BuildContext context) {
     final items = <Widget>[];
-    final updateCard = _hasUpdateCard();
-    items.add(updateCard);
+    if (widget.model.appUpdateAvailable) items.add(_hasUpdateCard());
     items.add(
       _studyCard(
         context,
@@ -71,7 +70,7 @@ class StudyPageState extends State<StudyPage> {
       ),
     );
     items.add(_studyStatusCard());
-    if (LocalSettings().isAnonymous) {
+    if (widget.model.isAnonymousUser) {
       items.add(AnonymousCard());
     }
     if (widget.model.messages.isNotEmpty) {
@@ -89,47 +88,38 @@ class StudyPageState extends State<StudyPage> {
 
   Widget _hasUpdateCard() {
     RPLocalizations locale = RPLocalizations.of(context)!;
-    return FutureBuilder<bool?>(
-      future: bloc.getAppHasUpdate(),
-      builder: (context, snapshot) {
-        if (snapshot.data == true) {
-          return StudiesMaterial(
-            backgroundColor: Theme.of(context).extension<CarpColors>()!.grey50!,
-            elevation: 8,
-            child: Padding(
-              padding: const EdgeInsets.only(left: 16.0),
-              child: Row(
-                children: [
-                  Expanded(
-                    child: Padding(
-                      padding: const EdgeInsets.all(8.0),
-                      child: Text(
-                        locale.translate('pages.about.app_update'),
-                        style: fs16fw600.copyWith(color: Theme.of(context).extension<CarpColors>()!.grey900),
-                      ),
-                    ),
-                  ),
-                  Padding(
-                    padding: const EdgeInsets.only(right: 16),
-                    child: ElevatedButton(
-                      onPressed: () async {
-                        _redirectToUpdateStore();
-                      },
-                      style: ElevatedButton.styleFrom(
-                        backgroundColor: CACHET.DEPLOYMENT_DEPLOYING,
-                        padding: const EdgeInsets.symmetric(horizontal: 30, vertical: 12),
-                      ),
-                      child: Text(locale.translate("get"), style: TextStyle(color: Colors.white)),
-                    ),
-                  ),
-                ],
+    return StudiesMaterial(
+      backgroundColor: Theme.of(context).extension<CarpColors>()!.grey50!,
+      elevation: 8,
+      child: Padding(
+        padding: const EdgeInsets.only(left: 16.0),
+        child: Row(
+          children: [
+            Expanded(
+              child: Padding(
+                padding: const EdgeInsets.all(8.0),
+                child: Text(
+                  locale.translate('pages.about.app_update'),
+                  style: fs16fw600.copyWith(color: Theme.of(context).extension<CarpColors>()!.grey900),
+                ),
               ),
             ),
-          );
-        } else {
-          return SizedBox.shrink();
-        }
-      },
+            Padding(
+              padding: const EdgeInsets.only(right: 16),
+              child: ElevatedButton(
+                onPressed: () async {
+                  _redirectToUpdateStore();
+                },
+                style: ElevatedButton.styleFrom(
+                  backgroundColor: CACHET.DEPLOYMENT_DEPLOYING,
+                  padding: const EdgeInsets.symmetric(horizontal: 30, vertical: 12),
+                ),
+                child: Text(locale.translate("get"), style: TextStyle(color: Colors.white)),
+              ),
+            ),
+          ],
+        ),
+      ),
     );
   }
 
@@ -205,7 +195,7 @@ class StudyPageState extends State<StudyPage> {
     RPLocalizations locale = RPLocalizations.of(context)!;
 
     return FutureBuilder<StudyDeploymentStatus?>(
-      future: bloc.studyDeploymentStatus,
+      future: widget.model.studyDeploymentStatus,
       builder: (context, snapshot) {
         if (snapshot.connectionState == ConnectionState.waiting) {
           return StudiesMaterial(
@@ -469,7 +459,7 @@ extension CopyWithAdditional on DateTime {
   }
 }
 
-/// Placeholder shown while [StudyAppBLoC.configureStudy] is running.
+/// Placeholder shown while [AppBloc.configureStudy] is running.
 class _ConfiguringStudyLoader extends StatelessWidget {
   const _ConfiguringStudyLoader();
 

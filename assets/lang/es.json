@@ -125,5 +125,6 @@
     "pages.devices.connection.step.start.3": "Si el dispositivo no está en la lista, asegúrese de que esté cargado y encendido. Leer más en las 'Instrucciones'.",
     "pages.devices.connection.step.confirm.title": "está conectado!",
     "pages.devices.connection.step.confirm.1": "El",
-    "pages.devices.connection.step.confirm.2": " ha sido connectado satisfactoriamente al estudio y está listo para empezar a detectar."
+    "pages.devices.connection.step.confirm.2": " ha sido connectado satisfactoriamente al estudio y está listo para empezar a detectar.",
+    "pages.home.setup_failed": "No se pudo configurar el estudio. Comprueba tu conexión a internet e inténtalo de nuevo."
 }

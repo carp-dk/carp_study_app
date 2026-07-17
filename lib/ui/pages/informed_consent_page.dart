@@ -23,14 +23,14 @@ class InformedConsentState extends State<InformedConsentPage> {
     _submitted = true;
     await widget.model.informedConsentHasBeenAccepted(result);
     if (!mounted) return;
-    context.go(CarpStudyAppState.homeRoute);
+    context.go(CarpAppState.homeRoute);
   }
 
   @override
   void dispose() {
     // Bypassing onCancel entirely is intentional — see issue carp-dk/research.package#168.
     if (!_submitted) {
-      bloc.leaveStudy();
+      widget.model.abandonConsent();
     }
     super.dispose();
   }
@@ -48,8 +48,8 @@ class InformedConsentState extends State<InformedConsentPage> {
           // the study back down.
           if (document == null && !_submitted) {
             _submitted = true;
-            await bloc.informedConsentHasBeenAccepted();
-            if (mounted) context.go(CarpStudyAppState.homeRoute);
+            await widget.model.acceptWithoutDocument();
+            if (mounted) context.go(CarpAppState.homeRoute);
           }
           return document;
         }),

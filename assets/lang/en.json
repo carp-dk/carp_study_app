@@ -247,5 +247,6 @@
   "tasks.participant_data.phone_number.title": "Add phone number",
   "tasks.participant_data.phone_number.country": "Country code",
   "tasks.participant_data.phone_number.phone_number": "Phone No.",
-  "tasks.participant_data.review.title": "Review"
+  "tasks.participant_data.review.title": "Review",
+  "pages.home.setup_failed": "Could not set up the study. Please check your internet connection and try again."
 }

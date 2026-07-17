@@ -150,7 +150,7 @@ class VideoUserTask extends UserTask {
       };
 
       // ... and add it to the sensing controller
-      if (media != null) bloc.addMeasurement(Measurement.fromData(media));
+      if (media != null) bloc.study.addMeasurement(Measurement.fromData(media));
     }
     super.onDone(result: media);
   }
