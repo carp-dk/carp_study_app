@@ -36,6 +36,8 @@ class HealthServiceConnectPage extends StatelessWidget {
                         ),
                       ),
                       const SizedBox(height: 20),
+                      _dataDisclosure(context, locale),
+                      const SizedBox(height: 20),
                       Text.rich(
                         TextSpan(
                           children: [
@@ -105,6 +107,47 @@ class HealthServiceConnectPage extends StatelessWidget {
             ),
           ],
         ),
+      ),
+    );
+  }
+
+  Widget _dataDisclosure(BuildContext context, RPLocalizations locale) {
+    final colors = Theme.of(context).extension<CarpColors>()!;
+    return Container(
+      width: double.infinity,
+      padding: const EdgeInsets.all(16),
+      decoration: BoxDecoration(
+        color: colors.grey200,
+        borderRadius: BorderRadius.circular(12),
+      ),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Text(
+            locale.translate("pages.devices.type.health.instructions.data.title"),
+            style: fs18fw700.copyWith(color: colors.grey900),
+          ),
+          const SizedBox(height: 12),
+          _dataRow(context, Icons.directions_walk, "pages.devices.type.health.instructions.data.steps", locale),
+          _dataRow(context, Icons.monitor_heart_outlined, "pages.devices.type.health.instructions.data.heart_rate", locale),
+          _dataRow(context, Icons.fitness_center, "pages.devices.type.health.instructions.data.exercise", locale),
+        ],
+      ),
+    );
+  }
+
+  Widget _dataRow(BuildContext context, IconData icon, String labelKey, RPLocalizations locale) {
+    final colors = Theme.of(context).extension<CarpColors>()!;
+    return Padding(
+      padding: const EdgeInsets.symmetric(vertical: 6),
+      child: Row(
+        children: [
+          Icon(icon, color: colors.primary, size: 24),
+          const SizedBox(width: 12),
+          Expanded(
+            child: Text(locale.translate(labelKey), style: fs16fw600.copyWith(color: colors.grey900)),
+          ),
+        ],
       ),
     );
   }
