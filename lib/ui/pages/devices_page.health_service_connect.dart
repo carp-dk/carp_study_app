@@ -114,10 +114,7 @@ class HealthServiceConnectPage extends StatelessWidget {
     return Container(
       width: double.infinity,
       padding: const EdgeInsets.all(16),
-      decoration: BoxDecoration(
-        color: colors.grey200,
-        borderRadius: BorderRadius.circular(12),
-      ),
+      decoration: BoxDecoration(color: colors.grey200, borderRadius: BorderRadius.circular(12)),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
@@ -127,7 +124,12 @@ class HealthServiceConnectPage extends StatelessWidget {
           ),
           const SizedBox(height: 12),
           _dataRow(context, Icons.directions_walk, "pages.devices.type.health.instructions.data.steps", locale),
-          _dataRow(context, Icons.monitor_heart_outlined, "pages.devices.type.health.instructions.data.heart_rate", locale),
+          _dataRow(
+            context,
+            Icons.monitor_heart_outlined,
+            "pages.devices.type.health.instructions.data.heart_rate",
+            locale,
+          ),
           _dataRow(context, Icons.fitness_center, "pages.devices.type.health.instructions.data.exercise", locale),
         ],
       ),
