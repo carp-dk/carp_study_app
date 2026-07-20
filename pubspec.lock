@@ -325,10 +325,10 @@ packages:
     dependency: "direct main"
     description:
       name: carp_mobile_sensing
-      sha256: e2b77cdb968678e9ed713637930d4861932ac83594ec7a6c36026a15bc149347
+      sha256: "8050a9e17086b3e8259b4aa9b6bcdbaeda5f6202d2ef24cee0a7cd97fd7b8c75"
       url: "https://pub.dev"
     source: hosted
-    version: "2.1.2"
+    version: "2.1.3"
   carp_movesense_package:
     dependency: "direct main"
     description:
@@ -1792,10 +1792,10 @@ packages:
     dependency: transitive
     description:
       name: screen_state
-      sha256: "64a4583456f9fa91a8d4c681864384513b65590b0bc18fbc4b74c519c4b66c75"
+      sha256: "4882e458e6737e80226cece20e7f9cc426f83a61d25eaf981bab1006671c0631"
       url: "https://pub.dev"
     source: hosted
-    version: "5.0.0"
+    version: "5.0.1"
   sensors_plus:
     dependency: transitive
     description:
@@ -2418,5 +2418,5 @@ packages:
     source: hosted
     version: "3.1.3"
 sdks:
-  dart: ">=3.12.0 <4.0.0"
+  dart: ">=3.12.2 <4.0.0"
   flutter: ">=3.44.0"
