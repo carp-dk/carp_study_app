@@ -100,7 +100,16 @@ class HealthServiceConnectPage extends StatelessWidget {
                 await healthServive.deviceManager.requestPermissions();
                 await healthServive.deviceManager.connect();
 
-                Navigator.pop(context);
+                if (!context.mounted) return;
+                // If access still isn't granted (e.g. permanently denied, so the
+                // system sheet no longer appears), guide the user to grant it.
+                if (!healthServive.deviceManager.isConnected) {
+                  await showDialog<void>(
+                    context: context,
+                    builder: (context) => _accessDeniedDialog(context, locale),
+                  );
+                }
+                if (context.mounted) Navigator.pop(context);
               },
             ),
           ],
@@ -109,43 +118,58 @@ class HealthServiceConnectPage extends StatelessWidget {
     );
   }
 
+  Widget _accessDeniedDialog(BuildContext context, RPLocalizations locale) => AlertDialog(
+    title: Text(locale.translate("pages.devices.type.health.access_denied.title")),
+    content: SingleChildScrollView(
+      child: Column(
+        mainAxisSize: MainAxisSize.min,
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Text(locale.translate("pages.devices.type.health.access_denied.message")),
+          const SizedBox(height: 16),
+          ClipRRect(
+            borderRadius: BorderRadius.circular(8),
+            child: Image.asset('assets/instructions/health_permission_allow_all.png'),
+          ),
+        ],
+      ),
+    ),
+    actions: [
+      TextButton(
+        child: Text(locale.translate("cancel")),
+        onPressed: () => Navigator.pop(context),
+      ),
+      ElevatedButton(
+        style: ElevatedButton.styleFrom(
+          backgroundColor: Theme.of(context).extension<CarpColors>()!.primary,
+        ),
+        child: Text(locale.translate("settings"), style: const TextStyle(color: Colors.white)),
+        onPressed: () {
+          Platform.isAndroid
+              ? OpenSettingsPlusAndroid().applicationDetails()
+              : OpenSettingsPlusIOS().appSettings();
+          Navigator.pop(context);
+        },
+      ),
+    ],
+  );
+
   Widget _dataDisclosure(BuildContext context, RPLocalizations locale) {
     final colors = Theme.of(context).extension<CarpColors>()!;
     return Container(
       width: double.infinity,
       padding: const EdgeInsets.all(16),
       decoration: BoxDecoration(color: colors.grey200, borderRadius: BorderRadius.circular(12)),
-      child: Column(
+      child: Row(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          Text(
-            locale.translate("pages.devices.type.health.instructions.data.title"),
-            style: fs18fw700.copyWith(color: colors.grey900),
-          ),
-          const SizedBox(height: 12),
-          _dataRow(context, Icons.directions_walk, "pages.devices.type.health.instructions.data.steps", locale),
-          _dataRow(
-            context,
-            Icons.monitor_heart_outlined,
-            "pages.devices.type.health.instructions.data.heart_rate",
-            locale,
-          ),
-          _dataRow(context, Icons.fitness_center, "pages.devices.type.health.instructions.data.exercise", locale),
-        ],
-      ),
-    );
-  }
-
-  Widget _dataRow(BuildContext context, IconData icon, String labelKey, RPLocalizations locale) {
-    final colors = Theme.of(context).extension<CarpColors>()!;
-    return Padding(
-      padding: const EdgeInsets.symmetric(vertical: 6),
-      child: Row(
-        children: [
-          Icon(icon, color: colors.primary, size: 24),
+          Icon(Icons.favorite_outline, color: colors.primary, size: 24),
           const SizedBox(width: 12),
           Expanded(
-            child: Text(locale.translate(labelKey), style: fs16fw600.copyWith(color: colors.grey900)),
+            child: Text(
+              locale.translate("pages.devices.type.health.instructions.data.title"),
+              style: fs16fw600.copyWith(color: colors.grey900),
+            ),
           ),
         ],
       ),
