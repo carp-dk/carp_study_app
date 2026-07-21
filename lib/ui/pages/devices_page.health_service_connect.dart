@@ -104,10 +104,7 @@ class HealthServiceConnectPage extends StatelessWidget {
                 // If access still isn't granted (e.g. permanently denied, so the
                 // system sheet no longer appears), guide the user to grant it.
                 if (!healthServive.deviceManager.isConnected) {
-                  await showDialog<void>(
-                    context: context,
-                    builder: (context) => _accessDeniedDialog(context, locale),
-                  );
+                  await showDialog<void>(context: context, builder: (context) => _accessDeniedDialog(context, locale));
                 }
                 if (context.mounted) Navigator.pop(context);
               },
@@ -135,19 +132,12 @@ class HealthServiceConnectPage extends StatelessWidget {
       ),
     ),
     actions: [
-      TextButton(
-        child: Text(locale.translate("cancel")),
-        onPressed: () => Navigator.pop(context),
-      ),
+      TextButton(child: Text(locale.translate("cancel")), onPressed: () => Navigator.pop(context)),
       ElevatedButton(
-        style: ElevatedButton.styleFrom(
-          backgroundColor: Theme.of(context).extension<CarpColors>()!.primary,
-        ),
+        style: ElevatedButton.styleFrom(backgroundColor: Theme.of(context).extension<CarpColors>()!.primary),
         child: Text(locale.translate("settings"), style: const TextStyle(color: Colors.white)),
         onPressed: () {
-          Platform.isAndroid
-              ? OpenSettingsPlusAndroid().applicationDetails()
-              : OpenSettingsPlusIOS().appSettings();
+          Platform.isAndroid ? OpenSettingsPlusAndroid().applicationDetails() : OpenSettingsPlusIOS().appSettings();
           Navigator.pop(context);
         },
       ),
