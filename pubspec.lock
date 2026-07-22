@@ -325,10 +325,10 @@ packages:
     dependency: "direct main"
     description:
       name: carp_mobile_sensing
-      sha256: e2b77cdb968678e9ed713637930d4861932ac83594ec7a6c36026a15bc149347
+      sha256: e96a69d01adc7b84c17e52c01d6d47bcc0f8f9816edaf2c9a57b5f866d21448f
       url: "https://pub.dev"
     source: hosted
-    version: "2.1.2"
+    version: "2.1.5"
   carp_movesense_package:
     dependency: "direct main"
     description:
@@ -1792,10 +1792,10 @@ packages:
     dependency: transitive
     description:
       name: screen_state
-      sha256: "64a4583456f9fa91a8d4c681864384513b65590b0bc18fbc4b74c519c4b66c75"
+      sha256: ee9dd1d902bd0ce8af921f8cbbc88713280498528c5229ebdfb2138a5d70e333
       url: "https://pub.dev"
     source: hosted
-    version: "5.0.0"
+    version: "5.0.2"
   sensors_plus:
     dependency: transitive
     description:

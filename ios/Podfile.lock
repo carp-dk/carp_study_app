@@ -83,7 +83,7 @@ PODS:
   - qr_code_scanner_plus (0.2.6):
     - Flutter
   - RxSwift (6.8.0)
-  - screen_state (5.0.0):
+  - screen_state (5.0.1):
     - Flutter
   - sensors_plus (0.0.1):
     - Flutter
@@ -274,7 +274,7 @@ SPEC CHECKSUMS:
   PolarBleSdk: 1d56bb7a3ca0a6df04cb4f652fdccb26064df011
   qr_code_scanner_plus: 1fb59fd4576edb53ec7560c3746f454dee54300c
   RxSwift: 4e28be97cbcfeee614af26d83415febbf2bf6f45
-  screen_state: 05272c0afc6270e43f08589598234334698b53ae
+  screen_state: e8bc94a9be30050982ffe1bbacc9821bb5287606
   sensors_plus: 6a11ed0c2e1d0bd0b20b4029d3bad27d96e0c65b
   shared_preferences_foundation: 7036424c3d8ec98dfe75ff1667cb0cd531ec82bb
   sqflite_darwin: 20b2a3a3b70e43edae938624ce550a3cbf66a3d0
