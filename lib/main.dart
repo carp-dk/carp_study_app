@@ -9,6 +9,7 @@ import 'dart:io';
 
 import 'package:app_version_update/data/models/app_version_result.dart';
 import 'package:async/async.dart';
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/gestures.dart';
 
 import 'package:flutter/material.dart';
@@ -38,7 +39,8 @@ import 'package:qr_code_scanner_plus/qr_code_scanner_plus.dart' as qr;
 
 // the CARP packages
 import 'package:carp_serializable/carp_serializable.dart';
-import 'package:carp_core/carp_core.dart';
+// Both carp_core and carp_mobile_sensing export `Smartphone`; hide carp_core's.
+import 'package:carp_core/carp_core.dart' hide Smartphone;
 import 'package:carp_mobile_sensing/carp_mobile_sensing.dart';
 import 'package:carp_audio_package/media.dart';
 //import 'package:carp_connectivity_package/connectivity.dart';
@@ -55,10 +57,20 @@ import 'package:cognition_package/cognition_package.dart';
 import 'package:carp_health_package/health_package.dart';
 // import 'package:health/health.dart';
 import 'package:carp_movesense_package/carp_movesense_package.dart';
+import 'package:carp_themes_package/carp_themes_package.dart';
 
 part 'blocs/app_bloc.dart';
+part 'blocs/app_config.dart';
+part 'blocs/app_log.dart';
 part 'blocs/util.dart';
 part 'blocs/sensing.dart';
+
+part 'services/resource_manager_factory.dart';
+part 'services/system_info_service.dart';
+part 'services/auth_service.dart';
+part 'services/study_service.dart';
+part 'services/message_service.dart';
+part 'services/consent_service.dart';
 
 part 'data/local_settings.dart';
 part 'data/carp_backend.dart';
@@ -68,6 +80,8 @@ part 'data/participant.dart';
 part 'data/local_participation_service.dart';
 
 part 'view_models/view_model.dart';
+part 'view_models/home_page_model.dart';
+part 'view_models/login_page_model.dart';
 part 'view_models/tasklist_page_model.dart';
 part 'view_models/study_page_model.dart';
 part 'view_models/profile_page_model.dart';
@@ -91,6 +105,7 @@ part 'ui/pages/home_page.dart';
 part 'ui/pages/home_page.install_health_connect_dialog.dart';
 part 'ui/carp_study_style.dart';
 part 'ui/colors.dart';
+part 'ui/helpers.dart';
 part 'ui/pages/data_visualization_page.dart';
 part 'ui/pages/study_page.dart';
 part 'ui/pages/task_list_page.dart';
@@ -105,14 +120,13 @@ part 'ui/pages/devices_page.enable_bluetooth_dialog.dart';
 part 'ui/pages/devices_page.bluetooth_connection_page.dart';
 part 'ui/pages/devices_page.disconnection_dialog.dart';
 part 'ui/pages/devices_page.list_title.dart';
-part 'ui/pages/devices_page.health_service_connect1.dart';
-part 'ui/pages/devices_page.health_service_connect2.dart';
+part 'ui/pages/devices_page.health_service_connect.dart';
 
 part 'ui/tasks/audio_task_page.dart';
 part 'ui/tasks/audio_page.dart';
 part 'ui/pages/study_details_page.dart';
 part 'ui/pages/message_details_page.dart';
-part 'ui/pages/invitation_page.dart';
+part 'ui/pages/invitation_details_page.dart';
 part 'ui/pages/invitation_list_page.dart';
 part 'ui/pages/process_message_page.dart';
 part 'ui/tasks/camera_task_page.dart';
@@ -122,7 +136,6 @@ part 'ui/tasks/camera_page.dart';
 
 part 'ui/widgets/carp_app_bar.dart';
 part 'ui/widgets/horizontal_bar.dart';
-part 'ui/widgets/location_permission_page.dart';
 part 'ui/widgets/charts_legend.dart';
 part 'ui/widgets/details_banner.dart';
 part 'ui/widgets/studies_material.dart';
@@ -146,15 +159,15 @@ part 'main.g.dart';
 
 late CarpStudyApp app;
 void main() async {
-  // Initialize CAMS and related packages (loading json deserialization functions)
-  CarpMobileSensing.ensureInitialized();
-  CognitionPackage.ensureInitialized();
-  CarpDataManager.ensureInitialized();
-
   // Make sure to have an instance of the WidgetsBinding, which is required
   // to use platform channels to call native code.
   // See also >> https://stackoverflow.com/questions/63873338/what-does-widgetsflutterbinding-ensureinitialized-do/63873689
   WidgetsFlutterBinding.ensureInitialized();
+
+  // Initialize CAMS and related packages (loading json deserialization functions)
+  CarpMobileSensing.ensureInitialized();
+  CognitionPackage.ensureInitialized();
+  CarpDataManager.ensureInitialized();
 
   await bloc.initialize();
 
@@ -163,4 +176,4 @@ void main() async {
 }
 
 /// The singleton BLoC.
-final bloc = StudyAppBLoC();
+final bloc = AppBloc();

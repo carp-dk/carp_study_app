@@ -1,32 +1,33 @@
 name: carp_study_app
 description: The generic CARP study app.
 publish_to: "none"
-version: 4.1.1+88
+version: 4.4.0+1
 
 environment:
-  sdk: ">=3.2.0 <4.0.0"
-  flutter: ">=3.16.0"
+  sdk: ">=3.8.0 <4.0.0"
+  flutter: ">=3.32.0"
 
 dependencies:
   flutter:
     sdk: flutter
 
-  carp_serializable: ^2.0.0
-  carp_core: ^1.9.0
-  carp_mobile_sensing: ^1.13.0
-  carp_context_package: ^1.10.0
-  carp_connectivity_package: ^1.7.0
-  carp_survey_package: ^1.8.2
-  carp_audio_package: ^1.10.0
-  carp_polar_package: ^1.6.1
-  carp_health_package: ^3.2.0
-  carp_movesense_package: ^1.7.2
+  carp_serializable: ^2.0.1
+  carp_core: ^2.1.2
+  carp_mobile_sensing: ^2.1.6
+  carp_context_package: ^2.0.2
+  carp_connectivity_package: ^2.0.0
+  carp_survey_package: ^2.0.0
+  carp_audio_package: ^2.0.0
+  carp_polar_package: ^2.0.0
+  carp_health_package: ^4.0.2
+  carp_movesense_package: ^2.0.0
+  carp_themes_package: ^0.0.5
 
-  carp_webservices: ^3.8.0
-  carp_backend: ^1.9.2
+  carp_webservices: ^4.0.0
+  carp_backend: ^2.0.0
 
-  research_package: ^2.0.0
-  cognition_package: ^1.6.1
+  research_package: ^2.2.0
+  cognition_package: ^1.7.0
 
   url_launcher: ^6.1.5
   timeago: ^3.1.0
@@ -38,15 +39,15 @@ dependencies:
 
   flutter_localizations:
     sdk: flutter
-  intl: '>= 0.19.0 <= 0.21.0'
+  intl: ">= 0.19.0 <= 0.21.0"
 
   fl_chart: 1.0.0
   google_fonts: ^6.1.0
   go_router: ^15.0.0
   flutter_svg: ^2.0.4
   flutter_blue_plus: ^1.15.5
-  permission_handler: ^11.0.1
-  connectivity_plus: ^6.0.0
+  permission_handler: ^12.0.3
+  connectivity_plus: ^7.0.0
   open_settings_plus: ^0.4.0
   appcheck: ^1.5.2
   flutter_plugin_android_lifecycle: ^2.0.24
@@ -69,44 +70,45 @@ dependency_overrides:
   # carp_core:
   #   path: ../carp/carp.sensing-flutter/carp_core/
   # carp_mobile_sensing:
-  #   path: ../carp/carp.sensing-flutter/carp_mobile_sensing/
+  #   path: ../carp.sensing-flutter/carp_mobile_sensing/
   # carp_context_package:
-  #   path: ../carp/carp.sensing-flutter/packages/carp_context_package/
-  # carp_connectivity_package:
-  #   path: ../../packages/carp_connectivity_package/
-  # carp_survey_package:
-  #   path: ../carp/carp.sensing-flutter/packages/carp_survey_package/
-  # carp_communication_package:
-  #   path: ../../packages/carp_communication_package/
-  # carp_audio_package:
-  #   path: ../carp/carp.sensing-flutter/packages/carp_audio_package/
-  # carp_apps_package:
-  #   path: ../../packages/carp_apps_package/
+  #   path: ../carp.sensing-flutter/packages/carp_context_package/
   # carp_esense_package:
-  #   path: ../../packages/carp_esense_package/
-  # carp_polar_package:
-  #   path: ../carp/carp.sensing-flutter/packages/carp_polar_package/
-  # carp_movisens_package:
-  #   path: ../../packages/carp_movisens_package/
+  #   path: ../carp.sensing-flutter/packages/carp_esense_package/
   # carp_health_package:
-  #   path: ../carp/carp.sensing-flutter/packages/carp_health_package/
+  #   path: ../carp.sensing-flutter/packages/carp_health_package/
+  # carp_polar_package:
+  #   path: ../carp.sensing-flutter/packages/carp_polar_package/
+  # carp_movisens_package:
+  #   path: ../carp.sensing-flutter/packages/carp_movisens_package/
   # carp_movesense_package:
-  #   path: ../carp/carp.sensing-flutter/packages/carp_movesense_package/
+  #   path: ../carp.sensing-flutter/packages/carp_movesense_package/
+  # carp_connectivity_package:
+  #   path: ../carp.sensing-flutter/packages/carp_connectivity_package/
+  # carp_survey_package:
+  #   path: ../carp.sensing-flutter/packages/carp_survey_package/
+  # carp_communication_package:
+  #   path: ../carp.sensing-flutter/packages/carp_communication_package/
+  # carp_audio_package:
+  #   path: ../carp.sensing-flutter/packages/carp_audio_package/
+  # carp_apps_package:
+  #   path: ../carp.sensing-flutter/packages/carp_apps_package/
   # carp_webservices:
   #   path: ../carp.sensing-flutter/backends/carp_webservices/
   # carp_backend:
-  #   path: ../carp/carp.sensing-flutter/backends/carp_backend/
-  # research_package: 
+  #   path: ../carp.sensing-flutter/backends/carp_backend/
+  # research_package:
   #   path: ../research.package/
   # cognition_package:
   #   path: ../cognition_package
-
 
 dev_dependencies:
   test: any
   json_serializable: any
   build_runner: any
   flutter_test:
+    sdk: flutter
+  integration_test:
     sdk: flutter
   mockito: any
   flutter_lints: any
@@ -118,8 +120,14 @@ dev_dependencies:
 #  3. run 'flutter pub get'
 #  3. run 'dart run flutter_launcher_icons:main'
 
-
 flutter:
+  # Route all iOS native deps through CocoaPods. The Polar BLE SDK (via the
+  # `polar` plugin) and Movesense (`mdsflutter`, CocoaPods-only) both pull in
+  # SwiftProtobuf; with Swift Package Manager enabled Polar resolves it via SPM
+  # while Movesense uses CocoaPods, producing duplicate-symbol link errors.
+  config:
+    enable-swift-package-manager: false
+
   uses-material-design: true
 
   assets:

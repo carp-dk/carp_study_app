@@ -23,10 +23,7 @@ class HorizontalBar extends StatelessWidget {
   List<MyAsset> assetList() {
     List<MyAsset> assetList = [];
     for (int i = 0; i < names.length; i++) {
-      assetList.add(MyAsset(
-          size: values.elementAt(i),
-          color: colors.elementAt(i),
-          name: names.elementAt(i)));
+      assetList.add(MyAsset(size: values.elementAt(i), color: colors.elementAt(i), name: names.elementAt(i)));
     }
     return assetList;
   }
@@ -42,8 +39,7 @@ class HorizontalBar extends StatelessWidget {
           child: ClipRRect(
             borderRadius: BorderRadius.all(Radius.circular(height / 2)),
             child: Container(
-              decoration:
-                  BoxDecoration(color: Theme.of(context).colorScheme.tertiary),
+              decoration: BoxDecoration(color: Theme.of(context).colorScheme.tertiary),
               width: width,
               height: height,
               child: const SizedBox.shrink(),
@@ -135,9 +131,7 @@ class MyAssetsBar extends StatelessWidget {
   //single.size : assetsSum = x : width
   Widget _createSingle(MyAsset singleAsset) {
     return SizedBox(
-      width: singleAsset.size! != 0
-          ? singleAsset.size! * (width / _getValuesSum())
-          : 0,
+      width: singleAsset.size! != 0 ? singleAsset.size! * (width / _getValuesSum()) : 0,
       child: Container(color: singleAsset.color),
     );
   }
@@ -151,16 +145,15 @@ class MyAssetsBar extends StatelessWidget {
             .entries
             .map(
               (entry) => Padding(
-                  padding:
-                      const EdgeInsets.symmetric(vertical: 4, horizontal: 8),
-                  child: Row(
-                    mainAxisAlignment: MainAxisAlignment.start,
-                    children: [
-                      Icon(Icons.circle, color: entry.value.color, size: 12.0),
-                      Text(' ${entry.value.name!} ${entry.value.size}',
-                          style: legendStyle, textAlign: TextAlign.right),
-                    ],
-                  )),
+                padding: const EdgeInsets.symmetric(vertical: 4, horizontal: 8),
+                child: Row(
+                  mainAxisAlignment: MainAxisAlignment.start,
+                  children: [
+                    Icon(Icons.circle, color: entry.value.color, size: 12.0),
+                    Text(' ${entry.value.name!} ${entry.value.size}', style: fs12fw400, textAlign: TextAlign.right),
+                  ],
+                ),
+              ),
             )
             .toList(),
       );
@@ -180,21 +173,23 @@ class MyAssetsBar extends StatelessWidget {
             .entries
             .map(
               (entry) => Padding(
-                  padding:
-                      const EdgeInsets.symmetric(vertical: 3, horizontal: 5),
-                  child: Row(
-                    mainAxisAlignment: MainAxisAlignment.start,
-                    children: [
-                      Icon(Icons.circle, color: entry.value.color, size: 12.0),
-                      Text(' ${entry.value.size}',
-                          style: legendStyle, textAlign: TextAlign.left),
-                      Expanded(
-                          child: Text(' ${entry.value.name!}',
-                              style: legendStyle,
-                              textAlign: TextAlign.left,
-                              overflow: TextOverflow.ellipsis)),
-                    ],
-                  )),
+                padding: const EdgeInsets.symmetric(vertical: 3, horizontal: 5),
+                child: Row(
+                  mainAxisAlignment: MainAxisAlignment.start,
+                  children: [
+                    Icon(Icons.circle, color: entry.value.color, size: 12.0),
+                    Text(' ${entry.value.size}', style: fs12fw400, textAlign: TextAlign.left),
+                    Expanded(
+                      child: Text(
+                        ' ${entry.value.name!}',
+                        style: fs12fw400,
+                        textAlign: TextAlign.left,
+                        overflow: TextOverflow.ellipsis,
+                      ),
+                    ),
+                  ],
+                ),
+              ),
             )
             .toList(),
       );
@@ -217,10 +212,7 @@ class MyAssetsBar extends StatelessWidget {
             decoration: BoxDecoration(color: background),
             width: width,
             height: height,
-            child: Row(
-                children: assets
-                    .map((singleAsset) => _createSingle(singleAsset))
-                    .toList()),
+            child: Row(children: assets.map((singleAsset) => _createSingle(singleAsset)).toList()),
           ),
         ),
         _labelOrientation(),

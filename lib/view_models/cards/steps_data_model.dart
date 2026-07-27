@@ -12,8 +12,7 @@ class StepsCardViewModel extends SerializableViewModel<WeeklySteps> {
   /// The list of steps.
   List<DailySteps> get steps => model.steps;
 
-  final DateTime _startOfWeek =
-      DateTime.now().subtract(Duration(days: DateTime.now().weekday - 1));
+  final DateTime _startOfWeek = DateTime.now().subtract(Duration(days: DateTime.now().weekday - 1));
   final DateTime _endOfWeek = DateTime.now()
       .subtract(Duration(days: DateTime.now().weekday - 1))
       .add(Duration(days: 6));
@@ -22,29 +21,25 @@ class StepsCardViewModel extends SerializableViewModel<WeeklySteps> {
 
   String get endOfWeek => DateFormat('dd').format(_endOfWeek);
 
-  String get currentMonth =>
-      DateFormat('MMM').format(DateTime(_startOfWeek.year, _startOfWeek.month));
+  String get currentMonth => DateFormat('MMM').format(DateTime(_startOfWeek.year, _startOfWeek.month));
 
-  String get nextMonth => DateFormat('MMM')
-      .format(DateTime(_startOfWeek.year, _startOfWeek.month + 1, 1));
+  String get nextMonth => DateFormat('MMM').format(DateTime(_startOfWeek.year, _startOfWeek.month + 1, 1));
 
-  String get currentYear =>
-      DateFormat('yyyy').format(DateTime(DateTime.now().year));
+  String get currentYear => DateFormat('yyyy').format(DateTime(DateTime.now().year));
 
   /// Stream of pedometer (step) [DataPoint] measures.
-  Stream<Measurement>? get pedometerEvents => controller?.measurements
-      .where((dataPoint) => dataPoint.data is StepCount);
+  Stream<Measurement>? get pedometerEvents =>
+      controller?.measurements.where((dataPoint) => dataPoint.data is StepCount);
 
   @override
-  void init(SmartphoneDeploymentController ctrl) {
+  void init(SmartphoneStudyController ctrl) {
     super.init(ctrl);
 
     // listen for pedometer events and count them
     pedometerEvents?.listen((pedometerDataPoint) {
       StepCount? step = pedometerDataPoint.data as StepCount?;
       if (_lastStep != null) {
-        model.increaseStepCount(
-            DateTime.now().weekday, step!.steps - _lastStep!.steps);
+        model.increaseStepCount(DateTime.now().weekday, step!.steps - _lastStep!.steps);
       }
 
       _lastStep = step;
@@ -71,12 +66,9 @@ class WeeklySteps extends DataModel {
   }
 
   /// The list of steps listed pr. weekday.
-  List<DailySteps> get steps => weeklySteps.entries
-      .map((entry) => DailySteps(entry.key, entry.value))
-      .toList();
+  List<DailySteps> get steps => weeklySteps.entries.map((entry) => DailySteps(entry.key, entry.value)).toList();
 
-  void increaseStepCount(int weekday, int steps) =>
-      weeklySteps[weekday] = (weeklySteps[weekday] ?? 0) + steps;
+  void increaseStepCount(int weekday, int steps) => weeklySteps[weekday] = (weeklySteps[weekday] ?? 0) + steps;
 
   @override
   String toString() {
@@ -86,8 +78,7 @@ class WeeklySteps extends DataModel {
   }
 
   @override
-  WeeklySteps fromJson(Map<String, dynamic> json) =>
-      _$WeeklyStepsFromJson(json);
+  WeeklySteps fromJson(Map<String, dynamic> json) => _$WeeklyStepsFromJson(json);
   @override
   Map<String, dynamic> toJson() => _$WeeklyStepsToJson(this);
 }

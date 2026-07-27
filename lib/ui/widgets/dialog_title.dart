@@ -5,8 +5,7 @@ class DialogTitle extends StatelessWidget {
   final String? deviceName;
   final String? titleEnd;
 
-  const DialogTitle(
-      {super.key, required this.title, this.deviceName, this.titleEnd});
+  const DialogTitle({super.key, required this.title, this.deviceName, this.titleEnd});
 
   @override
   Widget build(BuildContext context) {
@@ -14,17 +13,14 @@ class DialogTitle extends StatelessWidget {
     return _buildDialogTitle(locale, title, context);
   }
 
-  Widget _buildDialogTitle(
-      RPLocalizations locale, String title, BuildContext context) {
+  Widget _buildDialogTitle(RPLocalizations locale, String title, BuildContext context) {
     return Column(
       children: [
         Row(
           mainAxisAlignment: MainAxisAlignment.end,
           children: [
             IconButton(
-              onPressed: () => Navigator.of(context).canPop()
-                  ? Navigator.of(context).pop()
-                  : null,
+              onPressed: () => Navigator.of(context).canPop() ? Navigator.of(context).pop() : null,
               icon: const Icon(Icons.close),
               padding: const EdgeInsets.only(right: 8),
             ),
@@ -39,18 +35,10 @@ class DialogTitle extends StatelessWidget {
               children: [
                 Flexible(
                   child: Text(
-                    locale.translate(
-                          title,
-                        ) +
-                        (deviceName != null
-                            ? " ${locale.translate(deviceName!)} "
-                            : "") +
-                        (titleEnd != null
-                            ? ' ${locale.translate(titleEnd!)}'
-                            : ""),
-                    style: sectionTitleStyle.copyWith(
-                      color: Theme.of(context).primaryColor,
-                    ),
+                    locale.translate(title) +
+                        (deviceName != null ? " ${locale.translate(deviceName!)} " : "") +
+                        (titleEnd != null ? ' ${locale.translate(titleEnd!)}' : ""),
+                    style: fs18fw700.copyWith(color: Theme.of(context).primaryColor),
                     textAlign: TextAlign.center,
                   ),
                 ),

@@ -56,8 +56,6 @@
     <uses-permission
         android:name="com.google.android.gms.permission.ACTIVITY_RECOGNITION"
         android:maxSdkVersion="28" />
-    <!-- for Android 10 (API 29 and later), use: -->
-    <uses-permission android:name="android.permission.ACTIVITY_RECOGNITION" />
 
     <!-- The following permissions are used in the flutter_local_notifications Package  -->
     <uses-permission android:name="android.permission.SCHEDULE_EXACT_ALARM" />
@@ -68,29 +66,37 @@
     <uses-permission android:name="android.permission.CAMERA" />
 
     <!-- Permissions for Health Connect API -->
-    <uses-permission android:name="android.permission.health.READ_STEPS" />
-    <!-- <uses-permission android:name="android.permission.health.READ_WEIGHT" /> -->
-    <!-- <uses-permission android:name="android.permission.health.READ_HEIGHT" /> -->
-    <uses-permission android:name="android.permission.health.READ_HEART_RATE" />
-    <uses-permission android:name="android.permission.health.READ_EXERCISE" />
+    <!-- Basic body measurements -->
+    <uses-permission android:name="android.permission.health.READ_WEIGHT" />
+    <uses-permission android:name="android.permission.health.READ_HEIGHT" />
+    <uses-permission android:name="android.permission.health.READ_BODY_FAT" />
 
-    <!-- Need to avoid app from crashing when Permissions are revoked - issue #392 -->
-    <uses-permission android:name="android.permission.health.READ_EXERCISE_ROUTES" />
-    <!-- <uses-permission android:name="android.permission.health.READ_SLEEP" /> -->
-    <uses-permission android:name="android.permission.health.READ_SPEED" />
+    <!-- Activity (ACTIVITY_RECOGNITION declared above) -->
+    <uses-permission android:name="android.permission.ACTIVITY_RECOGNITION" />
+    <uses-permission android:name="android.permission.health.READ_STEPS" />
     <uses-permission android:name="android.permission.health.READ_DISTANCE" />
     <uses-permission android:name="android.permission.health.READ_TOTAL_CALORIES_BURNED" />
     <uses-permission android:name="android.permission.health.READ_ACTIVE_CALORIES_BURNED" />
-    <uses-permission android:name="android.permission.health.READ_BLOOD_GLUCOSE" />
+
+    <!-- Vital signs for cardiology, diabetes, and sleep studies -->
+    <uses-permission android:name="android.permission.health.READ_HEART_RATE" />
     <uses-permission android:name="android.permission.health.READ_BLOOD_PRESSURE" />
-    <!-- <uses-permission android:name="android.permission.health.READ_BODY_FAT" /> -->
-    <uses-permission android:name="android.permission.health.READ_BODY_TEMPERATURE" />
     <uses-permission android:name="android.permission.health.READ_OXYGEN_SATURATION" />
-    <uses-permission android:name="android.permission.health.READ_RESTING_HEART_RATE" />
-    <uses-permission android:name="android.permission.health.READ_FLOORS_CLIMBED" />
-    <uses-permission android:name="android.permission.health.READ_BASAL_METABOLIC_RATE" />
+    <uses-permission android:name="android.permission.health.READ_HEART_RATE_VARIABILITY" />
     <uses-permission android:name="android.permission.health.READ_RESPIRATORY_RATE" />
-    <!-- <uses-permission android:name="android.permission.health.READ_NUTRITION" /> -->
+    <uses-permission android:name="android.permission.health.READ_BLOOD_GLUCOSE" />
+    <uses-permission android:name="android.permission.health.READ_BODY_TEMPERATURE" />
+    <uses-permission android:name="android.permission.health.READ_SKIN_TEMPERATURE" />
+
+    <!-- Sleep -->
+    <uses-permission android:name="android.permission.health.READ_SLEEP" />
+    <uses-permission android:name="android.permission.health.READ_RESTING_HEART_RATE" />
+
+    <!-- Historical data (older than 30 days since permission granted) -->
+    <uses-permission android:name="android.permission.health.READ_HEALTH_DATA_HISTORY" />
+
+    <!-- Background reads -->
+    <uses-permission android:name="android.permission.health.READ_HEALTH_DATA_IN_BACKGROUND" />
 
     <!-- io.flutter.app.FlutterApplication is an android.app.Application that
          calls FlutterMain.startInitialization(this); in its onCreate method.
@@ -211,29 +217,6 @@
         <!-- service for using the Android activity recognition API
         <service android:name="dk.cachet.activity_recognition_flutter.activity.ActivityRecognizedService"
         android:exported="true"/> -->
-
-        <!-- Services for background location handling -->
-        <receiver
-            android:name="rekab.app.background_locator.LocatorBroadcastReceiver"
-            android:enabled="true"
-            android:exported="true" />
-        <receiver
-            android:name="rekab.app.background_locator.BootBroadcastReceiver"
-            android:enabled="true"
-            android:exported="true">
-            <intent-filter>
-                <action android:name="android.intent.action.BOOT_COMPLETED" />
-            </intent-filter>
-        </receiver>
-
-        <service
-            android:name="rekab.app.background_locator.LocatorService"
-            android:permission="android.permission.BIND_JOB_SERVICE"
-            android:exported="true" />
-        <service
-            android:name="rekab.app.background_locator.IsolateHolderService"
-            android:permission="android.permission.FOREGROUND_SERVICE"
-            android:exported="true" />
 
         <!-- Don't delete the meta-data below.
              This is used by the Flutter tool to generate GeneratedPluginRegistrant.java -->

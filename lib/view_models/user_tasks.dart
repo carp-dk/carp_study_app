@@ -3,19 +3,15 @@ part of carp_study_app;
 /// A [UserTaskFactory] that can handle the user tasks in this app.
 class AppUserTaskFactory implements UserTaskFactory {
   @override
-  List<String> types = [
-    SurveyUserTask.AUDIO_TYPE,
-    SurveyUserTask.VIDEO_TYPE,
-    SurveyUserTask.IMAGE_TYPE,
-  ];
+  List<String> types = [AppTask.AUDIO_TYPE, AppTask.VIDEO_TYPE, AppTask.IMAGE_TYPE];
 
   @override
   UserTask create(AppTaskExecutor executor) => switch (executor.task.type) {
-        SurveyUserTask.AUDIO_TYPE => AudioUserTask(executor),
-        SurveyUserTask.VIDEO_TYPE => VideoUserTask(executor),
-        SurveyUserTask.IMAGE_TYPE => VideoUserTask(executor),
-        _ => BackgroundSensingUserTask(executor),
-      };
+    AppTask.AUDIO_TYPE => AudioUserTask(executor),
+    AppTask.VIDEO_TYPE => VideoUserTask(executor),
+    AppTask.IMAGE_TYPE => VideoUserTask(executor),
+    _ => BackgroundSensingUserTask(executor),
+  };
 }
 
 /// A user task handling audio recordings.
@@ -36,9 +32,7 @@ class AudioUserTask extends UserTask {
   int ongoingRecordingDuration = 60;
 
   AudioUserTask(AppTaskExecutor executor) : super(executor) {
-    recordingDuration = (executor.task.minutesToComplete != null)
-        ? executor.task.minutesToComplete! * 60
-        : 60;
+    recordingDuration = (executor.task.minutesToComplete != null) ? executor.task.minutesToComplete! * 60 : 60;
   }
 
   @override
@@ -52,7 +46,7 @@ class AudioUserTask extends UserTask {
     _countDownController = StreamController.broadcast();
     ongoingRecordingDuration = recordingDuration;
     state = UserTaskState.started;
-    backgroundTaskExecutor.start();
+    backgroundTaskExecutor.resume();
 
     try {
       backgroundTaskExecutor.measurements
@@ -74,7 +68,7 @@ class AudioUserTask extends UserTask {
   void onRecordStop() {
     _timer?.cancel();
     _countDownController?.close();
-    backgroundTaskExecutor.stop();
+    backgroundTaskExecutor.pause();
   }
 
   /// Callback when recording is to start.
@@ -83,7 +77,7 @@ class AudioUserTask extends UserTask {
     _timer?.cancel();
     _countDownController?.close();
 
-    backgroundTaskExecutor.stop();
+    backgroundTaskExecutor.pause();
   }
 }
 
@@ -110,14 +104,14 @@ class VideoUserTask extends UserTask {
     _startRecordingTime = DateTime.now();
     _endRecordingTime = DateTime.now();
 
-    backgroundTaskExecutor.start();
+    backgroundTaskExecutor.resume();
   }
 
   /// Callback when video recording is started.
   void onRecordStart() {
     debug('$runtimeType - onRecordStart()');
     _startRecordingTime = DateTime.now();
-    backgroundTaskExecutor.start();
+    backgroundTaskExecutor.resume();
   }
 
   /// Callback when video recording is stopped.
@@ -132,27 +126,31 @@ class VideoUserTask extends UserTask {
   /// the data stream.
   void onSave() {
     MediaData? media;
-    backgroundTaskExecutor.stop();
+    backgroundTaskExecutor.pause();
     if (_file != null) {
       // create the media measurement ...
       media = switch (_mediaType) {
-        MediaType.image => ImageMedia(
-            filename: _file!.path,
-            startRecordingTime: _startRecordingTime!,
-            endRecordingTime: _endRecordingTime)
-          ..filename = _file!.path.split("/").last
-          ..path = _file!.path,
-        MediaType.video => VideoMedia(
-            filename: _file!.path,
-            startRecordingTime: _startRecordingTime!,
-            endRecordingTime: _endRecordingTime)
-          ..filename = _file!.path.split("/").last
-          ..path = _file!.path,
+        MediaType.image =>
+          ImageMedia(
+              filename: _file!.path,
+              startRecordingTime: _startRecordingTime!,
+              endRecordingTime: _endRecordingTime,
+            )
+            ..filename = _file!.path.split("/").last
+            ..path = _file!.path,
+        MediaType.video =>
+          VideoMedia(
+              filename: _file!.path,
+              startRecordingTime: _startRecordingTime!,
+              endRecordingTime: _endRecordingTime,
+            )
+            ..filename = _file!.path.split("/").last
+            ..path = _file!.path,
         _ => null,
       };
 
       // ... and add it to the sensing controller
-      if (media != null) bloc.addMeasurement(Measurement.fromData(media));
+      if (media != null) bloc.study.addMeasurement(Measurement.fromData(media));
     }
     super.onDone(result: media);
   }

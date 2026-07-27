@@ -28,24 +28,16 @@ class AudioPageState extends State<AudioPage> {
                       Row(
                         children: [
                           Padding(
-                            padding: const EdgeInsets.symmetric(
-                                vertical: 8.0, horizontal: 10),
-                            child: const CarpAppBar(
-                              hasProfileIcon: false,
-                            ),
+                            padding: const EdgeInsets.symmetric(vertical: 8.0, horizontal: 10),
+                            child: const CarpAppBar(hasProfileIcon: false),
                           ),
                           Spacer(),
                           IconButton(
-                            color: Theme.of(context)
-                                .extension<RPColors>()!
-                                .grey900!,
+                            color: Theme.of(context).extension<CarpColors>()!.grey900!,
                             onPressed: () {
                               _showCancelConfirmationDialog();
                             },
-                            icon: const Icon(
-                              Icons.close,
-                              size: 30,
-                            ),
+                            icon: const Icon(Icons.close, size: 30),
                           ),
                         ],
                       ),
@@ -60,36 +52,24 @@ class AudioPageState extends State<AudioPage> {
                                   child: Column(
                                     children: [
                                       Padding(
-                                        padding:
-                                            const EdgeInsets.only(bottom: 24),
+                                        padding: const EdgeInsets.only(bottom: 24),
                                         child: Text(
-                                          locale.translate(
-                                            widget.audioUserTask!.title,
-                                          ),
-                                          style: audioTitleStyle.copyWith(
-                                            color: Theme.of(context)
-                                                .extension<RPColors>()!
-                                                .primary,
+                                          locale.translate(widget.audioUserTask!.title),
+                                          style: fs22fw700.copyWith(
+                                            color: Theme.of(context).extension<CarpColors>()!.primary,
                                           ),
                                         ),
                                       ),
                                       StudiesMaterial(
-                                        backgroundColor: Theme.of(context)
-                                            .extension<RPColors>()!
-                                            .white!,
+                                        backgroundColor: Theme.of(context).extension<CarpColors>()!.white!,
                                         child: Scrollbar(
                                           child: SingleChildScrollView(
-                                            scrollDirection:
-                                                Axis.vertical, //.horizontal
+                                            scrollDirection: Axis.vertical, //.horizontal
                                             child: Padding(
-                                              padding:
-                                                  const EdgeInsets.all(8.0),
+                                              padding: const EdgeInsets.all(8.0),
                                               child: Text(
-                                                locale.translate(
-                                                  widget.audioUserTask!
-                                                      .instructions,
-                                                ),
-                                                style: audioContentStyle,
+                                                locale.translate(widget.audioUserTask!.instructions),
+                                                style: fs16fw600,
                                               ),
                                             ),
                                           ),
@@ -98,28 +78,16 @@ class AudioPageState extends State<AudioPage> {
                                       Spacer(),
                                       CircleAvatar(
                                         radius: 30,
-                                        backgroundColor: Theme.of(context)
-                                            .extension<RPColors>()!
-                                            .primary,
+                                        backgroundColor: Theme.of(context).extension<CarpColors>()!.primary,
                                         child: IconButton(
-                                          onPressed: () => widget.audioUserTask!
-                                              .onRecordStart(),
+                                          onPressed: () => widget.audioUserTask!.onRecordStart(),
                                           padding: const EdgeInsets.all(0),
-                                          icon: const Icon(
-                                            Icons.mic,
-                                            color: Colors.white,
-                                            size: 30,
-                                          ),
+                                          icon: const Icon(Icons.mic, color: Colors.white, size: 30),
                                         ),
                                       ),
                                       Padding(
-                                        padding: const EdgeInsets.only(
-                                            top: 8, bottom: 40),
-                                        child: Text(
-                                          locale.translate(
-                                              "pages.audio_task.play"),
-                                          style: audioContentStyle,
-                                        ),
+                                        padding: const EdgeInsets.only(top: 8, bottom: 40),
+                                        child: Text(locale.translate("pages.audio_task.play"), style: fs16fw600),
                                       ),
                                     ],
                                   ),
@@ -129,35 +97,24 @@ class AudioPageState extends State<AudioPage> {
                                   child: Column(
                                     children: [
                                       Padding(
-                                        padding:
-                                            const EdgeInsets.only(bottom: 24),
+                                        padding: const EdgeInsets.only(bottom: 24),
                                         child: Text(
-                                          locale.translate(
-                                            widget.audioUserTask!.title,
-                                          ),
-                                          style: audioTitleStyle.copyWith(
-                                            color: Theme.of(context)
-                                                .extension<RPColors>()!
-                                                .primary,
+                                          locale.translate(widget.audioUserTask!.title),
+                                          style: fs22fw700.copyWith(
+                                            color: Theme.of(context).extension<CarpColors>()!.primary,
                                           ),
                                         ),
                                       ),
                                       StudiesMaterial(
-                                        backgroundColor: Theme.of(context)
-                                            .extension<RPColors>()!
-                                            .white!,
+                                        backgroundColor: Theme.of(context).extension<CarpColors>()!.white!,
                                         child: Scrollbar(
                                           child: SingleChildScrollView(
-                                            scrollDirection:
-                                                Axis.vertical, //.horizontal
+                                            scrollDirection: Axis.vertical, //.horizontal
                                             child: Padding(
-                                              padding:
-                                                  const EdgeInsets.all(8.0),
+                                              padding: const EdgeInsets.all(8.0),
                                               child: Text(
-                                                locale.translate(widget
-                                                    .audioUserTask!
-                                                    .instructions),
-                                                style: audioContentStyle,
+                                                locale.translate(widget.audioUserTask!.instructions),
+                                                style: fs16fw600,
                                               ),
                                             ),
                                           ),
@@ -165,36 +122,22 @@ class AudioPageState extends State<AudioPage> {
                                       ),
                                       Spacer(),
                                       Row(
-                                        mainAxisAlignment:
-                                            MainAxisAlignment.spaceAround,
+                                        mainAxisAlignment: MainAxisAlignment.spaceAround,
                                         children: [
                                           CircleAvatar(
                                             radius: 30,
                                             backgroundColor: CACHET.RED_1,
                                             child: IconButton(
-                                              onPressed: () => widget
-                                                  .audioUserTask!
-                                                  .onRecordStop(),
+                                              onPressed: () => widget.audioUserTask!.onRecordStop(),
                                               padding: const EdgeInsets.all(0),
-                                              icon: const Icon(
-                                                Icons.stop,
-                                                color: Colors.white,
-                                                size: 30,
-                                              ),
+                                              icon: const Icon(Icons.stop, color: Colors.white, size: 30),
                                             ),
                                           ),
                                         ],
                                       ),
                                       Padding(
-                                        padding: const EdgeInsets.only(
-                                          top: 8,
-                                          bottom: 40,
-                                        ),
-                                        child: Text(
-                                          locale.translate(
-                                              "pages.audio_task.recording"),
-                                          style: audioTitleStyle,
-                                        ),
+                                        padding: const EdgeInsets.only(top: 8, bottom: 40),
+                                        child: Text(locale.translate("pages.audio_task.recording"), style: fs22fw700),
                                       ),
                                     ],
                                   ),
@@ -204,49 +147,34 @@ class AudioPageState extends State<AudioPage> {
                                   child: Column(
                                     children: [
                                       Padding(
-                                        padding:
-                                            const EdgeInsets.only(bottom: 32),
+                                        padding: const EdgeInsets.only(bottom: 32),
                                         child: Text(
-                                          locale.translate(
-                                              'pages.audio_task.done'),
-                                          style: audioTitleStyle.copyWith(
-                                            color: Theme.of(context)
-                                                .extension<RPColors>()!
-                                                .primary,
+                                          locale.translate('pages.audio_task.done'),
+                                          style: fs22fw700.copyWith(
+                                            color: Theme.of(context).extension<CarpColors>()!.primary,
                                           ),
                                         ),
                                       ),
                                       Padding(
-                                        padding:
-                                            const EdgeInsets.only(bottom: 20),
+                                        padding: const EdgeInsets.only(bottom: 20),
                                         child: Text(
-                                            locale.translate(
-                                                'pages.audio_task.recording_completed'),
-                                            style: audioContentStyle),
+                                          locale.translate('pages.audio_task.recording_completed'),
+                                          style: fs16fw600,
+                                        ),
                                       ),
                                       Spacer(),
                                       Padding(
-                                        padding: const EdgeInsets.only(
-                                          top: 8,
-                                          bottom: 40,
-                                          left: 20,
-                                          right: 20,
-                                        ),
+                                        padding: const EdgeInsets.only(top: 8, bottom: 40, left: 20, right: 20),
                                         child: Row(
-                                          crossAxisAlignment:
-                                              CrossAxisAlignment.center,
+                                          crossAxisAlignment: CrossAxisAlignment.center,
                                           children: [
                                             Expanded(
                                               flex: 1,
                                               child: IconButton(
-                                                onPressed: () => widget
-                                                    .audioUserTask!
-                                                    .onRecordReset(),
+                                                onPressed: () => widget.audioUserTask!.onRecordReset(),
                                                 icon: Icon(
                                                   Icons.replay,
-                                                  color: Theme.of(context)
-                                                      .extension<RPColors>()!
-                                                      .grey700,
+                                                  color: Theme.of(context).extension<CarpColors>()!.grey700,
                                                   size: 30,
                                                 ),
                                               ),
@@ -261,8 +189,7 @@ class AudioPageState extends State<AudioPage> {
                                                     Navigator.of(context).pop();
                                                     Navigator.of(context).pop();
                                                   },
-                                                  padding:
-                                                      const EdgeInsets.all(0),
+                                                  padding: const EdgeInsets.all(0),
                                                   icon: const Icon(
                                                     Icons.check_circle_outline,
                                                     color: Colors.white,
@@ -271,10 +198,7 @@ class AudioPageState extends State<AudioPage> {
                                                 ),
                                               ),
                                             ),
-                                            Expanded(
-                                              flex: 1,
-                                              child: Container(),
-                                            ),
+                                            Expanded(flex: 1, child: Container()),
                                           ],
                                         ),
                                       ),
@@ -323,7 +247,7 @@ class AudioPageState extends State<AudioPage> {
                 // Exit the Ordered Task
                 context.canPop() ? context.pop() : null;
               },
-            )
+            ),
           ],
         );
       },

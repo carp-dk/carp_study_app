@@ -13,36 +13,40 @@ class StudyPageState extends State<StudyPage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: Theme.of(context).extension<RPColors>()!.backgroundGray,
+      backgroundColor: Theme.of(context).extension<CarpColors>()!.backgroundGray,
       body: SafeArea(
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.center,
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
             Padding(
-              padding:
-                  const EdgeInsets.symmetric(vertical: 8.0, horizontal: 10),
+              padding: const EdgeInsets.symmetric(vertical: 8.0, horizontal: 10),
               child: const CarpAppBar(hasProfileIcon: true),
             ),
             Flexible(
-              child: StreamBuilder<int>(
-                stream: widget.model.messageStream,
-                builder: (context, AsyncSnapshot<int> snapshot) {
-                  final cards = _buildCards(context);
-                  return RefreshIndicator(
-                    onRefresh: () async {
-                      await bloc.refreshMessages();
-                      final status = await Sensing().tryDeployment();
-                      if (status == StudyStatus.Deployed) {
-                        bloc.start();
-                      }
-                      bloc.deploymentService.getStudyDeploymentStatus(
-                          widget.model.studyDeploymentId);
+              // Re-render when configureStudy completes; until then show a
+              // loader, with pull-to-refresh as the retry affordance.
+              child: ListenableBuilder(
+                listenable: widget.model,
+                builder: (context, _) {
+                  if (!widget.model.isConfigured) {
+                    return RefreshIndicator(
+                      onRefresh: widget.model.retryConfiguration,
+                      child: const CustomScrollView(
+                        physics: AlwaysScrollableScrollPhysics(),
+                        slivers: [SliverFillRemaining(hasScrollBody: false, child: _ConfiguringStudyLoader())],
+                      ),
+                    );
+                  }
+                  return StreamBuilder<int>(
+                    stream: widget.model.messageStream,
+                    builder: (context, AsyncSnapshot<int> snapshot) {
+                      final cards = _buildCards(context);
+                      return RefreshIndicator(
+                        onRefresh: widget.model.refresh,
+                        child: ListView.builder(itemCount: cards.length, itemBuilder: (context, index) => cards[index]),
+                      );
                     },
-                    child: ListView.builder(
-                      itemCount: cards.length,
-                      itemBuilder: (context, index) => cards[index],
-                    ),
                   );
                 },
               ),
@@ -55,90 +59,71 @@ class StudyPageState extends State<StudyPage> {
 
   List<Widget> _buildCards(BuildContext context) {
     final items = <Widget>[];
-    final updateCard = _hasUpdateCard();
-    items.add(updateCard);
-    items.add(_studyCard(
-      context,
-      widget.model.studyDescriptionMessage,
-      onTap: () {
-        context.push(StudyDetailsPage.route);
-      },
-    ));
+    if (widget.model.appUpdateAvailable) items.add(_hasUpdateCard());
+    items.add(
+      _studyCard(
+        context,
+        widget.model.studyDescriptionMessage,
+        onTap: () {
+          context.push(StudyDetailsPage.route);
+        },
+      ),
+    );
     items.add(_studyStatusCard());
-    if (LocalSettings().isAnonymous) {
+    if (widget.model.isAnonymousUser) {
       items.add(AnonymousCard());
     }
-    if (bloc.messages.isNotEmpty) {
+    if (widget.model.messages.isNotEmpty) {
       items.add(_buildAnnouncementsTitle(context));
-      items.addAll(bloc.messages.map((message) {
-        return _announcementCard(context, message);
-      }).toList());
+      // Show newest announcements first: sort by timestamp descending
+      final messages = List<Message>.from(widget.model.messages)..sort((a, b) => b.timestamp.compareTo(a.timestamp));
+      items.addAll(
+        messages.map((message) {
+          return _announcementCard(context, message);
+        }).toList(),
+      );
     }
     return items;
   }
 
   Widget _hasUpdateCard() {
     RPLocalizations locale = RPLocalizations.of(context)!;
-    return FutureBuilder<bool?>(
-        future: bloc.getAppHasUpdate(),
-        builder: (context, snapshot) {
-          if (snapshot.data == true) {
-            return StudiesMaterial(
-              backgroundColor: Theme.of(context).extension<RPColors>()!.grey50!,
-              elevation: 8,
+    return StudiesMaterial(
+      backgroundColor: Theme.of(context).extension<CarpColors>()!.grey50!,
+      elevation: 8,
+      child: Padding(
+        padding: const EdgeInsets.only(left: 16.0),
+        child: Row(
+          children: [
+            Expanded(
               child: Padding(
-                padding: const EdgeInsets.only(left: 16.0),
-                child: Row(
-                  children: [
-                    Expanded(
-                      child: Padding(
-                        padding: const EdgeInsets.all(8.0),
-                        child: Text(
-                          locale.translate('pages.about.app_update'),
-                          style: aboutCardSubtitleStyle.copyWith(
-                            color: Theme.of(context)
-                                .extension<RPColors>()!
-                                .grey900,
-                          ),
-                        ),
-                      ),
-                    ),
-                    Padding(
-                      padding: const EdgeInsets.only(right: 16),
-                      child: ElevatedButton(
-                        onPressed: () async {
-                          _redirectToUpdateStore();
-                        },
-                        style: ElevatedButton.styleFrom(
-                          backgroundColor: CACHET.DEPLOYMENT_DEPLOYING,
-                          padding: const EdgeInsets.symmetric(
-                            horizontal: 30,
-                            vertical: 12,
-                          ),
-                        ),
-                        child: Text(
-                          locale.translate("get"),
-                          style: TextStyle(
-                            color: Colors.white,
-                          ),
-                        ),
-                      ),
-                    ),
-                  ],
+                padding: const EdgeInsets.all(8.0),
+                child: Text(
+                  locale.translate('pages.about.app_update'),
+                  style: fs16fw600.copyWith(color: Theme.of(context).extension<CarpColors>()!.grey900),
                 ),
               ),
-            );
-          } else {
-            return SizedBox.shrink();
-          }
-        });
+            ),
+            Padding(
+              padding: const EdgeInsets.only(right: 16),
+              child: ElevatedButton(
+                onPressed: () async {
+                  _redirectToUpdateStore();
+                },
+                style: ElevatedButton.styleFrom(
+                  backgroundColor: CACHET.DEPLOYMENT_DEPLOYING,
+                  padding: const EdgeInsets.symmetric(horizontal: 30, vertical: 12),
+                ),
+                child: Text(locale.translate("get"), style: TextStyle(color: Colors.white)),
+              ),
+            ),
+          ],
+        ),
+      ),
+    );
   }
 
-  Widget _studyCard(
-    BuildContext context,
-    Message message, {
-    Function? onTap,
-  }) {
+  Widget _studyCard(BuildContext context, Message message, {Function? onTap}) {
     RPLocalizations locale = RPLocalizations.of(context)!;
 
     // Initialization the language of the timeago package
@@ -146,7 +131,7 @@ class StudyPageState extends State<StudyPage> {
     timeago.setLocaleMessages('es', timeago.EsMessages());
 
     return StudiesMaterial(
-      backgroundColor: Theme.of(context).extension<RPColors>()!.grey50!,
+      backgroundColor: Theme.of(context).extension<CarpColors>()!.grey50!,
       child: InkWell(
         onTap: () {
           if (onTap != null) {
@@ -171,10 +156,10 @@ class StudyPageState extends State<StudyPage> {
                 ),
               Padding(
                 padding: const EdgeInsets.symmetric(vertical: 8.0),
-                child: Text(locale.translate(message.title!),
-                    style: aboutStudyCardTitleStyle.copyWith(
-                        color:
-                            Theme.of(context).extension<RPColors>()!.primary)),
+                child: Text(
+                  locale.translate(message.title!),
+                  style: fs24fw700.copyWith(color: Theme.of(context).extension<CarpColors>()!.primary),
+                ),
               ),
               if (message.subTitle != null && message.subTitle!.isNotEmpty)
                 Row(
@@ -182,25 +167,23 @@ class StudyPageState extends State<StudyPage> {
                     Expanded(
                       child: Text(
                         locale.translate(message.subTitle!),
-                        style: aboutCardContentStyle.copyWith(
-                          color:
-                              Theme.of(context).extension<RPColors>()!.grey700,
-                        ),
+                        style: fs16fw400.copyWith(color: Theme.of(context).extension<CarpColors>()!.grey700),
                       ),
                     ),
                   ],
                 ),
               if (message.message != null && message.message!.isNotEmpty)
-                Row(children: [
-                  Expanded(
+                Row(
+                  children: [
+                    Expanded(
                       child: Text(
-                    "${locale.translate(message.message!).substring(0, (message.message!.length > 150) ? 150 : null)}...",
-                    style: aboutCardContentStyle.copyWith(
-                        color:
-                            Theme.of(context).extension<RPColors>()!.grey900),
-                    textAlign: TextAlign.start,
-                  )),
-                ]),
+                        "${locale.translate(message.message!).substring(0, (message.message!.length > 150) ? 150 : null)}...",
+                        style: fs16fw400.copyWith(color: Theme.of(context).extension<CarpColors>()!.grey900),
+                        textAlign: TextAlign.start,
+                      ),
+                    ),
+                  ],
+                ),
             ],
           ),
         ),
@@ -212,71 +195,59 @@ class StudyPageState extends State<StudyPage> {
     RPLocalizations locale = RPLocalizations.of(context)!;
 
     return FutureBuilder<StudyDeploymentStatus?>(
-      future: bloc.studyDeploymentStatus,
+      future: widget.model.studyDeploymentStatus,
       builder: (context, snapshot) {
         if (snapshot.connectionState == ConnectionState.waiting) {
-          return Container();
+          return StudiesMaterial(
+            child: Padding(
+              padding: const EdgeInsets.symmetric(vertical: 28),
+              child: Center(child: CircularProgressIndicator()),
+            ),
+          );
         } else if (snapshot.hasError) {
-          return Padding(
-            padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 22),
-            child: Text('Error: ${snapshot.error}'),
+          return StudiesMaterial(
+            child: Padding(
+              padding: const EdgeInsets.symmetric(vertical: 28),
+              child: Text('Error: ${snapshot.error}', textAlign: TextAlign.center),
+            ),
           ); // Show an error message if the future fails
         } else if (!snapshot.hasData || snapshot.data == null) {
           return Padding(
-            padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 22),
-            child: Center(
-              child: CircularProgressIndicator(),
-            ),
+            padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 28),
+            child: Center(child: CircularProgressIndicator()),
           ); // Handle the case where data is null
         }
 
-        final deploymentStatus = snapshot.data!.status;
+        // `status` may be null; fall back to the domain default.
+        final deploymentStatus = snapshot.data!.status ?? StudyDeploymentStatusTypes.Invited;
 
         return StudiesMaterial(
           margin: const EdgeInsets.all(16.0),
-          backgroundColor: Theme.of(context).extension<RPColors>()!.grey50!,
-          shape: RoundedRectangleBorder(
-            borderRadius: BorderRadius.circular(8),
-          ),
+          backgroundColor: Theme.of(context).extension<CarpColors>()!.grey50!,
+          shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(8)),
           child: Container(
-            decoration: BoxDecoration(
-              borderRadius: BorderRadius.circular(16.0),
-            ),
+            decoration: BoxDecoration(borderRadius: BorderRadius.circular(16.0)),
             child: Row(
               children: [
                 Expanded(
                   child: Padding(
-                    padding: const EdgeInsets.symmetric(
-                        horizontal: 16.0, vertical: 22.0),
+                    padding: const EdgeInsets.symmetric(horizontal: 16.0, vertical: 22.0),
                     child: Row(
                       children: [
                         Column(
                           children: [
                             Padding(
-                              padding: const EdgeInsets.symmetric(
-                                  horizontal: 6.0, vertical: 4),
-                              child: CircleAvatar(
-                                radius: 18,
-                                backgroundColor:
-                                    studyStatusColors[deploymentStatus],
-                              ),
+                              padding: const EdgeInsets.symmetric(horizontal: 6.0, vertical: 4),
+                              child: CircleAvatar(radius: 18, backgroundColor: studyStatusColors[deploymentStatus]),
                             ),
                             Padding(
-                              padding:
-                                  const EdgeInsets.symmetric(horizontal: 6.0),
+                              padding: const EdgeInsets.symmetric(horizontal: 6.0),
                               child: Text(
-                                deploymentStatus ==
-                                        StudyDeploymentStatusTypes
-                                            .DeployingDevices
-                                    ? locale.translate(
-                                        'pages.about.status.deploying_devices')
-                                    : deploymentStatus
-                                        .toString()
-                                        .split('.')
-                                        .last,
+                                deploymentStatus == StudyDeploymentStatusTypes.DeployingDevices
+                                    ? locale.translate('pages.about.status.deploying_devices')
+                                    : deploymentStatus.toString().split('.').last,
                                 maxLines: 2,
-                                style: aboutCardSubtitleStyle.copyWith(
-                                    color: studyStatusColors[deploymentStatus]),
+                                style: fs16fw600.copyWith(color: studyStatusColors[deploymentStatus]),
                               ),
                             ),
                           ],
@@ -286,10 +257,8 @@ class StudyPageState extends State<StudyPage> {
                             padding: const EdgeInsets.only(left: 16.0),
                             child: Text(
                               getStatusText(locale, deploymentStatus, snapshot),
-                              style: aboutCardSubtitleStyle.copyWith(
-                                color: Theme.of(context)
-                                    .extension<RPColors>()!
-                                    .grey900,
+                              style: fs16fw600.copyWith(
+                                color: Theme.of(context).extension<CarpColors>()!.grey900,
                                 fontSize: 14,
                               ),
                             ),
@@ -319,11 +288,13 @@ class StudyPageState extends State<StudyPage> {
             mainAxisAlignment: MainAxisAlignment.start,
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              Text(locale.translate('Announcements'),
-                  style: aboutStudyCardTitleStyle.copyWith(
-                    color: Theme.of(context).extension<RPColors>()!.grey900,
-                    fontWeight: FontWeight.bold,
-                  )),
+              Text(
+                locale.translate('Announcements'),
+                style: fs24fw700.copyWith(
+                  color: Theme.of(context).extension<CarpColors>()!.grey900,
+                  fontWeight: FontWeight.bold,
+                ),
+              ),
             ],
           ),
         ),
@@ -331,11 +302,7 @@ class StudyPageState extends State<StudyPage> {
     );
   }
 
-  Widget _announcementCard(
-    BuildContext context,
-    Message message, {
-    Function? onTap,
-  }) {
+  Widget _announcementCard(BuildContext context, Message message, {Function? onTap}) {
     RPLocalizations locale = RPLocalizations.of(context)!;
 
     // Initialization the language of the timeago package
@@ -344,7 +311,7 @@ class StudyPageState extends State<StudyPage> {
 
     return Container(
       child: StudiesMaterial(
-        backgroundColor: Theme.of(context).extension<RPColors>()!.grey50!,
+        backgroundColor: Theme.of(context).extension<CarpColors>()!.grey50!,
         child: InkWell(
           onTap: () {
             if (onTap != null) {
@@ -363,16 +330,11 @@ class StudyPageState extends State<StudyPage> {
                   children: [
                     Expanded(
                       child: Padding(
-                        padding: const EdgeInsets.only(
-                            top: 8.0, bottom: 8, right: 8),
+                        padding: const EdgeInsets.only(top: 8.0, bottom: 8, right: 8),
                         child: Text(
                           locale.translate(message.title!),
                           overflow: TextOverflow.ellipsis,
-                          style: aboutCardTitleStyle.copyWith(
-                            color: Theme.of(context)
-                                .extension<RPColors>()!
-                                .grey900,
-                          ),
+                          style: fs20fw700.copyWith(color: Theme.of(context).extension<CarpColors>()!.grey900),
                         ),
                       ),
                     ),
@@ -380,15 +342,8 @@ class StudyPageState extends State<StudyPage> {
                       color: CACHET.DEPLOYMENT_DEPLOYING,
                       borderRadius: BorderRadius.circular(100.0),
                       child: Padding(
-                        padding: const EdgeInsets.all(8.0),
-                        child: Text(
-                            locale.translate(message.type
-                                .toString()
-                                .split('.')
-                                .last
-                                .toLowerCase()),
-                            style: aboutCardSubtitleStyle.copyWith(
-                                color: Colors.white)),
+                        padding: const EdgeInsets.all(4.0),
+                        child: Icon(message.type.icon, color: Colors.white),
                       ),
                     ),
                   ],
@@ -397,26 +352,18 @@ class StudyPageState extends State<StudyPage> {
                   padding: const EdgeInsets.only(bottom: 12.0),
                   child: Row(
                     children: [
-                      if (message.subTitle != null &&
-                          message.subTitle!.isNotEmpty)
+                      if (message.subTitle != null && message.subTitle!.isNotEmpty)
                         Expanded(
                           child: Text(
                             locale.translate(message.subTitle!),
-                            style: aboutCardContentStyle.copyWith(
-                              color: Theme.of(context)
-                                  .extension<RPColors>()!
-                                  .grey700,
-                            ),
+                            style: fs16fw400.copyWith(color: Theme.of(context).extension<CarpColors>()!.grey700),
                           ),
                         ),
                       Spacer(),
                       Text(
                         timeago.format(message.timestamp.toLocal()),
-                        style: aboutCardTimeAgoStyle.copyWith(
-                          color:
-                              Theme.of(context).extension<RPColors>()!.grey600,
-                        ),
-                      )
+                        style: fs10fw600.copyWith(color: Theme.of(context).extension<CarpColors>()!.grey600),
+                      ),
                     ],
                   ),
                 ),
@@ -424,13 +371,14 @@ class StudyPageState extends State<StudyPage> {
                   Row(
                     children: [
                       Expanded(
-                          child: Text(
-                        locale.translate(message.message!).length > 150
-                            ? '${locale.translate(message.message!).substring(0, 150)}...'
-                            : locale.translate(message.message!),
-                        style: aboutCardContentStyle,
-                        textAlign: TextAlign.start,
-                      )),
+                        child: Text(
+                          locale.translate(message.message!).length > 150
+                              ? '${locale.translate(message.message!).substring(0, 150)}...'
+                              : locale.translate(message.message!),
+                          style: fs16fw400,
+                          textAlign: TextAlign.start,
+                        ),
+                      ),
                     ],
                   ),
               ],
@@ -445,8 +393,7 @@ class StudyPageState extends State<StudyPage> {
     PackageInfo packageInfo = await PackageInfo.fromPlatform();
     Uri url;
     if (Platform.isAndroid) {
-      url = Uri.parse(
-          'https://play.google.com/store/apps/details?id=${packageInfo.packageName}');
+      url = Uri.parse('https://play.google.com/store/apps/details?id=${packageInfo.packageName}');
     } else if (Platform.isIOS) {
       url = Uri.parse('https://apps.apple.com/app/id1569798025');
     } else {
@@ -467,9 +414,7 @@ class StudyPageState extends State<StudyPage> {
   ) {
     if (deploymentStatusType == StudyDeploymentStatusTypes.DeployingDevices) {
       return locale.translate('pages.about.status.deploying_devices.message') +
-          snapshot.data!.deviceStatusList.first
-              .remainingDevicesToRegisterBeforeDeployment!
-              .join(' | ');
+          snapshot.data!.deviceStatusList.first.remainingDevicesToRegisterBeforeDeployment!.join(' | ');
     } else {
       return locale.translate(studyStatusText[deploymentStatusType]!);
     }
@@ -484,8 +429,7 @@ class StudyPageState extends State<StudyPage> {
 
   static Map<StudyDeploymentStatusTypes, String> studyStatusText = {
     StudyDeploymentStatusTypes.Invited: 'pages.about.status.invited.message',
-    StudyDeploymentStatusTypes.DeployingDevices:
-        'pages.about.status.deploying_devices.message',
+    StudyDeploymentStatusTypes.DeployingDevices: 'pages.about.status.deploying_devices.message',
     StudyDeploymentStatusTypes.Running: 'pages.about.status.running.message',
     StudyDeploymentStatusTypes.Stopped: 'pages.about.status.stopped.message',
   };
@@ -511,6 +455,29 @@ extension CopyWithAdditional on DateTime {
       second + seconds,
       millisecond + milliseconds,
       microsecond + microseconds,
+    );
+  }
+}
+
+/// Placeholder shown while [AppBloc.configureStudy] is running.
+class _ConfiguringStudyLoader extends StatelessWidget {
+  const _ConfiguringStudyLoader();
+
+  @override
+  Widget build(BuildContext context) {
+    return const Center(
+      child: Column(
+        mainAxisAlignment: MainAxisAlignment.center,
+        children: [
+          CircularProgressIndicator(),
+          SizedBox(height: 16),
+          Text(
+            'Configuring the study',
+            textAlign: TextAlign.center,
+            style: TextStyle(fontSize: 16, fontWeight: FontWeight.w500),
+          ),
+        ],
+      ),
     );
   }
 }

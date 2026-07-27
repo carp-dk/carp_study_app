@@ -20,14 +20,13 @@ class StudyProgressCardViewModel extends ViewModel {
   Map<String, int> get progressTable => _progressTable;
 
   /// The list of measures
-  List<StudyProgress> get progress => _progressTable.entries
-      .map((entry) => StudyProgress(entry.key, entry.value))
-      .toList();
+  List<StudyProgress> get progress =>
+      _progressTable.entries.map((entry) => StudyProgress(entry.key, entry.value)).toList();
 
   StudyProgressCardViewModel() : super();
 
   @override
-  Future<void> init(SmartphoneDeploymentController ctrl) async {
+  Future<void> init(SmartphoneStudyController ctrl) async {
     super.init(ctrl);
     updateProgress();
   }

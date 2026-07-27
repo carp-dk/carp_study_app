@@ -21,7 +21,7 @@
 		"dart.debugExternalPackageLibraries": false,
 		"dart.debugSdkLibraries": false,
 		"dart.openDevTools": "never",
-		"java.configuration.updateBuildConfiguration": "automatic",
+		"dart.flutterSdkPath": ".fvm/flutter_sdk",
 	},
 	"extensions": {
 		"recommendations": [

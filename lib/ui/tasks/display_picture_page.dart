@@ -5,11 +5,7 @@ class DisplayPicturePage extends StatefulWidget {
   final bool isVideo;
   final VideoUserTask videoUserTask;
 
-  const DisplayPicturePage(
-      {super.key,
-      required this.file,
-      required this.videoUserTask,
-      this.isVideo = false});
+  const DisplayPicturePage({super.key, required this.file, required this.videoUserTask, this.isVideo = false});
 
   @override
   State<DisplayPicturePage> createState() => DisplayPicturePageState();
@@ -52,22 +48,16 @@ class DisplayPicturePageState extends State<DisplayPicturePage> {
             Row(
               children: [
                 Padding(
-                  padding:
-                      const EdgeInsets.symmetric(vertical: 8.0, horizontal: 10),
-                  child: const CarpAppBar(
-                    hasProfileIcon: false,
-                  ),
+                  padding: const EdgeInsets.symmetric(vertical: 8.0, horizontal: 10),
+                  child: const CarpAppBar(hasProfileIcon: false),
                 ),
                 Spacer(),
                 IconButton(
-                  color: Theme.of(context).extension<RPColors>()!.grey900!,
+                  color: Theme.of(context).extension<CarpColors>()!.grey900!,
                   onPressed: () {
                     _showCancelConfirmationDialog();
                   },
-                  icon: const Icon(
-                    Icons.close,
-                    size: 30,
-                  ),
+                  icon: const Icon(Icons.close, size: 30),
                 ),
               ],
             ),
@@ -80,11 +70,11 @@ class DisplayPicturePageState extends State<DisplayPicturePage> {
                   width: MediaQuery.of(context).size.width * 0.5,
                   child: (widget.isVideo && _videoPlayerController != null)
                       ? _videoPlayerController!.value.isInitialized
-                          ? AspectRatio(
-                              aspectRatio:
-                                  _videoPlayerController!.value.aspectRatio,
-                              child: VideoPlayer(_videoPlayerController!))
-                          : const CircularProgressIndicator()
+                            ? AspectRatio(
+                                aspectRatio: _videoPlayerController!.value.aspectRatio,
+                                child: VideoPlayer(_videoPlayerController!),
+                              )
+                            : const CircularProgressIndicator()
                       : Image.file(File(videoFilePath)),
                 ),
               ),
@@ -96,16 +86,12 @@ class DisplayPicturePageState extends State<DisplayPicturePage> {
                 children: [
                   Padding(
                     padding: const EdgeInsets.symmetric(horizontal: 10),
-                    child: Text(locale.translate('pages.audio_task.done'),
-                        style: audioTitleStyle),
+                    child: Text(locale.translate('pages.audio_task.done'), style: fs22fw700),
                   ),
                   const SizedBox(height: 40),
                   Padding(
                     padding: const EdgeInsets.symmetric(horizontal: 10),
-                    child: Text(
-                      locale.translate('pages.audio_task.recording_completed'),
-                      style: audioContentStyle,
-                    ),
+                    child: Text(locale.translate('pages.audio_task.recording_completed'), style: fs16fw600),
                   ),
                   const SizedBox(height: 20),
                   Align(
@@ -119,8 +105,7 @@ class DisplayPicturePageState extends State<DisplayPicturePage> {
                           IconButton(
                             onPressed: () => Navigator.of(context).pop(),
                             padding: const EdgeInsets.all(0),
-                            icon: const Icon(Icons.replay,
-                                size: 25, color: CACHET.GREY_5),
+                            icon: const Icon(Icons.replay, size: 25, color: CACHET.GREY_5),
                           ),
                           const SizedBox(width: 20),
                           CircleAvatar(
@@ -134,8 +119,7 @@ class DisplayPicturePageState extends State<DisplayPicturePage> {
                                 Navigator.of(context).pop();
                               },
                               padding: const EdgeInsets.all(0),
-                              icon: const Icon(Icons.check_circle_outline,
-                                  color: Colors.white, size: 30),
+                              icon: const Icon(Icons.check_circle_outline, color: Colors.white, size: 30),
                             ),
                           ),
                           const SizedBox(width: 50),
@@ -162,10 +146,7 @@ class DisplayPicturePageState extends State<DisplayPicturePage> {
         return AlertDialog(
           title: Text(locale.translate("pages.audio_task.discard")),
           actions: <Widget>[
-            TextButton(
-              child: Text(locale.translate("NO")),
-              onPressed: () => Navigator.of(context).pop(),
-            ),
+            TextButton(child: Text(locale.translate("NO")), onPressed: () => Navigator.of(context).pop()),
             TextButton(
               child: Text(locale.translate("YES")),
               onPressed: () {
@@ -176,7 +157,7 @@ class DisplayPicturePageState extends State<DisplayPicturePage> {
                 Navigator.of(context).pop();
                 Navigator.of(context).pop();
               },
-            )
+            ),
           ],
         );
       },

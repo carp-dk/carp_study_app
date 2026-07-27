@@ -18,96 +18,73 @@ class AudioTaskPageState extends State<AudioTaskPage> {
           canPop: true,
           child: Scaffold(
             body: Container(
-                padding: const EdgeInsets.symmetric(horizontal: 15),
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.center,
-                  children: [
-                    Row(
+              padding: const EdgeInsets.symmetric(horizontal: 15),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.center,
+                children: [
+                  Row(
+                    children: [
+                      Padding(
+                        padding: const EdgeInsets.symmetric(vertical: 8.0, horizontal: 10),
+                        child: const CarpAppBar(hasProfileIcon: false),
+                      ),
+                      Spacer(),
+                      IconButton(
+                        color: Theme.of(context).extension<CarpColors>()!.grey900!,
+                        onPressed: () {
+                          _showCancelConfirmationDialog();
+                        },
+                        icon: const Icon(Icons.close, size: 30),
+                      ),
+                    ],
+                  ),
+                  Padding(
+                    padding: const EdgeInsets.symmetric(vertical: 30),
+                    child: const Image(image: AssetImage('assets/icons/audio.png'), width: 220, height: 220),
+                  ),
+                  Padding(
+                    padding: const EdgeInsets.symmetric(vertical: 12),
+                    child: Text(locale.translate(widget.audioUserTask!.title), style: fs22fw700),
+                  ),
+                  Padding(
+                    padding: const EdgeInsets.symmetric(vertical: 12, horizontal: 20),
+                    child: Text(
+                      '${locale.translate(widget.audioUserTask!.description)}\n\n'
+                      '${locale.translate('pages.audio_task.play')}',
+                      style: fs16fw600,
+                    ),
+                  ),
+                  Padding(
+                    padding: const EdgeInsets.symmetric(vertical: 30),
+                    child: Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                       children: [
-                        Padding(
-                          padding: const EdgeInsets.symmetric(
-                              vertical: 8.0, horizontal: 10),
-                          child: const CarpAppBar(
-                            hasProfileIcon: false,
-                          ),
-                        ),
-                        Spacer(),
-                        IconButton(
-                          color:
-                              Theme.of(context).extension<RPColors>()!.grey900!,
+                        OutlinedButton(
                           onPressed: () {
-                            _showCancelConfirmationDialog();
+                            widget.audioUserTask!.onCancel();
+                            Navigator.pop(context);
                           },
-                          icon: const Icon(
-                            Icons.close,
-                            size: 30,
+                          child: Text(locale.translate("Cancel")),
+                        ),
+                        ElevatedButton(
+                          onPressed: () => Navigator.push(
+                            context,
+                            MaterialPageRoute<void>(
+                              builder: (context) => AudioPage(audioUserTask: widget.audioUserTask),
+                            ),
                           ),
+                          style: ElevatedButton.styleFrom(
+                            backgroundColor: Theme.of(context).extension<CarpColors>()!.primary,
+                            padding: const EdgeInsets.symmetric(horizontal: 30, vertical: 12),
+                          ),
+                          child: Text(locale.translate("next"), style: TextStyle(color: Colors.white)),
                         ),
                       ],
                     ),
-                    Padding(
-                      padding: const EdgeInsets.symmetric(vertical: 30),
-                      child: const Image(
-                          image: AssetImage('assets/icons/audio.png'),
-                          width: 220,
-                          height: 220),
-                    ),
-                    Padding(
-                      padding: const EdgeInsets.symmetric(vertical: 12),
-                      child: Text(locale.translate(widget.audioUserTask!.title),
-                          style: audioTitleStyle),
-                    ),
-                    Padding(
-                      padding: const EdgeInsets.symmetric(
-                          vertical: 12, horizontal: 20),
-                      child: Text(
-                        '${locale.translate(widget.audioUserTask!.description)}\n\n'
-                        '${locale.translate('pages.audio_task.play')}',
-                        style: audioContentStyle,
-                      ),
-                    ),
-                    Padding(
-                      padding: const EdgeInsets.symmetric(vertical: 30),
-                      child: Row(
-                        mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                        children: [
-                          OutlinedButton(
-                            onPressed: () {
-                              widget.audioUserTask!.onCancel();
-                              Navigator.pop(context);
-                            },
-                            child: Text(locale.translate("Cancel")),
-                          ),
-                          ElevatedButton(
-                            onPressed: () => Navigator.push(
-                              context,
-                              MaterialPageRoute<void>(
-                                builder: (context) => AudioPage(
-                                  audioUserTask: widget.audioUserTask,
-                                ),
-                              ),
-                            ),
-                            style: ElevatedButton.styleFrom(
-                              backgroundColor: Theme.of(context)
-                                  .extension<RPColors>()!
-                                  .primary,
-                              padding: const EdgeInsets.symmetric(
-                                horizontal: 30,
-                                vertical: 12,
-                              ),
-                            ),
-                            child: Text(
-                              locale.translate("next"),
-                              style: TextStyle(
-                                color: Colors.white,
-                              ),
-                            ),
-                          ),
-                        ],
-                      ),
-                    ),
-                  ],
-                )),
+                  ),
+                ],
+              ),
+            ),
           ),
         ),
       ),
@@ -133,9 +110,9 @@ class AudioTaskPageState extends State<AudioTaskPage> {
             TextButton(
               child: Text(locale.translate("YES")),
               onPressed: () {
-                context.pushReplacement(CarpStudyAppState.homeRoute);
+                context.pushReplacement(CarpAppState.homeRoute);
               },
-            )
+            ),
           ],
         );
       },

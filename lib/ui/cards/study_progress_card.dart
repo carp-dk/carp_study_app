@@ -4,9 +4,11 @@ class StudyProgressCardWidget extends StatefulWidget {
   final StudyProgressCardViewModel model;
 
   final List<Color> colors;
-  const StudyProgressCardWidget(this.model,
-      {super.key,
-      this.colors = const [CACHET.BLUE_1, CACHET.RED_1, CACHET.GREY_6]});
+  const StudyProgressCardWidget(
+    this.model, {
+    super.key,
+    this.colors = const [CACHET.BLUE_1, CACHET.RED_1, CACHET.GREY_6],
+  });
 
   @override
   StudyProgressCardWidgetState createState() => StudyProgressCardWidgetState();
@@ -19,7 +21,7 @@ class StudyProgressCardWidgetState extends State<StudyProgressCardWidget> {
 
     widget.model.updateProgress();
     return StudiesMaterial(
-      backgroundColor: Theme.of(context).extension<RPColors>()!.white!,
+      backgroundColor: Theme.of(context).extension<CarpColors>()!.white!,
       child: Padding(
         padding: const EdgeInsets.all(8.0),
         child: StreamBuilder(
@@ -31,35 +33,28 @@ class StudyProgressCardWidgetState extends State<StudyProgressCardWidget> {
                   padding: const EdgeInsets.only(left: 8),
                   child: Row(
                     mainAxisAlignment: MainAxisAlignment.start,
-                    children: <Widget>[
-                      Text(locale.translate('cards.study_progress.title'),
-                          style: dataCardTitleStyle),
-                    ],
+                    children: <Widget>[Text(locale.translate('cards.study_progress.title'), style: fs16fw400ls1)],
                   ),
                 ),
                 SizedBox(
                   height: 130,
                   child: LayoutBuilder(
-                    builder:
-                        (BuildContext context, BoxConstraints constraints) {
+                    builder: (BuildContext context, BoxConstraints constraints) {
                       return Row(
                         mainAxisAlignment: MainAxisAlignment.spaceBetween,
                         children: [
                           Padding(
-                            padding:
-                                const EdgeInsets.symmetric(horizontal: 8.0),
+                            padding: const EdgeInsets.symmetric(horizontal: 8.0),
                             child: Column(
                               crossAxisAlignment: CrossAxisAlignment.start,
                               children: List.generate(
                                 widget.model.progress.length,
                                 (index) => Padding(
-                                  padding:
-                                      const EdgeInsets.symmetric(vertical: 4.0),
+                                  padding: const EdgeInsets.symmetric(vertical: 4.0),
                                   child: Row(
                                     children: [
                                       Text(
-                                        widget.model.progress[index].value
-                                            .toString(),
+                                        widget.model.progress[index].value.toString(),
                                         style: TextStyle(
                                           fontSize: 22,
                                           fontWeight: FontWeight.bold,
@@ -68,8 +63,7 @@ class StudyProgressCardWidgetState extends State<StudyProgressCardWidget> {
                                       ),
                                       const SizedBox(width: 4),
                                       Text(
-                                        locale.translate(
-                                            widget.model.progress[index].state),
+                                        locale.translate(widget.model.progress[index].state),
                                         style: const TextStyle(fontSize: 16),
                                       ),
                                     ],
@@ -80,20 +74,15 @@ class StudyProgressCardWidgetState extends State<StudyProgressCardWidget> {
                           ),
                           // Circular Progress Representation
                           Padding(
-                            padding:
-                                const EdgeInsets.only(bottom: 18, right: 24.0),
+                            padding: const EdgeInsets.only(bottom: 18, right: 24.0),
                             child: SizedBox(
                               width: 104,
                               height: 104,
                               child: CustomPaint(
                                 painter: TaskProgressPainter(
-                                  values: widget.model.progress
-                                      .map((p) => p.value)
-                                      .toList(),
+                                  values: widget.model.progress.map((p) => p.value).toList(),
                                   colors: widget.colors,
-                                  faintColors: widget.colors
-                                      .map((c) => c.withValues(alpha: 0.2))
-                                      .toList(),
+                                  faintColors: widget.colors.map((c) => c.withValues(alpha: 0.2)).toList(),
                                 ),
                               ),
                             ),
@@ -118,8 +107,7 @@ class TaskProgressPainter extends CustomPainter {
   final List<Color> faintColors;
   final double pi = 3.141592;
 
-  TaskProgressPainter(
-      {required this.values, required this.colors, required this.faintColors});
+  TaskProgressPainter({required this.values, required this.colors, required this.faintColors});
 
   @override
   void paint(Canvas canvas, Size size) {
@@ -167,13 +155,7 @@ class TaskProgressPainter extends CustomPainter {
       );
 
       // draw a full circle as a background with a faint color
-      canvas.drawArc(
-        Rect.fromCircle(center: center, radius: radius),
-        0,
-        2 * pi,
-        false,
-        paintBackground,
-      );
+      canvas.drawArc(Rect.fromCircle(center: center, radius: radius), 0, 2 * pi, false, paintBackground);
     }
   }
 

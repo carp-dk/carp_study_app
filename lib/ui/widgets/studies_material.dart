@@ -17,9 +17,7 @@ class StudiesMaterial extends StatelessWidget {
     required this.child,
     this.elevation = 0,
     this.margin = const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
-    this.shape = const RoundedRectangleBorder(
-      borderRadius: BorderRadius.all(Radius.circular(8)),
-    ),
+    this.shape = const RoundedRectangleBorder(borderRadius: BorderRadius.all(Radius.circular(8))),
     this.clipBehavior,
     this.hasBorder = false,
     this.hasBox = false,
@@ -39,21 +37,14 @@ class StudiesMaterial extends StatelessWidget {
         child: Container(
           decoration: hasBorder
               ? BoxDecoration(
-                  border: Border(
-                    left: BorderSide(
-                      color: borderColor,
-                      width: 4.0,
-                    ),
-                  ),
+                  border: Border(left: BorderSide(color: borderColor, width: 4.0)),
                 )
               : hasBox
-                  ? BoxDecoration(
-                      border: Border.all(
-                        color: CACHET.LIGHT_2,
-                        width: 1.0,
-                      ),
-                      borderRadius: BorderRadius.circular(16.0))
-                  : null,
+              ? BoxDecoration(
+                  border: Border.all(color: CACHET.LIGHT_2, width: 1.0),
+                  borderRadius: BorderRadius.circular(16.0),
+                )
+              : null,
           child: child,
         ),
       ),

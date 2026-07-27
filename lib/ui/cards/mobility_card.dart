@@ -4,9 +4,7 @@ class MobilityCard extends StatefulWidget {
   final List<Color> colors;
 
   final MobilityCardViewModel model;
-  const MobilityCard(this.model,
-      {super.key,
-      this.colors = const [CACHET.CAQUI, CACHET.ORANGE, CACHET.BLUE_3]});
+  const MobilityCard(this.model, {super.key, this.colors = const [CACHET.CAQUI, CACHET.ORANGE, CACHET.BLUE_3]});
 
   @override
   State<MobilityCard> createState() => _MobilityCardState();
@@ -30,26 +28,19 @@ class _MobilityCardState extends State<MobilityCard> {
     RPLocalizations locale = RPLocalizations.of(context)!;
 
     return StudiesMaterial(
-      backgroundColor: Theme.of(context).extension<RPColors>()!.white!,
+      backgroundColor: Theme.of(context).extension<CarpColors>()!.white!,
       child: Padding(
         padding: const EdgeInsets.all(8.0),
         child: Column(
           children: [
             Row(
               children: [
-                Text(
-                  '$_homestay%',
-                  style: dataVizCardTitleNumber.copyWith(
-                    color: widget.colors[0],
-                  ),
-                ),
+                Text('$_homestay%', style: fs28fw700.copyWith(color: widget.colors[0])),
                 Padding(
                   padding: const EdgeInsets.only(left: 4.0),
                   child: Text(
                     "${locale.translate('cards.mobility.homestay')} ${_getDayName(touchedIndex)}",
-                    style: dataVizCardTitleText.copyWith(
-                      color: Theme.of(context).extension<RPColors>()!.grey900!,
-                    ),
+                    style: fs12fw700.copyWith(color: Theme.of(context).extension<CarpColors>()!.grey900!),
                   ),
                 ),
               ],
@@ -58,9 +49,7 @@ class _MobilityCardState extends State<MobilityCard> {
               children: [
                 Text(
                   "${widget.model.currentMonth} ${widget.model.startOfWeek} - ${int.parse(widget.model.endOfWeek) < int.parse(widget.model.startOfWeek) ? widget.model.nextMonth : widget.model.currentMonth} ${widget.model.endOfWeek}, ${widget.model.currentYear}",
-                  style: dataVizCardTitleText.copyWith(
-                    color: Theme.of(context).extension<RPColors>()!.grey600,
-                  ),
+                  style: fs12fw700.copyWith(color: Theme.of(context).extension<CarpColors>()!.grey600),
                 ),
                 Spacer(),
               ],
@@ -79,20 +68,12 @@ class _MobilityCardState extends State<MobilityCard> {
               children: [
                 Row(
                   children: [
-                    Text(
-                      '$_places',
-                      style: dataVizCardBottomNumber.copyWith(
-                        color: widget.colors[0],
-                      ),
-                    ),
+                    Text('$_places', style: fs22fw700.copyWith(color: widget.colors[0])),
                     Padding(
                       padding: const EdgeInsets.all(4.0),
                       child: Text(
                         locale.translate('cards.mobility.places'),
-                        style: dataVizCardBottomText.copyWith(
-                            color: Theme.of(context)
-                                .extension<RPColors>()!
-                                .grey800),
+                        style: fs12fw700.copyWith(color: Theme.of(context).extension<CarpColors>()!.grey800),
                       ),
                     ),
                   ],
@@ -106,58 +87,41 @@ class _MobilityCardState extends State<MobilityCard> {
   }
 
   BarChart get barCharts {
-    return BarChart(BarChartData(
-      alignment: BarChartAlignment.spaceAround,
-      titlesData: FlTitlesData(
-        bottomTitles: AxisTitles(
-          sideTitles: SideTitles(
-            showTitles: true,
-            getTitlesWidget: bottomTitles,
-            reservedSize: 20,
+    return BarChart(
+      BarChartData(
+        alignment: BarChartAlignment.spaceAround,
+        titlesData: FlTitlesData(
+          bottomTitles: AxisTitles(
+            sideTitles: SideTitles(showTitles: true, getTitlesWidget: bottomTitles, reservedSize: 20),
           ),
-        ),
-        leftTitles: const AxisTitles(),
-        rightTitles: AxisTitles(
-          sideTitles: SideTitles(
-            showTitles: true,
-            getTitlesWidget: rightTitles,
-            reservedSize: 48,
+          leftTitles: const AxisTitles(),
+          rightTitles: AxisTitles(
+            sideTitles: SideTitles(showTitles: true, getTitlesWidget: rightTitles, reservedSize: 48),
           ),
+          topTitles: const AxisTitles(),
         ),
-        topTitles: const AxisTitles(),
-      ),
-      barTouchData: BarTouchData(
-        enabled: false,
-        touchCallback: (p0, p1) {
-          setState(() {
-            touchedIndex =
-                (p1?.spot?.touchedBarGroupIndex ?? DateTime.now().weekday - 1) +
-                    1;
-          });
-        },
-      ),
-      groupsSpace: 4,
-      barGroups: barChartsGroups,
-      maxY: 100,
-      gridData: FlGridData(
-        show: true,
-        drawVerticalLine: false,
-        drawHorizontalLine: true,
-        getDrawingHorizontalLine: (value) {
-          return FlLine(
-            color: Colors.grey.withValues(alpha: 0.3),
-            strokeWidth: 1,
-          );
-        },
-      ),
-      borderData: FlBorderData(
-        show: true,
-        border: Border.all(
-          width: 1,
-          color: Colors.grey.withValues(alpha: 0.2),
+        barTouchData: BarTouchData(
+          enabled: false,
+          touchCallback: (p0, p1) {
+            setState(() {
+              touchedIndex = (p1?.spot?.touchedBarGroupIndex ?? DateTime.now().weekday - 1) + 1;
+            });
+          },
         ),
+        groupsSpace: 4,
+        barGroups: barChartsGroups,
+        maxY: 100,
+        gridData: FlGridData(
+          show: true,
+          drawVerticalLine: false,
+          drawHorizontalLine: true,
+          getDrawingHorizontalLine: (value) {
+            return FlLine(color: Colors.grey.withValues(alpha: 0.3), strokeWidth: 1);
+          },
+        ),
+        borderData: FlBorderData(show: true, border: Border.all(width: 1, color: Colors.grey.withValues(alpha: 0.2))),
       ),
-    ));
+    );
   }
 
   List<BarChartGroupData> get barChartsGroups {
@@ -180,19 +144,13 @@ class _MobilityCardState extends State<MobilityCard> {
           toY: places.toDouble(),
           color: widget.colors[1].withValues(alpha: isTouched ? 0.8 : 1),
           width: 16,
-          borderRadius: const BorderRadius.only(
-            topLeft: Radius.circular(4),
-            topRight: Radius.circular(4),
-          ),
+          borderRadius: const BorderRadius.only(topLeft: Radius.circular(4), topRight: Radius.circular(4)),
         ),
         BarChartRodData(
           toY: homestay.toDouble(),
           color: widget.colors[0].withValues(alpha: isTouched ? 0.8 : 1),
           width: 16,
-          borderRadius: const BorderRadius.only(
-            topLeft: Radius.circular(4),
-            topRight: Radius.circular(4),
-          ),
+          borderRadius: const BorderRadius.only(topLeft: Radius.circular(4), topRight: Radius.circular(4)),
         ),
       ],
     );
@@ -203,12 +161,8 @@ class _MobilityCardState extends State<MobilityCard> {
       meta: meta,
       space: 6,
       child: Text(
-        value.toInt() % meta.appliedInterval == 0
-            ? value.toInt().toString()
-            : '',
-        style: dataCardRightTitleStyle.copyWith(
-          color: Theme.of(context).extension<RPColors>()!.grey600,
-        ),
+        value.toInt() % meta.appliedInterval == 0 ? value.toInt().toString() : '',
+        style: fs14ls1.copyWith(color: Theme.of(context).extension<CarpColors>()!.grey600),
       ),
     );
   }
@@ -218,12 +172,8 @@ class _MobilityCardState extends State<MobilityCard> {
       meta: meta,
       space: 6,
       child: Text(
-        value.toInt() % meta.appliedInterval == 0
-            ? value.toInt().toString()
-            : '',
-        style: dataCardRightTitleStyle.copyWith(
-          color: Theme.of(context).extension<RPColors>()!.grey600,
-        ),
+        value.toInt() % meta.appliedInterval == 0 ? value.toInt().toString() : '',
+        style: fs14ls1.copyWith(color: Theme.of(context).extension<CarpColors>()!.grey600),
       ),
     );
   }

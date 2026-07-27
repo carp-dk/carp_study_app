@@ -2,8 +2,29 @@ part of carp_study_app;
 
 /// The view model for the [DeviceListPage].
 class DeviceListPageViewModel extends ViewModel {
-  final List<DeviceViewModel> _devices = [];
-  List<DeviceViewModel> get devices => _devices;
+  DeviceListPageViewModel({StudyService? studyService}) : _studyService = studyService;
+
+  final StudyService? _studyService;
+  StudyService get _study => _studyService ?? bloc.study;
+
+  /// The smartphone (primary) device of this deployment.
+  List<DeviceViewModel> get smartphoneDevice =>
+      _study.deploymentDevices.where((device) => device.deviceManager is SmartphoneDeviceManager).toList();
+
+  /// The hardware devices (connected devices) of this deployment.
+  List<DeviceViewModel> get hardwareDevices => _study.deploymentDevices
+      .where(
+        (device) => device.deviceManager is HardwareDeviceManager && device.deviceManager is! SmartphoneDeviceManager,
+      )
+      .toList();
+
+  /// The online services of this deployment.
+  List<DeviceViewModel> get onlineServices =>
+      _study.deploymentDevices.where((device) => device.deviceManager is ServiceManager).toList();
+
+  /// The Health service of this deployment, if any.
+  DeviceViewModel? get healthService =>
+      onlineServices.where((device) => device.type == HealthService.DEVICE_TYPE).firstOrNull;
 }
 
 /// The view model for each device - [DeviceManager].
@@ -15,11 +36,10 @@ class DeviceViewModel extends ViewModel {
   DeviceViewModel(this.deviceManager) : super();
 
   /// The type of this device.
-  String? get type => deviceManager.type;
+  String? get type => deviceManager.deviceType;
 
   /// A printer-friendly name for this [type] of device.
-  String get typeName =>
-      _deviceTypeName[type!] ?? 'pages.devices.type.unknown.name';
+  String get typeName => _deviceTypeName[type!] ?? 'pages.devices.type.unknown.name';
 
   /// The status of this device.
   DeviceStatus get status => deviceManager.status;
@@ -29,12 +49,12 @@ class DeviceViewModel extends ViewModel {
   Stream<DeviceStatus> get statusEvents => deviceManager.statusEvents;
 
   /// The device id
-  String get id => deviceManager.id;
+  String get id => deviceManager.displayName ?? '';
 
   /// A printer-friendly name for this device.
   String get name {
-    if (deviceManager is BTLEDeviceManager) {
-      return (deviceManager as BTLEDeviceManager).btleName;
+    if (deviceManager is BLEDeviceManager) {
+      return (deviceManager as BLEDeviceManager).bleName ?? '';
     } else if (deviceManager is PolarDeviceManager) {
       return (deviceManager as PolarDeviceManager).displayName ?? '';
     } else {
@@ -43,16 +63,14 @@ class DeviceViewModel extends ViewModel {
   }
 
   /// A printer-friendly description of this device.
-  String get description =>
-      '${_deviceTypeDescription[type!]} - ${status.name}\n$batteryLevel% battery remaining.';
+  String get description => '${_deviceTypeDescription[type!]} - ${status.name}\n$batteryLevel% battery remaining.';
 
   /// The battery level of this device.
   ///
   /// Only relevant if this device is a [HardwareDeviceManager].
   /// Returns null if not a hardware device.
-  int? get batteryLevel => (deviceManager is HardwareDeviceManager)
-      ? (deviceManager as HardwareDeviceManager).batteryLevel
-      : null;
+  int? get batteryLevel =>
+      (deviceManager is HardwareDeviceManager) ? (deviceManager as HardwareDeviceManager).batteryLevel : null;
 
   /// The stream of battery level events.
   ///
@@ -77,24 +95,19 @@ class DeviceViewModel extends ViewModel {
   /// Instructions to the user on how to connect to this type of device.
   String? get connectionInstructions => _deviceConnectionInstructions[type!];
 
-  String? get connectionInstructionsImage =>
-      _deviceConnectionInstructionsImage[type!];
+  String? get connectionInstructionsImage => _deviceConnectionInstructionsImage[type!];
 
   PolarDeviceType get polarDeviceType {
     if (deviceManager is PolarDeviceManager) {
-      return (deviceManager as PolarDeviceManager).configuration?.deviceType ??
-          PolarDeviceType.UNKNOWN;
+      return (deviceManager as PolarDeviceManager).polarDeviceType ?? PolarDeviceType.Unknown;
     } else {
-      return PolarDeviceType.UNKNOWN;
+      return PolarDeviceType.Unknown;
     }
   }
 
   MovesenseDeviceType get movesenseDeviceType {
     if (deviceManager is MovesenseDeviceManager) {
-      return (deviceManager as MovesenseDeviceManager)
-              .configuration
-              ?.deviceType ??
-          MovesenseDeviceType.UNKNOWN;
+      return (deviceManager as MovesenseDeviceManager).movesenseDeviceType;
     } else {
       return MovesenseDeviceType.UNKNOWN;
     }
@@ -102,22 +115,18 @@ class DeviceViewModel extends ViewModel {
 
   /// Display information about this phone.
   Map<String, String?> get phoneInfo => {
-        'name': '${DeviceInfo().deviceID}',
-        'model':
-            '${DeviceInfo().deviceModel} (${DeviceInfo().deviceManufacturer?.toUpperCase()})',
-        'version': 'SDK ${DeviceInfo().sdk}',
-      };
+    'name': '${DeviceInfoService().deviceID}',
+    'model': '${DeviceInfoService().deviceModel} (${DeviceInfoService().deviceManufacturer?.toUpperCase()})',
+    'version': 'SDK ${DeviceInfoService().sdk}',
+  };
 
   /// Map a selected device to the device in the protocol and connect to it.
   void connectToDevice(BluetoothDevice selectedDevice) {
-    if (deviceManager is BTLEDeviceManager) {
-      (deviceManager as BTLEDeviceManager).btleAddress =
-          selectedDevice.remoteId.str;
-      (deviceManager as BTLEDeviceManager).btleName =
-          selectedDevice.platformName;
+    if (deviceManager is BLEDeviceManager) {
+      (deviceManager as BLEDeviceManager).bleAddress = selectedDevice.remoteId.str;
+      (deviceManager as BLEDeviceManager).bleName = selectedDevice.platformName;
     }
 
-    Sensing().controller?.saveDeployment();
     deviceManager.connect();
   }
 
@@ -126,16 +135,13 @@ class DeviceViewModel extends ViewModel {
     try {
       await deviceManager.disconnect();
 
-      // Erase BTLE information so the user can connect to another device, if needed.
-      if (deviceManager is BTLEDeviceManager) {
-        (deviceManager as BTLEDeviceManager).btleAddress = '';
-        (deviceManager as BTLEDeviceManager).btleName = '';
+      // Erase BLE information so the user can connect to another device, if needed.
+      if (deviceManager is BLEDeviceManager) {
+        (deviceManager as BLEDeviceManager).bleAddress = '';
+        (deviceManager as BLEDeviceManager).bleName = '';
       }
-
-      Sensing().controller?.saveDeployment();
     } catch (error) {
-      warning(
-          "$runtimeType - Error disconnecting to device '${deviceManager.id}' - $error.");
+      warning("$runtimeType - Error disconnecting to device '${deviceManager.displayName}' - $error.");
     }
   }
 }
@@ -161,64 +167,31 @@ const Map<String, String> _deviceTypeDescription = {
 };
 
 const Map<String, Icon> _deviceTypeIcon = {
-  Smartphone.DEVICE_TYPE: Icon(
-    Icons.phone_android,
-    size: 30,
-    color: CACHET.GREEN_1,
-  ),
-  WeatherService.DEVICE_TYPE: Icon(
-    Icons.wb_cloudy,
-    color: CACHET.BLUE_1,
-  ),
-  AirQualityService.DEVICE_TYPE: Icon(
-    Icons.air,
-    color: CACHET.LIGHT_BLUE,
-  ),
-  LocationService.DEVICE_TYPE: Icon(
-    Icons.location_on,
-    color: CACHET.GREEN,
-  ),
-  PolarDevice.DEVICE_TYPE: Icon(
-    Icons.monitor_heart,
-    size: 30,
-    color: CACHET.RED,
-  ),
-  MovesenseDevice.DEVICE_TYPE: Icon(
-    Icons.circle,
-    size: 30,
-    color: CACHET.GREY_1,
-  ),
-  HealthService.DEVICE_TYPE: Icon(
-    Icons.favorite_rounded,
-    size: 30,
-    color: CACHET.RED_1,
-  ),
+  Smartphone.DEVICE_TYPE: Icon(Icons.phone_android, size: 30, color: CACHET.GREEN_1),
+  WeatherService.DEVICE_TYPE: Icon(Icons.wb_cloudy, color: CACHET.BLUE_1),
+  AirQualityService.DEVICE_TYPE: Icon(Icons.air, color: CACHET.LIGHT_BLUE),
+  LocationService.DEVICE_TYPE: Icon(Icons.location_on, color: CACHET.GREEN),
+  PolarDevice.DEVICE_TYPE: Icon(Icons.monitor_heart, size: 30, color: CACHET.RED),
+  MovesenseDevice.DEVICE_TYPE: Icon(Icons.circle, size: 30, color: CACHET.GREY_1),
+  HealthService.DEVICE_TYPE: Icon(Icons.favorite_rounded, size: 30, color: CACHET.RED_1),
 };
 
 const Map<DeviceStatus, dynamic> _deviceStatusIcon = {
-  DeviceStatus.initialized: "pages.devices.status.action.connect",
-  DeviceStatus.connecting: Icon(Icons.bluetooth_searching_rounded,
-      color: CACHET.DARK_BLUE, size: 30),
-  DeviceStatus.connected:
-      Icon(Icons.bluetooth_rounded, color: CACHET.GREEN_1, size: 30),
+  DeviceStatus.configured: "pages.devices.status.action.connect",
+  DeviceStatus.connecting: Icon(Icons.bluetooth_searching_rounded, color: CACHET.DARK_BLUE, size: 30),
+  DeviceStatus.connected: Icon(Icons.bluetooth_rounded, color: CACHET.GREEN_1, size: 30),
   DeviceStatus.disconnected: "pages.devices.status.action.connect",
   DeviceStatus.paired: "pages.devices.status.action.connect",
-  DeviceStatus.error: Icon(Icons.error_outline, color: CACHET.RED_1, size: 30),
-  DeviceStatus.unknown:
-      Icon(Icons.error_outline, color: CACHET.RED_1, size: 30),
+  DeviceStatus.unknown: Icon(Icons.error_outline, color: CACHET.RED_1, size: 30),
 };
 
 const Map<DeviceStatus, dynamic> _serviceStatusIcon = {
-  DeviceStatus.initialized: "pages.devices.status.action.connect",
-  DeviceStatus.connecting:
-      Icon(Icons.sensors_off_rounded, color: CACHET.GREEN_1, size: 30),
-  DeviceStatus.connected:
-      Icon(Icons.sensors_rounded, color: CACHET.GREEN_1, size: 30),
+  DeviceStatus.configured: "pages.devices.status.action.connect",
+  DeviceStatus.connecting: Icon(Icons.sensors_off_rounded, color: CACHET.GREEN_1, size: 30),
+  DeviceStatus.connected: Icon(Icons.sensors_rounded, color: CACHET.GREEN_1, size: 30),
   DeviceStatus.disconnected: "pages.devices.status.action.connect",
   DeviceStatus.paired: "pages.devices.status.action.connect",
-  DeviceStatus.error: Icon(Icons.error_outline, color: CACHET.RED_1, size: 30),
-  DeviceStatus.unknown:
-      Icon(Icons.error_outline, color: CACHET.RED_1, size: 30),
+  DeviceStatus.unknown: Icon(Icons.error_outline, color: CACHET.RED_1, size: 30),
 };
 
 const Map<DeviceStatus, String> _deviceStatusText = {
@@ -226,8 +199,7 @@ const Map<DeviceStatus, String> _deviceStatusText = {
   DeviceStatus.connected: "pages.devices.status.connected",
   DeviceStatus.disconnected: "pages.devices.status.disconnected",
   DeviceStatus.paired: "pages.devices.status.paired",
-  DeviceStatus.error: "pages.devices.status.error",
-  DeviceStatus.initialized: "pages.devices.status.initialized",
+  DeviceStatus.configured: "pages.devices.status.initialized",
   DeviceStatus.unknown: "pages.devices.status.unknown",
 };
 

@@ -1,8 +1,10 @@
 part of carp_study_app;
 
 class ParticipantDataPageViewModel extends ViewModel {
-  Set<ExpectedParticipantData?> get expectedData =>
-      bloc.expectedParticipantData;
+  Set<ExpectedParticipantData?> get expectedData => bloc.study.expectedParticipantData;
+
+  /// Save the participant [data] for the current study.
+  void setParticipantData(Map<String, Data> data) => bloc.study.setParticipantData(data);
 
   late TextEditingController _address1Controller;
   late TextEditingController _address2Controller;

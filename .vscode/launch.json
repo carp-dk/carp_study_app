@@ -28,17 +28,43 @@
       "flutterMode": "debug"
     },
     {
+      // profile mode using the DEV CAWS instance - for measuring jank/perf
+      "name": "DEV (profile) - carp-studies-app",
+      "request": "launch",
+      "type": "dart",
+      "toolArgs": [
+        "--dart-define",
+        "deployment-mode=dev",
+        "--dart-define",
+        "debug-level=info"
+      ],
+      "flutterMode": "profile"
+    },
+    {
+      // release mode using the DEV CAWS instance - production-speed sanity check
+      "name": "DEV (release) - carp-studies-app",
+      "request": "launch",
+      "type": "dart",
+      "toolArgs": [
+        "--dart-define",
+        "deployment-mode=dev",
+        "--dart-define",
+        "debug-level=info"
+      ],
+      "flutterMode": "release"
+    },
+    {
       // debug mode using the TEST CAWS instance
-      "name": "TEST - carp-studies-app",
+      "name": "TEST - carp-studies-app (release)",
       "request": "launch",
       "type": "dart",
       "toolArgs": [
         "--dart-define",
         "deployment-mode=test",
         "--dart-define",
-        "debug-level=debug"
+        "debug-level=none"
       ],
-      "flutterMode": "debug"
+      "flutterMode": "release"
     },
     {
       // debug mode using COMPUTEROME CAWS instance
@@ -48,6 +74,22 @@
       "toolArgs": [
         "--dart-define",
         "deployment-mode=production",
+        "--dart-define",
+        "debug-level=debug"
+      ],
+      "flutterMode": "debug"
+    },
+    {
+      // end-to-end join-study flow on a device/simulator (local deployment).
+      // The test also forces local + debug internally, so it runs correctly
+      // even without these defines.
+      "name": "Integration - join study flow (LOCAL)",
+      "request": "launch",
+      "type": "dart",
+      "program": "integration_test/join_study_flow_test.dart",
+      "toolArgs": [
+        "--dart-define",
+        "deployment-mode=local",
         "--dart-define",
         "debug-level=debug"
       ],

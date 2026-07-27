@@ -76,10 +76,7 @@ class CameraPageState extends State<CameraPage> {
     if (context.mounted) {
       await Navigator.of(context).push(
         MaterialPageRoute<void>(
-          builder: (context) => DisplayPicturePage(
-            file: picture,
-            videoUserTask: widget.videoUserTask,
-          ),
+          builder: (context) => DisplayPicturePage(file: picture, videoUserTask: widget.videoUserTask),
         ),
       );
     }
@@ -101,7 +98,7 @@ class CameraPageState extends State<CameraPage> {
     }
   }
 
-  void stopRecording(details) async {
+  void stopRecording(LongPressEndDetails details) async {
     try {
       var video = await _cameraController.stopVideoRecording();
 
@@ -109,10 +106,8 @@ class CameraPageState extends State<CameraPage> {
       if (context.mounted) {
         await Navigator.of(context).push(
           MaterialPageRoute<void>(
-              builder: (context) => DisplayPicturePage(
-                  file: video,
-                  isVideo: true,
-                  videoUserTask: widget.videoUserTask)),
+            builder: (context) => DisplayPicturePage(file: video, isVideo: true, videoUserTask: widget.videoUserTask),
+          ),
         );
       }
       setState(() {
@@ -127,9 +122,7 @@ class CameraPageState extends State<CameraPage> {
   @override
   Widget build(BuildContext context) {
     if (cameras == null || cameraInit == null) {
-      return const Center(
-        child: CircularProgressIndicator(),
-      );
+      return const Center(child: CircularProgressIndicator());
     }
     return Scaffold(
       backgroundColor: Colors.black,
@@ -142,8 +135,7 @@ class CameraPageState extends State<CameraPage> {
                 builder: (context, snapshot) {
                   if (snapshot.connectionState == ConnectionState.done) {
                     return LayoutBuilder(
-                      builder:
-                          (BuildContext context, BoxConstraints constraints) {
+                      builder: (BuildContext context, BoxConstraints constraints) {
                         return SizedBox(
                           width: constraints.maxWidth,
                           height: constraints.maxHeight,
@@ -152,10 +144,8 @@ class CameraPageState extends State<CameraPage> {
                             child: FittedBox(
                               fit: BoxFit.cover,
                               child: SizedBox(
-                                width:
-                                    _cameraController.value.previewSize!.height,
-                                height:
-                                    _cameraController.value.previewSize!.width,
+                                width: _cameraController.value.previewSize!.height,
+                                height: _cameraController.value.previewSize!.width,
                                 child: CameraPreview(_cameraController),
                               ),
                             ),
@@ -179,12 +169,7 @@ class CameraPageState extends State<CameraPage> {
                     Icons.close,
                     color: Colors.white,
                     size: 30,
-                    shadows: <Shadow>[
-                      Shadow(
-                        blurRadius: 3.0,
-                        color: Colors.black,
-                      ),
-                    ],
+                    shadows: <Shadow>[Shadow(blurRadius: 3.0, color: Colors.black)],
                   ),
                 ),
               ),
@@ -200,12 +185,7 @@ class CameraPageState extends State<CameraPage> {
                       icon: const Icon(
                         Icons.flip_camera_android,
                         color: Colors.white,
-                        shadows: <Shadow>[
-                          Shadow(
-                            blurRadius: 3.0,
-                            color: Colors.black,
-                          ),
-                        ],
+                        shadows: <Shadow>[Shadow(blurRadius: 3.0, color: Colors.black)],
                       ),
                     ),
                     GestureDetector(
@@ -221,18 +201,14 @@ class CameraPageState extends State<CameraPage> {
                                   height: 65,
                                   child: CircularProgressIndicator(
                                     backgroundColor: Colors.white54,
-                                    valueColor:
-                                        AlwaysStoppedAnimation(Colors.black54),
+                                    valueColor: AlwaysStoppedAnimation(Colors.black54),
                                     strokeWidth: 5,
                                   ),
                                 ),
                                 Container(
                                   height: 60,
                                   width: 60,
-                                  decoration: const BoxDecoration(
-                                    shape: BoxShape.circle,
-                                    color: Colors.red,
-                                  ),
+                                  decoration: const BoxDecoration(shape: BoxShape.circle, color: Colors.red),
                                 ),
                               ],
                             )
@@ -240,12 +216,7 @@ class CameraPageState extends State<CameraPage> {
                               height: 60,
                               width: 60,
                               decoration: const BoxDecoration(
-                                boxShadow: [
-                                  BoxShadow(
-                                    color: Colors.black,
-                                    blurRadius: 3.0,
-                                  )
-                                ],
+                                boxShadow: [BoxShadow(color: Colors.black, blurRadius: 3.0)],
                                 shape: BoxShape.circle,
                                 color: Colors.white,
                               ),
@@ -256,12 +227,7 @@ class CameraPageState extends State<CameraPage> {
                       icon: Icon(
                         flashIcon,
                         color: Colors.white,
-                        shadows: <Shadow>[
-                          Shadow(
-                            blurRadius: 3.0,
-                            color: Colors.black,
-                          ),
-                        ],
+                        shadows: <Shadow>[Shadow(blurRadius: 3.0, color: Colors.black)],
                       ),
                     ),
                   ],
@@ -286,8 +252,7 @@ class CameraPageState extends State<CameraPage> {
           actions: <Widget>[
             TextButton(
               child: Text(locale.translate("NO")),
-              onPressed: () =>
-                  Navigator.of(context).pop(), // Dismissing the pop-up
+              onPressed: () => Navigator.of(context).pop(), // Dismissing the pop-up
             ),
             TextButton(
               child: Text(locale.translate("YES")),
@@ -301,7 +266,7 @@ class CameraPageState extends State<CameraPage> {
                 Navigator.of(context).pop();
                 Navigator.of(context).pop();
               },
-            )
+            ),
           ],
         );
       },

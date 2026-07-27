@@ -122,6 +122,15 @@ android/fastlane/report.xml
 
 # CARP related
 carp/carpspec.yaml
-assets/carp/
-assets/carp/lang/_da.json
-assets/carp/lang/_en.json
+# Ignore local study config but keep the asset dirs (via .gitkeep) so release
+# builds don't fail on missing/empty asset directories.
+assets/carp/*
+!assets/carp/lang/
+assets/carp/lang/*
+!assets/carp/lang/.gitkeep
+!assets/carp/resources/
+assets/carp/resources/*
+!assets/carp/resources/.gitkeep
+
+# FVM Version Cache
+.fvm/

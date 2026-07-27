@@ -8,68 +8,73 @@ class CarpStudyApp extends StatefulWidget {
 
   /// Reload language translations and re-build the entire app.
   static void reloadLocale(BuildContext context) async {
-    CarpStudyAppState? state =
-        context.findAncestorStateOfType<CarpStudyAppState>();
+    CarpAppState? state = context.findAncestorStateOfType<CarpAppState>();
     state?.reloadLocale();
   }
 
   @override
-  CarpStudyAppState createState() => CarpStudyAppState();
+  CarpAppState createState() => CarpAppState();
 }
 
-class CarpStudyAppState extends State<CarpStudyApp> {
+class CarpAppState extends State<CarpStudyApp> {
   /// The landing page once the onboarding process is done.
-  static const String firstRoute = StudyPage.route;
   static const String homeRoute = '/';
 
   /// Reload language translations and re-build the entire app.
   void reloadLocale() => setState(() => rpLocalizationsDelegate.reload());
 
-  // This create the routing in the entire app.
-  // Each page (like [LoginPage]) know the name of its own route.
+  // State-driven routing. Bloc state
+  // changes notify the router via refreshListenable, which re-evaluates the
+  // redirect at the current location and moves the user automatically.
   final GoRouter _router = GoRouter(
     initialLocation: homeRoute,
     navigatorKey: _rootNavigatorKey,
+    refreshListenable: bloc,
     errorBuilder: (context, state) => const ErrorPage(),
+    redirect: (context, state) async {
+      final loc = state.matchedLocation;
+      logAppState('GoRouter.redirect() - evaluating at location: $loc');
+
+      // 1) Not authenticated → login page.
+      if (AppConfig.deploymentMode != DeploymentMode.local && !bloc.auth.isAuthenticated) {
+        logApp('GoRouter.redirect() - [1] not authenticated → ${LoginPage.route}');
+        return LoginPage.route;
+      }
+
+      // 2) No study selected → user belongs on the invitation list (or its
+      // details page). Anywhere else gets bounced to the list.
+      if (!bloc.study.hasStudy) {
+        if (loc == InvitationListPage.route || loc.startsWith('${InvitationDetailsPage.route}/')) {
+          logApp('GoRouter.redirect() - [2] no study, already on invitation flow → stay');
+          return null;
+        }
+        logApp('GoRouter.redirect() - [2] no study → ${InvitationListPage.route}');
+        return InvitationListPage.route;
+      }
+
+      // 3) Study selected but consent known to be pending → consent page.
+      // (null means the consent status is still being checked - stay put.)
+      if (!bloc.isConfiguring && bloc.consent.isAccepted == false) {
+        return loc == InformedConsentPage.route ? null : InformedConsentPage.route;
+      }
+
+      // 4) Fully onboarded.
+      return null;
+    },
     routes: <RouteBase>[
       ShellRoute(
         navigatorKey: _shellNavigatorKey,
         builder: (BuildContext context, GoRouterState state, Widget child) =>
-            HomePage(child: child),
+            HomePage(model: bloc.appViewModel.homePageViewModel, child: child),
         routes: [
-          // This is the root route, handling the onboarding.
-          // The flow of logic is:
-          //  - do we run locally and need authentication
-          //  - the user is authenticated, if not show login page
-          //  - a study is deployed, if not show list of invitations for the user
-          //  - the user has accepted the informed consent, if not show informed consent page
-          //
-          // Once the above is done, then show the "first route", which currently is
-          // the "study" information page.
-          GoRoute(
-              path: homeRoute,
-              parentNavigatorKey: _shellNavigatorKey,
-              redirect: (context, state) async {
-                if (bloc.deploymentMode != DeploymentMode.local) {
-                  if (!bloc.backend.isAuthenticated) {
-                    return LoginPage.route;
-                  } else if (!bloc.hasStudyBeenDeployed) {
-                    return InvitationListPage.route;
-                  }
-                }
-                if (!bloc.hasInformedConsentBeenAccepted) {
-                  return InformedConsentPage.route;
-                }
-
-                return firstRoute;
-              }),
+          // Home is just a landing slot — the top-level redirect always moves
+          // the user to the right place based on bloc state.
+          GoRoute(path: homeRoute, parentNavigatorKey: _shellNavigatorKey, redirect: (_, _) => StudyPage.route),
           GoRoute(
             path: TaskListPage.route,
             parentNavigatorKey: _shellNavigatorKey,
             pageBuilder: (context, state) => CustomTransitionPage(
-              child: TaskListPage(
-                model: bloc.appViewModel.taskListPageViewModel,
-              ),
+              child: TaskListPage(model: bloc.appViewModel.taskListPageViewModel),
               transitionsBuilder: bottomNavigationBarAnimation,
             ),
           ),
@@ -77,26 +82,33 @@ class CarpStudyAppState extends State<CarpStudyApp> {
             path: StudyPage.route,
             parentNavigatorKey: _shellNavigatorKey,
             pageBuilder: (context, state) => CustomTransitionPage(
-              child: StudyPage(
-                model: bloc.appViewModel.studyPageViewModel,
-              ),
+              child: StudyPage(model: bloc.appViewModel.studyPageViewModel),
               transitionsBuilder: bottomNavigationBarAnimation,
             ),
+            routes: [
+              // /study/consent — nested so the parent StudyPage stays mounted
+              // underneath. parentNavigatorKey escapes the shell so the bottom
+              // nav doesn't bleed through during consent.
+              GoRoute(
+                path: 'consent',
+                parentNavigatorKey: _rootNavigatorKey,
+                builder: (context, state) => InformedConsentPage(model: bloc.appViewModel.informedConsentViewModel),
+              ),
+            ],
           ),
           GoRoute(
             path: DataVisualizationPage.route,
             parentNavigatorKey: _shellNavigatorKey,
             pageBuilder: (context, state) => CustomTransitionPage(
-              child: DataVisualizationPage(
-                  bloc.appViewModel.dataVisualizationPageViewModel),
+              child: DataVisualizationPage(bloc.appViewModel.dataVisualizationPageViewModel),
               transitionsBuilder: bottomNavigationBarAnimation,
             ),
           ),
           GoRoute(
             path: DeviceListPage.route,
             parentNavigatorKey: _shellNavigatorKey,
-            pageBuilder: (context, state) => const CustomTransitionPage(
-              child: DeviceListPage(),
+            pageBuilder: (context, state) => CustomTransitionPage(
+              child: DeviceListPage(model: bloc.appViewModel.devicesPageViewModel),
               transitionsBuilder: bottomNavigationBarAnimation,
             ),
           ),
@@ -113,15 +125,12 @@ class CarpStudyAppState extends State<CarpStudyApp> {
       GoRoute(
         path: StudyDetailsPage.route,
         parentNavigatorKey: _rootNavigatorKey,
-        builder: (context, state) => StudyDetailsPage(
-          model: bloc.appViewModel.studyPageViewModel,
-        ),
+        builder: (context, state) => StudyDetailsPage(model: bloc.appViewModel.studyPageViewModel),
       ),
       GoRoute(
         path: ParticipantDataPage.route,
         parentNavigatorKey: _rootNavigatorKey,
-        builder: (context, state) => ParticipantDataPage(
-            model: bloc.appViewModel.participantDataPageViewModel),
+        builder: (context, state) => ParticipantDataPage(model: bloc.appViewModel.participantDataPageViewModel),
       ),
       GoRoute(
         path: '/task/:taskId',
@@ -133,22 +142,14 @@ class CarpStudyAppState extends State<CarpStudyApp> {
         },
       ),
       GoRoute(
-        path: InformedConsentPage.route,
-        parentNavigatorKey: _rootNavigatorKey,
-        builder: (context, state) => InformedConsentPage(
-          model: bloc.appViewModel.informedConsentViewModel,
-        ),
-      ),
-      GoRoute(
         path: LoginPage.route,
         parentNavigatorKey: _rootNavigatorKey,
-        builder: (context, state) => const LoginPage(),
+        builder: (context, state) => LoginPage(model: bloc.appViewModel.loginViewModel),
       ),
       GoRoute(
         path: '${MessageDetailsPage.route}/:messageId',
         parentNavigatorKey: _rootNavigatorKey,
-        builder: (context, state) => MessageDetailsPage(
-            messageId: state.pathParameters['messageId'] ?? ''),
+        builder: (context, state) => MessageDetailsPage(messageId: state.pathParameters['messageId'] ?? ''),
       ),
       GoRoute(
         path: '${InvitationDetailsPage.route}/:invitationId',
@@ -161,11 +162,7 @@ class CarpStudyAppState extends State<CarpStudyApp> {
       GoRoute(
         path: InvitationListPage.route,
         parentNavigatorKey: _rootNavigatorKey,
-        redirect: (context, state) => bloc.study != null
-            ? InformedConsentPage.route
-            : (bloc.user == null ? LoginPage.route : null),
-        builder: (context, state) => InvitationListPage(
-            model: bloc.appViewModel.invitationsListViewModel),
+        builder: (context, state) => InvitationListPage(model: bloc.appViewModel.invitationsListViewModel),
       ),
     ],
     debugLogDiagnostics: true,
@@ -173,24 +170,51 @@ class CarpStudyAppState extends State<CarpStudyApp> {
 
   /// Research Package translations, incl. both local language assets plus
   /// translations of informed consent and surveys downloaded from CARP
-  final RPLocalizationsDelegate rpLocalizationsDelegate =
-      RPLocalizationsDelegate(
-    loaders: [
-      const AssetLocalizationLoader(),
-      bloc.localizationLoader,
-    ],
+  final RPLocalizationsDelegate rpLocalizationsDelegate = _AppLocalizationsDelegate(
+    loaders: [const AssetLocalizationLoader(), bloc.resources.localizationLoader],
   );
+
+  AppState _previousBlocState = bloc.state;
+  String? _previousDeploymentId = bloc.study.study?.studyDeploymentId;
+
+  @override
+  void initState() {
+    super.initState();
+    bloc.addListener(_onAppStateChanged);
+  }
+
+  @override
+  void dispose() {
+    bloc.removeListener(_onAppStateChanged);
+    super.dispose();
+  }
+
+  /// Re-load translations when a (new) study is set or has been configured,
+  /// since both make new study-specific translations available.
+  void _onAppStateChanged() {
+    final configured = bloc.state == AppState.configured;
+    final deploymentId = bloc.study.study?.studyDeploymentId;
+
+    if (mounted &&
+        ((configured && _previousBlocState != AppState.configured) || deploymentId != _previousDeploymentId)) {
+      reloadLocale();
+    }
+
+    _previousBlocState = bloc.state;
+    _previousDeploymentId = deploymentId;
+  }
 
   @override
   Widget build(BuildContext context) {
-    final carpColors = Theme.of(context).extension<CarpColors>();
+    final studyAppColors = Theme.of(context).extension<StudyAppColors>();
+
+    // Apply system overlay style after frame so Theme.of(context) is ready
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      SystemChrome.setSystemUIOverlayStyle(SystemUiOverlayStyle(statusBarColor: Colors.transparent));
+    });
     return MaterialApp.router(
       scaffoldMessengerKey: bloc.scaffoldKey,
-      supportedLocales: const [
-        Locale('en'),
-        Locale('da'),
-        Locale('es'),
-      ],
+      supportedLocales: const [Locale('en'), Locale('da'), Locale('es')],
       localizationsDelegates: [
         // Research Package translations
         rpLocalizationsDelegate,
@@ -210,18 +234,27 @@ class CarpStudyAppState extends State<CarpStudyApp> {
         }
         return supportedLocales.first; // default to EN
       },
-      locale: bloc.localization?.locale,
-      theme: researchPackageTheme.copyWith(
-        extensions: [
-          researchPackageTheme.extension<RPColors>()!.copyWith(
-                primary: carpColors?.primary,
-              ),
-        ],
+      locale: AppConfig.localization?.locale,
+      theme: carpTheme.copyWith(
+        extensions: [carpTheme.extension<CarpColors>()!.copyWith(primary: studyAppColors?.primary)],
       ),
-      darkTheme: researchPackageDarkTheme,
+      darkTheme: carpDarkTheme,
       debugShowCheckedModeBanner: true,
       routerConfig: _router,
     );
+  }
+}
+
+/// Loads the RP translations and captures the loaded localization in
+/// [AppConfig], where non-UI layers (e.g. protocol translation) read it.
+class _AppLocalizationsDelegate extends RPLocalizationsDelegate {
+  _AppLocalizationsDelegate({required super.loaders});
+
+  @override
+  Future<RPLocalizations> load(Locale locale) async {
+    final localizations = await super.load(locale);
+    AppConfig.localization = localizations;
+    return localizations;
   }
 }
 
@@ -230,8 +263,4 @@ FadeTransition bottomNavigationBarAnimation(
   Animation<double> animation,
   Animation<double> secondaryAnimation,
   Widget child,
-) =>
-    FadeTransition(
-      opacity: animation,
-      child: child,
-    );
+) => FadeTransition(opacity: animation, child: child);

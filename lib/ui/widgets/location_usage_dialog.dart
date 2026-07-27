@@ -15,8 +15,7 @@ class LocationUsageDialog {
             width: MediaQuery.of(context).size.width * 0.15,
             height: MediaQuery.of(context).size.height * 0.15,
           ),
-          Text(locale.translate("dialog.location.permission"),
-              style: aboutCardTitleStyle),
+          Text(locale.translate("dialog.location.permission"), style: fs20fw700),
         ],
       ),
       contentPadding: const EdgeInsets.all(15),
@@ -25,32 +24,20 @@ class LocationUsageDialog {
         child: SingleChildScrollView(
           child: Column(
             mainAxisSize: MainAxisSize.min,
-            children: [
-              Text(
-                locale.translate(message),
-                style: aboutCardContentStyle,
-                textAlign: TextAlign.justify,
-              ),
-            ],
+            children: [Text(locale.translate(message), style: fs16fw400, textAlign: TextAlign.justify)],
           ),
         ),
       ),
       actions: [
         ElevatedButton(
           onPressed: () {
-            Permission.locationWhenInUse
-                .request()
-                .then((value) => context.pop(true));
+            Permission.locationWhenInUse.request().then((value) => context.pop(true));
           },
           style: ButtonStyle(
-            backgroundColor:
-                WidgetStateProperty.all(Theme.of(context).primaryColor),
-            foregroundColor: WidgetStateProperty.all(
-                Theme.of(context).colorScheme.onPrimary),
+            backgroundColor: WidgetStateProperty.all(Theme.of(context).primaryColor),
+            foregroundColor: WidgetStateProperty.all(Theme.of(context).colorScheme.onPrimary),
           ),
-          child: Text(
-            locale.translate("dialog.location.continue"),
-          ),
+          child: Text(locale.translate("dialog.location.continue")),
         ),
       ],
     );
@@ -58,12 +45,7 @@ class LocationUsageDialog {
     return Scaffold(
       body: Column(
         crossAxisAlignment: CrossAxisAlignment.center,
-        children: [
-          Expanded(
-            flex: 4,
-            child: locationUsageDialog,
-          ),
-        ],
+        children: [Expanded(flex: 4, child: locationUsageDialog)],
       ),
     );
   }

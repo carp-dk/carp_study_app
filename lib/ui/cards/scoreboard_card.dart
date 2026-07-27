@@ -14,12 +14,7 @@ class ScoreboardCardState extends State<ScoreboardCard> {
 
     return SliverPersistentHeader(
       pinned: false,
-      delegate: ScoreboardPersistentHeaderDelegate(
-        model: widget.model,
-        locale: locale,
-        minExtent: 40,
-        maxExtent: 110,
-      ),
+      delegate: ScoreboardPersistentHeaderDelegate(model: widget.model, locale: locale, minExtent: 40, maxExtent: 110),
     );
   }
 }
@@ -29,8 +24,7 @@ class ScoreboardCardState extends State<ScoreboardCard> {
 /// This is used in the [StudyPage] to make the header of the page.
 /// The delegate should retract from 110px to 40px when scrolling down.
 /// The animation should be simple and linear. A stretched header does not do anything.
-class ScoreboardPersistentHeaderDelegate
-    extends SliverPersistentHeaderDelegate {
+class ScoreboardPersistentHeaderDelegate extends SliverPersistentHeaderDelegate {
   TaskListPageViewModel model;
   RPLocalizations locale;
   @override
@@ -46,57 +40,64 @@ class ScoreboardPersistentHeaderDelegate
   });
 
   @override
-  Widget build(
-      BuildContext context, double shrinkOffset, bool overlapsContent) {
+  Widget build(BuildContext context, double shrinkOffset, bool overlapsContent) {
     double height = 110;
 
     double offsetForShrink = 50;
 
     List<Widget> childrenDays = [
-      Text(model.daysInStudy.toString(),
-          style: scoreNumberStyle.copyWith(
-              fontSize: calculateScrollAwareSizing(shrinkOffset,
-                  scoreNumberStyleSmall.fontSize!, scoreNumberStyle.fontSize!),
-              color: Theme.of(context).extension<RPColors>()!.grey900)),
+      Text(
+        model.daysInStudy.toString(),
+        style: fs36fw800.copyWith(
+          fontSize: calculateScrollAwareSizing(shrinkOffset, fs20fw800.fontSize!, fs36fw800.fontSize!),
+          color: Theme.of(context).extension<CarpColors>()!.grey900,
+        ),
+      ),
       if (shrinkOffset < offsetForShrink)
-        Text(locale.translate('cards.scoreboard.days'),
-            style: scoreTextStyle.copyWith(
-                color: Theme.of(context).extension<RPColors>()!.grey900)),
+        Text(
+          locale.translate('cards.scoreboard.days'),
+          style: fs12fw700.copyWith(color: Theme.of(context).extension<CarpColors>()!.grey900),
+        ),
       if (shrinkOffset > offsetForShrink)
         Padding(
           padding: const EdgeInsets.only(left: 8.0),
-          child: Text(locale.translate('cards.scoreboard.days-short'),
-              style: scoreTextStyle.copyWith(
-                  color: Theme.of(context).extension<RPColors>()!.grey900)),
-        )
+          child: Text(
+            locale.translate('cards.scoreboard.days-short'),
+            style: fs12fw700.copyWith(color: Theme.of(context).extension<CarpColors>()!.grey900),
+          ),
+        ),
     ];
 
     List<Widget> childrenTasks = [
-      Text(model.taskCompleted.toString(),
-          style: scoreNumberStyle.copyWith(
-              fontSize: calculateScrollAwareSizing(shrinkOffset,
-                  scoreNumberStyleSmall.fontSize!, scoreNumberStyle.fontSize!),
-              color: Theme.of(context).extension<RPColors>()!.primary)),
+      Text(
+        model.taskCompleted.toString(),
+        style: fs36fw800.copyWith(
+          fontSize: calculateScrollAwareSizing(shrinkOffset, fs20fw800.fontSize!, fs36fw800.fontSize!),
+          color: Theme.of(context).extension<CarpColors>()!.primary,
+        ),
+      ),
       if (shrinkOffset < offsetForShrink)
-        Text(locale.translate('cards.scoreboard.tasks'),
-            style: scoreTextStyle.copyWith(
-                color: Theme.of(context).extension<RPColors>()!.primary)),
+        Text(
+          locale.translate('cards.scoreboard.tasks'),
+          style: fs12fw700.copyWith(color: Theme.of(context).extension<CarpColors>()!.primary),
+        ),
       if (shrinkOffset > offsetForShrink)
         Expanded(
           flex: 0,
           child: Padding(
             padding: const EdgeInsets.only(left: 8.0),
-            child: Text(locale.translate('cards.scoreboard.tasks-short'),
-                style: scoreTextStyle.copyWith(
-                    color: Theme.of(context).extension<RPColors>()!.primary)),
+            child: Text(
+              locale.translate('cards.scoreboard.tasks-short'),
+              style: fs12fw700.copyWith(color: Theme.of(context).extension<CarpColors>()!.primary),
+            ),
           ),
-        )
+        ),
     ];
 
     return Container(
       height: height,
       decoration: BoxDecoration(
-        color: Theme.of(context).extension<RPColors>()!.white,
+        color: Theme.of(context).extension<CarpColors>()!.white,
         borderRadius: BorderRadius.circular(8), // Rounded corners
       ),
       child: StreamBuilder<UserTask>(
@@ -108,21 +109,14 @@ class ScoreboardPersistentHeaderDelegate
             children: [
               Expanded(
                 child: shrinkOffset < offsetForShrink
-                    ? Column(
-                        mainAxisAlignment: MainAxisAlignment.center,
-                        children: childrenDays,
-                      )
-                    : Row(
-                        mainAxisAlignment: MainAxisAlignment.center,
-                        children: childrenDays,
-                      ),
+                    ? Column(mainAxisAlignment: MainAxisAlignment.center, children: childrenDays)
+                    : Row(mainAxisAlignment: MainAxisAlignment.center, children: childrenDays),
               ),
               // A vertical divider line with rounded corners that spans from 10% to 90% of the height
               Expanded(
                 flex: 0,
                 child: Container(
-                  height: calculateScrollAwareSizing(
-                      shrinkOffset, minExtent * 0.6, maxExtent * 0.6),
+                  height: calculateScrollAwareSizing(shrinkOffset, minExtent * 0.6, maxExtent * 0.6),
                   width: 2,
                   decoration: BoxDecoration(
                     color: Theme.of(context).dividerColor,
@@ -132,15 +126,9 @@ class ScoreboardPersistentHeaderDelegate
               ),
               Expanded(
                 child: shrinkOffset < offsetForShrink
-                    ? Column(
-                        mainAxisAlignment: MainAxisAlignment.center,
-                        children: childrenTasks,
-                      )
-                    : Row(
-                        mainAxisAlignment: MainAxisAlignment.center,
-                        children: childrenTasks,
-                      ),
-              )
+                    ? Column(mainAxisAlignment: MainAxisAlignment.center, children: childrenTasks)
+                    : Row(mainAxisAlignment: MainAxisAlignment.center, children: childrenTasks),
+              ),
             ],
           );
         },
@@ -150,8 +138,7 @@ class ScoreboardPersistentHeaderDelegate
 
   // A simple function that returns the font size from the scoreNumberStyle, but increasingly smaller when scrolling down.
   // Also used for the size of the divider in the middle
-  double calculateScrollAwareSizing(
-      double shrinkOffset, double minSize, double maxSize) {
+  double calculateScrollAwareSizing(double shrinkOffset, double minSize, double maxSize) {
     // Calculate the normalized shrinkOffset value in the range [0, 1]
     double normalizedShrinkOffset = shrinkOffset / maxExtent;
 
@@ -169,12 +156,8 @@ class ScoreboardPersistentHeaderDelegate
 
   @override
   FloatingHeaderSnapConfiguration get snapConfiguration =>
-      FloatingHeaderSnapConfiguration(
-        curve: Curves.linear,
-        duration: const Duration(milliseconds: 100),
-      );
+      FloatingHeaderSnapConfiguration(curve: Curves.linear, duration: const Duration(milliseconds: 100));
 
   @override
-  OverScrollHeaderStretchConfiguration get stretchConfiguration =>
-      OverScrollHeaderStretchConfiguration();
+  OverScrollHeaderStretchConfiguration get stretchConfiguration => OverScrollHeaderStretchConfiguration();
 }

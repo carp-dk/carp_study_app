@@ -6,22 +6,14 @@ class ErrorPage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
-        title: const Text('Error'),
-      ),
+      appBar: AppBar(title: const Text('Error')),
       body: Center(
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
-            const Text(
-              "Error",
-              style: TextStyle(fontSize: 18.0),
-            ),
+            const Text("Error", style: TextStyle(fontSize: 18.0)),
             const SizedBox(height: 16.0),
-            ElevatedButton(
-              onPressed: () => context.go(CarpStudyAppState.homeRoute),
-              child: const Text('Go back'),
-            ),
+            ElevatedButton(onPressed: () => context.go(CarpAppState.homeRoute), child: const Text('Go back')),
           ],
         ),
       ),

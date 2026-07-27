@@ -1,109 +1,101 @@
 part of carp_study_app;
 
-class InvitationListPage extends StatelessWidget {
+class InvitationListPage extends StatefulWidget {
   static const String route = '/invitations';
   final InvitationsViewModel model;
   const InvitationListPage({super.key, required this.model});
 
   @override
+  State<InvitationListPage> createState() => _InvitationListPageState();
+}
+
+class _InvitationListPageState extends State<InvitationListPage> {
+  @override
+  void initState() {
+    super.initState();
+    widget.model.ensureInvitationsLoaded();
+  }
+
+  @override
   Widget build(BuildContext context) {
     RPLocalizations locale = RPLocalizations.of(context)!;
     return Scaffold(
-      backgroundColor: Theme.of(context).extension<RPColors>()!.backgroundGray,
-      body: FutureBuilder<List<ActiveParticipationInvitation>>(
-        future: bloc.backend.getInvitations(),
-        builder: (context, snapshot) {
-          Widget child;
-          if (snapshot.hasData) {
-            child = SliverFixedExtentList(
-              itemExtent: 150,
-              delegate: SliverChildBuilderDelegate(
-                (context, index) {
-                  return Container(
-                    child: InvitationMaterial(
-                      invitation: snapshot.data![index],
-                    ),
-                  );
-                },
-                childCount: snapshot.data!.length,
-              ),
-            );
-          } else {
-            child = const SliverToBoxAdapter(
-              child: Center(child: CircularProgressIndicator()),
-            );
-          }
+      backgroundColor: Theme.of(context).extension<CarpColors>()!.backgroundGray,
+      body: RefreshIndicator(
+        onRefresh: widget.model.loadInvitations,
+        child: ListenableBuilder(
+          listenable: widget.model,
+          builder: (context, _) {
+            Widget child;
+            if (widget.model.isLoading) {
+              child = const SliverToBoxAdapter(child: Center(child: CircularProgressIndicator()));
+            } else {
+              final invitations = widget.model.invitations;
+              child = SliverFixedExtentList(
+                itemExtent: 150,
+                delegate: SliverChildBuilderDelegate((context, index) {
+                  return Container(child: InvitationMaterial(invitation: invitations[index]));
+                }, childCount: invitations.length),
+              );
+            }
 
-          return CustomScrollView(
-            slivers: [
-              SliverAppBar(
-                backgroundColor:
-                    Theme.of(context).extension<RPColors>()!.backgroundGray,
-                title: const CarpAppBar(),
-                centerTitle: true,
-                pinned: true,
-                stretch: true,
-                stretchTriggerOffset: 20,
-                scrolledUnderElevation: 0,
-                onStretchTrigger: () async => bloc.backend.invitations,
-              ),
-              SliverToBoxAdapter(
-                child: Padding(
-                  padding: const EdgeInsets.symmetric(vertical: 16.0),
-                  child: IntrinsicHeight(
-                    child: Stack(
-                      children: [
-                        Positioned(
-                          left: 8,
-                          top: 0,
-                          bottom: 0,
-                          child: IconButton(
-                            icon: const Icon(Icons.arrow_back_ios),
-                            onPressed: () {
-                              if (context.canPop()) {
-                                context.pop();
-                              } else {
-                                context.go(LoginPage.route);
-                              }
-                            },
-                          ),
-                        ),
-                        Center(
-                          child: Text(
-                            locale.translate('invitation.invitations'),
-                            textAlign: TextAlign.center,
-                            style: const TextStyle(
-                              fontWeight: FontWeight.bold,
-                              fontSize: 22.0,
+            return CustomScrollView(
+              // Always scrollable so pull-to-refresh still works when there's
+              // zero or one invitation and the content doesn't fill the screen.
+              physics: const AlwaysScrollableScrollPhysics(),
+              slivers: [
+                SliverAppBar(
+                  backgroundColor: Theme.of(context).extension<CarpColors>()!.backgroundGray,
+                  title: const CarpAppBar(),
+                  centerTitle: true,
+                  pinned: true,
+                  scrolledUnderElevation: 0,
+                ),
+                SliverToBoxAdapter(
+                  child: Padding(
+                    padding: const EdgeInsets.symmetric(vertical: 16.0),
+                    child: IntrinsicHeight(
+                      child: Stack(
+                        children: [
+                          Positioned(
+                            left: 8,
+                            top: 0,
+                            bottom: 0,
+                            child: IconButton(
+                              icon: const Icon(Icons.arrow_back_ios),
+                              onPressed: () => widget.model.signOut(),
                             ),
                           ),
-                        ),
-                      ],
-                    ),
-                  ),
-                ),
-              ),
-              SliverToBoxAdapter(
-                child: Padding(
-                  padding: const EdgeInsets.only(
-                      bottom: 8.0, left: 16.0, right: 16.0),
-                  child: Container(
-                    padding: EdgeInsets.all(10.0),
-                    child: Text(
-                      locale.translate('invitation.subtitle'),
-                      textAlign: TextAlign.left,
-                      style: const TextStyle(
-                        fontWeight: FontWeight.bold,
-                        fontSize: 14.0,
+                          Center(
+                            child: Text(
+                              locale.translate('invitation.invitations'),
+                              textAlign: TextAlign.center,
+                              style: const TextStyle(fontWeight: FontWeight.bold, fontSize: 22.0),
+                            ),
+                          ),
+                        ],
                       ),
                     ),
                   ),
                 ),
-              ),
-              child,
-            ],
-          );
-        },
+                SliverToBoxAdapter(
+                  child: Padding(
+                    padding: const EdgeInsets.only(bottom: 8.0, left: 16.0, right: 16.0),
+                    child: Container(
+                      padding: EdgeInsets.all(10.0),
+                      child: Text(
+                        locale.translate('invitation.subtitle'),
+                        textAlign: TextAlign.left,
+                        style: const TextStyle(fontWeight: FontWeight.bold, fontSize: 14.0),
+                      ),
+                    ),
+                  ),
+                ),
+                child,
+              ],
+            );
+          },
+        ),
       ),
     );
   }
@@ -112,23 +104,17 @@ class InvitationListPage extends StatelessWidget {
 class InvitationMaterial extends StatelessWidget {
   final ActiveParticipationInvitation invitation;
 
-  const InvitationMaterial({
-    super.key,
-    required this.invitation,
-  });
+  const InvitationMaterial({super.key, required this.invitation});
 
   @override
   Widget build(BuildContext context) {
     RPLocalizations locale = RPLocalizations.of(context)!;
     return StudiesMaterial(
-      backgroundColor: Theme.of(context).extension<RPColors>()!.white!,
-      shape: RoundedRectangleBorder(
-        borderRadius: BorderRadius.circular(12.0),
-      ),
+      backgroundColor: Theme.of(context).extension<CarpColors>()!.white!,
+      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12.0)),
       child: InkWell(
         onTap: () {
-          context.push(
-              '${InvitationDetailsPage.route}/${invitation.participation.participantId}');
+          context.push('${InvitationDetailsPage.route}/${invitation.participation.participantId}');
         },
         child: Padding(
           padding: const EdgeInsets.all(16.0),
@@ -138,25 +124,22 @@ class InvitationMaterial extends StatelessWidget {
               Text(
                 invitation.invitation.name,
                 maxLines: 1,
-                style: studyTitleStyle.copyWith(
-                    color: CACHET.TASK_COMPLETED_BLUE,
-                    overflow: TextOverflow.ellipsis),
+                style: fs24fw600.copyWith(color: CACHET.TASK_COMPLETED_BLUE, overflow: TextOverflow.ellipsis),
               ),
               Text.rich(
                 TextSpan(
                   children: [
                     TextSpan(
-                      text: locale.translate(
-                          'invitation_list.roles_in_the_study.description'),
-                      style: studyDetailsInfoTitle.copyWith(
-                        color: Theme.of(context).extension<RPColors>()!.grey600,
+                      text: locale.translate('invitation_list.roles_in_the_study.description'),
+                      style: fs16fw700.copyWith(
+                        color: Theme.of(context).extension<CarpColors>()!.grey600,
                         fontSize: 12,
                       ),
                     ),
                     TextSpan(
                       text: invitation.participantRoleName,
-                      style: studyDetailsInfoTitle.copyWith(
-                        color: Theme.of(context).extension<RPColors>()!.grey600,
+                      style: fs16fw700.copyWith(
+                        color: Theme.of(context).extension<CarpColors>()!.grey600,
                         fontSize: 12,
                       ),
                     ),
@@ -166,8 +149,8 @@ class InvitationMaterial extends StatelessWidget {
               Text(
                 invitation.invitation.description ?? '',
                 maxLines: 2,
-                style: studyDetailsInfoTitle.copyWith(
-                  color: Theme.of(context).extension<RPColors>()!.grey900,
+                style: fs16fw700.copyWith(
+                  color: Theme.of(context).extension<CarpColors>()!.grey900,
                   overflow: TextOverflow.ellipsis,
                 ),
               ),

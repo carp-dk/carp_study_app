@@ -15,8 +15,7 @@ class ResourceLocalizationLoader implements LocalizationLoader {
       translations = await localizationManager.getLocalizations(locale) ?? {};
       info("$runtimeType - translations for ´$locale' loaded.");
     } catch (error) {
-      warning(
-          "$runtimeType - could not load translations for '$locale' - $error");
+      warning("$runtimeType - could not load translations for '$locale' - $error");
     }
 
     return translations;

@@ -12,8 +12,11 @@ allprojects {
 rootProject.buildDir = '../build'
 subprojects {
     project.buildDir = "${rootProject.buildDir}/${project.name}"
-}
-subprojects {
+    // ponytail: mdsflutter ships an old compileSdk; android:attr/lStar needs 31+
+    if (project.name == 'mdsflutter') {
+        def forceSdk = { project.android.compileSdkVersion 34 }
+        if (project.state.executed) forceSdk() else project.afterEvaluate { forceSdk() }
+    }
     project.evaluationDependsOn(':app')
 }
 

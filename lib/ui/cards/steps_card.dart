@@ -4,9 +4,7 @@ class StepsCardWidget extends StatefulWidget {
   final List<Color> colors;
 
   final StepsCardViewModel model;
-  const StepsCardWidget(this.model,
-      {super.key,
-      this.colors = const [CACHET.ORANGE, CACHET.BLUE_2, CACHET.BLUE_3]});
+  const StepsCardWidget(this.model, {super.key, this.colors = const [CACHET.ORANGE, CACHET.BLUE_2, CACHET.BLUE_3]});
 
   @override
   StepsCardWidgetState createState() => StepsCardWidgetState();
@@ -29,7 +27,7 @@ class StepsCardWidgetState extends State<StepsCardWidget> {
     RPLocalizations locale = RPLocalizations.of(context)!;
 
     return StudiesMaterial(
-      backgroundColor: Theme.of(context).extension<RPColors>()!.white!,
+      backgroundColor: Theme.of(context).extension<CarpColors>()!.white!,
       child: Padding(
         padding: const EdgeInsets.all(8.0),
         child: Column(
@@ -37,18 +35,14 @@ class StepsCardWidgetState extends State<StepsCardWidget> {
             Row(
               children: [
                 Text(
-                  '$_step',
-                  style: dataVizCardTitleNumber.copyWith(
-                    color: Theme.of(context).extension<RPColors>()!.grey900!,
-                  ),
+                  _step > 0 ? '$_step' : '0',
+                  style: fs28fw700.copyWith(color: Theme.of(context).extension<CarpColors>()!.grey900!),
                 ),
                 Padding(
                   padding: const EdgeInsets.only(left: 4.0),
                   child: Text(
                     '${locale.translate('cards.steps.steps')} ${_getDayName(touchedIndex)}',
-                    style: dataVizCardTitleText.copyWith(
-                      color: Theme.of(context).extension<RPColors>()!.grey600,
-                    ),
+                    style: fs12fw700.copyWith(color: Theme.of(context).extension<CarpColors>()!.grey600),
                   ),
                 ),
               ],
@@ -57,9 +51,7 @@ class StepsCardWidgetState extends State<StepsCardWidget> {
               children: [
                 Text(
                   "${widget.model.currentMonth} ${widget.model.startOfWeek} - ${int.parse(widget.model.endOfWeek) < int.parse(widget.model.startOfWeek) ? widget.model.nextMonth : widget.model.currentMonth} ${widget.model.endOfWeek}, ${widget.model.currentYear}",
-                  style: dataVizCardTitleText.copyWith(
-                    color: Theme.of(context).extension<RPColors>()!.grey600,
-                  ),
+                  style: fs12fw700.copyWith(color: Theme.of(context).extension<CarpColors>()!.grey600),
                 ),
                 Spacer(),
               ],
@@ -81,64 +73,45 @@ class StepsCardWidgetState extends State<StepsCardWidget> {
   }
 
   BarChart get barCharts {
-    return BarChart(BarChartData(
-      alignment: BarChartAlignment.spaceAround,
-      titlesData: FlTitlesData(
-        bottomTitles: AxisTitles(
-          sideTitles: SideTitles(
-            showTitles: true,
-            getTitlesWidget: bottomTitles,
-            reservedSize: 20,
+    return BarChart(
+      BarChartData(
+        alignment: BarChartAlignment.spaceAround,
+        titlesData: FlTitlesData(
+          bottomTitles: AxisTitles(
+            sideTitles: SideTitles(showTitles: true, getTitlesWidget: bottomTitles, reservedSize: 20),
           ),
-        ),
-        leftTitles: const AxisTitles(),
-        rightTitles: AxisTitles(
-          sideTitles: SideTitles(
-            showTitles: true,
-            getTitlesWidget: rightTitles,
-            reservedSize: 48,
+          leftTitles: const AxisTitles(),
+          rightTitles: AxisTitles(
+            sideTitles: SideTitles(showTitles: true, getTitlesWidget: rightTitles, reservedSize: 48),
           ),
+          topTitles: const AxisTitles(),
         ),
-        topTitles: const AxisTitles(),
-      ),
-      barTouchData: BarTouchData(
-        enabled: false,
-        touchCallback: (p0, p1) {
-          setState(() {
-            touchedIndex =
-                (p1?.spot?.touchedBarGroupIndex ?? DateTime.now().weekday - 1) +
-                    1;
-          });
-        },
-      ),
-      groupsSpace: 4,
-      barGroups: barChartsGroups,
-      maxY: (maxValue) * 1.2,
-      gridData: FlGridData(
-        show: true,
-        drawVerticalLine: false,
-        drawHorizontalLine: true,
-        getDrawingHorizontalLine: (value) {
-          return FlLine(
-            color: Colors.grey.withValues(alpha: 0.3),
-            strokeWidth: 1,
-          );
-        },
-      ),
-      borderData: FlBorderData(
-        show: true,
-        border: Border.all(
-          width: 1,
-          color: Colors.grey.withValues(alpha: 0.2),
+        barTouchData: BarTouchData(
+          enabled: false,
+          touchCallback: (p0, p1) {
+            setState(() {
+              touchedIndex = (p1?.spot?.touchedBarGroupIndex ?? DateTime.now().weekday - 1) + 1;
+            });
+          },
         ),
+        groupsSpace: 4,
+        barGroups: barChartsGroups,
+        maxY: (maxValue) * 1.2,
+        gridData: FlGridData(
+          show: true,
+          drawVerticalLine: false,
+          drawHorizontalLine: true,
+          getDrawingHorizontalLine: (value) {
+            return FlLine(color: Colors.grey.withValues(alpha: 0.3), strokeWidth: 1);
+          },
+        ),
+        borderData: FlBorderData(show: true, border: Border.all(width: 1, color: Colors.grey.withValues(alpha: 0.2))),
       ),
-    ));
+    );
   }
 
   List<BarChartGroupData> get barChartsGroups {
-    return widget.model.weeklySteps.entries
-        .map((e) => generateGroupData(e.key, e.value))
-        .toList();
+    return widget.model.weeklySteps.entries.map((e) => generateGroupData(e.key, e.value)).toList();
   }
 
   BarChartGroupData generateGroupData(int x, int step) {
@@ -155,10 +128,7 @@ class StepsCardWidgetState extends State<StepsCardWidget> {
           toY: step.toDouble(),
           color: widget.colors[1].withValues(alpha: isTouched ? 0.8 : 1),
           width: 32,
-          borderRadius: const BorderRadius.only(
-            topLeft: Radius.circular(4),
-            topRight: Radius.circular(4),
-          ),
+          borderRadius: const BorderRadius.only(topLeft: Radius.circular(4), topRight: Radius.circular(4)),
         ),
       ],
     );
@@ -169,12 +139,8 @@ class StepsCardWidgetState extends State<StepsCardWidget> {
       meta: meta,
       space: 6,
       child: Text(
-        value.toInt() % meta.appliedInterval == 0
-            ? value.toInt().toString()
-            : '',
-        style: dataCardRightTitleStyle.copyWith(
-          color: Theme.of(context).extension<RPColors>()!.grey600,
-        ),
+        value.toInt() % meta.appliedInterval == 0 ? value.toInt().toString() : '',
+        style: fs14ls1.copyWith(color: Theme.of(context).extension<CarpColors>()!.grey600),
       ),
     );
   }
@@ -183,10 +149,7 @@ class StepsCardWidgetState extends State<StepsCardWidget> {
     const style = TextStyle(fontSize: 10);
     return SideTitleWidget(
       meta: meta,
-      child: Text(
-        _getDayName(value.toInt()),
-        style: style,
-      ),
+      child: Text(_getDayName(value.toInt()), style: style),
     );
   }
 

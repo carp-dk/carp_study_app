@@ -9,19 +9,14 @@ class InstallHealthConnectDialog extends StatelessWidget {
     return AlertDialog(
       titlePadding: const EdgeInsets.symmetric(vertical: 4),
       insetPadding: const EdgeInsets.symmetric(vertical: 24, horizontal: 40),
-      title: const DialogTitle(
-        title: "pages.about.install_health_connect.title",
-      ),
+      title: const DialogTitle(title: "pages.about.install_health_connect.title"),
       content: Text(
         locale.translate('pages.about.install_health_connect.description'),
-        style: aboutCardContentStyle,
+        style: fs16fw400,
         textAlign: TextAlign.justify,
       ),
       actions: [
-        TextButton(
-          onPressed: () => Navigator.of(context).pop(),
-          child: Text(locale.translate('cancel')),
-        ),
+        TextButton(onPressed: () => Navigator.of(context).pop(), child: Text(locale.translate('cancel'))),
         TextButton(
           child: Text(locale.translate('install')),
           onPressed: () async {
@@ -35,7 +30,8 @@ class InstallHealthConnectDialog extends StatelessWidget {
 
   void _redirectToHealthConnectPlayStore() async {
     final Uri url = Uri.parse(
-        'https://play.google.com/store/apps/details?id=${LocalSettings.healthConnectPackageName}');
+      'https://play.google.com/store/apps/details?id=${LocalSettings.healthConnectPackageName}',
+    );
     var canLaunch = await canLaunchUrl(url);
     if (canLaunch) {
       await launchUrl(url);

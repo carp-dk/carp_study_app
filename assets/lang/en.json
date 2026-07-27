@@ -110,9 +110,9 @@
   "pages.profile.device_id": "Device ID",
   "pages.profile.contact": "Contact researcher",
   "pages.profile.privacy": "Privacy policy",
-  "pages.profile.study_website": "Study Website",
+  "pages.profile.study_website": "Study website",
   "pages.profile.leave_study": "Leave study",
-  "pages.profile.log_out": "Log out",
+  "pages.profile.log_out": "Leave study & Log out",
   "pages.profile.log_out.confirmation": "You are about to leave this study and log out. The operating system will open a browser to log you out. Are you sure?",
   "pages.profile.leave_study.confirmation": "You are about to leave the study. You will no longer participate in this study. Are you sure?",
   "announcements": "Announcements",
@@ -211,6 +211,12 @@
   "pages.devices.type.health.instructions.page2.android.allow_all": "Allow all",
   "pages.devices.type.health.instructions.page2.ios.turn_on_all": "Turn On All",
   "pages.devices.type.health.instructions.page2.allow": "Allow",
+  "pages.devices.type.health.instructions.data.title": "This study collects health-related data from your device. To take part, please allow all the requested permissions on the next screen.",
+  "pages.devices.type.health.access_denied.title": "Access not granted",
+  "pages.devices.type.health.access_denied.message": "Access was not granted. To allow it, go to: Settings → Apps → CARP Studies → Permissions → Health, fitness and wellness → Allow all. Then pull down on the devices screen to refresh.",
+  "pages.devices.type.health.instructions.data.steps": "Step count",
+  "pages.devices.type.health.instructions.data.heart_rate": "Heart rate",
+  "pages.devices.type.health.instructions.data.exercise": "Exercise sessions",
   "widgets.logoutmessage.title": "Log out",
   "widgets.logoutmessage.message": "The operating system will open a browser to log you out. Is this okay?",
   "pages.login.login": "Log in",
@@ -243,5 +249,6 @@
   "tasks.participant_data.phone_number.title": "Add phone number",
   "tasks.participant_data.phone_number.country": "Country code",
   "tasks.participant_data.phone_number.phone_number": "Phone No.",
-  "tasks.participant_data.review.title": "Review"
+  "tasks.participant_data.review.title": "Review",
+  "pages.home.setup_failed": "Could not set up the study. Please check your internet connection and try again."
 }

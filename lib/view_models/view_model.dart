@@ -5,21 +5,22 @@ part of carp_study_app;
 /// Note that a view model is a [ChangeNotifier] and will notify its listeners
 /// if changed, including any [ListenableBuilder] widgets.
 abstract class ViewModel extends ChangeNotifier {
-  SmartphoneDeploymentController? _controller;
+  SmartphoneStudyController? _controller;
 
-  SmartphoneDeploymentController? get controller => _controller;
+  SmartphoneStudyController? get controller => _controller;
 
   /// Initialize this view model before use.
   @mustCallSuper
-  void init(SmartphoneDeploymentController ctrl) {
+  void init(SmartphoneStudyController ctrl) {
     _controller = ctrl;
   }
 
-  /// Called when this view model is to clear its state (e.g., cached data).
+  /// Clear this view model, i.e. delete all data incl. cached data.
   @mustCallSuper
   void clear() {}
 
-  /// Called when this view model is disposed and no longer used.
+  /// Called when this view model is disposed. Typically on app exit, incl. when
+  /// closed by the OS.
   @override
   @mustCallSuper
   void dispose() {
@@ -64,7 +65,7 @@ abstract class SerializableViewModel<D extends DataModel> extends ViewModel {
 
   @override
   @mustCallSuper
-  void init(SmartphoneDeploymentController ctrl) {
+  void init(SmartphoneStudyController ctrl) {
     super.init(ctrl);
     _model = createModel();
 
@@ -75,8 +76,7 @@ abstract class SerializableViewModel<D extends DataModel> extends ViewModel {
     });
 
     // save the data model on a regular basis.
-    _persistenceTimer =
-        Timer.periodic(const Duration(minutes: 3), (_) => save());
+    _persistenceTimer = Timer.periodic(const Duration(minutes: 3), (_) => save());
 
     /// Check if we are running in a test environment.
     /// If so, do not listen to app lifecycle events.
@@ -92,7 +92,7 @@ abstract class SerializableViewModel<D extends DataModel> extends ViewModel {
     _filename = null;
     _persistenceTimer?.cancel();
     _persistenceTimer = null;
-    save();
+    delete();
   }
 
   @override
@@ -127,7 +127,7 @@ abstract class SerializableViewModel<D extends DataModel> extends ViewModel {
     return success;
   }
 
-  /// Permanently delete the [model].
+  /// Permanently delete the cached [model].
   /// Returns true if successful, false otherwise.
   bool delete() {
     bool success = true;
@@ -170,9 +170,7 @@ class DailyMeasure {
 
   /// Get the localized name of the [weekday].
   @override
-  String toString() => DateFormat('EEEE')
-      .format(DateTime(2021, 2, 7).add(Duration(days: weekday)))
-      .substring(0, 3);
+  String toString() => DateFormat('EEEE').format(DateTime(2021, 2, 7).add(Duration(days: weekday))).substring(0, 3);
 }
 
 /// A measure for a specific hour of the day. [hour] and [minute] is the time of the day in 24 hour format.
@@ -188,38 +186,35 @@ class HourlyMeasure {
 }
 
 /// The view model for the entire app.
-class CarpStudyAppViewModel extends ViewModel {
-  final DataVisualizationPageViewModel _dataVisualizationPageViewModel =
-      DataVisualizationPageViewModel();
+class AppViewModel extends ViewModel {
+  final HomePageViewModel _homePageViewModel = HomePageViewModel();
+  final LoginViewModel _loginViewModel = LoginViewModel();
+  final DataVisualizationPageViewModel _dataVisualizationPageViewModel = DataVisualizationPageViewModel();
   final StudyPageViewModel _studyPageViewModel = StudyPageViewModel();
   final TaskListPageViewModel _taskListPageViewModel = TaskListPageViewModel();
   final ProfilePageViewModel _profilePageViewModel = ProfilePageViewModel();
-  final DeviceListPageViewModel _devicesPageViewModel =
-      DeviceListPageViewModel();
+  final DeviceListPageViewModel _devicesPageViewModel = DeviceListPageViewModel();
   final InvitationsViewModel _invitationsListViewModel = InvitationsViewModel();
-  final InformedConsentViewModel _informedConsentViewModel =
-      InformedConsentViewModel();
-  final ParticipantDataPageViewModel _participantDataPageViewModel =
-      ParticipantDataPageViewModel();
+  final InformedConsentViewModel _informedConsentViewModel = InformedConsentViewModel();
+  final ParticipantDataPageViewModel _participantDataPageViewModel = ParticipantDataPageViewModel();
 
-  CarpStudyAppViewModel() : super();
+  AppViewModel() : super();
 
-  DataVisualizationPageViewModel get dataVisualizationPageViewModel =>
-      _dataVisualizationPageViewModel;
+  HomePageViewModel get homePageViewModel => _homePageViewModel;
+  LoginViewModel get loginViewModel => _loginViewModel;
+  DataVisualizationPageViewModel get dataVisualizationPageViewModel => _dataVisualizationPageViewModel;
   StudyPageViewModel get studyPageViewModel => _studyPageViewModel;
   TaskListPageViewModel get taskListPageViewModel => _taskListPageViewModel;
   ProfilePageViewModel get profilePageViewModel => _profilePageViewModel;
   DeviceListPageViewModel get devicesPageViewModel => _devicesPageViewModel;
-  InvitationsViewModel get invitationsListViewModel =>
-      _invitationsListViewModel;
-  InformedConsentViewModel get informedConsentViewModel =>
-      _informedConsentViewModel;
-  ParticipantDataPageViewModel get participantDataPageViewModel =>
-      _participantDataPageViewModel;
+  InvitationsViewModel get invitationsListViewModel => _invitationsListViewModel;
+  InformedConsentViewModel get informedConsentViewModel => _informedConsentViewModel;
+  ParticipantDataPageViewModel get participantDataPageViewModel => _participantDataPageViewModel;
 
   @override
-  void init(SmartphoneDeploymentController ctrl) {
+  void init(SmartphoneStudyController ctrl) {
     super.init(ctrl);
+    _homePageViewModel.init(ctrl);
     _taskListPageViewModel.init(ctrl);
     _studyPageViewModel.init(ctrl);
     _dataVisualizationPageViewModel.init(ctrl);
@@ -233,6 +228,7 @@ class CarpStudyAppViewModel extends ViewModel {
 
   @override
   void clear() {
+    _homePageViewModel.clear();
     _taskListPageViewModel.clear();
     _studyPageViewModel.clear();
     _dataVisualizationPageViewModel.clear();
@@ -247,6 +243,7 @@ class CarpStudyAppViewModel extends ViewModel {
 
   @override
   void dispose() {
+    _homePageViewModel.dispose();
     _taskListPageViewModel.dispose();
     _studyPageViewModel.dispose();
     _dataVisualizationPageViewModel.dispose();

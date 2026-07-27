@@ -3,9 +3,7 @@ part of carp_study_app;
 class ActivityCard extends StatefulWidget {
   final ActivityCardViewModel model;
   final List<Color> colors;
-  const ActivityCard(this.model,
-      {super.key,
-      this.colors = const [CACHET.CAQUI, CACHET.OCEAN, CACHET.BLUE_2]});
+  const ActivityCard(this.model, {super.key, this.colors = const [CACHET.CAQUI, CACHET.OCEAN, CACHET.BLUE_2]});
 
   @override
   State<StatefulWidget> createState() => ActivityCardState();
@@ -22,17 +20,16 @@ class ActivityCardState extends State<ActivityCard> {
   final betweenSpace = 2.4;
 
   List<List<int>> activitiesList = List.generate(
-      7, (_) => List.generate(4, (index) => index, growable: false),
-      growable: false);
+    7,
+    (_) => List.generate(4, (index) => index, growable: false),
+    growable: false,
+  );
 
   @override
   void initState() {
-    _walk =
-        widget.model.activities[ActivityType.WALKING]![DateTime.now().weekday];
-    _run =
-        widget.model.activities[ActivityType.RUNNING]![DateTime.now().weekday];
-    _cycle = widget
-        .model.activities[ActivityType.ON_BICYCLE]![DateTime.now().weekday];
+    _walk = widget.model.activities[ActivityType.WALKING]![DateTime.now().weekday];
+    _run = widget.model.activities[ActivityType.RUNNING]![DateTime.now().weekday];
+    _cycle = widget.model.activities[ActivityType.ON_BICYCLE]![DateTime.now().weekday];
 
     /// Doing some conversions to make the data readable by the chart
     /// The data is organized in a list of lists, where each list represents a day
@@ -63,7 +60,7 @@ class ActivityCardState extends State<ActivityCard> {
     RPLocalizations locale = RPLocalizations.of(context)!;
 
     return StudiesMaterial(
-      backgroundColor: Theme.of(context).extension<RPColors>()!.white!,
+      backgroundColor: Theme.of(context).extension<CarpColors>()!.white!,
       child: Padding(
         padding: const EdgeInsets.all(8.0),
         child: Column(
@@ -72,17 +69,13 @@ class ActivityCardState extends State<ActivityCard> {
               children: [
                 Text(
                   '${_walk! + _run! + _cycle!}',
-                  style: dataVizCardTitleNumber.copyWith(
-                    color: Theme.of(context).extension<RPColors>()!.grey900!,
-                  ),
+                  style: fs28fw700.copyWith(color: Theme.of(context).extension<CarpColors>()!.grey900!),
                 ),
                 Padding(
                   padding: const EdgeInsets.only(left: 4.0),
                   child: Text(
                     '${locale.translate('cards.activity.total.min')} ${_getDayName(touchedIndex)}',
-                    style: dataVizCardTitleText.copyWith(
-                      color: Theme.of(context).extension<RPColors>()!.grey600,
-                    ),
+                    style: fs12fw700.copyWith(color: Theme.of(context).extension<CarpColors>()!.grey600),
                   ),
                 ),
               ],
@@ -91,9 +84,7 @@ class ActivityCardState extends State<ActivityCard> {
               children: [
                 Text(
                   "${widget.model.currentMonth} ${widget.model.startOfWeek} - ${int.parse(widget.model.endOfWeek) < int.parse(widget.model.startOfWeek) ? widget.model.nextMonth : widget.model.currentMonth} ${widget.model.endOfWeek}, ${widget.model.currentYear}",
-                  style: dataVizCardTitleText.copyWith(
-                    color: Theme.of(context).extension<RPColors>()!.grey600,
-                  ),
+                  style: fs12fw700.copyWith(color: Theme.of(context).extension<CarpColors>()!.grey600),
                 ),
                 Spacer(),
               ],
@@ -115,20 +106,12 @@ class ActivityCardState extends State<ActivityCard> {
                     Expanded(
                       child: Row(
                         children: [
-                          Text(
-                            '$_walk',
-                            style: dataVizCardBottomNumber.copyWith(
-                              color: widget.colors[0],
-                            ),
-                          ),
+                          Text('$_walk', style: fs22fw700.copyWith(color: widget.colors[0])),
                           Padding(
                             padding: const EdgeInsets.all(4.0),
                             child: Text(
                               locale.translate('cards.activity.walking'),
-                              style: dataVizCardBottomText.copyWith(
-                                  color: Theme.of(context)
-                                      .extension<RPColors>()!
-                                      .grey800),
+                              style: fs12fw700.copyWith(color: Theme.of(context).extension<CarpColors>()!.grey800),
                             ),
                           ),
                         ],
@@ -139,44 +122,28 @@ class ActivityCardState extends State<ActivityCard> {
                         children: [
                           Padding(
                             padding: const EdgeInsets.only(left: 8.0),
-                            child: Text(
-                              '$_run',
-                              style: dataVizCardBottomNumber.copyWith(
-                                color: widget.colors[1],
-                              ),
-                            ),
+                            child: Text('$_run', style: fs12fw700.copyWith(color: widget.colors[1])),
                           ),
                           Padding(
                             padding: const EdgeInsets.all(4.0),
                             child: Text(
                               locale.translate('cards.activity.running'),
-                              style: dataVizCardBottomText.copyWith(
-                                  color: Theme.of(context)
-                                      .extension<RPColors>()!
-                                      .grey800),
+                              style: fs12fw700.copyWith(color: Theme.of(context).extension<CarpColors>()!.grey800),
                             ),
                           ),
                         ],
                       ),
-                    )
+                    ),
                   ],
                 ),
                 Row(
                   children: [
-                    Text(
-                      '$_cycle',
-                      style: dataVizCardBottomNumber.copyWith(
-                        color: widget.colors[2],
-                      ),
-                    ),
+                    Text('$_cycle', style: fs22fw700.copyWith(color: widget.colors[2])),
                     Padding(
                       padding: const EdgeInsets.only(left: 4.0),
                       child: Text(
                         locale.translate('cards.activity.cycling'),
-                        style: dataVizCardBottomText.copyWith(
-                          color:
-                              Theme.of(context).extension<RPColors>()!.grey800,
-                        ),
+                        style: fs12fw700.copyWith(color: Theme.of(context).extension<CarpColors>()!.grey800),
                       ),
                     ),
                   ],
@@ -195,19 +162,11 @@ class ActivityCardState extends State<ActivityCard> {
         alignment: BarChartAlignment.spaceAround,
         titlesData: FlTitlesData(
           bottomTitles: AxisTitles(
-            sideTitles: SideTitles(
-              showTitles: true,
-              getTitlesWidget: bottomTitles,
-              reservedSize: 20,
-            ),
+            sideTitles: SideTitles(showTitles: true, getTitlesWidget: bottomTitles, reservedSize: 20),
           ),
           leftTitles: const AxisTitles(),
           rightTitles: AxisTitles(
-            sideTitles: SideTitles(
-              showTitles: true,
-              getTitlesWidget: rightTitles,
-              reservedSize: 48,
-            ),
+            sideTitles: SideTitles(showTitles: true, getTitlesWidget: rightTitles, reservedSize: 48),
           ),
           topTitles: const AxisTitles(),
         ),
@@ -215,45 +174,27 @@ class ActivityCardState extends State<ActivityCard> {
           enabled: false,
           touchCallback: (p0, p1) {
             setState(() {
-              touchedIndex = (p1?.spot?.touchedBarGroupIndex ??
-                      DateTime.now().weekday - 1) +
-                  1;
+              touchedIndex = (p1?.spot?.touchedBarGroupIndex ?? DateTime.now().weekday - 1) + 1;
             });
           },
         ),
         groupsSpace: 4,
-        barGroups: activitiesList
-            .map((e) => generateGroupData(e[0], e[1], e[2], e[3]))
-            .toList(),
+        barGroups: activitiesList.map((e) => generateGroupData(e[0], e[1], e[2], e[3])).toList(),
         maxY: (maxValue) * 1.2,
         gridData: FlGridData(
           show: true,
           drawVerticalLine: false,
           drawHorizontalLine: true,
           getDrawingHorizontalLine: (value) {
-            return FlLine(
-              color: Colors.grey.withValues(alpha: 0.3),
-              strokeWidth: 1,
-            );
+            return FlLine(color: Colors.grey.withValues(alpha: 0.3), strokeWidth: 1);
           },
         ),
-        borderData: FlBorderData(
-          show: true,
-          border: Border.all(
-            width: 1,
-            color: Colors.grey.withValues(alpha: 0.2),
-          ),
-        ),
+        borderData: FlBorderData(show: true, border: Border.all(width: 1, color: Colors.grey.withValues(alpha: 0.2))),
       ),
     );
   }
 
-  BarChartGroupData generateGroupData(
-    int x,
-    num walking,
-    num running,
-    num cycling,
-  ) {
+  BarChartGroupData generateGroupData(int x, num walking, num running, num cycling) {
     double roundness = 2;
     bool isTouched = touchedIndex == x;
     maxValue = max(maxValue, walking + running + cycling);
@@ -268,17 +209,19 @@ class ActivityCardState extends State<ActivityCard> {
       groupVertically: true,
       barRods: [
         BarChartRodData(
-            fromY: 0,
-            toY: walking + 0,
-            color: widget.colors[0].withValues(alpha: isTouched ? 0.8 : 1),
-            width: 32,
-            borderRadius: BorderRadius.all(Radius.circular(roundness))),
+          fromY: 0,
+          toY: walking + 0,
+          color: widget.colors[0].withValues(alpha: isTouched ? 0.8 : 1),
+          width: 32,
+          borderRadius: BorderRadius.all(Radius.circular(roundness)),
+        ),
         BarChartRodData(
-            fromY: walking + betweenSpace,
-            toY: walking + betweenSpace + running,
-            color: widget.colors[1].withValues(alpha: isTouched ? 0.8 : 1),
-            width: 32,
-            borderRadius: BorderRadius.all(Radius.circular(roundness))),
+          fromY: walking + betweenSpace,
+          toY: walking + betweenSpace + running,
+          color: widget.colors[1].withValues(alpha: isTouched ? 0.8 : 1),
+          width: 32,
+          borderRadius: BorderRadius.all(Radius.circular(roundness)),
+        ),
         BarChartRodData(
           fromY: walking + betweenSpace + running + betweenSpace,
           toY: walking + betweenSpace + running + betweenSpace + cycling,
@@ -300,12 +243,8 @@ class ActivityCardState extends State<ActivityCard> {
       meta: meta,
       space: 6,
       child: Text(
-        value.toInt() % meta.appliedInterval == 0
-            ? value.toInt().toString()
-            : '',
-        style: dataCardRightTitleStyle.copyWith(
-          color: Theme.of(context).extension<RPColors>()!.grey600,
-        ),
+        value.toInt() % meta.appliedInterval == 0 ? value.toInt().toString() : '',
+        style: fs14ls1.copyWith(color: Theme.of(context).extension<CarpColors>()!.grey600),
       ),
     );
   }

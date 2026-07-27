@@ -1,8 +1,8 @@
 part of carp_study_app;
 
 @immutable
-class CarpColors extends ThemeExtension<CarpColors> {
-  const CarpColors({
+class StudyAppColors extends ThemeExtension<StudyAppColors> {
+  const StudyAppColors({
     this.primary,
     this.warningColor,
     this.backgroundGray,
@@ -44,24 +44,25 @@ class CarpColors extends ThemeExtension<CarpColors> {
   final Color? grey950;
 
   @override
-  CarpColors copyWith(
-      {Color? primary,
-      Color? warningColor,
-      Color? backgroundGray,
-      Color? tabBarBackground,
-      Color? white,
-      Color? grey50,
-      Color? grey100,
-      Color? grey200,
-      Color? grey300,
-      Color? grey400,
-      Color? grey500,
-      Color? grey600,
-      Color? grey700,
-      Color? grey800,
-      Color? grey900,
-      Color? grey950}) {
-    return CarpColors(
+  StudyAppColors copyWith({
+    Color? primary,
+    Color? warningColor,
+    Color? backgroundGray,
+    Color? tabBarBackground,
+    Color? white,
+    Color? grey50,
+    Color? grey100,
+    Color? grey200,
+    Color? grey300,
+    Color? grey400,
+    Color? grey500,
+    Color? grey600,
+    Color? grey700,
+    Color? grey800,
+    Color? grey900,
+    Color? grey950,
+  }) {
+    return StudyAppColors(
       primary: primary ?? this.primary,
       warningColor: warningColor ?? this.warningColor,
       backgroundGray: backgroundGray ?? this.backgroundGray,
@@ -82,11 +83,11 @@ class CarpColors extends ThemeExtension<CarpColors> {
   }
 
   @override
-  CarpColors lerp(CarpColors? other, double t) {
-    if (other is! CarpColors) {
+  StudyAppColors lerp(StudyAppColors? other, double t) {
+    if (other is! StudyAppColors) {
       return this;
     }
-    return CarpColors(
+    return StudyAppColors(
       primary: Color.lerp(primary, other.primary, t),
       warningColor: Color.lerp(warningColor, other.warningColor, t),
       backgroundGray: Color.lerp(backgroundGray, other.backgroundGray, t),
@@ -109,7 +110,7 @@ class CarpColors extends ThemeExtension<CarpColors> {
 
 ThemeData carpStudyTheme = ThemeData.light().copyWith(
   extensions: <ThemeExtension<dynamic>>[
-    CarpColors(
+    StudyAppColors(
       primary: const Color(0xff000000),
       warningColor: Colors.orange[500],
       backgroundGray: const Color(0xfff2f2f7),
@@ -126,49 +127,39 @@ ThemeData carpStudyTheme = ThemeData.light().copyWith(
       grey800: const Color(0xff2C2C2E),
       grey900: const Color(0xff1C1C1E),
       grey950: const Color(0xff0E0E0E),
-    )
+    ),
   ],
   primaryColor: const Color(0xff006398),
   colorScheme: const ColorScheme.light().copyWith(
-      secondary: const Color(0xFFFAFAFA),
-      primary: const Color(0xFF206FA2),
-      tertiary: const ui.Color.fromARGB(255, 230, 230, 230)),
+    secondary: const Color(0xFFFAFAFA),
+    primary: const Color(0xFF206FA2),
+    tertiary: const ui.Color.fromARGB(255, 230, 230, 230),
+  ),
   //accentColor: Color(0xFFFAFAFA), //Color(0xffcce8fa),
   hoverColor: const Color(0xFFF1F9FF),
   scaffoldBackgroundColor: const Color(0xFFFFFFFF),
-  textTheme: ThemeData.light()
-      .textTheme
+  textTheme: ThemeData.light().textTheme
       .copyWith(
-        bodySmall: ThemeData.light().textTheme.bodySmall!.copyWith(
-              fontWeight: FontWeight.w500,
-              fontSize: 14.0,
-            ),
-        bodyLarge: ThemeData.light().textTheme.bodyLarge!.copyWith(
-              fontWeight: FontWeight.w500,
-              fontSize: 18.0,
-            ),
-        bodyMedium: ThemeData.light().textTheme.bodyMedium!.copyWith(
-              fontWeight: FontWeight.w400,
-              fontSize: 16.0,
-            ),
+        bodySmall: ThemeData.light().textTheme.bodySmall!.copyWith(fontWeight: FontWeight.w500, fontSize: 14.0),
+        bodyLarge: ThemeData.light().textTheme.bodyLarge!.copyWith(fontWeight: FontWeight.w500, fontSize: 18.0),
+        bodyMedium: ThemeData.light().textTheme.bodyMedium!.copyWith(fontWeight: FontWeight.w400, fontSize: 16.0),
         titleMedium: ThemeData.light().textTheme.titleMedium!.copyWith(
-            fontWeight: FontWeight.w600,
-            fontSize: 20.0,
-            color: const Color(0xFF206FA2)),
-        titleLarge: ThemeData.light().textTheme.titleLarge!.copyWith(
-              fontWeight: FontWeight.w500,
-              fontSize: 20.0,
-            ),
+          fontWeight: FontWeight.w600,
+          fontSize: 20.0,
+          color: const Color(0xFF206FA2),
+        ),
+        titleLarge: ThemeData.light().textTheme.titleLarge!.copyWith(fontWeight: FontWeight.w500, fontSize: 20.0),
         headlineMedium: ThemeData.light().textTheme.headlineMedium!.copyWith(
-              fontWeight: FontWeight.w700,
-              fontSize: 30.0,
-            ),
+          fontWeight: FontWeight.w700,
+          fontSize: 30.0,
+        ),
         labelLarge: ThemeData.light().textTheme.labelLarge!.copyWith(
-            fontWeight: FontWeight.w500, fontSize: 16.0, color: Colors.white),
+          fontWeight: FontWeight.w500,
+          fontSize: 16.0,
+          color: Colors.white,
+        ),
       )
-      .apply(
-        fontFamily: 'OpenSans',
-      ),
+      .apply(fontFamily: 'OpenSans'),
   pageTransitionsTheme: const PageTransitionsTheme(
     builders: <TargetPlatform, PageTransitionsBuilder>{
       TargetPlatform.android: CupertinoPageTransitionsBuilder(),
@@ -179,7 +170,7 @@ ThemeData carpStudyTheme = ThemeData.light().copyWith(
 
 ThemeData carpStudyDarkTheme = ThemeData.dark().copyWith(
   extensions: <ThemeExtension<dynamic>>[
-    CarpColors(
+    StudyAppColors(
       primary: const Color(0xff24B2FF),
       warningColor: Colors.orange[700],
       backgroundGray: const Color(0xff0e0e0e),
@@ -196,7 +187,7 @@ ThemeData carpStudyDarkTheme = ThemeData.dark().copyWith(
       grey800: const Color(0xffF2F2F7),
       grey900: const Color(0xffF2F2F7),
       grey950: const Color(0xff0E0E0E),
-    )
+    ),
   ],
   primaryColor: const Color(0xff0379ff),
   colorScheme: const ColorScheme.dark().copyWith(
@@ -206,38 +197,26 @@ ThemeData carpStudyDarkTheme = ThemeData.dark().copyWith(
   ),
   // accentColor: Color(0xff4C4C4C),
   disabledColor: const Color(0xffcce8fa),
-  textTheme: ThemeData.dark()
-      .textTheme
+  textTheme: ThemeData.dark().textTheme
       .copyWith(
-        bodySmall: ThemeData.dark().textTheme.bodySmall!.copyWith(
-              fontWeight: FontWeight.w500,
-              fontSize: 14.0,
-            ),
-        bodyLarge: ThemeData.dark().textTheme.bodyLarge!.copyWith(
-              fontWeight: FontWeight.w500,
-              fontSize: 18.0,
-            ),
-        bodyMedium: ThemeData.dark().textTheme.bodyMedium!.copyWith(
-              fontWeight: FontWeight.w400,
-              fontSize: 16.0,
-            ),
+        bodySmall: ThemeData.dark().textTheme.bodySmall!.copyWith(fontWeight: FontWeight.w500, fontSize: 14.0),
+        bodyLarge: ThemeData.dark().textTheme.bodyLarge!.copyWith(fontWeight: FontWeight.w500, fontSize: 18.0),
+        bodyMedium: ThemeData.dark().textTheme.bodyMedium!.copyWith(fontWeight: FontWeight.w400, fontSize: 16.0),
         titleMedium: ThemeData.dark().textTheme.titleMedium!.copyWith(
-              fontWeight: FontWeight.w600,
-              fontSize: 20.0,
-              color: const Color(0xff81C7F3),
-            ),
-        titleLarge: ThemeData.dark().textTheme.titleLarge!.copyWith(
-              fontWeight: FontWeight.w500,
-              fontSize: 20.0,
-            ),
+          fontWeight: FontWeight.w600,
+          fontSize: 20.0,
+          color: const Color(0xff81C7F3),
+        ),
+        titleLarge: ThemeData.dark().textTheme.titleLarge!.copyWith(fontWeight: FontWeight.w500, fontSize: 20.0),
         headlineMedium: ThemeData.dark().textTheme.headlineMedium!.copyWith(
-              fontWeight: FontWeight.w700,
-              fontSize: 30.0,
-            ),
+          fontWeight: FontWeight.w700,
+          fontSize: 30.0,
+        ),
         labelLarge: ThemeData.dark().textTheme.labelLarge!.copyWith(
-            fontWeight: FontWeight.w500,
-            fontSize: 16.0,
-            color: Colors.grey.shade800),
+          fontWeight: FontWeight.w500,
+          fontSize: 16.0,
+          color: Colors.grey.shade800,
+        ),
       )
       .apply(
         fontFamily: 'OpenSans',
@@ -253,13 +232,13 @@ ThemeData carpStudyDarkTheme = ThemeData.dark().copyWith(
 
 // These TextStyles are now implemented in ResearchPackage
 
-// TextStyle studyTitleStyle =
+// TextStyle fs24fw600 =
 //     const TextStyle(fontSize: 24, fontWeight: FontWeight.w600);
 
-// TextStyle studyDetailsInfoTitle =
+// TextStyle fs16fw700 =
 //     const TextStyle(fontSize: 16, fontWeight: FontWeight.w700);
 
-// TextStyle studyDetailsInfoMessage =
+// TextStyle fs12fw700 =
 //     const TextStyle(fontSize: 12, fontWeight: FontWeight.w700);
 
 // TextStyle readMoreStudyStyle =
@@ -278,29 +257,29 @@ ThemeData carpStudyDarkTheme = ThemeData.dark().copyWith(
 // TextStyle scoreTextStyle =
 //     const TextStyle(fontSize: 12, fontWeight: FontWeight.w700);
 
-// TextStyle aboutStudyCardTitleStyle =
+// TextStyle fs24fw700 =
 //     const TextStyle(fontSize: 24, fontWeight: FontWeight.w700)
 //         .apply(fontFamily: 'OpenSans');
 
-// TextStyle aboutCardTitleStyle =
+// TextStyle fs20fw700 =
 //     const TextStyle(fontSize: 20, fontWeight: FontWeight.w700)
 //         .apply(fontFamily: 'OpenSans');
 
 // TextStyle aboutCardInfoStyle =
 //     const TextStyle(fontSize: 14, fontStyle: FontStyle.italic);
 
-// TextStyle aboutCardSubtitleStyle =
+// TextStyle fs16fw600 =
 //     const TextStyle(fontSize: 16, fontWeight: FontWeight.w600);
 
-// TextStyle aboutCardContentStyle =
+// TextStyle fs16fw400 =
 //     const TextStyle(fontSize: 16, fontWeight: FontWeight.w400)
 //         .apply(fontFamily: 'OpenSans');
 
-// TextStyle aboutCardTimeAgoStyle =
+// TextStyle fs10fw600 =
 //     const TextStyle(fontSize: 10, fontWeight: FontWeight.w600)
 //         .apply(fontFamily: 'OpenSans');
 
-// TextStyle sectionTitleStyle =
+// TextStyle fs18fw700 =
 //     const TextStyle(fontSize: 18, fontWeight: FontWeight.w700);
 
 // TextStyle inputFieldStyle =
@@ -309,21 +288,18 @@ ThemeData carpStudyDarkTheme = ThemeData.dark().copyWith(
 // TextStyle welcomeMessageStyle = const TextStyle(
 //     fontSize: 24, color: Color(0xff707070), fontWeight: FontWeight.bold);
 
-// TextStyle studyDescriptionStyle =
-//     const TextStyle(fontSize: 12, fontWeight: FontWeight.w300);
-
-// TextStyle dataCardTitleStyle = const TextStyle(
+// TextStyle fs16fw400ls1 = const TextStyle(
 //     fontSize: 16, fontWeight: FontWeight.w400, letterSpacing: 1);
 // TextStyle dataCardRightTitleStyle =
 //     const TextStyle(fontSize: 14, letterSpacing: 1);
 // TextStyle measuresStyle =
 //     const TextStyle(fontSize: 18, fontWeight: FontWeight.w400);
-// TextStyle legendStyle =
+// TextStyle fs12fw400 =
 //     const TextStyle(fontSize: 12, fontWeight: FontWeight.w400);
 
-// TextStyle audioTitleStyle =
+// TextStyle fs22fw700 =
 //     const TextStyle(fontSize: 22, fontWeight: FontWeight.w700);
-// TextStyle audioContentStyle =
+// TextStyle fs16fw600 =
 //     const TextStyle(fontSize: 16, fontWeight: FontWeight.w700);
 
 // TextStyle heartRateNumberStyle =
@@ -343,27 +319,27 @@ ThemeData carpStudyDarkTheme = ThemeData.dark().copyWith(
 // TextStyle dataVizCardBottomText =
 //     const TextStyle(fontSize: 12, fontWeight: FontWeight.w700);
 
-// TextStyle deviceTitle =
+// TextStyle fs16fw700 =
 //     const TextStyle(fontSize: 16, fontWeight: FontWeight.w700);
 
-// TextStyle deviceSubtitle =
+// TextStyle fs12fw700 =
 //     const TextStyle(fontSize: 12, fontWeight: FontWeight.w700);
 
 // TextStyle healthServiceConnectTitleStyle =
 //     const TextStyle(fontSize: 24, fontWeight: FontWeight.w700);
 
-// TextStyle healthServiceConnectMessageStyle =
+// TextStyle fs22fw700 =
 //     const TextStyle(fontSize: 22, fontWeight: FontWeight.w700);
 
-// TextStyle profileSectionStyle =
+// TextStyle fs12fw600 =
 //     TextStyle(fontSize: 12, fontWeight: FontWeight.w600);
-// TextStyle profileTitleStyle =
+// TextStyle fs14fw600 =
 //     TextStyle(fontSize: 14, fontWeight: FontWeight.w600);
-// TextStyle profileActionStyle =
+// TextStyle fs16fw600 =
 //     TextStyle(fontSize: 16, fontWeight: FontWeight.w600);
 
 // TextStyle timerStyle =
 //     const TextStyle(fontSize: 36, fontWeight: FontWeight.w600);
 
-// TextStyle studyNameStyle =
+// TextStyle fs30fw800 =
 //     const TextStyle(fontSize: 30.0, fontWeight: FontWeight.w800);

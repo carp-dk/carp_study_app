@@ -8,20 +8,18 @@ class AuthorizationDialog extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return AlertDialog(
-        scrollable: true,
-        titlePadding: const EdgeInsets.symmetric(vertical: 4),
-        insetPadding: const EdgeInsets.symmetric(vertical: 24, horizontal: 40),
-        title: const DialogTitle(
-          title: "pages.devices.connection.bluetooth_authorization.title",
-        ),
-        content: SizedBox(
-          height: MediaQuery.of(context).size.height * 0.45,
-          child: authorizationInstructions(context, device),
-        ));
+      scrollable: true,
+      titlePadding: const EdgeInsets.symmetric(vertical: 4),
+      insetPadding: const EdgeInsets.symmetric(vertical: 24, horizontal: 40),
+      title: const DialogTitle(title: "pages.devices.connection.bluetooth_authorization.title"),
+      content: SizedBox(
+        height: MediaQuery.of(context).size.height * 0.45,
+        child: authorizationInstructions(context, device),
+      ),
+    );
   }
 
-  Widget authorizationInstructions(
-      BuildContext context, DeviceViewModel device) {
+  Widget authorizationInstructions(BuildContext context, DeviceViewModel device) {
     RPLocalizations locale = RPLocalizations.of(context)!;
     return Column(
       children: [
@@ -30,16 +28,17 @@ class AuthorizationDialog extends StatelessWidget {
             child: Column(
               children: [
                 Text(
-                  locale.translate(
-                      "pages.devices.connection.bluetooth_authorization.message"),
-                  style: aboutCardContentStyle,
+                  locale.translate("pages.devices.connection.bluetooth_authorization.message"),
+                  style: fs16fw400,
                   textAlign: TextAlign.justify,
                 ),
                 Image(
-                    image: AssetImage(
-                        'assets/instructions/${Localizations.localeOf(context).languageCode}/bluetooth_enable_bar.png'),
-                    width: MediaQuery.of(context).size.height * 0.2,
-                    height: MediaQuery.of(context).size.height * 0.2),
+                  image: AssetImage(
+                    'assets/instructions/${Localizations.localeOf(context).languageCode}/bluetooth_enable_bar.png',
+                  ),
+                  width: MediaQuery.of(context).size.height * 0.2,
+                  height: MediaQuery.of(context).size.height * 0.2,
+                ),
               ],
             ),
           ),
@@ -55,8 +54,7 @@ class AuthorizationDialog extends StatelessWidget {
                 },
               ),
               TextButton(
-                child:
-                    Text(locale.translate("pages.devices.connection.settings")),
+                child: Text(locale.translate("pages.devices.connection.settings")),
                 onPressed: () => OpenSettingsPlusIOS().bluetooth(),
               ),
             ],

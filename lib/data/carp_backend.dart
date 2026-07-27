@@ -28,24 +28,14 @@ class CarpBackend {
   }
 
   /// The URI of the CAWS server - depending on deployment mode.
-  Uri get uri => Uri(
-        scheme: 'https',
-        host: uris[bloc.deploymentMode],
-      );
+  Uri get uri => Uri(scheme: 'https', host: uris[AppConfig.deploymentMode]);
 
   /// The URI of the CAWS authentication service.
   ///
   /// Of the form:
   ///    https://dev.carp.dk/auth/realms/Carp/
-  Uri get authUri => Uri(
-        scheme: 'https',
-        host: uris[bloc.deploymentMode],
-        pathSegments: [
-          'auth',
-          'realms',
-          'Carp',
-        ],
-      );
+  Uri get authUri =>
+      Uri(scheme: 'https', host: uris[AppConfig.deploymentMode], pathSegments: ['auth', 'realms', 'Carp']);
 
   /// The CAWS app configuration.
   late final CarpApp _app = CarpApp(name: "CAWS @ DTU", uri: uri);
@@ -54,17 +44,13 @@ class CarpBackend {
 
   /// The authentication configuration
   CarpAuthProperties get authProperties => CarpAuthProperties(
-        authURL: uri,
-        clientId: 'studies-app',
-        redirectURI: Uri.parse('carp-studies-auth://auth'),
-        anonymousRedirectURI: Uri.parse('carp-studies:/anonymous'),
-        // For authentication at CAWS the path is '/auth/realms/Carp'
-        discoveryURL: uri.replace(pathSegments: [
-          'auth',
-          'realms',
-          'Carp',
-        ]),
-      );
+    authURL: uri,
+    clientId: 'studies-app',
+    redirectURI: Uri.parse('carp-studies-auth://auth'),
+    anonymousRedirectURI: Uri.parse('carp-studies:/anonymous'),
+    // For authentication at CAWS the path is '/auth/realms/Carp'
+    discoveryURL: uri.replace(pathSegments: ['auth', 'realms', 'Carp']),
+  );
 
   /// Initialize this backend. Must be called before used.
   Future<void> initialize() async {
@@ -89,6 +75,12 @@ class CarpBackend {
 
     CarpParticipationService().configureFrom(CarpService());
     CarpDeploymentService().configureFrom(CarpService());
+
+    // CAWS services hold the active study as ambient state. If a study is
+    // cached locally (returning user), re-seed the services here — otherwise
+    // CarpResourceManager throws null-derefs on the first resource fetch.
+    final cachedStudy = LocalSettings().study;
+    if (cachedStudy != null) study = cachedStudy;
 
     info('$runtimeType initialized - app: $app');
   }
@@ -155,19 +147,7 @@ class CarpBackend {
   Future<List<ActiveParticipationInvitation>> getInvitations() async {
     CarpParticipationService().configureFrom(CarpService());
 
-    invitations =
-        await CarpParticipationService().getActiveParticipationInvitations();
-
-    // Filter the invitations to only include those that
-    // have a smartphone as a device in [ActiveParticipationInvitation.assignedDevices] list
-    // (i.e. the invitation is for a smartphone).
-    // This is done to avoid showing invitations for other devices (e.g. [WebBrowser]).
-    invitations.removeWhere((invitation) =>
-        invitation.assignedDevices
-            ?.any((device) => device.device is! Smartphone) ??
-        false);
-
-    return invitations;
+    return invitations = await CarpParticipationService().getActiveParticipationInvitations();
   }
 
   /// Set the [study] used on this phone.
@@ -184,27 +164,22 @@ class CarpBackend {
   ///
   /// Looks for the first instance of a [RPConsentSignatureResult] in [consent]
   /// and uploads this.
-  Future<InformedConsentInput?> uploadInformedConsent(
-    RPTaskResult consent,
-  ) async {
+  Future<InformedConsentInput?> uploadInformedConsent(RPTaskResult consent) async {
     if (user == null) {
       warning('$runtimeType - No user authenticated.');
       return null;
     }
     if (participant == null) {
-      warning(
-          '$runtimeType - No participant (no invitation has been accepted).');
+      warning('$runtimeType - No participant (no invitation has been accepted).');
       return null;
     }
 
     late RPConsentSignatureResult signedConsent;
     try {
-      signedConsent = consent.results.values.firstWhere(
-        (result) => result is RPConsentSignatureResult,
-      ) as RPConsentSignatureResult;
+      signedConsent =
+          consent.results.values.firstWhere((result) => result is RPConsentSignatureResult) as RPConsentSignatureResult;
     } catch (_) {
-      warning(
-          '$runtimeType - No signed informed consent found to be uploaded.');
+      warning('$runtimeType - No signed informed consent found to be uploaded.');
       return null;
     }
 
@@ -219,17 +194,20 @@ class CarpBackend {
     );
 
     try {
-      await CarpParticipationService()
-          .participation()
-          .setInformedConsent(uploadedConsent);
+      await CarpParticipationService().participation().setInformedConsent(uploadedConsent);
 
-      info('$runtimeType - Informed consent document uploaded successfully for '
-          'deployment id: ${bloc.study?.studyDeploymentId}');
+      info(
+        '$runtimeType - Informed consent document uploaded successfully for '
+        'deployment id: ${LocalSettings().study?.studyDeploymentId}',
+      );
     } on Exception {
-      warning(
-          '$runtimeType - Informed consent upload failed for username: $username');
+      warning('$runtimeType - Informed consent upload failed for username: $username');
     }
 
     return uploadedConsent;
+  }
+
+  Future<InformedConsentInput?>? getInformedConsentByRole(String studyDeploymentId, String? role) async {
+    return await CarpParticipationService().participation(studyDeploymentId).getInformedConsentByRole(role);
   }
 }

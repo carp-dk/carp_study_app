@@ -8,15 +8,12 @@ class DisconnectionDialog extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return AlertDialog(
-        scrollable: true,
-        titlePadding: const EdgeInsets.symmetric(vertical: 4),
-        insetPadding: const EdgeInsets.symmetric(vertical: 24, horizontal: 40),
-        title: const DialogTitle(
-          title: "pages.devices.connection.disconnect_bluetooth.title",
-        ),
-        content: SizedBox(
-          child: disconnectBluetooth(context, device),
-        ));
+      scrollable: true,
+      titlePadding: const EdgeInsets.symmetric(vertical: 4),
+      insetPadding: const EdgeInsets.symmetric(vertical: 24, horizontal: 40),
+      title: const DialogTitle(title: "pages.devices.connection.disconnect_bluetooth.title"),
+      content: SizedBox(child: disconnectBluetooth(context, device)),
+    );
   }
 
   Widget disconnectBluetooth(BuildContext context, DeviceViewModel device) {
@@ -26,16 +23,14 @@ class DisconnectionDialog extends StatelessWidget {
       children: [
         Text(
           "${locale.translate("pages.devices.connection.disconnect_bluetooth.message")} ${locale.translate(device.name)}?",
-          style: aboutCardContentStyle,
+          style: fs16fw400,
           textAlign: TextAlign.justify,
         ),
         Row(
           mainAxisAlignment: MainAxisAlignment.spaceBetween,
           children: [
             TextButton(
-              child: Text(
-                locale.translate("cancel"),
-              ),
+              child: Text(locale.translate("cancel")),
               onPressed: () {
                 if (context.canPop()) context.pop(false);
               },
@@ -44,13 +39,10 @@ class DisconnectionDialog extends StatelessWidget {
               onPressed: () {
                 if (context.canPop()) context.pop(true);
               },
-              child: Text(
-                locale.translate(
-                    "pages.devices.connection.disconnect_bluetooth.disconnect"),
-              ),
+              child: Text(locale.translate("pages.devices.connection.disconnect_bluetooth.disconnect")),
             ),
           ],
-        )
+        ),
       ],
     );
   }

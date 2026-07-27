@@ -16,31 +16,20 @@ class CarpAppBar extends StatelessWidget {
                 children: [
                   Container(
                     padding: EdgeInsets.only(left: 8),
-                    child: Image.asset(
-                      'assets/carp_logo.png',
-                      fit: BoxFit.contain,
-                      height: 16,
-                    ),
+                    child: Image.asset('assets/carp_logo.png', fit: BoxFit.contain, height: 16),
                   ),
                   if (hasProfileIcon)
                     IconButton(
-                      icon: Icon(
-                        Icons.account_circle,
-                        color: Theme.of(context).primaryColor,
-                        size: 30,
-                      ),
+                      icon: Icon(Icons.account_circle, color: Theme.of(context).primaryColor, size: 30),
                       tooltip: 'Profile',
                       onPressed: () {
-                        Navigator.push(
-                            context,
-                            SlidePageRoute(
-                                ProfilePage(ProfilePageViewModel())));
+                        Navigator.push(context, SlidePageRoute(ProfilePage(ProfilePageViewModel())));
                       },
                     ),
                 ],
               ),
             ],
-          )
+          ),
         ],
       ),
     );

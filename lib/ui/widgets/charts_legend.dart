@@ -7,13 +7,14 @@ class ChartsLegend extends StatelessWidget {
   final String? heroTag;
   final List<Color> colors;
 
-  const ChartsLegend(
-      {super.key,
-      this.heroTag,
-      this.iconAssetName,
-      required this.title,
-      this.values = const [],
-      required this.colors});
+  const ChartsLegend({
+    super.key,
+    this.heroTag,
+    this.iconAssetName,
+    required this.title,
+    this.values = const [],
+    required this.colors,
+  });
 
   @override
   Widget build(BuildContext context) {
@@ -26,7 +27,7 @@ class ChartsLegend extends StatelessWidget {
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                Text(title.toUpperCase(), style: dataCardTitleStyle),
+                Text(title.toUpperCase(), style: fs16fw400ls1),
                 Padding(
                   padding: const EdgeInsets.symmetric(vertical: 8.0),
                   child: Row(
@@ -37,9 +38,8 @@ class ChartsLegend extends StatelessWidget {
                           (entry) => Row(
                             mainAxisAlignment: MainAxisAlignment.spaceAround,
                             children: [
-                              Icon(Icons.circle,
-                                  color: colors[entry.key], size: 12.0),
-                              Text(' ${entry.value} ', style: legendStyle),
+                              Icon(Icons.circle, color: colors[entry.key], size: 12.0),
+                              Text(' ${entry.value} ', style: fs12fw400),
                             ],
                           ),
                         )

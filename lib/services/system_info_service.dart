@@ -1,0 +1,44 @@
+part of carp_study_app;
+
+/// Device- and platform-level checks: connectivity, installed apps, and
+/// app-store updates.
+class SystemInfoService {
+  SystemInfoService({AppCheck? appCheck, Connectivity? connectivity})
+    : _appCheck = appCheck ?? AppCheck(),
+      _connectivity = connectivity ?? Connectivity();
+
+  final AppCheck _appCheck;
+  final Connectivity _connectivity;
+
+  /// Is the phone connected to the internet either via wifi or mobile network?
+  Future<bool> checkConnectivity() async {
+    final results = await _connectivity.checkConnectivity();
+    return results.any((result) => result == ConnectivityResult.mobile || result == ConnectivityResult.wifi);
+  }
+
+  /// Check if the Health database is installed on this phone.
+  ///
+  /// Always returns true on iOS, since Health is part of the OS and hence always installed.
+  /// On Android, returns true if Google Health Connect is installed, false otherwise.
+  Future<bool> isHealthInstalled() async {
+    if (Platform.isIOS) return true;
+
+    try {
+      return await _appCheck.isAppInstalled(LocalSettings.healthConnectPackageName);
+    } catch (e) {
+      debug("$runtimeType - Error checking Health Connect installation: $e");
+      return false;
+    }
+  }
+
+  /// Is a newer version of this app available in the app store?
+  Future<bool?> getAppHasUpdate() async {
+    PackageInfo packageInfo = await PackageInfo.fromPlatform();
+    AppVersionResult result = await AppVersionUpdate.checkForUpdates(
+      playStoreId: packageInfo.packageName,
+      appleId: '1569798025',
+      country: 'dk',
+    );
+    return result.canUpdate;
+  }
+}

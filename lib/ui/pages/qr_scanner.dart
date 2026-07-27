@@ -1,7 +1,8 @@
 part of carp_study_app;
 
 class QRViewExample extends StatefulWidget {
-  const QRViewExample({super.key});
+  final LoginViewModel model;
+  const QRViewExample({required this.model, super.key});
 
   @override
   State<StatefulWidget> createState() => _QRViewExampleState();
@@ -10,6 +11,7 @@ class QRViewExample extends StatefulWidget {
 class _QRViewExampleState extends State<QRViewExample> {
   qr.Barcode? result;
   qr.QRViewController? controller;
+  StreamSubscription<qr.Barcode>? _scanSubscription;
   final GlobalKey qrKey = GlobalKey(debugLabel: 'QR');
 
   // In order to get hot reload to work we need to pause the camera if the platform
@@ -21,6 +23,12 @@ class _QRViewExampleState extends State<QRViewExample> {
       controller!.pauseCamera();
     }
     controller!.resumeCamera();
+  }
+
+  @override
+  void dispose() {
+    _scanSubscription?.cancel();
+    super.dispose();
   }
 
   @override
@@ -45,20 +53,21 @@ class _QRViewExampleState extends State<QRViewExample> {
                           margin: const EdgeInsets.all(8),
                           height: 30,
                           child: ElevatedButton(
-                              onPressed: () async {
-                                await controller?.flipCamera();
-                                setState(() {});
+                            onPressed: () async {
+                              await controller?.flipCamera();
+                              setState(() {});
+                            },
+                            child: FutureBuilder(
+                              future: controller?.getCameraInfo(),
+                              builder: (context, snapshot) {
+                                if (snapshot.data != null) {
+                                  return Icon(Icons.cameraswitch);
+                                } else {
+                                  return const Text('loading');
+                                }
                               },
-                              child: FutureBuilder(
-                                future: controller?.getCameraInfo(),
-                                builder: (context, snapshot) {
-                                  if (snapshot.data != null) {
-                                    return Icon(Icons.cameraswitch);
-                                  } else {
-                                    return const Text('loading');
-                                  }
-                                },
-                              )),
+                            ),
+                          ),
                         ),
                         Container(
                           margin: const EdgeInsets.all(8),
@@ -75,7 +84,7 @@ class _QRViewExampleState extends State<QRViewExample> {
                   ],
                 ),
               ),
-            )
+            ),
           ],
         ),
       ),
@@ -84,8 +93,7 @@ class _QRViewExampleState extends State<QRViewExample> {
 
   Widget _buildQrView(BuildContext context) {
     // For this example we check how width or tall the device is and change the scanArea and overlay accordingly.
-    var scanArea = (MediaQuery.of(context).size.width < 400 ||
-            MediaQuery.of(context).size.height < 400)
+    var scanArea = (MediaQuery.of(context).size.width < 400 || MediaQuery.of(context).size.height < 400)
         ? 150.0
         : 300.0;
     // To ensure the Scanner view is properly sizes after rotation
@@ -94,11 +102,12 @@ class _QRViewExampleState extends State<QRViewExample> {
       key: qrKey,
       onQRViewCreated: _onQRViewCreated,
       overlay: qr.QrScannerOverlayShape(
-          borderColor: Colors.red,
-          borderRadius: 10,
-          borderLength: 30,
-          borderWidth: 10,
-          cutOutSize: scanArea),
+        borderColor: Colors.red,
+        borderRadius: 10,
+        borderLength: 30,
+        borderWidth: 10,
+        cutOutSize: scanArea,
+      ),
       onPermissionSet: (ctrl, p) => _onPermissionSet(context, ctrl, p),
     );
   }
@@ -107,7 +116,7 @@ class _QRViewExampleState extends State<QRViewExample> {
     setState(() {
       this.controller = controller;
     });
-    controller.scannedDataStream.listen((scanData) async {
+    _scanSubscription = controller.scannedDataStream.listen((scanData) async {
       await controller.pauseCamera();
       if (result != null) return;
       setState(() {
@@ -115,22 +124,23 @@ class _QRViewExampleState extends State<QRViewExample> {
       });
 
       final qrcode = scanData.code;
+      if (qrcode == null) return;
 
-      if (qrcode != null && Uri.tryParse(qrcode)?.hasAbsolutePath == true) {
-        await bloc.backend.authenticateWithMagicLink(qrcode).then((_) {
-          context.go('/');
-          Navigator.of(context).pop();
-        });
+      final success = await widget.model.signInWithMagicLink(qrcode);
+      if (!mounted) return;
+      if (success) {
+        final invitations = bloc.appViewModel.invitationsListViewModel;
+        await invitations.loadInvitations();
+        if (!mounted) return;
+        context.go(invitations.landingRoute);
       }
+      Navigator.of(context).pop();
     });
   }
 
-  void _onPermissionSet(
-      BuildContext context, qr.QRViewController ctrl, bool p) {
+  void _onPermissionSet(BuildContext context, qr.QRViewController ctrl, bool p) {
     if (!p) {
-      ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(content: Text('no Permission')),
-      );
+      ScaffoldMessenger.of(context).showSnackBar(const SnackBar(content: Text('no Permission')));
     }
   }
 }
