@@ -10,14 +10,17 @@ enum HomeConnectionState { all, partial, none }
 /// the one-shot Health Connect install prompt. The UI reads these and rebuilds
 /// via [ListenableBuilder]; it never touches the services or streams directly.
 class HomePageViewModel extends ViewModel {
-  HomePageViewModel({SystemInfoService? systemInfoService, StudyService? studyService})
+  HomePageViewModel({SystemInfoService? systemInfoService, StudyService? studyService, MessageService? messageService})
     : _systemInfoService = systemInfoService,
-      _studyService = studyService;
+      _studyService = studyService,
+      _messageService = messageService;
 
   final SystemInfoService? _systemInfoService;
   final StudyService? _studyService;
+  final MessageService? _messageService;
   SystemInfoService get _system => _systemInfoService ?? bloc.system;
   StudyService get _study => _studyService ?? bloc.study;
+  MessageService get _messages => _messageService ?? bloc.messages;
 
   /// Per-survey completion counts for the "Completed Surveys" card.
   final TaskCardViewModel surveys = TaskCardViewModel(AppTask.SURVEY_TYPE);
@@ -27,18 +30,48 @@ class HomePageViewModel extends ViewModel {
   List<DeviceViewModel> _connectionSources = const [];
   final List<StreamSubscription<DeviceStatus>> _deviceSubs = [];
   StreamSubscription<UserTask>? _userTaskSub;
+  StreamSubscription<int>? _messageSub;
   bool _blocAttached = false;
 
-  /// The number of days the user has been part of the study.
-  int get daysInStudy => (_study.cachedDeploymentStatus != null)
-      ? DateTime.now().difference(_study.cachedDeploymentStatus!.createdOn).inDays
-      : 0;
+  /// The announcements/news shown in the "Feeds" section, newest first.
+  List<Message> get messages => _messages.messages;
+
+  /// Is the study (and thus the home page content) loaded? Until then the
+  /// page shows a shimmer skeleton. Waits for both the study description and
+  /// the deployment status, so the about card (incl. its status bubble)
+  /// renders complete in one go instead of growing when the status lands.
+  bool get isLoaded =>
+      (_study.deployment?.studyDescription?.title ?? '').isNotEmpty && _study.cachedDeploymentStatus != null;
+
+  /// The title and description of this study, shown on the home about card.
+  String get studyTitle => _study.deployment?.studyDescription?.title ?? '';
+  String get studyDescription => _study.deployment?.studyDescription?.description ?? '';
+
+  // The distinct calendar days on which the user completed at least one task.
+  Set<String> get _activeDays => AppTaskController()
+      .userTaskQueue
+      .where((task) => task.state == UserTaskState.done && task.doneTime != null)
+      .map((task) => _dayKey(task.doneTime!.toLocal()))
+      .toSet();
+
+  static String _dayKey(DateTime d) => '${d.year}-${d.month}-${d.day}';
+
+  /// The number of days on which the user completed at least one task.
+  int get activeDaysInStudy => _activeDays.length;
+
+  /// Task activity for the last 7 days (oldest first) - true if at least one
+  /// task was completed that day.
+  List<bool> get lastWeekActivity {
+    final done = _activeDays;
+    final today = DateTime.now();
+    return List.generate(7, (i) => done.contains(_dayKey(today.subtract(Duration(days: 6 - i)))));
+  }
 
   /// The number of tasks completed so far.
   int get taskCompleted => AppTaskController().userTaskQueue.where((task) => task.state == UserTaskState.done).length;
 
-  /// The total number of tasks issued so far.
-  int get taskTotal => AppTaskController().userTaskQueue.length;
+  /// The number of tasks still available for the user to do.
+  int get taskPending => AppTaskController().userTaskQueue.where((task) => task.availableForUser).length;
 
   /// The deployment status of this study, or null if not deployed yet.
   StudyDeploymentStatusTypes? get deploymentStatus =>
@@ -74,13 +107,14 @@ class HomePageViewModel extends ViewModel {
     _attachToBloc();
     _syncSources();
     _userTaskSub = AppTaskController().userTaskEvents.listen((_) => notifyListeners());
+    _messageSub = _messages.stream.listen((_) => notifyListeners());
     unawaited(_checkHealthConnectInstallation());
     unawaited(_checkAppUpdate());
     unawaited(_refreshDeploymentStatus());
   }
 
   // The cached status is only filled by an explicit refresh; without this the
-  // status card stays hidden and daysInStudy is 0.
+  // status card stays hidden.
   Future<void> _refreshDeploymentStatus() async {
     try {
       await _study.refreshDeploymentStatus();
@@ -148,6 +182,7 @@ class HomePageViewModel extends ViewModel {
     if (_blocAttached) bloc.removeListener(_syncSources);
     _cancelDeviceSubs();
     _userTaskSub?.cancel();
+    _messageSub?.cancel();
     super.dispose();
   }
 }

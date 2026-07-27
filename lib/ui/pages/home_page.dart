@@ -1,7 +1,6 @@
 part of carp_study_app;
 
 /// The redesigned home page (design 2.0) - the landing tab of the app shell.
-// ponytail: hardcoded content; wire study title and feeds later.
 class HomePage extends StatelessWidget {
   static const String route = '/home';
   final HomePageViewModel model;
@@ -22,50 +21,32 @@ class HomePage extends StatelessWidget {
                 padding: EdgeInsets.symmetric(vertical: 8.0, horizontal: 10),
                 child: CarpAppBar(hasProfileIcon: true),
               ),
-              const CarpPageTitle('UX Data collection study'),
-              AppUpdateCard(model: model),
-              ConnectionsStatusCard(model: model),
-              StudyStatusCard(model: model),
-              Padding(
-                padding: const EdgeInsets.symmetric(horizontal: 8),
-                child: Row(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    Expanded(
-                      child: _statTile(
-                        colors,
-                        Icons.calendar_today_outlined,
-                        colors.primary!,
-                        'Days in Study',
-                        '${model.daysInStudy}',
-                      ),
-                    ),
-                    Expanded(
-                      child: _statTile(
-                        colors,
-                        Icons.task_alt,
-                        colors.warningColor!,
-                        'Task completed',
-                        '${model.taskCompleted}',
-                        total: '${model.taskTotal}',
-                      ),
-                    ),
-                  ],
+              if (!model.isLoaded)
+                _skeleton(colors)
+              else ...[
+                AppUpdateCard(model: model),
+                StudyAboutCard(model: model),
+                _sectionHeader(colors, 'Connections'),
+                ConnectionsStatusCard(model: model),
+                _sectionHeader(colors, 'Your progress'),
+                IntrinsicHeight(
+                  child: Row(
+                    crossAxisAlignment: CrossAxisAlignment.stretch,
+                    children: [
+                      Expanded(child: _activeDaysTile(context, colors)),
+                      Expanded(child: _taskStatusTile(context, colors)),
+                    ],
+                  ),
                 ),
-              ),
-              if (model.surveys.tasksTable.isNotEmpty) ...[
-                Padding(
-                  padding: const EdgeInsets.fromLTRB(16, 16, 16, 8),
-                  child: Text('Completed Surveys', style: fs22fw700.copyWith(color: colors.grey900)),
-                ),
-                SurveyCard(model.surveys, showTitle: false),
+                if (model.surveys.tasksTable.isNotEmpty) ...[
+                  _sectionHeader(colors, 'Completed Surveys'),
+                  SurveyCard(model.surveys, showTitle: false),
+                ],
+                if (model.messages.isNotEmpty) ...[
+                  _sectionHeader(colors, 'Feeds'),
+                  for (final message in model.messages) _feedCard(context, colors, message),
+                ],
               ],
-              Padding(
-                padding: const EdgeInsets.fromLTRB(16, 16, 16, 8),
-                child: Text('Feeds', style: fs22fw700.copyWith(color: colors.grey900)),
-              ),
-              _feedCard(colors, 'Connect Polar Strap', "Sync your heart rate sensor for today's session to ensure data accuracy."),
-              _feedCard(colors, 'Health Issues', "Sync your heart rate sensor for today's session."),
             ],
           ),
         ),
@@ -73,11 +54,128 @@ class HomePage extends StatelessWidget {
     );
   }
 
-  // Compact stat tile: label + icon badge on top, big value (with optional
-  // "/ total") below.
-  Widget _statTile(CarpColors colors, IconData icon, Color iconColor, String label, String value, {String? total}) {
+  /// Shimmer placeholders mirroring the page layout (about card, connections,
+  /// progress tiles, feeds), shown until the study is loaded.
+  Widget _skeleton(CarpColors colors) {
+    Widget box(double height, {EdgeInsetsGeometry? margin}) => Container(
+      height: height,
+      margin: margin ?? const EdgeInsets.only(left: 16, right: 16, bottom: 16),
+      decoration: BoxDecoration(color: Colors.white, borderRadius: BorderRadius.circular(8)),
+    );
+    Widget bar() => Align(
+      alignment: Alignment.centerLeft,
+      child: Container(
+        height: 18,
+        width: 120,
+        margin: const EdgeInsets.only(left: 16, bottom: 8, top: 8),
+        decoration: BoxDecoration(color: Colors.white, borderRadius: BorderRadius.circular(4)),
+      ),
+    );
+
+    return Shimmer.fromColors(
+      baseColor: colors.grey200!,
+      highlightColor: colors.grey100!,
+      child: Column(
+        children: [
+          box(195),
+          bar(),
+          box(88),
+          bar(),
+          Row(
+            children: [
+              Expanded(child: box(180, margin: const EdgeInsets.only(left: 16, right: 6, bottom: 16))),
+              Expanded(child: box(180, margin: const EdgeInsets.only(left: 6, right: 16, bottom: 16))),
+            ],
+          ),
+          bar(),
+          box(140),
+          box(140),
+        ],
+      ),
+    );
+  }
+
+  Widget _sectionHeader(CarpColors colors, String title) {
+    return Padding(
+      padding: const EdgeInsets.fromLTRB(16, 8, 16, 8),
+      child: Text(title, style: fs18fw700.copyWith(color: colors.grey900)),
+    );
+  }
+
+  /// "Active Days in Study" tile: total active days, a dot per day for the
+  /// last 7 days (filled if at least one task was done), and a stats link.
+  Widget _activeDaysTile(BuildContext context, CarpColors colors) {
+    return _statTile(
+      colors,
+      icon: Icons.calendar_today_outlined,
+      iconColor: colors.primary!,
+      label: 'Active Days in Study',
+      value: Text('${model.activeDaysInStudy}', style: fs30fw800.copyWith(color: colors.grey900, fontSize: 28)),
+      footer: Row(
+        children: [
+          for (final active in model.lastWeekActivity)
+            Container(
+              width: 10,
+              height: 10,
+              margin: const EdgeInsets.only(right: 5),
+              decoration: BoxDecoration(
+                shape: BoxShape.circle,
+                color: active ? colors.primary : null,
+                border: Border.all(color: colors.primary!, width: 1.5),
+              ),
+            ),
+        ],
+      ),
+      linkLabel: 'View Statistics',
+      onLink: () => context.go(DataVisualizationPage.route),
+      margin: const EdgeInsets.only(left: 16, right: 6, bottom: 16),
+    );
+  }
+
+  /// "Task status" tile: completed and pending counts and a tasks link.
+  Widget _taskStatusTile(BuildContext context, CarpColors colors) {
+    Widget count(int n, String label) => Row(
+      crossAxisAlignment: CrossAxisAlignment.end,
+      children: [
+        Text('$n'.padLeft(2, '0'), style: fs30fw800.copyWith(color: colors.grey900, fontSize: 28)),
+        const SizedBox(width: 8),
+        Padding(
+          padding: const EdgeInsets.only(bottom: 4),
+          child: Text(label, style: fs14fw600.copyWith(color: colors.grey600)),
+        ),
+      ],
+    );
+    return _statTile(
+      colors,
+      icon: Icons.task_alt,
+      iconColor: colors.warningColor!,
+      label: 'Task status',
+      value: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [count(model.taskCompleted, 'Completed'), count(model.taskPending, 'Pending')],
+      ),
+      linkLabel: 'Complete Tasks',
+      onLink: () => context.go(TaskListPage.route),
+      margin: const EdgeInsets.only(left: 6, right: 16, bottom: 16),
+    );
+  }
+
+  // Shared stat tile chrome: label + icon badge on top, main content, optional
+  // footer row, and a link at the bottom.
+  Widget _statTile(
+    CarpColors colors, {
+    required IconData icon,
+    required Color iconColor,
+    required String label,
+    required Widget value,
+    Widget? footer,
+    required String linkLabel,
+    required VoidCallback onLink,
+    required EdgeInsetsGeometry margin,
+  }) {
     return StudiesMaterial(
       backgroundColor: colors.grey50!,
+      margin: margin,
       child: Padding(
         padding: const EdgeInsets.all(12),
         child: Column(
@@ -87,21 +185,20 @@ class HomePage extends StatelessWidget {
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 Expanded(child: Text(label, style: fs14fw600.copyWith(color: colors.grey600))),
-                Container(
-                  padding: const EdgeInsets.all(6),
-                  decoration: BoxDecoration(color: iconColor.withValues(alpha: 0.12), borderRadius: BorderRadius.circular(10)),
-                  child: Icon(icon, color: iconColor, size: 18),
-                ),
+                _iconBadge(icon, iconColor),
               ],
             ),
             const SizedBox(height: 8),
-            Text.rich(
-              TextSpan(
-                text: value,
-                style: fs30fw800.copyWith(color: colors.grey900, fontSize: 28),
-                children: [
-                  if (total != null) TextSpan(text: ' / $total', style: fs14fw600.copyWith(color: colors.grey500)),
-                ],
+            value,
+            if (footer != null) ...[const SizedBox(height: 8), footer],
+            // Push the link to the card bottom so both tiles' links align.
+            const Spacer(),
+            const SizedBox(height: 8),
+            InkWell(
+              onTap: onLink,
+              child: Text(
+                linkLabel,
+                style: fs14fw600.copyWith(color: colors.primary, decoration: TextDecoration.underline, decorationColor: colors.primary),
               ),
             ),
           ],
@@ -110,44 +207,58 @@ class HomePage extends StatelessWidget {
     );
   }
 
-  Widget _feedCard(CarpColors colors, String title, String body) {
+  /// A message (announcement / news / article) from the backend, tappable to
+  /// open its details page.
+  Widget _feedCard(BuildContext context, CarpColors colors, Message message) {
+    final locale = RPLocalizations.of(context)!;
+    final subTitle = message.subTitle ?? '';
+    final body = message.message ?? '';
+
     return StudiesMaterial(
       backgroundColor: colors.grey50!,
-      child: Padding(
-        padding: const EdgeInsets.all(16),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            Row(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Expanded(child: Text(title, style: fs20fw700.copyWith(color: colors.grey900))),
-                _circleIcon(Icons.campaign, colors.primary!),
+      child: InkWell(
+        onTap: () => context.push('${MessageDetailsPage.route}/${message.id}'),
+        child: Padding(
+          padding: const EdgeInsets.all(16),
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Row(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Expanded(child: Text(locale.translate(message.title ?? ''), style: fs18fw700.copyWith(color: colors.grey900))),
+                  _iconBadge(message.type.icon, colors.primary!),
+                ],
+              ),
+              if (subTitle.isNotEmpty) ...[
+                const SizedBox(height: 4),
+                Text(locale.translate(subTitle), style: fs14fw600.copyWith(color: colors.grey600)),
               ],
-            ),
-            const SizedBox(height: 4),
-            Text('Subtitle', style: fs14fw600.copyWith(color: colors.grey600)),
-            const SizedBox(height: 8),
-            Text(body, style: fs16fw400.copyWith(color: colors.grey900)),
-            const SizedBox(height: 12),
-            Row(
-              children: [
-                Icon(Icons.access_time, size: 14, color: colors.grey500),
-                const SizedBox(width: 4),
-                Text('Today', style: fs12fw600.copyWith(color: colors.grey500)),
+              if (body.isNotEmpty) ...[
+                const SizedBox(height: 8),
+                Text(locale.translate(body), maxLines: 3, overflow: TextOverflow.ellipsis, style: fs16fw400.copyWith(color: colors.grey900)),
               ],
-            ),
-          ],
+              const SizedBox(height: 12),
+              Row(
+                children: [
+                  Icon(Icons.access_time, size: 14, color: colors.grey500),
+                  const SizedBox(width: 4),
+                  Text(timeago.format(message.timestamp.toLocal()), style: fs12fw600.copyWith(color: colors.grey500)),
+                ],
+              ),
+            ],
+          ),
         ),
       ),
     );
   }
 
-  Widget _circleIcon(IconData icon, Color color) {
-    return Material(
-      color: color,
-      shape: const CircleBorder(),
-      child: Padding(padding: const EdgeInsets.all(8), child: Icon(icon, color: Colors.white, size: 20)),
+  // Rounded-square badge: tinted background with the icon in the accent color.
+  Widget _iconBadge(IconData icon, Color color) {
+    return Container(
+      padding: const EdgeInsets.all(8),
+      decoration: BoxDecoration(color: color.withValues(alpha: 0.1), borderRadius: BorderRadius.circular(10)),
+      child: Icon(icon, color: color, size: 18),
     );
   }
 }
@@ -193,63 +304,99 @@ class AppUpdateCard extends StatelessWidget {
   }
 }
 
-/// Home card showing the deployment status of the study (running, deploying,
-/// stopped, ...) with its explanatory message.
-class StudyStatusCard extends StatelessWidget {
+/// Gradient home card with the study title, its deployment status as a bubble,
+/// a short description (max 2 lines), and a link to the full about page.
+class StudyAboutCard extends StatelessWidget {
   final HomePageViewModel model;
-  const StudyStatusCard({required this.model, super.key});
+  const StudyAboutCard({required this.model, super.key});
 
-  static const Map<StudyDeploymentStatusTypes, Color> _statusColors = {
-    StudyDeploymentStatusTypes.Invited: CACHET.DEPLOYMENT_INVITED,
-    StudyDeploymentStatusTypes.DeployingDevices: CACHET.DEPLOYMENT_DEPLOYING,
-    StudyDeploymentStatusTypes.Running: CACHET.DEPLOYMENT_RUNNING,
-    StudyDeploymentStatusTypes.Stopped: CACHET.DEPLOYMENT_STOPPED,
-  };
-
-  static const Map<StudyDeploymentStatusTypes, String> _statusLabels = {
-    StudyDeploymentStatusTypes.Invited: 'INVITED',
-    StudyDeploymentStatusTypes.DeployingDevices: 'DEPLOYING',
-    StudyDeploymentStatusTypes.Running: 'RUNNING',
-    StudyDeploymentStatusTypes.Stopped: 'STOPPED',
-  };
-
-  static const Map<StudyDeploymentStatusTypes, String> _statusMessages = {
-    StudyDeploymentStatusTypes.Invited: 'pages.about.status.invited.message',
-    StudyDeploymentStatusTypes.DeployingDevices: 'pages.about.status.deploying_devices.message',
-    StudyDeploymentStatusTypes.Running: 'pages.about.status.running.message',
-    StudyDeploymentStatusTypes.Stopped: 'pages.about.status.stopped.message',
+  static const Map<StudyDeploymentStatusTypes, (Color, String)> _status = {
+    StudyDeploymentStatusTypes.Invited: (Color(0xFFF59E0B), 'INVITED'),
+    StudyDeploymentStatusTypes.DeployingDevices: (Color(0xFFF59E0B), 'DEPLOYING'),
+    StudyDeploymentStatusTypes.Running: (Color(0xFF22C55E), 'RUNNING'),
+    StudyDeploymentStatusTypes.Stopped: (Color(0xFFF43F5E), 'STOPPED'),
   };
 
   @override
   Widget build(BuildContext context) {
-    final status = model.deploymentStatus;
-    if (status == null) return const SizedBox.shrink();
     final colors = Theme.of(context).extension<CarpColors>()!;
+    final primary = colors.primary!;
     final locale = RPLocalizations.of(context)!;
-    final accent = _statusColors[status] ?? colors.grey500!;
 
     return StudiesMaterial(
-      backgroundColor: colors.grey50!,
-      child: Padding(
+      child: Container(
+        width: double.infinity,
         padding: const EdgeInsets.all(16),
-        child: Row(
+        decoration: BoxDecoration(
+          gradient: LinearGradient(
+            begin: Alignment.topLeft,
+            end: Alignment.bottomRight,
+            colors: [Color.lerp(primary, Colors.white, 0.3)!, primary],
+          ),
+        ),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            Column(
-              children: [
-                CircleAvatar(radius: 12, backgroundColor: accent),
-                const SizedBox(height: 4),
-                Text(_statusLabels[status] ?? '', style: fs12fw600.copyWith(color: accent)),
-              ],
+            // The status arrives async after the card is first shown; keep the
+            // bubble slot occupied (invisible placeholder) so the card height
+            // doesn't jump when it lands.
+            Visibility(
+              visible: model.deploymentStatus != null,
+              maintainSize: true,
+              maintainAnimation: true,
+              maintainState: true,
+              child: Row(children: [_statusBubble(model.deploymentStatus ?? StudyDeploymentStatusTypes.Running)]),
             ),
-            const SizedBox(width: 16),
-            Expanded(
-              child: Text(
-                locale.translate(_statusMessages[status] ?? ''),
-                style: fs14fw600.copyWith(color: colors.grey900),
+            const SizedBox(height: 8),
+            Text(locale.translate(model.studyTitle), style: fs22fw700.copyWith(color: Colors.white)),
+            const SizedBox(height: 8),
+            Text(
+              locale.translate(model.studyDescription),
+              maxLines: 3,
+              overflow: TextOverflow.ellipsis,
+              style: fs14fw600.copyWith(color: Colors.white.withValues(alpha: 0.9)),
+            ),
+            const SizedBox(height: 8),
+            InkWell(
+              onTap: () => context.push(StudyDetailsPage.route),
+              child: Row(
+                mainAxisSize: MainAxisSize.min,
+                children: [
+                  Text(
+                    'About the study',
+                    style: fs14fw600.copyWith(
+                      color: Colors.white,
+                      decoration: TextDecoration.underline,
+                      decorationColor: Colors.white,
+                    ),
+                  ),
+                  const SizedBox(width: 6),
+                  const Icon(Icons.arrow_forward_ios, size: 14, color: Colors.white),
+                ],
               ),
             ),
           ],
         ),
+      ),
+    );
+  }
+
+  // Transparent pill with the status dot and label in white.
+  Widget _statusBubble(StudyDeploymentStatusTypes status) {
+    final (dot, label) = _status[status] ?? (const Color(0xFFF43F5E), '');
+    return Container(
+      padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 5),
+      decoration: BoxDecoration(
+        color: Colors.white.withValues(alpha: 0.15),
+        borderRadius: BorderRadius.circular(100),
+      ),
+      child: Row(
+        mainAxisSize: MainAxisSize.min,
+        children: [
+          Icon(Icons.circle, size: 8, color: dot),
+          const SizedBox(width: 6),
+          Text(label, style: fs12fw600.copyWith(color: Colors.white)),
+        ],
       ),
     );
   }
