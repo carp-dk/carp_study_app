@@ -29,21 +29,16 @@ class _ConnectionsStatusCardState extends State<ConnectionsStatusCard> {
     final total = model.totalSourceCount;
     final active = model.activeSourceCount;
 
-    final (accent, icon, title, badge) = switch (model.connectionState) {
-      HomeConnectionState.all => (_green, Icons.sync, 'Connected & sending data', 'LIVE'),
-      HomeConnectionState.partial => (_amber, Icons.sync_problem, 'Partially connected', 'ACTION'),
-      HomeConnectionState.none => (_rose, Icons.sync_disabled, 'No devices connected', 'SETUP'),
+    final (accent, icon, title) = switch (model.connectionState) {
+      HomeConnectionState.all => (_green, Icons.sync, 'Connected & sending data'),
+      HomeConnectionState.partial => (_amber, Icons.sync_problem, 'Partially connected'),
+      HomeConnectionState.none => (_rose, Icons.sync_disabled, 'No devices connected'),
     };
 
     final sources = switch (model.connectionState) {
       HomeConnectionState.all => 'All $total sources active',
-      HomeConnectionState.partial => '$active of $total sources active',
+      HomeConnectionState.partial => '$active sources active · ${total - active} inactive',
       HomeConnectionState.none => 'No sources active',
-    };
-    final hint = switch (model.connectionState) {
-      HomeConnectionState.all => 'tap to view',
-      HomeConnectionState.partial => 'tap to fix',
-      HomeConnectionState.none => 'tap to set up',
     };
 
     return StudiesMaterial(
@@ -58,6 +53,7 @@ class _ConnectionsStatusCardState extends State<ConnectionsStatusCard> {
             child: Padding(
               padding: const EdgeInsets.all(16),
               child: Row(
+                crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   Container(
                     padding: const EdgeInsets.all(12),
@@ -69,15 +65,9 @@ class _ConnectionsStatusCardState extends State<ConnectionsStatusCard> {
                     child: Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
-                        Row(
-                          children: [
-                            Flexible(child: Text(title, style: fs20fw700.copyWith(color: colors.grey900))),
-                            const SizedBox(width: 8),
-                            _badge(accent, badge),
-                          ],
-                        ),
+                        Text(title, style: fs18fw700.copyWith(color: colors.grey900)),
                         const SizedBox(height: 4),
-                        Text('$sources • $hint', style: fs14fw600.copyWith(color: colors.grey600)),
+                        Text(sources, style: fs14fw600.copyWith(color: colors.grey600)),
                       ],
                     ),
                   ),
@@ -138,21 +128,6 @@ class _ConnectionsStatusCardState extends State<ConnectionsStatusCard> {
           ),
         ),
       ],
-    );
-  }
-
-  Widget _badge(Color accent, String label) {
-    return Container(
-      padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 4),
-      decoration: BoxDecoration(color: accent.withValues(alpha: 0.12), borderRadius: BorderRadius.circular(100)),
-      child: Row(
-        mainAxisSize: MainAxisSize.min,
-        children: [
-          Icon(Icons.circle, size: 8, color: accent),
-          const SizedBox(width: 5),
-          Text(label, style: fs12fw600.copyWith(color: accent)),
-        ],
-      ),
     );
   }
 }

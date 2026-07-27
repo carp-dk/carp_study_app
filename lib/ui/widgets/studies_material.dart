@@ -16,7 +16,7 @@ class StudiesMaterial extends StatelessWidget {
     super.key,
     required this.child,
     this.elevation = 0,
-    this.margin = const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
+    this.margin = const EdgeInsets.only(bottom: 16, left: 16, right: 16),
     this.shape = const RoundedRectangleBorder(borderRadius: BorderRadius.all(Radius.circular(8))),
     this.clipBehavior,
     this.hasBorder = false,
@@ -28,24 +28,33 @@ class StudiesMaterial extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Container(
-      padding: const EdgeInsets.only(bottom: 16.0, left: 16.0, right: 16.0),
-      child: Material(
-        color: backgroundColor,
-        elevation: elevation,
-        shape: shape,
-        clipBehavior: clipBehavior ?? Clip.hardEdge,
-        child: Container(
-          decoration: hasBorder
-              ? BoxDecoration(
-                  border: Border(left: BorderSide(color: borderColor, width: 4.0)),
-                )
-              : hasBox
-              ? BoxDecoration(
-                  border: Border.all(color: CACHET.LIGHT_2, width: 1.0),
-                  borderRadius: BorderRadius.circular(16.0),
-                )
-              : null,
-          child: child,
+      padding: margin,
+      child: Container(
+        // Soft "modern" shadow instead of Material elevation.
+        decoration: BoxDecoration(
+          borderRadius: const BorderRadius.all(Radius.circular(8)),
+          boxShadow: [
+            BoxShadow(color: Colors.black.withValues(alpha: 0.06), blurRadius: 12, offset: const Offset(0, 4)),
+          ],
+        ),
+        child: Material(
+          color: backgroundColor,
+          elevation: elevation,
+          shape: shape,
+          clipBehavior: clipBehavior ?? Clip.hardEdge,
+          child: Container(
+            decoration: hasBorder
+                ? BoxDecoration(
+                    border: Border(left: BorderSide(color: borderColor, width: 4.0)),
+                  )
+                : hasBox
+                ? BoxDecoration(
+                    border: Border.all(color: CACHET.LIGHT_2, width: 1.0),
+                    borderRadius: BorderRadius.circular(16.0),
+                  )
+                : null,
+            child: child,
+          ),
         ),
       ),
     );

@@ -1,5 +1,10 @@
 part of carp_study_app;
 
+/// The "About Study" screen (design 2.0): study image, title, full
+/// description with a website link, the study roles, and the study purpose.
+///
+/// Pushed full-screen on the root navigator (outside the app shell).
+// ponytail: static labels hardcoded EN like the rest of design 2.0; i18n later.
 class StudyDetailsPage extends StatelessWidget {
   static const String route = '/study_details';
   final StudyPageViewModel model;
@@ -8,229 +13,124 @@ class StudyDetailsPage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     RPLocalizations locale = RPLocalizations.of(context)!;
+    final colors = Theme.of(context).extension<CarpColors>()!;
 
     return Scaffold(
-      backgroundColor: Theme.of(context).extension<CarpColors>()!.backgroundGray,
+      backgroundColor: colors.backgroundGray,
       body: SafeArea(
-        child: Container(
-          color: Theme.of(context).extension<CarpColors>()!.backgroundGray,
-          child: Column(
-            children: [
-              Padding(
-                padding: const EdgeInsets.symmetric(vertical: 8.0, horizontal: 18),
-                child: const CarpAppBar(hasProfileIcon: true),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Padding(
+              padding: const EdgeInsets.fromLTRB(8, 8, 16, 8),
+              child: TextButton.icon(
+                onPressed: () => context.canPop() ? context.pop() : context.go(HomePage.route),
+                icon: Icon(Icons.arrow_back_ios, size: 18, color: colors.primary),
+                label: Text(
+                  locale.translate('app_home.nav_bar_item.home'),
+                  style: fs16fw600.copyWith(color: colors.primary),
+                ),
               ),
-              Row(
+            ),
+            Flexible(
+              child: ListView(
+                padding: const EdgeInsets.only(top: 8, bottom: 24),
                 children: [
-                  IconButton(
-                    padding: const EdgeInsets.only(left: 26, right: 10, top: 16, bottom: 16),
-                    icon: Icon(Icons.arrow_back_ios, color: Theme.of(context).extension<CarpColors>()!.grey600),
-                    onPressed: () {
-                      if (context.canPop()) {
-                        context.pop();
-                      } else {
-                        context.go(CarpAppState.homeRoute);
-                      }
-                    },
-                  ),
-                  Padding(
-                    padding: const EdgeInsets.symmetric(vertical: 10.0),
-                    child: Text(
-                      locale.translate(model.title),
-                      style: fs20fw700.copyWith(color: Theme.of(context).extension<CarpColors>()!.primary),
+                  StudiesMaterial(
+                    backgroundColor: colors.grey50!,
+                    child: Padding(
+                      padding: const EdgeInsets.all(16),
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          ClipRRect(
+                            borderRadius: BorderRadius.circular(8),
+                            child: SizedBox(
+                              width: double.infinity,
+                              height: 180,
+                              child: FittedBox(fit: BoxFit.cover, clipBehavior: Clip.hardEdge, child: model.image),
+                            ),
+                          ),
+                          const SizedBox(height: 16),
+                          Text(locale.translate(model.title), style: fs18fw700.copyWith(color: colors.grey900)),
+                          const SizedBox(height: 8),
+                          Text(
+                            locale.translate(model.description),
+                            style: fs14fw600.copyWith(color: colors.grey900),
+                          ),
+                          const SizedBox(height: 12),
+                          InkWell(
+                            onTap: () async {
+                              try {
+                                await launchUrl(Uri.parse(locale.translate(model.studyDescriptionUrl)));
+                              } catch (error) {
+                                warning(
+                                  'Could not launch study description URL - ${locale.translate(model.studyDescriptionUrl)}',
+                                );
+                              }
+                            },
+                            child: Row(
+                              mainAxisSize: MainAxisSize.min,
+                              children: [
+                                Text(
+                                  'Go to study website',
+                                  style: fs14fw600.copyWith(
+                                    color: colors.primary,
+                                    decoration: TextDecoration.underline,
+                                    decorationColor: colors.primary,
+                                  ),
+                                ),
+                                const SizedBox(width: 6),
+                                Icon(Icons.open_in_new, size: 16, color: colors.primary),
+                              ],
+                            ),
+                          ),
+                        ],
+                      ),
                     ),
+                  ),
+                  StudiesMaterial(
+                    backgroundColor: colors.grey50!,
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.stretch,
+                      children: [
+                        _field(colors, locale.translate('widgets.study_card.responsible'), locale.translate(model.responsibleName)),
+                        Divider(height: 1, indent: 16, endIndent: 16, color: colors.grey200),
+                        _field(
+                          colors,
+                          locale.translate('widgets.study_card.participant_role'),
+                          locale.translate(model.participantRole),
+                        ),
+                        Divider(height: 1, indent: 16, endIndent: 16, color: colors.grey200),
+                        _field(colors, locale.translate('widgets.study_card.device_role'), locale.translate(model.deviceRole)),
+                      ],
+                    ),
+                  ),
+                  StudiesMaterial(
+                    backgroundColor: colors.grey50!,
+                    child: _field(colors, locale.translate('widgets.study_card.study_purpose'), locale.translate(model.purpose)),
                   ),
                 ],
               ),
-              Flexible(
-                child: ListView(
-                  padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 16),
-                  children: [
-                    Padding(
-                      padding: const EdgeInsets.symmetric(vertical: 16.0),
-                      child: LayoutBuilder(
-                        builder: (context, constraints) {
-                          final screenHeight = MediaQuery.of(context).size.height;
-                          final screenWidth = MediaQuery.of(context).size.height;
-                          return ConstrainedBox(
-                            constraints: BoxConstraints(maxWidth: screenHeight, maxHeight: screenWidth),
-                            child: FittedBox(fit: BoxFit.contain, child: model.image),
-                          );
-                        },
-                      ),
-                    ),
-                    _buildSectionCard(context, [
-                      _buildActionListTile(
-                        context: context,
-                        leading: Icon(Icons.mail, color: Theme.of(context).extension<CarpColors>()!.primary),
-                        trailing: const Icon(Icons.arrow_forward_ios, color: CACHET.GREY_6),
-                        title: locale.translate('pages.profile.contact'),
-                        onTap: () async {
-                          _sendEmailToContactResearcher(
-                            locale.translate(model.responsibleEmail),
-                            'Support for study: ${locale.translate(model.title)} - User: ${model.responsibleName}',
-                          );
-                        },
-                      ),
-                      _buildActionListTile(
-                        context: context,
-                        leading: Icon(Icons.policy, color: Theme.of(context).extension<CarpColors>()!.primary),
-                        trailing: const Icon(Icons.arrow_forward_ios, color: CACHET.GREY_6),
-                        title: locale.translate('pages.about.study.privacy'),
-                        onTap: () async {
-                          try {
-                            await launchUrl(Uri.parse(locale.translate(model.privacyPolicyUrl)));
-                          } catch (error) {
-                            warning(
-                              "Could not launch study description URL - ${locale.translate(model.privacyPolicyUrl)}",
-                            );
-                          }
-                        },
-                      ),
-                      _buildActionListTile(
-                        context: context,
-                        leading: Icon(Icons.public, color: Theme.of(context).extension<CarpColors>()!.primary),
-                        trailing: const Icon(Icons.arrow_forward_ios, color: CACHET.GREY_6),
-                        title: locale.translate('pages.about.study.website'),
-                        onTap: () async {
-                          try {
-                            await launchUrl(Uri.parse(locale.translate(model.studyDescriptionUrl)));
-                          } catch (error) {
-                            warning(
-                              "Could not launch study description URL - ${locale.translate(model.studyDescriptionUrl)}",
-                            );
-                          }
-                        },
-                      ),
-                    ]),
-                    Padding(
-                      padding: const EdgeInsets.only(top: 16.0),
-                      child: Column(
-                        mainAxisAlignment: MainAxisAlignment.start,
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          Text(
-                            locale.translate('widgets.study_card.responsible'),
-                            style: fs16fw700.copyWith(color: Theme.of(context).extension<CarpColors>()!.grey900),
-                          ),
-                          Padding(
-                            padding: const EdgeInsets.only(top: 4.0, bottom: 8),
-                            child: Text(
-                              locale.translate(model.responsibleName),
-                              style: fs12fw700.copyWith(color: Theme.of(context).extension<CarpColors>()!.grey700),
-                            ),
-                          ),
-                          Text(
-                            locale.translate('widgets.study_card.participant_role'),
-                            style: fs16fw700.copyWith(color: Theme.of(context).extension<CarpColors>()!.grey900),
-                          ),
-                          Padding(
-                            padding: const EdgeInsets.only(top: 4.0, bottom: 8),
-                            child: Text(
-                              locale.translate(model.participantRole),
-                              style: fs12fw700.copyWith(color: Theme.of(context).extension<CarpColors>()!.grey700),
-                            ),
-                          ),
-                          Text(
-                            locale.translate('widgets.study_card.device_role'),
-                            style: fs16fw700.copyWith(color: Theme.of(context).extension<CarpColors>()!.grey900),
-                          ),
-                          Padding(
-                            padding: const EdgeInsets.only(top: 4.0, bottom: 8),
-                            child: Text(
-                              locale.translate(model.deviceRole),
-                              style: fs12fw700.copyWith(color: Theme.of(context).extension<CarpColors>()!.grey700),
-                            ),
-                          ),
-                        ],
-                      ),
-                    ),
-                    Divider(color: Theme.of(context).extension<CarpColors>()!.grey300),
-                    Padding(
-                      padding: const EdgeInsets.only(top: 16.0),
-                      child: Column(
-                        mainAxisAlignment: MainAxisAlignment.start,
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          Text(
-                            locale.translate('widgets.study_card.study_description'),
-                            style: fs16fw700.copyWith(color: Theme.of(context).extension<CarpColors>()!.grey900),
-                          ),
-                          Padding(
-                            padding: const EdgeInsets.only(top: 4.0, bottom: 8),
-                            child: Text(
-                              locale.translate(model.description),
-                              style: fs12fw700.copyWith(color: Theme.of(context).extension<CarpColors>()!.grey700),
-                            ),
-                          ),
-                          Text(
-                            locale.translate('widgets.study_card.study_purpose'),
-                            style: fs16fw700.copyWith(color: Theme.of(context).extension<CarpColors>()!.grey900),
-                          ),
-                          Padding(
-                            padding: const EdgeInsets.only(top: 4.0, bottom: 8),
-                            child: Text(
-                              locale.translate(model.purpose),
-                              style: fs12fw700.copyWith(color: Theme.of(context).extension<CarpColors>()!.grey700),
-                            ),
-                          ),
-                        ],
-                      ),
-                    ),
-                  ],
-                ),
-              ),
-            ],
-          ),
+            ),
+          ],
         ),
       ),
     );
   }
 
-  Widget _buildSectionCard(BuildContext context, List<Widget> children) {
-    return Card(
-      margin: EdgeInsets.zero,
-      color: Theme.of(context).extension<CarpColors>()!.white,
-      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(8.0)),
-      child: Padding(
-        padding: const EdgeInsets.all(8.0),
-        child: Column(
-          children: ListTile.divideTiles(
-            context: context,
-            tiles: children,
-            color: Theme.of(context).extension<CarpColors>()!.grey300,
-          ).toList(),
-        ),
+  // Same field style as the profile page: grey label over a dark bold value.
+  Widget _field(CarpColors colors, String label, String value) {
+    return Padding(
+      padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 10),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Text(label, style: fs12fw600.copyWith(color: colors.grey600)),
+          const SizedBox(height: 2),
+          Text(value, style: fs14fw600.copyWith(color: colors.grey900)),
+        ],
       ),
     );
-  }
-
-  // Helper method to build a ListTile for actions with an icon
-  Widget _buildActionListTile({
-    required BuildContext context,
-    required Icon leading,
-    required String title,
-    Icon? trailing,
-    required VoidCallback onTap,
-  }) {
-    return ListTile(
-      leading: leading,
-      title: Text(title, style: fs16fw600.copyWith(color: Theme.of(context).extension<CarpColors>()!.grey900)),
-      trailing: trailing,
-      onTap: onTap,
-      contentPadding: EdgeInsets.symmetric(vertical: 4, horizontal: 16),
-    );
-  }
-
-  // Sends and email to the researcher with the name of the study + user id
-  void _sendEmailToContactResearcher(String email, String subject) async {
-    final url = Uri(
-      scheme: 'mailto',
-      path: email,
-      queryParameters: {'subject': subject},
-    ).toString().replaceAll("+", "%20");
-    try {
-      await launchUrl(Uri.parse(url));
-    } finally {}
   }
 }

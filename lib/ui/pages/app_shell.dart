@@ -61,14 +61,14 @@ class CarpAppShellState extends State<CarpAppShell> {
             activeIcon: const Icon(Icons.playlist_add_check),
           ),
           BottomNavigationBarItem(
-            icon: const Icon(Icons.leaderboard),
-            label: locale.translate('app_home.nav_bar_item.statistics'),
-            activeIcon: const Icon(Icons.leaderboard),
-          ),
-          BottomNavigationBarItem(
             icon: const Icon(Icons.devices_other),
             label: locale.translate('app_home.nav_bar_item.connections'),
             activeIcon: const Icon(Icons.devices_other),
+          ),
+          BottomNavigationBarItem(
+            icon: const Icon(Icons.leaderboard),
+            label: locale.translate('app_home.nav_bar_item.statistics'),
+            activeIcon: const Icon(Icons.leaderboard),
           ),
         ],
         currentIndex: _calculateSelectedIndex(context),
@@ -85,10 +85,10 @@ class CarpAppShellState extends State<CarpAppShell> {
     if (location.startsWith(TaskListPage.route)) {
       return 1;
     }
-    if (location.startsWith(DataVisualizationPage.route)) {
+    if (location.startsWith(DeviceListPage.route)) {
       return 2;
     }
-    if (location.startsWith(DeviceListPage.route)) {
+    if (location.startsWith(DataVisualizationPage.route)) {
       return 3;
     }
     return -1;
@@ -103,10 +103,10 @@ class CarpAppShellState extends State<CarpAppShell> {
         context.go(TaskListPage.route);
         break;
       case 2:
-        context.go(DataVisualizationPage.route);
+        context.go(DeviceListPage.route);
         break;
       case 3:
-        context.go(DeviceListPage.route);
+        context.go(DataVisualizationPage.route);
         break;
       case -1:
         context.go(CarpAppState.homeRoute);

@@ -247,7 +247,10 @@ class CarpAppState extends State<CarpStudyApp> {
       theme: carpTheme.copyWith(
         extensions: [carpTheme.extension<CarpColors>()!.copyWith(primary: studyAppColors?.primary)],
       ),
-      darkTheme: carpDarkTheme,
+      // Light only until the dark palette is finished; also keeps OS dark mode
+      // from affecting system-styled surfaces (e.g. system dialogs).
+      themeMode: ThemeMode.light,
+      // darkTheme: carpDarkTheme,
       debugShowCheckedModeBanner: true,
       routerConfig: _router,
     );

@@ -33,6 +33,8 @@ import 'package:open_settings_plus/open_settings_plus.dart';
 import 'package:open_settings_plus/core/open_settings_plus.dart';
 import 'package:appcheck/appcheck.dart';
 import 'package:package_info_plus/package_info_plus.dart';
+import 'package:path_provider/path_provider.dart';
+import 'package:shimmer/shimmer.dart';
 import 'package:app_version_update/app_version_update.dart';
 import 'package:qr_code_scanner_plus/qr_code_scanner_plus.dart' as qr;
 
@@ -170,7 +172,7 @@ void main() async {
   CarpDataManager.ensureInitialized();
 
   await bloc.initialize();
-
+  
   app = const CarpStudyApp();
   runApp(app);
 }
