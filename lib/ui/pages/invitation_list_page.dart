@@ -31,6 +31,10 @@ class _InvitationListPageState extends State<InvitationListPage> {
               child = const SliverToBoxAdapter(child: Center(child: CircularProgressIndicator()));
             } else {
               final invitations = widget.model.invitations;
+              logApp(
+                'INVITATIONS - rendering ${invitations.length} card(s): '
+                '${invitations.map((i) => '${i.invitation.name}/${i.studyDeploymentId}').toList()}',
+              );
               child = SliverFixedExtentList(
                 itemExtent: 150,
                 delegate: SliverChildBuilderDelegate((context, index) {

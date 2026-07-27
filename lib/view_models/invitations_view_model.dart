@@ -30,17 +30,17 @@ class InvitationsViewModel extends ViewModel {
   /// Load / refresh the list of invitations from CAWS. Always hits the
   /// backend - used for sign-in and pull-to-refresh.
   Future<void> loadInvitations() async {
-    logApp('InvitationsViewModel.loadInvitations() START');
+    logApp('INVITATIONS - InvitationsViewModel.loadInvitations() START');
     try {
       _invitations = await _auth.getInvitations();
       _error = null;
       logApp(
-        'InvitationsViewModel.loadInvitations() DONE - ${_invitations!.length} invitation(s): '
+        'INVITATIONS - InvitationsViewModel.loadInvitations() DONE - ${_invitations!.length} invitation(s): '
         '${_invitations!.map((i) => i.studyDeploymentId).toList()}',
       );
     } catch (error) {
       warning('$runtimeType - Could not load invitations - $error');
-      logApp('InvitationsViewModel.loadInvitations() FAILED - $error');
+      logApp('INVITATIONS - InvitationsViewModel.loadInvitations() FAILED - $error');
       _error = error;
     }
     notifyListeners();
