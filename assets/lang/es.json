@@ -1,4 +1,11 @@
 {
+    "pages.devices.type.health.instructions.data.title": "Este estudio recopila datos relacionados con la salud de tu dispositivo. Para participar, permite todos los permisos solicitados en la siguiente pantalla.",
+    "pages.devices.type.health.access_denied.title": "Acceso no concedido",
+    "pages.devices.type.health.access_denied.message": "No se concedió acceso. Para permitirlo, ve a: Ajustes → Aplicaciones → CARP Studies → Permisos → Salud, actividad física y bienestar → Permitir todo. Luego desliza hacia abajo en la pantalla de dispositivos para actualizar.",
+    "settings": "Ajustes",
+    "pages.devices.type.health.instructions.data.steps": "Recuento de pasos",
+    "pages.devices.type.health.instructions.data.heart_rate": "Frecuencia cardíaca",
+    "pages.devices.type.health.instructions.data.exercise": "Sesiones de ejercicio",
     "app_home.nav_bar_item.tasks": "Tareas",
     "app_home.nav_bar_item.statistics": "Estadísticas",
     "app_home.nav_bar_item.connections": "Conexiones",

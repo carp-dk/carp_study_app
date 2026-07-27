@@ -73,18 +73,32 @@ class DeviceListPageState extends State<DeviceListPage> {
             ),
             Expanded(
               flex: 4,
-              child: CustomScrollView(
-                slivers: [
-                  ..._smartphoneDeviceList(locale),
-                  if (_hardwareDevices.isNotEmpty) ..._hardwareDevicesList(locale),
-                  if (_onlineServices.isNotEmpty) ..._onlineServicesList(locale),
-                ],
+              child: RefreshIndicator(
+                onRefresh: _refreshStatuses,
+                child: CustomScrollView(
+                  physics: const AlwaysScrollableScrollPhysics(),
+                  slivers: [
+                    ..._smartphoneDeviceList(locale),
+                    if (_hardwareDevices.isNotEmpty) ..._hardwareDevicesList(locale),
+                    if (_onlineServices.isNotEmpty) ..._onlineServicesList(locale),
+                  ],
+                ),
               ),
             ),
           ],
         ),
       ),
     );
+  }
+
+  /// Re-check the current permission/connection state of all services (e.g.
+  /// after the user grants access in system settings). Status changes flow to
+  /// the cards via their [statusEvents] streams.
+  Future<void> _refreshStatuses() async {
+    for (final service in _onlineServices) {
+      await service.deviceManager.hasPermissions();
+    }
+    if (mounted) setState(() {});
   }
 
   /// The list of smartphones - which is a list with only one smartphone.
