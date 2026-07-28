@@ -162,7 +162,7 @@ void main() {
       // runtime and consent has not been given yet.
       expect(bloc.study.hasStudy, isTrue);
       expect(bloc.study.isDeployed, isFalse);
-      expect(await bloc.consent.hasBeenAccepted(bloc.study.study), isFalse);
+      expect(LocalSettings().participant?.hasInformedConsentBeenAccepted ?? false, isFalse);
 
       await tester.pumpWidget(const CarpStudyApp());
 
@@ -176,7 +176,7 @@ void main() {
       );
       await pumpUntil(tester, () => bloc.isConfigured, reason: 'study configuration to complete');
 
-      expect(await bloc.consent.hasBeenAccepted(bloc.study.study), isTrue);
+      expect(LocalSettings().participant?.hasInformedConsentBeenAccepted ?? false, isTrue);
       expect(bloc.study.isDeployed, isTrue);
       expect(bloc.study.deployment?.studyDeploymentId, status.studyDeploymentId);
 

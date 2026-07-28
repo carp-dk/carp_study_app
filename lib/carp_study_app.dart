@@ -33,11 +33,9 @@ class CarpAppState extends State<CarpStudyApp> {
     errorBuilder: (context, state) => const ErrorPage(),
     redirect: (context, state) async {
       final loc = state.matchedLocation;
-      logAppState('GoRouter.redirect() - evaluating at location: $loc');
 
       // 1) Not authenticated → login page.
       if (AppConfig.deploymentMode != DeploymentMode.local && !bloc.auth.isAuthenticated) {
-        logApp('GoRouter.redirect() - [1] not authenticated → ${LoginPage.route}');
         return LoginPage.route;
       }
 
@@ -45,17 +43,9 @@ class CarpAppState extends State<CarpStudyApp> {
       // details page). Anywhere else gets bounced to the list.
       if (!bloc.study.hasStudy) {
         if (loc == InvitationListPage.route || loc.startsWith('${InvitationDetailsPage.route}/')) {
-          logApp('GoRouter.redirect() - [2] no study, already on invitation flow → stay');
           return null;
         }
-        logApp('GoRouter.redirect() - [2] no study → ${InvitationListPage.route}');
         return InvitationListPage.route;
-      }
-
-      // 3) Study selected but consent known to be pending → consent page.
-      // (null means the consent status is still being checked - stay put.)
-      if (!bloc.isConfiguring && bloc.consent.isAccepted == false) {
-        return loc == InformedConsentPage.route ? null : InformedConsentPage.route;
       }
 
       // 4) Fully onboarded.
@@ -64,8 +54,11 @@ class CarpAppState extends State<CarpStudyApp> {
     routes: <RouteBase>[
       ShellRoute(
         navigatorKey: _shellNavigatorKey,
-        builder: (BuildContext context, GoRouterState state, Widget child) =>
-            CarpAppShell(model: bloc.appViewModel.homePageViewModel, child: child),
+        builder: (BuildContext context, GoRouterState state, Widget child) => CarpAppShell(
+          model: bloc.appViewModel.homePageViewModel,
+          consentModel: bloc.appViewModel.informedConsentViewModel,
+          child: child,
+        ),
         routes: [
           // Home is just a landing slot — the top-level redirect always moves
           // the user to the right place based on bloc state.
@@ -113,16 +106,18 @@ class CarpAppState extends State<CarpStudyApp> {
               transitionsBuilder: bottomNavigationBarAnimation,
             ),
           ),
-          GoRoute(
-            path: ProfilePage.route,
-            parentNavigatorKey: _shellNavigatorKey,
-            pageBuilder: (context, state) => CustomTransitionPage(
-              key: state.pageKey,
-              child: ProfilePage(bloc.appViewModel.profilePageViewModel),
-              transitionsBuilder: bottomNavigationBarAnimation,
-            ),
-          ),
         ],
+      ),
+      // Profile is not a bottom-nav tab - it slides in full-screen over the
+      // shell, so it lives on the root navigator.
+      GoRoute(
+        path: ProfilePage.route,
+        parentNavigatorKey: _rootNavigatorKey,
+        pageBuilder: (context, state) => CustomTransitionPage(
+          key: state.pageKey,
+          child: ProfilePage(bloc.appViewModel.profilePageViewModel),
+          transitionsBuilder: slideInFromRightAnimation,
+        ),
       ),
       // Consent escapes the shell (root navigator) so the bottom nav doesn't
       // bleed through while the user is completing informed consent.
@@ -284,4 +279,15 @@ Widget bottomNavigationBarAnimation(
     opacity: fade,
     child: ScaleTransition(scale: Tween(begin: 0.98, end: 1.0).animate(fade), child: child),
   );
+}
+
+/// Slide a full-screen page in from the right, as used for the profile page.
+Widget slideInFromRightAnimation(
+  BuildContext context,
+  Animation<double> animation,
+  Animation<double> secondaryAnimation,
+  Widget child,
+) {
+  final tween = Tween(begin: const Offset(1.0, 0.0), end: Offset.zero).chain(CurveTween(curve: Curves.easeInOut));
+  return SlideTransition(position: animation.drive(tween), child: child);
 }
