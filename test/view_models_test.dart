@@ -165,7 +165,7 @@ void main() {
 
       expect(model.isLoading, isFalse);
       expect(model.invitations, [invitation]);
-      expect(model.getInvitation('participant-1'), invitation);
+      expect(model.getInvitation('dep-1'), invitation);
       expect(notified, isTrue);
     });
 
@@ -179,14 +179,25 @@ void main() {
       expect(model.invitations, isEmpty);
     });
 
-    ActiveParticipationInvitation invitation(String participantId) =>
-        ActiveParticipationInvitation(Participation('dep-1', participantId, AssignedTo()), StudyInvitation('Study'));
+    ActiveParticipationInvitation invitation(String deploymentId) =>
+        ActiveParticipationInvitation(Participation(deploymentId, 'participant-1', AssignedTo()), StudyInvitation('Study'));
 
     test('landingRoute targets the single invitation detail when there is exactly one', () async {
-      when(auth.getInvitations()).thenAnswer((_) async => [invitation('participant-1')]);
+      when(auth.getInvitations()).thenAnswer((_) async => [invitation('dep-1')]);
       await model.loadInvitations();
 
-      expect(model.landingRoute, '${InvitationDetailsPage.route}/participant-1');
+      expect(model.landingRoute, '${InvitationDetailsPage.route}/dep-1');
+    });
+
+    test('getInvitation tells apart two deployments of one study', () async {
+      // Same participant id on both - only the deployment id is unique.
+      final first = invitation('dep-1');
+      final second = invitation('dep-2');
+      when(auth.getInvitations()).thenAnswer((_) async => [first, second]);
+      await model.loadInvitations();
+
+      expect(model.getInvitation('dep-1'), same(first));
+      expect(model.getInvitation('dep-2'), same(second));
     });
 
     test('landingRoute targets the list for zero or multiple invitations', () async {

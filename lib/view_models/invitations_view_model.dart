@@ -1,6 +1,11 @@
 part of carp_study_app;
 
-/// The view model for the [InvitationListPage] and [InvitationDetailsPage].
+/// View model for [InvitationListPage] and [InvitationDetailsPage].
+///
+/// State: the invitations fetched from CAWS, and whether that fetch is pending
+/// or failed.
+///
+/// Accepts an invitation as the app's active study, and signs the user out.
 class InvitationsViewModel extends ViewModel {
   InvitationsViewModel({AuthService? authService}) : _authService = authService;
 
@@ -24,23 +29,17 @@ class InvitationsViewModel extends ViewModel {
   /// The route to land on after authenticating: the single invitation's
   /// detail if there is exactly one, otherwise the list.
   String get landingRoute => invitations.length == 1
-      ? '${InvitationDetailsPage.route}/${invitations.first.participation.participantId}'
+      ? '${InvitationDetailsPage.route}/${invitations.first.studyDeploymentId}'
       : InvitationListPage.route;
 
   /// Load / refresh the list of invitations from CAWS. Always hits the
   /// backend - used for sign-in and pull-to-refresh.
   Future<void> loadInvitations() async {
-    logApp('INVITATIONS - InvitationsViewModel.loadInvitations() START');
     try {
       _invitations = await _auth.getInvitations();
       _error = null;
-      logApp(
-        'INVITATIONS - InvitationsViewModel.loadInvitations() DONE - ${_invitations!.length} invitation(s): '
-        '${_invitations!.map((i) => i.studyDeploymentId).toList()}',
-      );
     } catch (error) {
       warning('$runtimeType - Could not load invitations - $error');
-      logApp('INVITATIONS - InvitationsViewModel.loadInvitations() FAILED - $error');
       _error = error;
     }
     notifyListeners();
@@ -50,16 +49,19 @@ class InvitationsViewModel extends ViewModel {
   /// page to avoid re-fetching when sign-in just loaded them; pull-to-refresh
   /// calls [loadInvitations] directly to force a refresh.
   Future<void> ensureInvitationsLoaded() async {
-    if (isLoaded) return;
+    if (isLoaded) {
+      return;
+    }
     await loadInvitations();
   }
 
-  ActiveParticipationInvitation getInvitation(String invitationId) =>
-      invitations.firstWhere((invitation) => invitation.participation.participantId == invitationId);
+  /// The invitation identified by its study deployment id - the only id that
+  /// is unique per invitation. Returns null if not found.
+  ActiveParticipationInvitation? getInvitation(String deploymentId) =>
+      invitations.where((invitation) => invitation.studyDeploymentId == deploymentId).firstOrNull;
 
   /// Accept [invitation] and make it the active study in the app.
   void accept(ActiveParticipationInvitation invitation) {
-    logApp('InvitationsViewModel.accept() - deploymentId=${invitation.studyDeploymentId}');
     bloc.setStudyInvitation(invitation);
   }
 

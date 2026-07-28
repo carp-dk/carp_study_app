@@ -31,10 +31,6 @@ class _InvitationListPageState extends State<InvitationListPage> {
               child = const SliverToBoxAdapter(child: Center(child: CircularProgressIndicator()));
             } else {
               final invitations = widget.model.invitations;
-              logApp(
-                'INVITATIONS - rendering ${invitations.length} card(s): '
-                '${invitations.map((i) => '${i.invitation.name}/${i.studyDeploymentId}').toList()}',
-              );
               child = SliverFixedExtentList(
                 itemExtent: 150,
                 delegate: SliverChildBuilderDelegate((context, index) {
@@ -118,7 +114,7 @@ class InvitationMaterial extends StatelessWidget {
       shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12.0)),
       child: InkWell(
         onTap: () {
-          context.push('${InvitationDetailsPage.route}/${invitation.participation.participantId}');
+          context.push('${InvitationDetailsPage.route}/${invitation.studyDeploymentId}');
         },
         child: Padding(
           padding: const EdgeInsets.all(16.0),

@@ -193,7 +193,10 @@ class HourlyMeasure {
   String toString() => '$hour:$minute';
 }
 
-/// The view model for the entire app.
+/// The root view model, owning one instance of every page view model.
+///
+/// State: none of its own - it holds the others and forwards [init], [clear],
+/// and [dispose] to them, so the pages always read the same instances.
 class AppViewModel extends ViewModel {
   final HomePageViewModel _homePageViewModel = HomePageViewModel();
   final LoginViewModel _loginViewModel = LoginViewModel();
@@ -243,7 +246,6 @@ class AppViewModel extends ViewModel {
     _devicesPageViewModel.clear();
 
     _profilePageViewModel.clear();
-    _invitationsListViewModel.clear();
     _informedConsentViewModel.clear();
 
     super.clear();

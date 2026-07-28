@@ -10,7 +10,10 @@ class InvitationDetailsPage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     RPLocalizations locale = RPLocalizations.of(context)!;
-    var invitation = model.getInvitation(invitationId);
+    final invitation = model.getInvitation(invitationId);
+    if (invitation == null) {
+      return Scaffold(backgroundColor: Theme.of(context).extension<CarpColors>()!.backgroundGray);
+    }
 
     return Scaffold(
       backgroundColor: Theme.of(context).extension<CarpColors>()!.backgroundGray,
@@ -134,6 +137,9 @@ class InvitationDetailsPage extends StatelessWidget {
                 height: 56,
                 decoration: BoxDecoration(color: const Color(0xff006398), borderRadius: BorderRadius.circular(100)),
                 child: TextButton(
+                  // Consent is gated by the app shell, which this navigation
+                  // mounts - declining there leaves the study and the router
+                  // brings the user back to the invitation list.
                   onPressed: () {
                     model.accept(invitation);
                     context.go(HomePage.route);
