@@ -22,17 +22,15 @@ class CarpAppShellState extends State<CarpAppShell> {
   void initState() {
     super.initState();
     widget.model.addListener(_onModelChanged);
-    // Deferred one frame because pushing a route during initState/build throws,
-    // and because reading Localizations is illegal in initState.
     WidgetsBinding.instance.addPostFrameCallback((_) {
-      if (mounted) unawaited(_gateInformedConsent());
+      if (mounted) _isInformedConsentAccepted();
     });
   }
 
   /// Show the informed consent if the study still needs it, then let the study
   /// configure itself. Backing out of consent leaves the study, which sends the
   /// router back to the invitation list.
-  Future<void> _gateInformedConsent() async {
+  Future<void> _isInformedConsentAccepted() async {
     try {
       final status = await widget.consentModel.hasBeenAccepted();
       if (!mounted) return;
@@ -45,14 +43,9 @@ class CarpAppShellState extends State<CarpAppShell> {
           return;
         }
       }
-      // Deploying the study and starting sensing takes seconds, and the home
-      // page has a skeleton for that - so don't hold the user on a blank frame.
+      // Deploying the study and starting sensing
       unawaited(bloc.tryConfigureStudy());
     } catch (error) {
-      // Nothing here may escape: this runs unawaited from a frame callback, so
-      // a throw would surface as an unhandled async error and nothing else.
-      // ponytail: no retry affordance - the home page stays a skeleton until
-      // the app is reopened. Add one if offline starts turn out to be common.
       warning('$runtimeType - could not resolve informed consent - $error');
     }
   }
