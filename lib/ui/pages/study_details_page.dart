@@ -54,10 +54,7 @@ class StudyDetailsPage extends StatelessWidget {
                           const SizedBox(height: 16),
                           Text(locale.translate(model.title), style: fs18fw700.copyWith(color: colors.grey900)),
                           const SizedBox(height: 8),
-                          Text(
-                            locale.translate(model.description),
-                            style: fs14fw600.copyWith(color: colors.grey900),
-                          ),
+                          Text(locale.translate(model.description), style: fs14fw600.copyWith(color: colors.grey900)),
                           const SizedBox(height: 12),
                           InkWell(
                             onTap: () async {
@@ -94,7 +91,11 @@ class StudyDetailsPage extends StatelessWidget {
                     child: Column(
                       crossAxisAlignment: CrossAxisAlignment.stretch,
                       children: [
-                        _field(colors, locale.translate('widgets.study_card.responsible'), locale.translate(model.responsibleName)),
+                        _field(
+                          colors,
+                          locale.translate('widgets.study_card.responsible'),
+                          locale.translate(model.responsibleName),
+                        ),
                         Divider(height: 1, indent: 16, endIndent: 16, color: colors.grey200),
                         _field(
                           colors,
@@ -102,13 +103,21 @@ class StudyDetailsPage extends StatelessWidget {
                           locale.translate(model.participantRole),
                         ),
                         Divider(height: 1, indent: 16, endIndent: 16, color: colors.grey200),
-                        _field(colors, locale.translate('widgets.study_card.device_role'), locale.translate(model.deviceRole)),
+                        _field(
+                          colors,
+                          locale.translate('widgets.study_card.device_role'),
+                          locale.translate(model.deviceRole),
+                        ),
                       ],
                     ),
                   ),
                   StudiesMaterial(
                     backgroundColor: colors.grey50!,
-                    child: _field(colors, locale.translate('widgets.study_card.study_purpose'), locale.translate(model.purpose)),
+                    child: _field(
+                      colors,
+                      locale.translate('widgets.study_card.study_purpose'),
+                      locale.translate(model.purpose),
+                    ),
                   ),
                 ],
               ),

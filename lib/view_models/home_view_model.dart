@@ -50,8 +50,7 @@ class HomePageViewModel extends ViewModel {
   String get studyDescription => _study.deployment?.studyDescription?.description ?? '';
 
   // The distinct calendar days on which the user completed at least one task.
-  Set<String> get _activeDays => AppTaskController()
-      .userTaskQueue
+  Set<String> get _activeDays => AppTaskController().userTaskQueue
       .where((task) => task.state == UserTaskState.done && task.doneTime != null)
       .map((task) => _dayKey(task.doneTime!.toLocal()))
       .toSet();
@@ -76,8 +75,9 @@ class HomePageViewModel extends ViewModel {
   int get taskPending => AppTaskController().userTaskQueue.where((task) => task.availableForUser).length;
 
   /// The deployment status of this study, or null if not deployed yet.
-  StudyDeploymentStatusTypes? get deploymentStatus =>
-      _study.cachedDeploymentStatus == null ? null : _study.cachedDeploymentStatus!.status ?? StudyDeploymentStatusTypes.Invited;
+  StudyDeploymentStatusTypes? get deploymentStatus => _study.cachedDeploymentStatus == null
+      ? null
+      : _study.cachedDeploymentStatus!.status ?? StudyDeploymentStatusTypes.Invited;
 
   /// Should the user be prompted to install Health Connect?
   /// One-shot - the shell calls [healthConnectPromptShown] once shown.

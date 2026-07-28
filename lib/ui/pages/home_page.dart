@@ -184,7 +184,9 @@ class HomePage extends StatelessWidget {
             Row(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                Expanded(child: Text(label, style: fs14fw600.copyWith(color: colors.grey600))),
+                Expanded(
+                  child: Text(label, style: fs14fw600.copyWith(color: colors.grey600)),
+                ),
                 _iconBadge(icon, iconColor),
               ],
             ),
@@ -198,7 +200,11 @@ class HomePage extends StatelessWidget {
               onTap: onLink,
               child: Text(
                 linkLabel,
-                style: fs14fw600.copyWith(color: colors.primary, decoration: TextDecoration.underline, decorationColor: colors.primary),
+                style: fs14fw600.copyWith(
+                  color: colors.primary,
+                  decoration: TextDecoration.underline,
+                  decorationColor: colors.primary,
+                ),
               ),
             ),
           ],
@@ -226,7 +232,12 @@ class HomePage extends StatelessWidget {
               Row(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  Expanded(child: Text(locale.translate(message.title ?? ''), style: fs18fw700.copyWith(color: colors.grey900))),
+                  Expanded(
+                    child: Text(
+                      locale.translate(message.title ?? ''),
+                      style: fs18fw700.copyWith(color: colors.grey900),
+                    ),
+                  ),
                   _iconBadge(message.type.icon, colors.primary!),
                 ],
               ),
@@ -236,7 +247,12 @@ class HomePage extends StatelessWidget {
               ],
               if (body.isNotEmpty) ...[
                 const SizedBox(height: 8),
-                Text(locale.translate(body), maxLines: 3, overflow: TextOverflow.ellipsis, style: fs16fw400.copyWith(color: colors.grey900)),
+                Text(
+                  locale.translate(body),
+                  maxLines: 3,
+                  overflow: TextOverflow.ellipsis,
+                  style: fs16fw400.copyWith(color: colors.grey900),
+                ),
               ],
               const SizedBox(height: 12),
               Row(
@@ -282,10 +298,7 @@ class AppUpdateCard extends StatelessWidget {
         child: Row(
           children: [
             Expanded(
-              child: Text(
-                locale.translate('pages.about.app_update'),
-                style: fs14fw600.copyWith(color: colors.grey900),
-              ),
+              child: Text(locale.translate('pages.about.app_update'), style: fs14fw600.copyWith(color: colors.grey900)),
             ),
             const SizedBox(width: 8),
             FilledButton(
@@ -386,10 +399,7 @@ class StudyAboutCard extends StatelessWidget {
     final (dot, label) = _status[status] ?? (const Color(0xFFF43F5E), '');
     return Container(
       padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 5),
-      decoration: BoxDecoration(
-        color: Colors.white.withValues(alpha: 0.15),
-        borderRadius: BorderRadius.circular(100),
-      ),
+      decoration: BoxDecoration(color: Colors.white.withValues(alpha: 0.15), borderRadius: BorderRadius.circular(100)),
       child: Row(
         mainAxisSize: MainAxisSize.min,
         children: [

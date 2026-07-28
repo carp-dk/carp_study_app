@@ -53,7 +53,12 @@ class ProfilePageState extends State<ProfilePage> {
                 children: [
                   _sectionCard(colors, [
                     _fieldTile(colors, locale.translate('pages.profile.username'), widget.model.username),
-                    _fieldTile(colors, locale.translate('pages.profile.account_id'), widget.model.userId, copyable: true),
+                    _fieldTile(
+                      colors,
+                      locale.translate('pages.profile.account_id'),
+                      widget.model.userId,
+                      copyable: true,
+                    ),
                     _fieldTile(
                       colors,
                       locale.translate('pages.profile.full_name'),
@@ -64,12 +69,19 @@ class ProfilePageState extends State<ProfilePage> {
                     _fieldTile(
                       colors,
                       locale.translate('pages.profile.email'),
-                      widget.model.isAnonymous ? locale.translate('pages.about.anonymous.anonymous') : widget.model.email,
+                      widget.model.isAnonymous
+                          ? locale.translate('pages.about.anonymous.anonymous')
+                          : widget.model.email,
                     ),
                   ]),
                   _sectionHeader(colors, 'Study'),
                   _sectionCard(colors, [
-                    _fieldTile(colors, locale.translate('pages.profile.study_id'), widget.model.studyId, copyable: true),
+                    _fieldTile(
+                      colors,
+                      locale.translate('pages.profile.study_id'),
+                      widget.model.studyId,
+                      copyable: true,
+                    ),
                     _fieldTile(
                       colors,
                       locale.translate('pages.profile.study_deployment_id'),
@@ -88,7 +100,11 @@ class ProfilePageState extends State<ProfilePage> {
                       widget.model.participantId,
                       copyable: true,
                     ),
-                    _fieldTile(colors, locale.translate('pages.profile.participant_role'), widget.model.participantRole),
+                    _fieldTile(
+                      colors,
+                      locale.translate('pages.profile.participant_role'),
+                      widget.model.participantRole,
+                    ),
                     _fieldTile(colors, locale.translate('pages.profile.device_role'), widget.model.deviceRole),
                   ]),
                   _sectionHeader(colors, 'App'),
@@ -250,7 +266,9 @@ class ProfilePageState extends State<ProfilePage> {
             children: [
               Icon(icon, size: 22, color: iconColor),
               const SizedBox(width: 12),
-              Expanded(child: Text(title, style: fs16fw600.copyWith(color: colors.grey900))),
+              Expanded(
+                child: Text(title, style: fs16fw600.copyWith(color: colors.grey900)),
+              ),
               if (hasChevron) Icon(Icons.arrow_forward_ios, size: 16, color: colors.grey400),
             ],
           ),
@@ -271,7 +289,7 @@ class ProfilePageState extends State<ProfilePage> {
 
   /// Fetch the signed consent and hand it to the OS share sheet, so the user
   /// can save or send it. Shows a snackbar when there is nothing to download.
-  Future<void> _downloadInformedConsent() async {  }
+  Future<void> _downloadInformedConsent() async {}
 
   /// Sends and email to the researcher with the name of the study + user id
   void _sendEmailToContactResearcher(String email, String subject) async {

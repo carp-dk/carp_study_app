@@ -46,7 +46,9 @@ class AuthService {
   Future<List<ActiveParticipationInvitation>> getInvitations() async {
     final all = await _backend.getInvitations();
     _invitations =
-        all.where((invitation) => invitation.assignedDevices?.any((device) => device.device is! Smartphone) != true).toList()
+        all
+            .where((invitation) => invitation.assignedDevices?.any((device) => device.device is! Smartphone) != true)
+            .toList()
           ..sort((a, b) {
             final byName = a.invitation.name.compareTo(b.invitation.name);
             return byName != 0 ? byName : a.studyDeploymentId.compareTo(b.studyDeploymentId);

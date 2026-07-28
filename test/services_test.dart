@@ -230,8 +230,10 @@ void main() {
     });
 
     test('getInvitations sorts by study name, then deployment id', () async {
-      ActiveParticipationInvitation invitation(String name, String deploymentId) =>
-          ActiveParticipationInvitation(Participation(deploymentId, 'participant-1', AssignedTo()), StudyInvitation(name));
+      ActiveParticipationInvitation invitation(String name, String deploymentId) => ActiveParticipationInvitation(
+        Participation(deploymentId, 'participant-1', AssignedTo()),
+        StudyInvitation(name),
+      );
 
       // CAWS returns these in no particular order; two deployments of one study
       // must still come back in a stable order on every refresh.

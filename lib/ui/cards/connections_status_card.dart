@@ -74,10 +74,7 @@ class _ConnectionsStatusCardState extends State<ConnectionsStatusCard> {
                   Container(
                     decoration: BoxDecoration(color: colors.grey100, shape: BoxShape.circle),
                     padding: const EdgeInsets.all(4),
-                    child: Icon(
-                      _expanded ? Icons.keyboard_arrow_up : Icons.chevron_right,
-                      color: colors.grey600,
-                    ),
+                    child: Icon(_expanded ? Icons.keyboard_arrow_up : Icons.chevron_right, color: colors.grey600),
                   ),
                 ],
               ),
@@ -105,7 +102,9 @@ class _ConnectionsStatusCardState extends State<ConnectionsStatusCard> {
               children: [
                 Icon(Icons.circle, size: 10, color: model.isSourceActive(d) ? _green : colors.grey400),
                 const SizedBox(width: 8),
-                Expanded(child: Text(locale.translate(d.typeName), style: fs16fw400.copyWith(color: colors.grey900))),
+                Expanded(
+                  child: Text(locale.translate(d.typeName), style: fs16fw400.copyWith(color: colors.grey900)),
+                ),
                 Text(
                   model.isSourceActive(d) ? 'ON' : 'OFF',
                   style: fs14fw600.copyWith(color: model.isSourceActive(d) ? _green : colors.grey500),

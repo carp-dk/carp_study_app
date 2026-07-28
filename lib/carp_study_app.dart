@@ -83,11 +83,7 @@ class CarpAppState extends State<CarpStudyApp> {
           ),
           // HomePage is the new study landing page; keep /study as a redirect
           // alias so any legacy navigation lands on the Home tab.
-          GoRoute(
-            path: StudyPage.route,
-            parentNavigatorKey: _shellNavigatorKey,
-            redirect: (_, _) => HomePage.route,
-          ),
+          GoRoute(path: StudyPage.route, parentNavigatorKey: _shellNavigatorKey, redirect: (_, _) => HomePage.route),
           GoRoute(
             path: DataVisualizationPage.route,
             parentNavigatorKey: _shellNavigatorKey,

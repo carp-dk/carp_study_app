@@ -173,7 +173,7 @@ void main() async {
   CarpDataManager.ensureInitialized();
 
   await bloc.initialize();
-  
+
   app = const CarpStudyApp();
   runApp(app);
 }

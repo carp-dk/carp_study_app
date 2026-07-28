@@ -61,7 +61,7 @@ class MessageService {
   }
 
   /// Notify the user about messages that were not in the previous [refresh].
-Future<void> _notifyAboutNewMessages() async {
+  Future<void> _notifyAboutNewMessages() async {
     final known = _knownIds;
     _knownIds = _messages.map((message) => message.id).toSet();
     if (known == null) return;

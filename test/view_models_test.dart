@@ -179,8 +179,10 @@ void main() {
       expect(model.invitations, isEmpty);
     });
 
-    ActiveParticipationInvitation invitation(String deploymentId) =>
-        ActiveParticipationInvitation(Participation(deploymentId, 'participant-1', AssignedTo()), StudyInvitation('Study'));
+    ActiveParticipationInvitation invitation(String deploymentId) => ActiveParticipationInvitation(
+      Participation(deploymentId, 'participant-1', AssignedTo()),
+      StudyInvitation('Study'),
+    );
 
     test('landingRoute targets the single invitation detail when there is exactly one', () async {
       when(auth.getInvitations()).thenAnswer((_) async => [invitation('dep-1')]);
