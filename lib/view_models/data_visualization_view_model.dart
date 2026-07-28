@@ -1,5 +1,11 @@
 part of carp_study_app;
 
+/// View model for [DataVisualizationPage].
+///
+/// State: which measures the deployment collects, so only the cards backed by
+/// real data are shown.
+///
+/// Computed once on [init] from the deployment - the cards own their own data.
 class DataVisualizationPageViewModel extends ViewModel {
   DataVisualizationPageViewModel({StudyService? studyService}) : _studyService = studyService;
 

@@ -3,12 +3,14 @@ part of carp_study_app;
 /// The 3-state connection summary shown on the home page.
 enum HomeConnectionState { all, partial, none }
 
-/// The view model for the [HomePage].
+/// View model for [HomePage] and [CarpAppShell].
 ///
-/// Owns the home page's service-backed, reactive data: the connection summary
-/// (deployment devices minus the phone), whether an app update is available, and
-/// the one-shot Health Connect install prompt. The UI reads these and rebuilds
-/// via [ListenableBuilder]; it never touches the services or streams directly.
+/// State: whether the study is loaded, its title and status, connected devices,
+/// task and active-day counts, announcements, and the app update / Health
+/// Connect prompts.
+///
+/// Keeps that data fresh from the services and streams so the pages only read
+/// and rebuild.
 class HomePageViewModel extends ViewModel {
   HomePageViewModel({SystemInfoService? systemInfoService, StudyService? studyService, MessageService? messageService})
     : _systemInfoService = systemInfoService,

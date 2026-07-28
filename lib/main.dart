@@ -60,13 +60,15 @@ import 'package:carp_health_package/health_package.dart';
 import 'package:carp_movesense_package/carp_movesense_package.dart';
 import 'package:carp_themes_package/carp_themes_package.dart';
 
-part 'blocs/app_bloc.dart';
-part 'blocs/app_config.dart';
-part 'blocs/app_log.dart';
-part 'blocs/util.dart';
-part 'blocs/sensing.dart';
+part 'core/app_bloc.dart';
+part 'core/sensing.dart';
+part 'core/carp_backend.dart';
+part 'core/resource_manager_factory.dart';
 
-part 'services/resource_manager_factory.dart';
+part 'helpers/app_config.dart';
+part 'helpers/app_log.dart';
+part 'helpers/util.dart';
+
 part 'services/system_info_service.dart';
 part 'services/auth_service.dart';
 part 'services/study_service.dart';
@@ -74,23 +76,22 @@ part 'services/message_service.dart';
 part 'services/consent_service.dart';
 
 part 'data/local_settings.dart';
-part 'data/carp_backend.dart';
 part 'data/localization_loader.dart';
 part 'data/local_resource_manager.dart';
 part 'data/participant.dart';
 part 'data/local_participation_service.dart';
 
 part 'view_models/view_model.dart';
-part 'view_models/home_page_model.dart';
-part 'view_models/login_page_model.dart';
-part 'view_models/tasklist_page_model.dart';
-part 'view_models/study_page_model.dart';
-part 'view_models/profile_page_model.dart';
-part 'view_models/device_view_models.dart';
-part 'view_models/data_visualization_page_model.dart';
-part 'view_models/informed_consent_page_model.dart';
+part 'view_models/home_view_model.dart';
+part 'view_models/login_view_model.dart';
+part 'view_models/task_list_view_model.dart';
+part 'view_models/study_view_model.dart';
+part 'view_models/profile_view_model.dart';
+part 'view_models/device_view_model.dart';
+part 'view_models/data_visualization_view_model.dart';
+part 'view_models/informed_consent_view_model.dart';
 part 'view_models/invitations_view_model.dart';
-part 'view_models/participant_data_page_model.dart';
+part 'view_models/participant_data_view_model.dart';
 part 'view_models/cards/activity_data_model.dart';
 part 'view_models/cards/mobility_data_model.dart';
 part 'view_models/cards/steps_data_model.dart';
@@ -102,7 +103,7 @@ part 'view_models/user_tasks.dart';
 
 part 'carp_study_app.dart';
 part 'ui/pages/informed_consent_page.dart';
-part 'ui/pages/app_shell.dart';
+part 'ui/pages/carp_app_shell.dart';
 part 'ui/pages/home_page.dart';
 part 'ui/pages/home_page.install_health_connect_dialog.dart';
 part 'ui/carp_study_style.dart';

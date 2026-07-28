@@ -69,11 +69,9 @@ class StudyService {
   /// case it is safe to call this method again (e.g., once back online).
   Future<void> configure() async {
     if (study == null) throw StateError('No study set - cannot configure a study deployment.');
-    logApp('StudyService.configure() - deploymentId=${study!.studyDeploymentId}, deviceRole=${study!.deviceRoleName}');
 
     final status = await addStudy(study!);
 
-    logApp('StudyService.configure() - addStudy returned status=$status, isDeployed=$isDeployed');
     if (!isDeployed) throw StateError('Study deployment did not succeed - status: $status.');
   }
 

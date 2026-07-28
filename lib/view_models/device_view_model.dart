@@ -1,6 +1,11 @@
 part of carp_study_app;
 
-/// The view model for the [DeviceListPage].
+/// View model for [DeviceListPage].
+///
+/// State: the devices and online services of the deployment, as
+/// [DeviceViewModel]s.
+///
+/// Connecting and disconnecting is owned by each [DeviceViewModel].
 class DeviceListPageViewModel extends ViewModel {
   DeviceListPageViewModel({StudyService? studyService}) : _studyService = studyService;
 
@@ -27,10 +32,12 @@ class DeviceListPageViewModel extends ViewModel {
       onlineServices.where((device) => device.type == HealthService.DEVICE_TYPE).firstOrNull;
 }
 
-/// The view model for each device - [DeviceManager].
+/// View model for one device row on [DeviceListPage].
 ///
-/// Note that the [deviceManager] can represent both a hardware device and
-/// an online service.
+/// State: the name, icon, and live connection status of its [DeviceManager],
+/// which can be either a hardware device or an online service.
+///
+/// Connects and disconnects that device.
 class DeviceViewModel extends ViewModel {
   DeviceManager deviceManager;
   DeviceViewModel(this.deviceManager) : super();
