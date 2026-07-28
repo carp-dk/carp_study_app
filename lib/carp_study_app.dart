@@ -85,11 +85,11 @@ class CarpAppState extends State<CarpStudyApp> {
           // alias so any legacy navigation lands on the Home tab.
           GoRoute(path: StudyPage.route, parentNavigatorKey: _shellNavigatorKey, redirect: (_, _) => HomePage.route),
           GoRoute(
-            path: DataVisualizationPage.route,
+            path: StatisticsPage.route,
             parentNavigatorKey: _shellNavigatorKey,
             pageBuilder: (context, state) => CustomTransitionPage(
               key: state.pageKey,
-              child: DataVisualizationPage(bloc.appViewModel.dataVisualizationPageViewModel),
+              child: StatisticsPage(bloc.appViewModel.statisticsViewModel),
               transitionsBuilder: bottomNavigationBarAnimation,
             ),
           ),

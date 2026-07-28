@@ -1,13 +1,14 @@
 part of carp_study_app;
 
-/// View model for [DataVisualizationPage].
+/// View model for [StatisticsPage].
 ///
 /// State: which measures the deployment collects, so only the cards backed by
-/// real data are shown.
+/// real data are shown, plus one view model per card.
 ///
-/// Computed once on [init] from the deployment - the cards own their own data.
-class DataVisualizationPageViewModel extends ViewModel {
-  DataVisualizationPageViewModel({StudyService? studyService}) : _studyService = studyService;
+/// Turning raw CAMS measurements into what the charts draw happens here, in
+/// the card view models below - the page only lays the results out.
+class StatisticsViewModel extends ViewModel {
+  StatisticsViewModel({StudyService? studyService}) : _studyService = studyService;
 
   final StudyService? _studyService;
   StudyService get _study => _studyService ?? bloc.study;

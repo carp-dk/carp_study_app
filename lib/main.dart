@@ -88,7 +88,7 @@ part 'view_models/task_list_view_model.dart';
 part 'view_models/study_view_model.dart';
 part 'view_models/profile_view_model.dart';
 part 'view_models/device_view_model.dart';
-part 'view_models/data_visualization_view_model.dart';
+part 'view_models/statistics_view_model.dart';
 part 'view_models/informed_consent_view_model.dart';
 part 'view_models/invitations_view_model.dart';
 part 'view_models/participant_data_view_model.dart';
@@ -99,6 +99,7 @@ part 'view_models/cards/heart_rate_data_model.dart';
 part 'view_models/cards/measurements_data_model.dart';
 part 'view_models/cards/task_data_model.dart';
 part 'view_models/cards/study_progress_data_model.dart';
+part 'view_models/cards/demo_chart_data.dart';
 part 'view_models/user_tasks.dart';
 
 part 'carp_study_app.dart';
@@ -109,7 +110,7 @@ part 'ui/pages/home_page.install_health_connect_dialog.dart';
 part 'ui/carp_study_style.dart';
 part 'ui/colors.dart';
 part 'ui/helpers.dart';
-part 'ui/pages/data_visualization_page.dart';
+part 'ui/pages/statistics_page.dart';
 part 'ui/pages/study_page.dart';
 part 'ui/pages/task_list_page.dart';
 part 'ui/pages/profile_page.dart';
@@ -157,6 +158,7 @@ part 'ui/cards/mobility_card.dart';
 part 'ui/cards/steps_card.dart';
 part 'ui/cards/study_progress_card.dart';
 part 'ui/cards/survey_card.dart';
+part 'ui/cards/task_completion_card.dart';
 
 part 'main.g.dart';
 
