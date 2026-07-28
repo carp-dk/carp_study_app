@@ -1,5 +1,6 @@
 import 'package:carp_backend/carp_backend.dart';
 import 'package:carp_audio_package/media.dart';
+import 'package:carp_context_package/carp_context_package.dart';
 import 'package:cognition_package/cognition_package.dart';
 import 'package:fake_async/fake_async.dart';
 import 'package:research_package/research_package.dart';
@@ -293,13 +294,85 @@ void main() {
     });
   });
 
-  group('DataVisualizationPageViewModel', () {
+  group('DemoChartData', () {
+    // The demo measurements exist to prove the aggregation the live streams
+    // use: they are real CAMS data types, folded by the very same code.
+    setUp(() => AppConfig.deploymentMode = DeploymentMode.local);
+
+    test('step measurements are cumulative StepCounts that aggregate per day', () {
+      final measurements = DemoChartData.stepMeasurements;
+      expect(measurements, everyElement(isA<Measurement>().having((m) => m.data, 'data', isA<StepCount>())));
+
+      final steps = StepsCardViewModel().weeklySteps;
+      expect(steps.length, 7);
+      expect(steps.values.every((count) => count >= 0), isTrue);
+      expect(steps.values.reduce((a, b) => a + b), greaterThan(0));
+    });
+
+    test('heart rate measurements are PolarHR, split into hours and weekdays', () {
+      expect(
+        DemoChartData.heartRateMeasurements,
+        everyElement(isA<Measurement>().having((m) => m.data, 'data', isA<PolarHR>())),
+      );
+
+      final model = HeartRateCardViewModel();
+      expect(model.hourlyHeartRate.values.where((band) => band.max != null), isNotEmpty);
+      expect(model.dailyHeartRate.values.where((band) => band.max != null).length, 7);
+      expect(model.currentHeartRate, isNotNull);
+    });
+
+    test('activity measurements are Activities that aggregate into minutes', () {
+      expect(
+        DemoChartData.activityMeasurements,
+        everyElement(isA<Measurement>().having((m) => m.data, 'data', isA<Activity>())),
+      );
+
+      final activities = ActivityCardViewModel().activities;
+      expect(activities[ActivityType.WALKING]!.values.reduce((a, b) => a + b), greaterThan(0));
+      expect(activities[ActivityType.RUNNING]!.values.reduce((a, b) => a + b), greaterThan(0));
+    });
+
+    test('never shows on a production deployment', () {
+      AppConfig.deploymentMode = DeploymentMode.production;
+      expect(AppConfig.useDemoChartData, isFalse);
+      // And with it off, an untouched model reports no data rather than demo.
+      expect(StepsCardViewModel().weeklySteps.values, everyElement(0));
+      expect(HeartRateCardViewModel().currentHeartRate, isNull);
+      expect(ActivityCardViewModel().activities[ActivityType.WALKING]!.values, everyElement(0));
+
+      AppConfig.deploymentMode = DeploymentMode.local;
+      expect(AppConfig.useDemoChartData, isTrue);
+    });
+  });
+
+  group('StudyProgressCardViewModel', () {
+    test('completionsPerDay buckets the last 14 days, oldest first', () {
+      final today = DateTime(2026, 7, 28, 15, 30);
+
+      final counts = StudyProgressCardViewModel.completionsPerDay([
+        DateTime(2026, 7, 28, 9), // today, twice
+        DateTime(2026, 7, 28, 11),
+        DateTime(2026, 7, 27, 20), // yesterday
+        DateTime(2026, 7, 15, 8), // the oldest day still inside the window
+        DateTime(2026, 7, 14, 8), // one day too old
+        null, // a done task with no timestamp
+      ], today: today);
+
+      expect(counts.length, 14);
+      expect(counts.last, 2, reason: 'today is the newest bucket');
+      expect(counts[12], 1);
+      expect(counts.first, 1, reason: 'the window reaches back 13 days');
+      expect(counts.reduce((a, b) => a + b), 4, reason: 'older and null entries are dropped');
+    });
+  });
+
+  group('StatisticsViewModel', () {
     test('precomputes card availability from the deployment on init', () {
       final study = MockStudyService();
       when(study.hasUserTasks()).thenReturn(true);
       when(study.hasMeasure(PolarSamplingPackage.HR)).thenReturn(true);
       when(study.hasMeasure(MediaSamplingPackage.AUDIO)).thenReturn(true);
-      final model = DataVisualizationPageViewModel(studyService: study);
+      final model = StatisticsViewModel(studyService: study);
 
       model.init(MockSmartphoneStudyController());
 

@@ -26,33 +26,48 @@ import 'package:permission_handler/permission_handler.dart' as _i4;
 // ignore_for_file: subtype_of_sealed_class
 // ignore_for_file: invalid_use_of_internal_member
 
-class _FakeSmartphoneStudy_0 extends _i1.SmartFake implements _i2.SmartphoneStudy {
-  _FakeSmartphoneStudy_0(Object parent, Invocation parentInvocation) : super(parent, parentInvocation);
+class _FakeSmartphoneStudy_0 extends _i1.SmartFake
+    implements _i2.SmartphoneStudy {
+  _FakeSmartphoneStudy_0(Object parent, Invocation parentInvocation)
+    : super(parent, parentInvocation);
 }
 
-class _FakeSmartphoneDeploymentExecutor_1 extends _i1.SmartFake implements _i2.SmartphoneDeploymentExecutor {
-  _FakeSmartphoneDeploymentExecutor_1(Object parent, Invocation parentInvocation) : super(parent, parentInvocation);
+class _FakeSmartphoneDeploymentExecutor_1 extends _i1.SmartFake
+    implements _i2.SmartphoneDeploymentExecutor {
+  _FakeSmartphoneDeploymentExecutor_1(
+    Object parent,
+    Invocation parentInvocation,
+  ) : super(parent, parentInvocation);
 }
 
 /// A class which mocks [SmartphoneStudyController].
 ///
 /// See the documentation for Mockito's code generation for more information.
-class MockSmartphoneStudyController extends _i1.Mock implements _i2.SmartphoneStudyController {
+class MockSmartphoneStudyController extends _i1.Mock
+    implements _i2.SmartphoneStudyController {
   @override
   _i2.SmartphoneStudy get study =>
       (super.noSuchMethod(
             Invocation.getter(#study),
-            returnValue: _FakeSmartphoneStudy_0(this, Invocation.getter(#study)),
-            returnValueForMissingStub: _FakeSmartphoneStudy_0(this, Invocation.getter(#study)),
+            returnValue: _FakeSmartphoneStudy_0(
+              this,
+              Invocation.getter(#study),
+            ),
+            returnValueForMissingStub: _FakeSmartphoneStudy_0(
+              this,
+              Invocation.getter(#study),
+            ),
           )
           as _i2.SmartphoneStudy);
 
   @override
-  List<_i3.DeviceConfiguration<_i3.DeviceRegistration>> get remainingDevicesToRegister =>
+  List<_i3.DeviceConfiguration<_i3.DeviceRegistration>>
+  get remainingDevicesToRegister =>
       (super.noSuchMethod(
             Invocation.getter(#remainingDevicesToRegister),
             returnValue: <_i3.DeviceConfiguration<_i3.DeviceRegistration>>[],
-            returnValueForMissingStub: <_i3.DeviceConfiguration<_i3.DeviceRegistration>>[],
+            returnValueForMissingStub:
+                <_i3.DeviceConfiguration<_i3.DeviceRegistration>>[],
           )
           as List<_i3.DeviceConfiguration<_i3.DeviceRegistration>>);
 
@@ -69,8 +84,14 @@ class MockSmartphoneStudyController extends _i1.Mock implements _i2.SmartphoneSt
   _i2.SmartphoneDeploymentExecutor get executor =>
       (super.noSuchMethod(
             Invocation.getter(#executor),
-            returnValue: _FakeSmartphoneDeploymentExecutor_1(this, Invocation.getter(#executor)),
-            returnValueForMissingStub: _FakeSmartphoneDeploymentExecutor_1(this, Invocation.getter(#executor)),
+            returnValue: _FakeSmartphoneDeploymentExecutor_1(
+              this,
+              Invocation.getter(#executor),
+            ),
+            returnValueForMissingStub: _FakeSmartphoneDeploymentExecutor_1(
+              this,
+              Invocation.getter(#executor),
+            ),
           )
           as _i2.SmartphoneDeploymentExecutor);
 
@@ -78,8 +99,14 @@ class MockSmartphoneStudyController extends _i1.Mock implements _i2.SmartphoneSt
   String get privacySchemaName =>
       (super.noSuchMethod(
             Invocation.getter(#privacySchemaName),
-            returnValue: _i5.dummyValue<String>(this, Invocation.getter(#privacySchemaName)),
-            returnValueForMissingStub: _i5.dummyValue<String>(this, Invocation.getter(#privacySchemaName)),
+            returnValue: _i5.dummyValue<String>(
+              this,
+              Invocation.getter(#privacySchemaName),
+            ),
+            returnValueForMissingStub: _i5.dummyValue<String>(
+              this,
+              Invocation.getter(#privacySchemaName),
+            ),
           )
           as String);
 
@@ -102,7 +129,9 @@ class MockSmartphoneStudyController extends _i1.Mock implements _i2.SmartphoneSt
           as _i6.Stream<_i3.Measurement>);
 
   @override
-  _i6.Future<void> tryRegisterConnectedDevice(_i3.DeviceConfiguration<_i3.DeviceRegistration>? device) =>
+  _i6.Future<void> tryRegisterConnectedDevice(
+    _i3.DeviceConfiguration<_i3.DeviceRegistration>? device,
+  ) =>
       (super.noSuchMethod(
             Invocation.method(#tryRegisterConnectedDevice, [device]),
             returnValue: _i6.Future<void>.value(),
@@ -120,7 +149,9 @@ class MockSmartphoneStudyController extends _i1.Mock implements _i2.SmartphoneSt
           as _i6.Future<void>);
 
   @override
-  _i6.Future<void> tryUnregisterDisconnectedDevice(_i3.DeviceConfiguration<_i3.DeviceRegistration>? device) =>
+  _i6.Future<void> tryUnregisterDisconnectedDevice(
+    _i3.DeviceConfiguration<_i3.DeviceRegistration>? device,
+  ) =>
       (super.noSuchMethod(
             Invocation.method(#tryUnregisterDisconnectedDevice, [device]),
             returnValue: _i6.Future<void>.value(),
@@ -129,7 +160,9 @@ class MockSmartphoneStudyController extends _i1.Mock implements _i2.SmartphoneSt
           as _i6.Future<void>);
 
   @override
-  _i6.Future<void> tryReregisterDevice(_i3.DeviceConfiguration<_i3.DeviceRegistration>? device) =>
+  _i6.Future<void> tryReregisterDevice(
+    _i3.DeviceConfiguration<_i3.DeviceRegistration>? device,
+  ) =>
       (super.noSuchMethod(
             Invocation.method(#tryReregisterDevice, [device]),
             returnValue: _i6.Future<void>.value(),
@@ -147,14 +180,26 @@ class MockSmartphoneStudyController extends _i1.Mock implements _i2.SmartphoneSt
           as _i6.Future<void>);
 
   @override
-  void restart() => super.noSuchMethod(Invocation.method(#restart, []), returnValueForMissingStub: null);
+  void restart() => super.noSuchMethod(
+    Invocation.method(#restart, []),
+    returnValueForMissingStub: null,
+  );
 
   @override
-  void resume() => super.noSuchMethod(Invocation.method(#resume, []), returnValueForMissingStub: null);
+  void resume() => super.noSuchMethod(
+    Invocation.method(#resume, []),
+    returnValueForMissingStub: null,
+  );
 
   @override
-  void pause() => super.noSuchMethod(Invocation.method(#pause, []), returnValueForMissingStub: null);
+  void pause() => super.noSuchMethod(
+    Invocation.method(#pause, []),
+    returnValueForMissingStub: null,
+  );
 
   @override
-  void dispose() => super.noSuchMethod(Invocation.method(#dispose, []), returnValueForMissingStub: null);
+  void dispose() => super.noSuchMethod(
+    Invocation.method(#dispose, []),
+    returnValueForMissingStub: null,
+  );
 }

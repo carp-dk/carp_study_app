@@ -46,4 +46,13 @@ abstract class AppConfig {
 
   /// The localization (language) of this app.
   static RPLocalizations? localization;
+
+  /// Fill the statistics charts with [DemoChartData] while the study has
+  /// collected nothing of its own.
+  ///
+  /// Never on a production deployment - a participant must only ever be shown
+  /// their own data.
+  // ponytail: temporary, so the charts can be designed before devices report.
+  // Delete this and demo_chart_data.dart once they do.
+  static bool get useDemoChartData => deploymentMode != DeploymentMode.production;
 }

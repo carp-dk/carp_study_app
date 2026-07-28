@@ -6,26 +6,84 @@ class HeartRateCardViewModel extends SerializableViewModel<HourlyHeartRate> {
 
   /// A map of heart rate values for each hour of the day.
   /// The key is the hour of the day (0-23) and the value is the min and max heart rate for that hour.
-  Map<int, HeartRateMinMaxPrHour> get hourlyHeartRate => model.hourlyHeartRate;
+  Map<int, HeartRateMinMaxPrHour> get hourlyHeartRate => (_hasHeartRate ? model : _demo).hourlyHeartRate;
+
+  /// The min and max heart rate per weekday, Monday first.
+  Map<int, HeartRateMinMaxPrHour> get dailyHeartRate => (_hasHeartRate ? model : _demo).dailyHeartRate;
+
+  /// The average heart rate across [bands], taking the middle of each measured
+  /// band. Null when none of them hold a value.
+  static double? averageOf(Iterable<HeartRateMinMaxPrHour> bands) {
+    final midpoints = bands.where((band) => band.min != null && band.max != null).map((band) => (band.min! + band.max!) / 2);
+    if (midpoints.isEmpty) return null;
+    return midpoints.reduce((a, b) => a + b) / midpoints.length;
+  }
+
+  /// The min and max across [bands], or nulls when none of them hold a value.
+  static HeartRateMinMaxPrHour rangeOf(Iterable<HeartRateMinMaxPrHour> bands) {
+    final measured = bands.where((band) => band.min != null && band.max != null);
+    if (measured.isEmpty) return HeartRateMinMaxPrHour(null, null);
+    return HeartRateMinMaxPrHour(
+      measured.map((band) => band.min!).reduce(min),
+      measured.map((band) => band.max!).reduce(max),
+    );
+  }
 
   /// The current heart rate
-  double? get currentHeartRate => model.currentHeartRate;
+  double? get currentHeartRate => (_hasHeartRate ? model : _demo).currentHeartRate;
 
-  HeartRateMinMaxPrHour get dayMinMax => HeartRateMinMaxPrHour(model.minHeartRate, model.maxHeartRate);
+  HeartRateMinMaxPrHour get dayMinMax => rangeOf(hourlyHeartRate.values);
 
-  final StreamGroup<double> _group = StreamGroup.broadcast();
+  bool get _hasHeartRate => !AppConfig.useDemoChartData || model.hourlyHeartRate.values.any((band) => band.max != null);
 
-  Stream<double>? get heartRateStream => _group.stream.asBroadcastStream();
+  /// The demo week, folded together by the same code that folds live readings.
+  late final HourlyHeartRate _demo = _aggregate(DemoChartData.heartRateMeasurements);
+
+  static HourlyHeartRate _aggregate(List<Measurement> measurements) {
+    final into = HourlyHeartRate();
+    final today = DateTime.now();
+    for (final measurement in measurements) {
+      // Every reading counts towards its weekday; only today's fill the hours,
+      // which is what a live model holds - the hours reset at midnight.
+      final isToday = measurement.dateTime.day == today.day && measurement.dateTime.month == today.month;
+      _record(into, measurement, hourly: isToday);
+      if (isToday) into.currentHeartRate = bpmOf(measurement) ?? into.currentHeartRate;
+    }
+    return into;
+  }
+
+  /// Fold [measurement] into [into], as a band for its weekday and - unless
+  /// [hourly] is off - for its hour of the day.
+  static void _record(HourlyHeartRate into, Measurement measurement, {bool hourly = true}) {
+    final bpm = bpmOf(measurement);
+    if (bpm == null || bpm <= 0) return;
+
+    final at = measurement.dateTime;
+    into.addHeartRate(bpm, weekday: at.weekday, hour: hourly ? at.hour : null);
+    if (bpm > (into.maxHeartRate ?? 0)) into.maxHeartRate = bpm;
+    if (bpm < (into.minHeartRate ?? double.infinity)) into.minHeartRate = bpm;
+  }
+
+  /// The beats per minute in [measurement], whichever sensor reported it.
+  static double? bpmOf(Measurement measurement) => switch (measurement.data) {
+    PolarHR data => data.samples.firstOrNull?.hr.toDouble(),
+    MovesenseHR data => data.hr,
+    _ => null,
+  };
+
+  final StreamGroup<Measurement> _group = StreamGroup.broadcast();
+
+  /// Stream of heart rate readings in BPM, for the card to rebuild on.
+  Stream<double>? get heartRateStream =>
+      _group.stream.map(bpmOf).where((bpm) => bpm != null).cast<double>().asBroadcastStream();
 
   /// Stream of heart rate based on [PolarHR] measures.
-  Stream<double>? get polarHRStream => controller?.measurements
-      .where((measurement) => measurement.data is PolarHR)
-      .map((measurement) => (measurement.data as PolarHR).samples.firstOrNull?.hr.toDouble() ?? 0);
+  Stream<Measurement>? get polarHRStream =>
+      controller?.measurements.where((measurement) => measurement.data is PolarHR);
 
   /// Stream of heart rate based on [MovesenseHR] measures.
-  Stream<double>? get movesenseHRStream => controller?.measurements
-      .where((measurement) => measurement.data is MovesenseHR)
-      .map((measurement) => (measurement.data as MovesenseHR).hr);
+  Stream<Measurement>? get movesenseHRStream =>
+      controller?.measurements.where((measurement) => measurement.data is MovesenseHR);
 
   @override
   void init(SmartphoneStudyController ctrl) {
@@ -34,14 +92,10 @@ class HeartRateCardViewModel extends SerializableViewModel<HourlyHeartRate> {
     if (polarHRStream != null) _group.add(polarHRStream!);
     if (movesenseHRStream != null) _group.add(movesenseHRStream!);
 
-    heartRateStream?.listen((hr) {
-      if (!(hr > 0)) {
-        model.currentHeartRate = null;
-        return;
-      }
-      model.addHeartRate(DateTime.now().hour, hr);
-      if (hr > (model.maxHeartRate ?? 0)) model.maxHeartRate = hr;
-      if (hr < (model.minHeartRate ?? 100000)) model.minHeartRate = hr;
+    _group.stream.listen((measurement) {
+      final bpm = bpmOf(measurement);
+      model.currentHeartRate = bpm != null && bpm > 0 ? bpm : null;
+      _record(model, measurement);
       model.resetDataAtMidnight();
     }, onError: onMeasurementStreamError);
   }
@@ -57,9 +111,19 @@ class HourlyHeartRate extends DataModel {
   /// The min and max heart rate is expressed as a [HeartRateMinMaxPrHour] object.
   Map<int, HeartRateMinMaxPrHour> hourlyHeartRate = {};
 
+  /// The min and max heart rate per weekday, for the week view.
+  ///
+  /// Keyed by [DateTime.weekday], so Monday is 1.
+  // ponytail: no weekly rollover - a study running past a week keeps widening
+  // each day's band. Add one when studies actually run that long.
+  Map<int, HeartRateMinMaxPrHour> dailyHeartRate = {};
+
   HourlyHeartRate() {
     for (int i = 0; i < 24; i++) {
       hourlyHeartRate[i] = HeartRateMinMaxPrHour(null, null);
+    }
+    for (int i = 1; i <= 7; i++) {
+      dailyHeartRate[i] = HeartRateMinMaxPrHour(null, null);
     }
   }
 
@@ -81,6 +145,7 @@ class HourlyHeartRate extends DataModel {
       for (int i = 0; i < 24; i++) {
         hourlyHeartRate[i] = HeartRateMinMaxPrHour(null, null);
       }
+      // The day bands survive - they are what the week view is made of.
       maxHeartRate = null;
       minHeartRate = null;
     }
@@ -88,32 +153,27 @@ class HourlyHeartRate extends DataModel {
     return this;
   }
 
-  /// Add a heart rate value for a given hour.
-  /// If the hour already exists, the min and max values are updated.
-  /// If the hour does not exist, it is added.
-  HourlyHeartRate addHeartRate(int hour, double heartRate) {
-    if (hour < 0 || hour > 23) {
+  /// Widen the bands [heartRate] belongs to: its [weekday], and its [hour] of
+  /// the day unless that is null.
+  HourlyHeartRate addHeartRate(double heartRate, {required int weekday, int? hour}) {
+    if (hour != null && (hour < 0 || hour > 23)) {
       throw AssertionError("hour must be in the range 0 to 23");
     }
-
-    currentHeartRate = heartRate;
-    if (hourlyHeartRate.containsKey(hour)) {
-      hourlyHeartRate.update(hour, (value) {
-        double? minVal = value.min, maxVal = value.max;
-        if (minVal != null && maxVal != null) {
-          return value
-            ..min = min(minVal, heartRate)
-            ..max = max(maxVal, heartRate);
-        } else {
-          return value
-            ..min = heartRate
-            ..max = heartRate;
-        }
-      });
-    } else {
-      hourlyHeartRate[hour] = HeartRateMinMaxPrHour(heartRate, heartRate);
+    if (weekday < 1 || weekday > 7) {
+      throw AssertionError("weekday must be in the range 1 to 7");
     }
+
+    if (hour != null) hourlyHeartRate[hour] = _widen(hourlyHeartRate[hour], heartRate);
+    dailyHeartRate[weekday] = _widen(dailyHeartRate[weekday], heartRate);
     return this;
+  }
+
+  /// [band] grown to include [heartRate], or a new band around it.
+  static HeartRateMinMaxPrHour _widen(HeartRateMinMaxPrHour? band, double heartRate) {
+    if (band?.min == null || band?.max == null) return HeartRateMinMaxPrHour(heartRate, heartRate);
+    return band!
+      ..min = min(band.min!, heartRate)
+      ..max = max(band.max!, heartRate);
   }
 
   @override
