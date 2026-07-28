@@ -43,25 +43,23 @@ class _SurveyCardState extends State<SurveyCard> {
       // Tapping anywhere else on the card drops the selection.
       child: GestureDetector(
         onTap: () => setState(() => _selected = null),
+        // Laid out to match [StudyProgressCardWidget] - same padding, same
+        // donut, same type sizes - so the two cards read as a pair.
         child: Padding(
-          padding: const EdgeInsets.all(8.0),
+          padding: const EdgeInsets.all(16),
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               if (widget.showTitle)
                 Padding(
-                  padding: const EdgeInsets.only(left: 10.0),
+                  padding: const EdgeInsets.only(bottom: 8),
                   child: Text(locale.translate('cards.survey.title').toUpperCase(), style: fs16fw400ls1),
                 ),
-              SizedBox(
-                height: 160,
-                width: MediaQuery.of(context).size.width * 0.9,
-                child: Row(
-                  children: [
-                    Expanded(flex: 2, child: _legend(locale)),
-                    Expanded(flex: 3, child: _donut()),
-                  ],
-                ),
+              Row(
+                children: [
+                  Expanded(child: _legend(locale)),
+                  SizedBox(width: 110, height: 110, child: _donut()),
+                ],
               ),
             ],
           ),
@@ -71,35 +69,38 @@ class _SurveyCardState extends State<SurveyCard> {
   }
 
   Widget _legend(RPLocalizations locale) {
-    return Padding(
-      padding: const EdgeInsets.symmetric(horizontal: 10.0, vertical: 8),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        mainAxisAlignment: MainAxisAlignment.center,
-        children: [
-          for (final (index, survey) in _surveys.indexed)
-            GestureDetector(
-              onTap: () => setState(() => _selected = _selected == index ? null : index),
-              child: Padding(
-                padding: const EdgeInsets.symmetric(vertical: 2),
-                child: Row(
-                  children: [
-                    Container(
-                      width: 10,
-                      height: 10,
-                      decoration: BoxDecoration(color: _shade(widget.colors[index], index), shape: BoxShape.circle),
+    final colors = Theme.of(context).extension<CarpColors>()!;
+
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      mainAxisSize: MainAxisSize.min,
+      children: [
+        for (final (index, survey) in _surveys.indexed)
+          GestureDetector(
+            onTap: () => setState(() => _selected = _selected == index ? null : index),
+            child: Padding(
+              padding: const EdgeInsets.symmetric(vertical: 6),
+              child: Row(
+                children: [
+                  // Pad to two digits so the labels line up in a column.
+                  Text(
+                    '${survey.value}'.padLeft(2, '0'),
+                    style: fs24fw700.copyWith(color: _shade(widget.colors[index], index)),
+                  ),
+                  const SizedBox(width: 12),
+                  Flexible(
+                    child: Text(
+                      locale.translate(survey.key),
+                      maxLines: 1,
+                      overflow: TextOverflow.ellipsis,
+                      style: (_selected == index ? fs16fw700 : fs16fw400).copyWith(color: colors.grey900),
                     ),
-                    const SizedBox(width: 8),
-                    Text(
-                      '${survey.value} ${locale.translate(survey.key).truncateTo(12)}',
-                      style: _selected == index ? fs12fw700 : fs12fw400,
-                    ),
-                  ],
-                ),
+                  ),
+                ],
               ),
             ),
-        ],
-      ),
+          ),
+      ],
     );
   }
 
@@ -109,6 +110,8 @@ class _SurveyCardState extends State<SurveyCard> {
       children: [
         PieChart(
           PieChartData(
+            centerSpaceRadius: 28,
+            sectionsSpace: 2,
             startDegreeOffset: 270,
             pieTouchData: PieTouchData(
               touchCallback: (event, response) {
@@ -124,11 +127,13 @@ class _SurveyCardState extends State<SurveyCard> {
                   color: _shade(widget.colors[index], index),
                   value: survey.value.toDouble(),
                   showTitle: false,
+                  // The selected slice also stands a little proud of the others.
+                  radius: _selected == index ? 26 : 22,
                 ),
             ],
           ),
         ),
-        Text('$_centreCount', style: fs24fw700.copyWith(color: Theme.of(context).extension<CarpColors>()!.grey800)),
+        Text('$_centreCount', style: fs24fw700.copyWith(color: Theme.of(context).extension<CarpColors>()!.grey900)),
       ],
     );
   }
