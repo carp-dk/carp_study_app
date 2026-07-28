@@ -30,52 +30,40 @@ import 'package:research_package/research_package.dart' as _i8;
 // ignore_for_file: invalid_use_of_internal_member
 
 class _FakeUri_0 extends _i1.SmartFake implements Uri {
-  _FakeUri_0(Object parent, Invocation parentInvocation)
-    : super(parent, parentInvocation);
+  _FakeUri_0(Object parent, Invocation parentInvocation) : super(parent, parentInvocation);
 }
 
 class _FakeCarpApp_1 extends _i1.SmartFake implements _i2.CarpApp {
-  _FakeCarpApp_1(Object parent, Invocation parentInvocation)
-    : super(parent, parentInvocation);
+  _FakeCarpApp_1(Object parent, Invocation parentInvocation) : super(parent, parentInvocation);
 }
 
-class _FakeCarpAuthProperties_2 extends _i1.SmartFake
-    implements _i3.CarpAuthProperties {
-  _FakeCarpAuthProperties_2(Object parent, Invocation parentInvocation)
-    : super(parent, parentInvocation);
+class _FakeCarpAuthProperties_2 extends _i1.SmartFake implements _i3.CarpAuthProperties {
+  _FakeCarpAuthProperties_2(Object parent, Invocation parentInvocation) : super(parent, parentInvocation);
 }
 
 class _FakeCarpUser_3 extends _i1.SmartFake implements _i3.CarpUser {
-  _FakeCarpUser_3(Object parent, Invocation parentInvocation)
-    : super(parent, parentInvocation);
+  _FakeCarpUser_3(Object parent, Invocation parentInvocation) : super(parent, parentInvocation);
 }
 
 class _FakeAppTask_4 extends _i1.SmartFake implements _i4.AppTask {
-  _FakeAppTask_4(Object parent, Invocation parentInvocation)
-    : super(parent, parentInvocation);
+  _FakeAppTask_4(Object parent, Invocation parentInvocation) : super(parent, parentInvocation);
 }
 
 class _FakeDateTime_5 extends _i1.SmartFake implements DateTime {
-  _FakeDateTime_5(Object parent, Invocation parentInvocation)
-    : super(parent, parentInvocation);
+  _FakeDateTime_5(Object parent, Invocation parentInvocation) : super(parent, parentInvocation);
 }
 
 class _FakeAppTaskExecutor_6<TConfig extends _i4.AppTask> extends _i1.SmartFake
     implements _i4.AppTaskExecutor<TConfig> {
-  _FakeAppTaskExecutor_6(Object parent, Invocation parentInvocation)
-    : super(parent, parentInvocation);
+  _FakeAppTaskExecutor_6(Object parent, Invocation parentInvocation) : super(parent, parentInvocation);
 }
 
-class _FakeBackgroundTaskExecutor_7 extends _i1.SmartFake
-    implements _i4.BackgroundTaskExecutor {
-  _FakeBackgroundTaskExecutor_7(Object parent, Invocation parentInvocation)
-    : super(parent, parentInvocation);
+class _FakeBackgroundTaskExecutor_7 extends _i1.SmartFake implements _i4.BackgroundTaskExecutor {
+  _FakeBackgroundTaskExecutor_7(Object parent, Invocation parentInvocation) : super(parent, parentInvocation);
 }
 
-class _FakeDeploymentService_8 extends _i1.SmartFake
-    implements _i5.DeploymentService {
-  _FakeDeploymentService_8(Object parent, Invocation parentInvocation)
-    : super(parent, parentInvocation);
+class _FakeDeploymentService_8 extends _i1.SmartFake implements _i5.DeploymentService {
+  _FakeDeploymentService_8(Object parent, Invocation parentInvocation) : super(parent, parentInvocation);
 }
 
 /// A class which mocks [CarpBackend].
@@ -87,10 +75,7 @@ class MockCarpBackend extends _i1.Mock implements _i6.CarpBackend {
       (super.noSuchMethod(
             Invocation.getter(#uri),
             returnValue: _FakeUri_0(this, Invocation.getter(#uri)),
-            returnValueForMissingStub: _FakeUri_0(
-              this,
-              Invocation.getter(#uri),
-            ),
+            returnValueForMissingStub: _FakeUri_0(this, Invocation.getter(#uri)),
           )
           as Uri);
 
@@ -99,10 +84,7 @@ class MockCarpBackend extends _i1.Mock implements _i6.CarpBackend {
       (super.noSuchMethod(
             Invocation.getter(#authUri),
             returnValue: _FakeUri_0(this, Invocation.getter(#authUri)),
-            returnValueForMissingStub: _FakeUri_0(
-              this,
-              Invocation.getter(#authUri),
-            ),
+            returnValueForMissingStub: _FakeUri_0(this, Invocation.getter(#authUri)),
           )
           as Uri);
 
@@ -111,10 +93,7 @@ class MockCarpBackend extends _i1.Mock implements _i6.CarpBackend {
       (super.noSuchMethod(
             Invocation.getter(#app),
             returnValue: _FakeCarpApp_1(this, Invocation.getter(#app)),
-            returnValueForMissingStub: _FakeCarpApp_1(
-              this,
-              Invocation.getter(#app),
-            ),
+            returnValueForMissingStub: _FakeCarpApp_1(this, Invocation.getter(#app)),
           )
           as _i2.CarpApp);
 
@@ -122,24 +101,14 @@ class MockCarpBackend extends _i1.Mock implements _i6.CarpBackend {
   _i3.CarpAuthProperties get authProperties =>
       (super.noSuchMethod(
             Invocation.getter(#authProperties),
-            returnValue: _FakeCarpAuthProperties_2(
-              this,
-              Invocation.getter(#authProperties),
-            ),
-            returnValueForMissingStub: _FakeCarpAuthProperties_2(
-              this,
-              Invocation.getter(#authProperties),
-            ),
+            returnValue: _FakeCarpAuthProperties_2(this, Invocation.getter(#authProperties)),
+            returnValueForMissingStub: _FakeCarpAuthProperties_2(this, Invocation.getter(#authProperties)),
           )
           as _i3.CarpAuthProperties);
 
   @override
   bool get isAuthenticated =>
-      (super.noSuchMethod(
-            Invocation.getter(#isAuthenticated),
-            returnValue: false,
-            returnValueForMissingStub: false,
-          )
+      (super.noSuchMethod(Invocation.getter(#isAuthenticated), returnValue: false, returnValueForMissingStub: false)
           as bool);
 
   @override
@@ -152,23 +121,15 @@ class MockCarpBackend extends _i1.Mock implements _i6.CarpBackend {
           as List<_i5.ActiveParticipationInvitation>);
 
   @override
-  set user(_i3.CarpUser? user) => super.noSuchMethod(
-    Invocation.setter(#user, user),
-    returnValueForMissingStub: null,
-  );
+  set user(_i3.CarpUser? user) => super.noSuchMethod(Invocation.setter(#user, user), returnValueForMissingStub: null);
 
   @override
   set invitations(List<_i5.ActiveParticipationInvitation>? value) =>
-      super.noSuchMethod(
-        Invocation.setter(#invitations, value),
-        returnValueForMissingStub: null,
-      );
+      super.noSuchMethod(Invocation.setter(#invitations, value), returnValueForMissingStub: null);
 
   @override
-  set study(_i4.SmartphoneStudy? study) => super.noSuchMethod(
-    Invocation.setter(#study, study),
-    returnValueForMissingStub: null,
-  );
+  set study(_i4.SmartphoneStudy? study) =>
+      super.noSuchMethod(Invocation.setter(#study, study), returnValueForMissingStub: null);
 
   @override
   _i7.Future<void> initialize() =>
@@ -201,9 +162,7 @@ class MockCarpBackend extends _i1.Mock implements _i6.CarpBackend {
   _i7.Future<_i3.CarpUser> refresh() =>
       (super.noSuchMethod(
             Invocation.method(#refresh, []),
-            returnValue: _i7.Future<_i3.CarpUser>.value(
-              _FakeCarpUser_3(this, Invocation.method(#refresh, [])),
-            ),
+            returnValue: _i7.Future<_i3.CarpUser>.value(_FakeCarpUser_3(this, Invocation.method(#refresh, []))),
             returnValueForMissingStub: _i7.Future<_i3.CarpUser>.value(
               _FakeCarpUser_3(this, Invocation.method(#refresh, [])),
             ),
@@ -223,39 +182,28 @@ class MockCarpBackend extends _i1.Mock implements _i6.CarpBackend {
   _i7.Future<List<_i5.ActiveParticipationInvitation>> getInvitations() =>
       (super.noSuchMethod(
             Invocation.method(#getInvitations, []),
-            returnValue:
-                _i7.Future<List<_i5.ActiveParticipationInvitation>>.value(
-                  <_i5.ActiveParticipationInvitation>[],
-                ),
-            returnValueForMissingStub:
-                _i7.Future<List<_i5.ActiveParticipationInvitation>>.value(
-                  <_i5.ActiveParticipationInvitation>[],
-                ),
+            returnValue: _i7.Future<List<_i5.ActiveParticipationInvitation>>.value(
+              <_i5.ActiveParticipationInvitation>[],
+            ),
+            returnValueForMissingStub: _i7.Future<List<_i5.ActiveParticipationInvitation>>.value(
+              <_i5.ActiveParticipationInvitation>[],
+            ),
           )
           as _i7.Future<List<_i5.ActiveParticipationInvitation>>);
 
   @override
-  _i7.Future<_i5.InformedConsentInput?> uploadInformedConsent(
-    _i8.RPTaskResult? consent,
-  ) =>
+  _i7.Future<_i5.InformedConsentInput?> uploadInformedConsent(_i8.RPTaskResult? consent) =>
       (super.noSuchMethod(
             Invocation.method(#uploadInformedConsent, [consent]),
             returnValue: _i7.Future<_i5.InformedConsentInput?>.value(),
-            returnValueForMissingStub:
-                _i7.Future<_i5.InformedConsentInput?>.value(),
+            returnValueForMissingStub: _i7.Future<_i5.InformedConsentInput?>.value(),
           )
           as _i7.Future<_i5.InformedConsentInput?>);
 
   @override
-  _i7.Future<_i5.InformedConsentInput?>? getInformedConsentByRole(
-    String? studyDeploymentId,
-    String? role,
-  ) =>
+  _i7.Future<_i5.InformedConsentInput?>? getInformedConsentByRole(String? studyDeploymentId, String? role) =>
       (super.noSuchMethod(
-            Invocation.method(#getInformedConsentByRole, [
-              studyDeploymentId,
-              role,
-            ]),
+            Invocation.method(#getInformedConsentByRole, [studyDeploymentId, role]),
             returnValueForMissingStub: null,
           )
           as _i7.Future<_i5.InformedConsentInput?>?);
@@ -267,34 +215,20 @@ class MockCarpBackend extends _i1.Mock implements _i6.CarpBackend {
 class MockAuthService extends _i1.Mock implements _i6.AuthService {
   @override
   bool get isAuthenticated =>
-      (super.noSuchMethod(
-            Invocation.getter(#isAuthenticated),
-            returnValue: false,
-            returnValueForMissingStub: false,
-          )
+      (super.noSuchMethod(Invocation.getter(#isAuthenticated), returnValue: false, returnValueForMissingStub: false)
           as bool);
 
   @override
   bool get isAnonymous =>
-      (super.noSuchMethod(
-            Invocation.getter(#isAnonymous),
-            returnValue: false,
-            returnValueForMissingStub: false,
-          )
+      (super.noSuchMethod(Invocation.getter(#isAnonymous), returnValue: false, returnValueForMissingStub: false)
           as bool);
 
   @override
   String get username =>
       (super.noSuchMethod(
             Invocation.getter(#username),
-            returnValue: _i9.dummyValue<String>(
-              this,
-              Invocation.getter(#username),
-            ),
-            returnValueForMissingStub: _i9.dummyValue<String>(
-              this,
-              Invocation.getter(#username),
-            ),
+            returnValue: _i9.dummyValue<String>(this, Invocation.getter(#username)),
+            returnValueForMissingStub: _i9.dummyValue<String>(this, Invocation.getter(#username)),
           )
           as String);
 
@@ -302,14 +236,8 @@ class MockAuthService extends _i1.Mock implements _i6.AuthService {
   String get friendlyUsername =>
       (super.noSuchMethod(
             Invocation.getter(#friendlyUsername),
-            returnValue: _i9.dummyValue<String>(
-              this,
-              Invocation.getter(#friendlyUsername),
-            ),
-            returnValueForMissingStub: _i9.dummyValue<String>(
-              this,
-              Invocation.getter(#friendlyUsername),
-            ),
+            returnValue: _i9.dummyValue<String>(this, Invocation.getter(#friendlyUsername)),
+            returnValueForMissingStub: _i9.dummyValue<String>(this, Invocation.getter(#friendlyUsername)),
           )
           as String);
 
@@ -318,10 +246,7 @@ class MockAuthService extends _i1.Mock implements _i6.AuthService {
       (super.noSuchMethod(
             Invocation.getter(#serverUri),
             returnValue: _FakeUri_0(this, Invocation.getter(#serverUri)),
-            returnValueForMissingStub: _FakeUri_0(
-              this,
-              Invocation.getter(#serverUri),
-            ),
+            returnValueForMissingStub: _FakeUri_0(this, Invocation.getter(#serverUri)),
           )
           as Uri);
 
@@ -347,14 +272,12 @@ class MockAuthService extends _i1.Mock implements _i6.AuthService {
   _i7.Future<List<_i5.ActiveParticipationInvitation>> getInvitations() =>
       (super.noSuchMethod(
             Invocation.method(#getInvitations, []),
-            returnValue:
-                _i7.Future<List<_i5.ActiveParticipationInvitation>>.value(
-                  <_i5.ActiveParticipationInvitation>[],
-                ),
-            returnValueForMissingStub:
-                _i7.Future<List<_i5.ActiveParticipationInvitation>>.value(
-                  <_i5.ActiveParticipationInvitation>[],
-                ),
+            returnValue: _i7.Future<List<_i5.ActiveParticipationInvitation>>.value(
+              <_i5.ActiveParticipationInvitation>[],
+            ),
+            returnValueForMissingStub: _i7.Future<List<_i5.ActiveParticipationInvitation>>.value(
+              <_i5.ActiveParticipationInvitation>[],
+            ),
           )
           as _i7.Future<List<_i5.ActiveParticipationInvitation>>);
 
@@ -436,10 +359,7 @@ class MockUserTask extends _i1.Mock implements _i4.UserTask {
       (super.noSuchMethod(
             Invocation.getter(#task),
             returnValue: _FakeAppTask_4(this, Invocation.getter(#task)),
-            returnValueForMissingStub: _FakeAppTask_4(
-              this,
-              Invocation.getter(#task),
-            ),
+            returnValueForMissingStub: _FakeAppTask_4(this, Invocation.getter(#task)),
           )
           as _i4.AppTask);
 
@@ -448,10 +368,7 @@ class MockUserTask extends _i1.Mock implements _i4.UserTask {
       (super.noSuchMethod(
             Invocation.getter(#id),
             returnValue: _i9.dummyValue<String>(this, Invocation.getter(#id)),
-            returnValueForMissingStub: _i9.dummyValue<String>(
-              this,
-              Invocation.getter(#id),
-            ),
+            returnValueForMissingStub: _i9.dummyValue<String>(this, Invocation.getter(#id)),
           )
           as String);
 
@@ -460,10 +377,7 @@ class MockUserTask extends _i1.Mock implements _i4.UserTask {
       (super.noSuchMethod(
             Invocation.getter(#type),
             returnValue: _i9.dummyValue<String>(this, Invocation.getter(#type)),
-            returnValueForMissingStub: _i9.dummyValue<String>(
-              this,
-              Invocation.getter(#type),
-            ),
+            returnValueForMissingStub: _i9.dummyValue<String>(this, Invocation.getter(#type)),
           )
           as String);
 
@@ -472,10 +386,7 @@ class MockUserTask extends _i1.Mock implements _i4.UserTask {
       (super.noSuchMethod(
             Invocation.getter(#name),
             returnValue: _i9.dummyValue<String>(this, Invocation.getter(#name)),
-            returnValueForMissingStub: _i9.dummyValue<String>(
-              this,
-              Invocation.getter(#name),
-            ),
+            returnValueForMissingStub: _i9.dummyValue<String>(this, Invocation.getter(#name)),
           )
           as String);
 
@@ -483,14 +394,8 @@ class MockUserTask extends _i1.Mock implements _i4.UserTask {
   String get title =>
       (super.noSuchMethod(
             Invocation.getter(#title),
-            returnValue: _i9.dummyValue<String>(
-              this,
-              Invocation.getter(#title),
-            ),
-            returnValueForMissingStub: _i9.dummyValue<String>(
-              this,
-              Invocation.getter(#title),
-            ),
+            returnValue: _i9.dummyValue<String>(this, Invocation.getter(#title)),
+            returnValueForMissingStub: _i9.dummyValue<String>(this, Invocation.getter(#title)),
           )
           as String);
 
@@ -498,14 +403,8 @@ class MockUserTask extends _i1.Mock implements _i4.UserTask {
   String get description =>
       (super.noSuchMethod(
             Invocation.getter(#description),
-            returnValue: _i9.dummyValue<String>(
-              this,
-              Invocation.getter(#description),
-            ),
-            returnValueForMissingStub: _i9.dummyValue<String>(
-              this,
-              Invocation.getter(#description),
-            ),
+            returnValue: _i9.dummyValue<String>(this, Invocation.getter(#description)),
+            returnValueForMissingStub: _i9.dummyValue<String>(this, Invocation.getter(#description)),
           )
           as String);
 
@@ -513,24 +412,14 @@ class MockUserTask extends _i1.Mock implements _i4.UserTask {
   String get instructions =>
       (super.noSuchMethod(
             Invocation.getter(#instructions),
-            returnValue: _i9.dummyValue<String>(
-              this,
-              Invocation.getter(#instructions),
-            ),
-            returnValueForMissingStub: _i9.dummyValue<String>(
-              this,
-              Invocation.getter(#instructions),
-            ),
+            returnValue: _i9.dummyValue<String>(this, Invocation.getter(#instructions)),
+            returnValueForMissingStub: _i9.dummyValue<String>(this, Invocation.getter(#instructions)),
           )
           as String);
 
   @override
   bool get notification =>
-      (super.noSuchMethod(
-            Invocation.getter(#notification),
-            returnValue: false,
-            returnValueForMissingStub: false,
-          )
+      (super.noSuchMethod(Invocation.getter(#notification), returnValue: false, returnValueForMissingStub: false)
           as bool);
 
   @override
@@ -538,10 +427,7 @@ class MockUserTask extends _i1.Mock implements _i4.UserTask {
       (super.noSuchMethod(
             Invocation.getter(#triggerTime),
             returnValue: _FakeDateTime_5(this, Invocation.getter(#triggerTime)),
-            returnValueForMissingStub: _FakeDateTime_5(
-              this,
-              Invocation.getter(#triggerTime),
-            ),
+            returnValueForMissingStub: _FakeDateTime_5(this, Invocation.getter(#triggerTime)),
           )
           as DateTime);
 
@@ -550,10 +436,7 @@ class MockUserTask extends _i1.Mock implements _i4.UserTask {
       (super.noSuchMethod(
             Invocation.getter(#enqueued),
             returnValue: _FakeDateTime_5(this, Invocation.getter(#enqueued)),
-            returnValueForMissingStub: _FakeDateTime_5(
-              this,
-              Invocation.getter(#enqueued),
-            ),
+            returnValueForMissingStub: _FakeDateTime_5(this, Invocation.getter(#enqueued)),
           )
           as DateTime);
 
@@ -568,11 +451,7 @@ class MockUserTask extends _i1.Mock implements _i4.UserTask {
 
   @override
   bool get availableForUser =>
-      (super.noSuchMethod(
-            Invocation.getter(#availableForUser),
-            returnValue: false,
-            returnValueForMissingStub: false,
-          )
+      (super.noSuchMethod(Invocation.getter(#availableForUser), returnValue: false, returnValueForMissingStub: false)
           as bool);
 
   @override
@@ -597,14 +476,8 @@ class MockUserTask extends _i1.Mock implements _i4.UserTask {
   _i4.AppTaskExecutor<_i4.AppTask> get appTaskExecutor =>
       (super.noSuchMethod(
             Invocation.getter(#appTaskExecutor),
-            returnValue: _FakeAppTaskExecutor_6<_i4.AppTask>(
-              this,
-              Invocation.getter(#appTaskExecutor),
-            ),
-            returnValueForMissingStub: _FakeAppTaskExecutor_6<_i4.AppTask>(
-              this,
-              Invocation.getter(#appTaskExecutor),
-            ),
+            returnValue: _FakeAppTaskExecutor_6<_i4.AppTask>(this, Invocation.getter(#appTaskExecutor)),
+            returnValueForMissingStub: _FakeAppTaskExecutor_6<_i4.AppTask>(this, Invocation.getter(#appTaskExecutor)),
           )
           as _i4.AppTaskExecutor<_i4.AppTask>);
 
@@ -612,92 +485,54 @@ class MockUserTask extends _i1.Mock implements _i4.UserTask {
   _i4.BackgroundTaskExecutor get backgroundTaskExecutor =>
       (super.noSuchMethod(
             Invocation.getter(#backgroundTaskExecutor),
-            returnValue: _FakeBackgroundTaskExecutor_7(
-              this,
-              Invocation.getter(#backgroundTaskExecutor),
-            ),
-            returnValueForMissingStub: _FakeBackgroundTaskExecutor_7(
-              this,
-              Invocation.getter(#backgroundTaskExecutor),
-            ),
+            returnValue: _FakeBackgroundTaskExecutor_7(this, Invocation.getter(#backgroundTaskExecutor)),
+            returnValueForMissingStub: _FakeBackgroundTaskExecutor_7(this, Invocation.getter(#backgroundTaskExecutor)),
           )
           as _i4.BackgroundTaskExecutor);
 
   @override
   bool get hasWidget =>
-      (super.noSuchMethod(
-            Invocation.getter(#hasWidget),
-            returnValue: false,
-            returnValueForMissingStub: false,
-          )
-          as bool);
+      (super.noSuchMethod(Invocation.getter(#hasWidget), returnValue: false, returnValueForMissingStub: false) as bool);
 
   @override
-  set id(String? value) => super.noSuchMethod(
-    Invocation.setter(#id, value),
-    returnValueForMissingStub: null,
-  );
+  set id(String? value) => super.noSuchMethod(Invocation.setter(#id, value), returnValueForMissingStub: null);
 
   @override
-  set triggerTime(DateTime? value) => super.noSuchMethod(
-    Invocation.setter(#triggerTime, value),
-    returnValueForMissingStub: null,
-  );
+  set triggerTime(DateTime? value) =>
+      super.noSuchMethod(Invocation.setter(#triggerTime, value), returnValueForMissingStub: null);
 
   @override
-  set enqueued(DateTime? value) => super.noSuchMethod(
-    Invocation.setter(#enqueued, value),
-    returnValueForMissingStub: null,
-  );
+  set enqueued(DateTime? value) =>
+      super.noSuchMethod(Invocation.setter(#enqueued, value), returnValueForMissingStub: null);
 
   @override
-  set doneTime(DateTime? value) => super.noSuchMethod(
-    Invocation.setter(#doneTime, value),
-    returnValueForMissingStub: null,
-  );
+  set doneTime(DateTime? value) =>
+      super.noSuchMethod(Invocation.setter(#doneTime, value), returnValueForMissingStub: null);
 
   @override
-  set state(_i4.UserTaskState? state) => super.noSuchMethod(
-    Invocation.setter(#state, state),
-    returnValueForMissingStub: null,
-  );
+  set state(_i4.UserTaskState? state) =>
+      super.noSuchMethod(Invocation.setter(#state, state), returnValueForMissingStub: null);
 
   @override
-  set hasNotificationBeenCreated(bool? value) => super.noSuchMethod(
-    Invocation.setter(#hasNotificationBeenCreated, value),
-    returnValueForMissingStub: null,
-  );
+  set hasNotificationBeenCreated(bool? value) =>
+      super.noSuchMethod(Invocation.setter(#hasNotificationBeenCreated, value), returnValueForMissingStub: null);
 
   @override
   set backgroundTaskExecutor(_i4.BackgroundTaskExecutor? value) =>
-      super.noSuchMethod(
-        Invocation.setter(#backgroundTaskExecutor, value),
-        returnValueForMissingStub: null,
-      );
+      super.noSuchMethod(Invocation.setter(#backgroundTaskExecutor, value), returnValueForMissingStub: null);
 
   @override
-  set result(_i5.Data? value) => super.noSuchMethod(
-    Invocation.setter(#result, value),
-    returnValueForMissingStub: null,
-  );
+  set result(_i5.Data? value) => super.noSuchMethod(Invocation.setter(#result, value), returnValueForMissingStub: null);
 
   @override
-  void onStart() => super.noSuchMethod(
-    Invocation.method(#onStart, []),
-    returnValueForMissingStub: null,
-  );
+  void onStart() => super.noSuchMethod(Invocation.method(#onStart, []), returnValueForMissingStub: null);
 
   @override
-  void onCancel({bool? dequeue = false}) => super.noSuchMethod(
-    Invocation.method(#onCancel, [], {#dequeue: dequeue}),
-    returnValueForMissingStub: null,
-  );
+  void onCancel({bool? dequeue = false}) =>
+      super.noSuchMethod(Invocation.method(#onCancel, [], {#dequeue: dequeue}), returnValueForMissingStub: null);
 
   @override
-  void onExpired() => super.noSuchMethod(
-    Invocation.method(#onExpired, []),
-    returnValueForMissingStub: null,
-  );
+  void onExpired() => super.noSuchMethod(Invocation.method(#onExpired, []), returnValueForMissingStub: null);
 
   @override
   void onDone({bool? dequeue = false, _i5.Data? result}) => super.noSuchMethod(
@@ -706,10 +541,7 @@ class MockUserTask extends _i1.Mock implements _i4.UserTask {
   );
 
   @override
-  void onNotification() => super.noSuchMethod(
-    Invocation.method(#onNotification, []),
-    returnValueForMissingStub: null,
-  );
+  void onNotification() => super.noSuchMethod(Invocation.method(#onNotification, []), returnValueForMissingStub: null);
 }
 
 /// A class which mocks [StudyService].
@@ -720,33 +552,18 @@ class MockStudyService extends _i1.Mock implements _i6.StudyService {
   _i5.DeploymentService get deploymentService =>
       (super.noSuchMethod(
             Invocation.getter(#deploymentService),
-            returnValue: _FakeDeploymentService_8(
-              this,
-              Invocation.getter(#deploymentService),
-            ),
-            returnValueForMissingStub: _FakeDeploymentService_8(
-              this,
-              Invocation.getter(#deploymentService),
-            ),
+            returnValue: _FakeDeploymentService_8(this, Invocation.getter(#deploymentService)),
+            returnValueForMissingStub: _FakeDeploymentService_8(this, Invocation.getter(#deploymentService)),
           )
           as _i5.DeploymentService);
 
   @override
   bool get hasStudy =>
-      (super.noSuchMethod(
-            Invocation.getter(#hasStudy),
-            returnValue: false,
-            returnValueForMissingStub: false,
-          )
-          as bool);
+      (super.noSuchMethod(Invocation.getter(#hasStudy), returnValue: false, returnValueForMissingStub: false) as bool);
 
   @override
   bool get isDeployed =>
-      (super.noSuchMethod(
-            Invocation.getter(#isDeployed),
-            returnValue: false,
-            returnValueForMissingStub: false,
-          )
+      (super.noSuchMethod(Invocation.getter(#isDeployed), returnValue: false, returnValueForMissingStub: false)
           as bool);
 
   @override
@@ -760,12 +577,7 @@ class MockStudyService extends _i1.Mock implements _i6.StudyService {
 
   @override
   bool get isRunning =>
-      (super.noSuchMethod(
-            Invocation.getter(#isRunning),
-            returnValue: false,
-            returnValueForMissingStub: false,
-          )
-          as bool);
+      (super.noSuchMethod(Invocation.getter(#isRunning), returnValue: false, returnValueForMissingStub: false) as bool);
 
   @override
   Iterable<_i6.DeviceViewModel> get deploymentDevices =>
@@ -777,18 +589,15 @@ class MockStudyService extends _i1.Mock implements _i6.StudyService {
           as Iterable<_i6.DeviceViewModel>);
 
   @override
-  set study(_i4.SmartphoneStudy? study) => super.noSuchMethod(
-    Invocation.setter(#study, study),
-    returnValueForMissingStub: null,
-  );
+  set study(_i4.SmartphoneStudy? study) =>
+      super.noSuchMethod(Invocation.setter(#study, study), returnValueForMissingStub: null);
 
   @override
   _i7.Future<_i5.StudyDeploymentStatus?> refreshDeploymentStatus() =>
       (super.noSuchMethod(
             Invocation.method(#refreshDeploymentStatus, []),
             returnValue: _i7.Future<_i5.StudyDeploymentStatus?>.value(),
-            returnValueForMissingStub:
-                _i7.Future<_i5.StudyDeploymentStatus?>.value(),
+            returnValueForMissingStub: _i7.Future<_i5.StudyDeploymentStatus?>.value(),
           )
           as _i7.Future<_i5.StudyDeploymentStatus?>);
 
@@ -829,65 +638,40 @@ class MockStudyService extends _i1.Mock implements _i6.StudyService {
           as _i7.Future<void>);
 
   @override
-  void addMeasurement(_i5.Measurement? measurement) => super.noSuchMethod(
-    Invocation.method(#addMeasurement, [measurement]),
-    returnValueForMissingStub: null,
-  );
+  void addMeasurement(_i5.Measurement? measurement) =>
+      super.noSuchMethod(Invocation.method(#addMeasurement, [measurement]), returnValueForMissingStub: null);
 
   @override
   bool hasMeasures() =>
-      (super.noSuchMethod(
-            Invocation.method(#hasMeasures, []),
-            returnValue: false,
-            returnValueForMissingStub: false,
-          )
+      (super.noSuchMethod(Invocation.method(#hasMeasures, []), returnValue: false, returnValueForMissingStub: false)
           as bool);
 
   @override
   bool hasMeasure(String? type) =>
-      (super.noSuchMethod(
-            Invocation.method(#hasMeasure, [type]),
-            returnValue: false,
-            returnValueForMissingStub: false,
-          )
+      (super.noSuchMethod(Invocation.method(#hasMeasure, [type]), returnValue: false, returnValueForMissingStub: false)
           as bool);
 
   @override
   bool hasUserTasks() =>
-      (super.noSuchMethod(
-            Invocation.method(#hasUserTasks, []),
-            returnValue: false,
-            returnValueForMissingStub: false,
-          )
+      (super.noSuchMethod(Invocation.method(#hasUserTasks, []), returnValue: false, returnValueForMissingStub: false)
           as bool);
 
   @override
   void translateProtocol([_i8.RPLocalizations? localization]) =>
-      super.noSuchMethod(
-        Invocation.method(#translateProtocol, [localization]),
-        returnValueForMissingStub: null,
-      );
+      super.noSuchMethod(Invocation.method(#translateProtocol, [localization]), returnValueForMissingStub: null);
 
   @override
-  _i7.Future<List<_i5.ParticipantData>>
-  getParticipantDataListFromDeployment() =>
+  _i7.Future<List<_i5.ParticipantData>> getParticipantDataListFromDeployment() =>
       (super.noSuchMethod(
             Invocation.method(#getParticipantDataListFromDeployment, []),
-            returnValue: _i7.Future<List<_i5.ParticipantData>>.value(
-              <_i5.ParticipantData>[],
-            ),
-            returnValueForMissingStub:
-                _i7.Future<List<_i5.ParticipantData>>.value(
-                  <_i5.ParticipantData>[],
-                ),
+            returnValue: _i7.Future<List<_i5.ParticipantData>>.value(<_i5.ParticipantData>[]),
+            returnValueForMissingStub: _i7.Future<List<_i5.ParticipantData>>.value(<_i5.ParticipantData>[]),
           )
           as _i7.Future<List<_i5.ParticipantData>>);
 
   @override
-  void setParticipantData(Map<String, _i5.Data>? data) => super.noSuchMethod(
-    Invocation.method(#setParticipantData, [data]),
-    returnValueForMissingStub: null,
-  );
+  void setParticipantData(Map<String, _i5.Data>? data) =>
+      super.noSuchMethod(Invocation.method(#setParticipantData, [data]), returnValueForMissingStub: null);
 
   @override
   _i7.Future<void> deployLocalProtocol() =>

@@ -44,9 +44,7 @@ class _StudyProgressCardWidgetState extends State<StudyProgressCardWidget> {
                     child: Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
                       mainAxisSize: MainAxisSize.min,
-                      children: [
-                        for (final (index, state) in progress.indexed) _count(context, index, state),
-                      ],
+                      children: [for (final (index, state) in progress.indexed) _count(context, index, state)],
                     ),
                   ),
                   SizedBox(width: 110, height: 110, child: _donut(progress)),

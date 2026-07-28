@@ -12,7 +12,8 @@ class ActivityCardViewModel extends SerializableViewModel<WeeklyActivities> {
       (activities[type] ?? const {}).entries.map((entry) => DailyActivity(entry.key, entry.value)).toList();
 
   bool get _hasActivity =>
-      !AppConfig.useDemoChartData || model.activities.values.any((perDay) => perDay.values.any((minutes) => minutes > 0));
+      !AppConfig.useDemoChartData ||
+      model.activities.values.any((perDay) => perDay.values.any((minutes) => minutes > 0));
 
   /// The demo week, folded together by the same code that folds live readings.
   late final WeeklyActivities _demo = _aggregate(DemoChartData.activityMeasurements);

@@ -32,7 +32,16 @@ abstract final class DemoChartData {
       for (final (hour, (low, high)) in _hourlyBands.indexed)
         for (final minute in const [10, 30, 50])
           _measurement(
-            PolarHR(samples: [PolarHRSample(hr: _hrAt(low, high, dayScale, minute), rrsMs: const [], contactStatus: true, contactStatusSupported: true)]),
+            PolarHR(
+              samples: [
+                PolarHRSample(
+                  hr: _hrAt(low, high, dayScale, minute),
+                  rrsMs: const [],
+                  contactStatus: true,
+                  contactStatusSupported: true,
+                ),
+              ],
+            ),
             _startOfWeek.add(Duration(days: dayOffset, hours: hour, minutes: minute)),
           ),
   ];
@@ -42,7 +51,10 @@ abstract final class DemoChartData {
   static List<Measurement> get activityMeasurements => [
     for (final (dayOffset, day) in _dailyActivities.indexed)
       for (final (type, startHour, endHour) in day) ...[
-        _measurement(Activity(type: type, confidence: 100), _startOfWeek.add(Duration(days: dayOffset, hours: startHour))),
+        _measurement(
+          Activity(type: type, confidence: 100),
+          _startOfWeek.add(Duration(days: dayOffset, hours: startHour)),
+        ),
         _measurement(
           Activity(type: ActivityType.STILL, confidence: 100),
           _startOfWeek.add(Duration(days: dayOffset, hours: endHour)),
@@ -69,10 +81,30 @@ abstract final class DemoChartData {
 
   /// The resting-to-peak band for each hour of the day.
   static const List<(double, double)> _hourlyBands = [
-    (48, 58), (46, 55), (45, 54), (45, 53), (46, 56), (50, 62),
-    (55, 72), (62, 88), (66, 95), (64, 92), (68, 99), (70, 101),
-    (66, 94), (63, 88), (61, 84), (65, 91), (69, 97), (72, 104),
-    (68, 96), (63, 86), (58, 78), (54, 70), (51, 64), (49, 60),
+    (48, 58),
+    (46, 55),
+    (45, 54),
+    (45, 53),
+    (46, 56),
+    (50, 62),
+    (55, 72),
+    (62, 88),
+    (66, 95),
+    (64, 92),
+    (68, 99),
+    (70, 101),
+    (66, 94),
+    (63, 88),
+    (61, 84),
+    (65, 91),
+    (69, 97),
+    (72, 104),
+    (68, 96),
+    (63, 86),
+    (58, 78),
+    (54, 70),
+    (51, 64),
+    (49, 60),
   ];
 
   /// (activity, start hour, end hour) per weekday, Monday first.

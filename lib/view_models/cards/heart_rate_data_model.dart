@@ -14,7 +14,9 @@ class HeartRateCardViewModel extends SerializableViewModel<HourlyHeartRate> {
   /// The average heart rate across [bands], taking the middle of each measured
   /// band. Null when none of them hold a value.
   static double? averageOf(Iterable<HeartRateMinMaxPrHour> bands) {
-    final midpoints = bands.where((band) => band.min != null && band.max != null).map((band) => (band.min! + band.max!) / 2);
+    final midpoints = bands
+        .where((band) => band.min != null && band.max != null)
+        .map((band) => (band.min! + band.max!) / 2);
     if (midpoints.isEmpty) return null;
     return midpoints.reduce((a, b) => a + b) / midpoints.length;
   }

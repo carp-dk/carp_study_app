@@ -29,9 +29,7 @@ class _TaskCompletionCardState extends State<TaskCompletionCard> {
           children: [
             Row(
               children: [
-                Expanded(
-                  child: Text(locale.translate('cards.task_completion.title'), style: fs16fw700),
-                ),
+                Expanded(child: Text(locale.translate('cards.task_completion.title'), style: fs16fw700)),
                 Container(
                   padding: const EdgeInsets.all(8),
                   decoration: BoxDecoration(

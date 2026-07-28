@@ -37,7 +37,10 @@ class HeartRateCardWidgetState extends State<HeartRateCardWidget> {
             children: [
               Row(
                 crossAxisAlignment: CrossAxisAlignment.start,
-                children: [Expanded(child: _rangeSummary(colors)), _rangePicker(colors)],
+                children: [
+                  Expanded(child: _rangeSummary(colors)),
+                  _rangePicker(colors),
+                ],
               ),
               const SizedBox(height: 16),
               SizedBox(height: 200, child: _chart(colors)),
@@ -81,10 +84,7 @@ class HeartRateCardWidgetState extends State<HeartRateCardWidget> {
             Text(measured ? '${range.min!.toInt()} - ${range.max!.toInt()}' : '-', style: fs28fw700),
             if (measured) ...[
               const SizedBox(width: 6),
-              Text(
-                locale.translate('cards.heartrate.bpm'),
-                style: fs12fw600.copyWith(color: colors.grey600),
-              ),
+              Text(locale.translate('cards.heartrate.bpm'), style: fs12fw600.copyWith(color: colors.grey600)),
             ],
           ],
         ),
@@ -134,17 +134,11 @@ class HeartRateCardWidgetState extends State<HeartRateCardWidget> {
       children: [
         Icon(Icons.favorite, color: CACHET.HEART_RATE_RED, size: 16),
         const SizedBox(width: 8),
-        Text(
-          locale.translate('cards.heartrate.average'),
-          style: fs14fw600.copyWith(color: colors.grey600),
-        ),
+        Text(locale.translate('cards.heartrate.average'), style: fs14fw600.copyWith(color: colors.grey600)),
         const Spacer(),
         Text(average != null ? average.toStringAsFixed(0) : '-', style: fs18fw700.copyWith(color: colors.grey900)),
         const SizedBox(width: 4),
-        Text(
-          locale.translate('cards.heartrate.bpm'),
-          style: fs12fw600.copyWith(color: colors.grey600),
-        ),
+        Text(locale.translate('cards.heartrate.bpm'), style: fs12fw600.copyWith(color: colors.grey600)),
       ],
     );
   }
@@ -214,7 +208,12 @@ class HeartRateCardWidgetState extends State<HeartRateCardWidget> {
             sideTitles: SideTitles(showTitles: true, reservedSize: 24, getTitlesWidget: _bottomTitle),
           ),
           rightTitles: AxisTitles(
-            sideTitles: SideTitles(showTitles: true, reservedSize: 40, interval: interval, getTitlesWidget: _rightTitle),
+            sideTitles: SideTitles(
+              showTitles: true,
+              reservedSize: 40,
+              interval: interval,
+              getTitlesWidget: _rightTitle,
+            ),
           ),
         ),
         gridData: FlGridData(
