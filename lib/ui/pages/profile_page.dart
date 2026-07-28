@@ -41,7 +41,7 @@ class ProfilePageState extends State<ProfilePage> {
                   IconButton(
                     icon: Icon(Icons.close, color: colors.primary, size: 28),
                     tooltip: locale.translate('Back'),
-                    onPressed: () => Navigator.of(context).pop(),
+                    onPressed: () => context.pop(),
                   ),
                 ],
               ),
@@ -359,20 +359,4 @@ class ProfilePageState extends State<ProfilePage> {
       },
     );
   }
-}
-
-class SlidePageRoute extends PageRouteBuilder<Widget> {
-  final Widget page;
-  SlidePageRoute(this.page)
-    : super(
-        pageBuilder: (context, animation, secondaryAnimation) => page,
-        transitionsBuilder: (context, animation, secondaryAnimation, child) {
-          var begin = Offset(1.0, 0.0);
-          var end = Offset.zero;
-          var curve = Curves.easeInOut;
-          var tween = Tween(begin: begin, end: end).chain(CurveTween(curve: curve));
-          var offsetAnimation = animation.drive(tween);
-          return SlideTransition(position: offsetAnimation, child: child);
-        },
-      );
 }
