@@ -18,6 +18,23 @@ class CarpPageTitle extends StatelessWidget {
   }
 }
 
+/// A section heading between the cards of a page, e.g. "TASKS".
+class CarpSectionTitle extends StatelessWidget {
+  final String title;
+  const CarpSectionTitle(this.title, {super.key});
+
+  @override
+  Widget build(BuildContext context) {
+    return Padding(
+      padding: const EdgeInsets.fromLTRB(16, 8, 16, 8),
+      child: Align(
+        alignment: Alignment.centerLeft,
+        child: Text(title, style: fs18fw700.copyWith(color: Theme.of(context).extension<CarpColors>()!.grey900)),
+      ),
+    );
+  }
+}
+
 class CarpAppBar extends StatelessWidget {
   final bool hasProfileIcon;
   const CarpAppBar({super.key, this.hasProfileIcon = false});

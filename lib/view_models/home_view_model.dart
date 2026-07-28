@@ -24,9 +24,6 @@ class HomePageViewModel extends ViewModel {
   StudyService get _study => _studyService ?? bloc.study;
   MessageService get _messages => _messageService ?? bloc.messages;
 
-  /// Per-survey completion counts for the "Completed Surveys" card.
-  final TaskCardViewModel surveys = TaskCardViewModel(AppTask.SURVEY_TYPE);
-
   bool _healthConnectPromptPending = false;
   bool _appUpdateAvailable = false;
   List<DeviceViewModel> _connectionSources = const [];

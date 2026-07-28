@@ -11,16 +11,15 @@ class StepsCardWidget extends StatefulWidget {
 }
 
 class StepsCardWidgetState extends State<StepsCardWidget> {
-  num _step = 0;
   num maxValue = 0;
 
-  int touchedIndex = DateTime.now().weekday;
+  /// The weekday whose bar is selected, or null for the week as a whole.
+  int? _selectedDay;
 
-  @override
-  void initState() {
-    _step = widget.model.steps[DateTime.now().weekday - 1].steps;
-    super.initState();
-  }
+  /// The headline figure: the selected day, or the whole week when nothing is.
+  num get _step => _selectedDay != null
+      ? widget.model.weeklySteps[_selectedDay] ?? 0
+      : widget.model.weeklySteps.values.fold(0, (sum, steps) => sum + steps);
 
   @override
   Widget build(BuildContext context) {
@@ -28,45 +27,60 @@ class StepsCardWidgetState extends State<StepsCardWidget> {
 
     return StudiesMaterial(
       backgroundColor: Theme.of(context).extension<CarpColors>()!.white!,
-      child: Padding(
-        padding: const EdgeInsets.all(8.0),
-        child: Column(
-          children: [
-            Row(
-              children: [
-                Text(
-                  _step > 0 ? '$_step' : '0',
-                  style: fs28fw700.copyWith(color: Theme.of(context).extension<CarpColors>()!.grey900!),
-                ),
-                Padding(
-                  padding: const EdgeInsets.only(left: 4.0),
-                  child: Text(
-                    '${locale.translate('cards.steps.steps')} ${_getDayName(touchedIndex)}',
+      // Tapping anywhere else on the card drops the selection.
+      child: GestureDetector(
+        onTap: () => setState(() => _selectedDay = null),
+        child: Padding(
+          padding: const EdgeInsets.all(8.0),
+          child: Column(
+            children: [
+              Row(
+                crossAxisAlignment: CrossAxisAlignment.baseline,
+                textBaseline: TextBaseline.alphabetic,
+                children: [
+                  Flexible(
+                    child: FittedBox(
+                      fit: BoxFit.scaleDown,
+                      alignment: Alignment.centerLeft,
+                      child: Text(
+                        '$_step',
+                        maxLines: 1,
+                        style: fs28fw700.copyWith(color: Theme.of(context).extension<CarpColors>()!.grey900!),
+                      ),
+                    ),
+                  ),
+                  Padding(
+                    padding: const EdgeInsets.only(left: 4.0),
+                    child: Text(
+                      _selectedDay != null
+                          ? '${locale.translate('cards.steps.steps')} ${_getDayName(_selectedDay!)}'
+                          : locale.translate('cards.steps.per_week'),
+                      style: fs12fw700.copyWith(color: Theme.of(context).extension<CarpColors>()!.grey600),
+                    ),
+                  ),
+                ],
+              ),
+              Row(
+                children: [
+                  Text(
+                    "${widget.model.currentMonth} ${widget.model.startOfWeek} - ${int.parse(widget.model.endOfWeek) < int.parse(widget.model.startOfWeek) ? widget.model.nextMonth : widget.model.currentMonth} ${widget.model.endOfWeek}, ${widget.model.currentYear}",
                     style: fs12fw700.copyWith(color: Theme.of(context).extension<CarpColors>()!.grey600),
                   ),
-                ),
-              ],
-            ),
-            Row(
-              children: [
-                Text(
-                  "${widget.model.currentMonth} ${widget.model.startOfWeek} - ${int.parse(widget.model.endOfWeek) < int.parse(widget.model.startOfWeek) ? widget.model.nextMonth : widget.model.currentMonth} ${widget.model.endOfWeek}, ${widget.model.currentYear}",
-                  style: fs12fw700.copyWith(color: Theme.of(context).extension<CarpColors>()!.grey600),
-                ),
-                Spacer(),
-              ],
-            ),
-            SizedBox(
-              height: 160,
-              width: MediaQuery.of(context).size.width * 0.9,
-              child: StreamBuilder(
-                stream: widget.model.pedometerEvents,
-                builder: (context, snapshot) {
-                  return barCharts;
-                },
+                  Spacer(),
+                ],
               ),
-            ),
-          ],
+              SizedBox(
+                height: 160,
+                width: MediaQuery.of(context).size.width * 0.9,
+                child: StreamBuilder(
+                  stream: widget.model.pedometerEvents,
+                  builder: (context, snapshot) {
+                    return barCharts;
+                  },
+                ),
+              ),
+            ],
+          ),
         ),
       ),
     );
@@ -82,16 +96,21 @@ class StepsCardWidgetState extends State<StepsCardWidget> {
           ),
           leftTitles: const AxisTitles(),
           rightTitles: AxisTitles(
-            sideTitles: SideTitles(showTitles: true, getTitlesWidget: rightTitles, reservedSize: 48),
+            // Wide enough for a five-digit step count without wrapping.
+            sideTitles: SideTitles(showTitles: true, getTitlesWidget: rightTitles, reservedSize: 60),
           ),
           topTitles: const AxisTitles(),
         ),
         barTouchData: BarTouchData(
-          enabled: false,
-          touchCallback: (p0, p1) {
-            setState(() {
-              touchedIndex = (p1?.spot?.touchedBarGroupIndex ?? DateTime.now().weekday - 1) + 1;
-            });
+          enabled: true,
+          // The count above the chart already names the selected day.
+          touchTooltipData: BarTouchTooltipData(getTooltipColor: (_) => Colors.transparent),
+          touchCallback: (event, response) {
+            // Only settle on tap-up, so the selection is not dragged around -
+            // and a tap on empty chart space clears it.
+            if (event is! FlTapUpEvent) return;
+            final index = response?.spot?.touchedBarGroupIndex;
+            setState(() => _selectedDay = index == null ? null : index + 1);
           },
         ),
         groupsSpace: 4,
@@ -115,18 +134,17 @@ class StepsCardWidgetState extends State<StepsCardWidget> {
   }
 
   BarChartGroupData generateGroupData(int x, int step) {
-    bool isTouched = touchedIndex == x;
+    // Nothing selected means the week as a whole - every bar reads the same.
+    bool isTouched = _selectedDay == null || _selectedDay == x;
     maxValue = max(maxValue, step);
-    if (isTouched) {
-      _step = step;
-    }
 
     return BarChartGroupData(
       x: x,
       barRods: [
         BarChartRodData(
           toY: step.toDouble(),
-          color: widget.colors[1].withValues(alpha: isTouched ? 0.8 : 1),
+          // Solid for the selected day, washed out for the rest.
+          color: isTouched ? widget.colors[1] : widget.colors[1].withValues(alpha: 0.3),
           width: 32,
           borderRadius: const BorderRadius.only(topLeft: Radius.circular(4), topRight: Radius.circular(4)),
         ),

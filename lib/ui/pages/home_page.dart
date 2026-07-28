@@ -26,9 +26,9 @@ class HomePage extends StatelessWidget {
               else ...[
                 AppUpdateCard(model: model),
                 StudyAboutCard(model: model),
-                _sectionHeader(colors, 'Connections'),
+                CarpSectionTitle('Connections'),
                 ConnectionsStatusCard(model: model),
-                _sectionHeader(colors, 'Your progress'),
+                CarpSectionTitle('Your progress'),
                 IntrinsicHeight(
                   child: Row(
                     crossAxisAlignment: CrossAxisAlignment.stretch,
@@ -38,12 +38,8 @@ class HomePage extends StatelessWidget {
                     ],
                   ),
                 ),
-                if (model.surveys.tasksTable.isNotEmpty) ...[
-                  _sectionHeader(colors, 'Completed Surveys'),
-                  SurveyCard(model.surveys, showTitle: false),
-                ],
                 if (model.messages.isNotEmpty) ...[
-                  _sectionHeader(colors, 'Feeds'),
+                  CarpSectionTitle('Feeds'),
                   for (final message in model.messages) _feedCard(context, colors, message),
                 ],
               ],
@@ -95,13 +91,6 @@ class HomePage extends StatelessWidget {
     );
   }
 
-  Widget _sectionHeader(CarpColors colors, String title) {
-    return Padding(
-      padding: const EdgeInsets.fromLTRB(16, 8, 16, 8),
-      child: Text(title, style: fs18fw700.copyWith(color: colors.grey900)),
-    );
-  }
-
   /// "Active Days in Study" tile: total active days, a dot per day for the
   /// last 7 days (filled if at least one task was done), and a stats link.
   Widget _activeDaysTile(BuildContext context, CarpColors colors) {
@@ -127,7 +116,7 @@ class HomePage extends StatelessWidget {
         ],
       ),
       linkLabel: 'View Statistics',
-      onLink: () => context.go(DataVisualizationPage.route),
+      onLink: () => context.go(StatisticsPage.route),
       margin: const EdgeInsets.only(left: 16, right: 6, bottom: 16),
     );
   }
