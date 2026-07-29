@@ -100,6 +100,14 @@ class TaskListPageViewModel extends ViewModel {
     return tasks;
   }
 
+  /// The tasks the user can still act on, soonest to expire first.
+  List<UserTask> get pendingTasks => tasks.where((task) => task.availableForUser).toList();
+
+  /// The tasks that are done or expired, most recently finished first.
+  List<UserTask> get completedTasks =>
+      tasks.where((task) => task.state == UserTaskState.done || task.state == UserTaskState.expired).toList()
+        ..sort((t1, t2) => (t2.doneTime ?? DateTime(0)).compareTo(t1.doneTime ?? DateTime(0)));
+
   /// A stream of [UserTask]s as they are generated.
   Stream<UserTask> get userTaskEvents => AppTaskController().userTaskEvents;
 }

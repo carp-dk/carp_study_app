@@ -1,5 +1,7 @@
 part of carp_study_app;
 
+/// The "Tasks" tab (design 2.0): a segmented Pending / Completed switch over a
+/// list of task cards.
 class TaskListPage extends StatefulWidget {
   static const String route = '/tasks';
   final TaskListPageViewModel model;
@@ -7,37 +9,6 @@ class TaskListPage extends StatefulWidget {
 
   @override
   TaskListPageState createState() => TaskListPageState();
-}
-
-/// Custom SliverAppBarDelegate class
-class _SliverAppBarDelegate extends SliverPersistentHeaderDelegate {
-  _SliverAppBarDelegate(this._tabBar);
-
-  final TabBar _tabBar;
-
-  @override
-  double get minExtent => _tabBar.preferredSize.height;
-
-  @override
-  double get maxExtent => _tabBar.preferredSize.height;
-
-  @override
-  Widget build(BuildContext context, double shrinkOffset, bool overlapsContent) {
-    return Container(
-      width: double.infinity,
-      padding: const EdgeInsets.symmetric(vertical: 4),
-      decoration: BoxDecoration(
-        borderRadius: BorderRadius.circular(8),
-        color: Theme.of(context).extension<CarpColors>()!.grey200,
-      ),
-      child: _tabBar,
-    );
-  }
-
-  @override
-  bool shouldRebuild(_SliverAppBarDelegate oldDelegate) {
-    return false;
-  }
 }
 
 class TaskListPageState extends State<TaskListPage> with TickerProviderStateMixin {
@@ -70,9 +41,10 @@ class TaskListPageState extends State<TaskListPage> with TickerProviderStateMixi
       widget.model.autoCompletedTaskShown();
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(
-          backgroundColor: Theme.of(context).extension<CarpColors>()!.grey700,
+          backgroundColor: Theme.of(context).extension<CarpColors>()!.grey900,
           content: Text(RPLocalizations.of(context)!.translate('Done!')),
-          shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(4)),
+          behavior: SnackBarBehavior.floating,
+          shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
           duration: const Duration(seconds: 1),
         ),
       );
@@ -83,83 +55,206 @@ class TaskListPageState extends State<TaskListPage> with TickerProviderStateMixi
 
   @override
   Widget build(BuildContext context) {
-    RPLocalizations locale = RPLocalizations.of(context)!;
-    return DefaultTabController(
-      length: 2,
-      child: Scaffold(
-        backgroundColor: Theme.of(context).extension<CarpColors>()!.backgroundGray,
-        body: SafeArea(
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.center,
-            children: <Widget>[
-              Padding(
-                padding: const EdgeInsets.symmetric(vertical: 8.0, horizontal: 10),
-                child: const CarpAppBar(hasProfileIcon: true),
-              ),
-              Expanded(
-                flex: 4,
-                child: StreamBuilder<UserTask>(
-                  stream: widget.model.userTaskEvents,
-                  builder: (context, snapshot) {
-                    if (widget.model.tasks.isEmpty) {
-                      return _noTasks(context);
-                    } else {
-                      return CustomScrollView(
-                        slivers: [
-                          SliverToBoxAdapter(child: CarpPageTitle(locale.translate('pages.task_list.title'))),
-                          // Tab holder
-                          SliverPadding(
-                            padding: const EdgeInsets.only(top: 8, bottom: 24, left: 64, right: 64),
-                            sliver: SliverPersistentHeader(
-                              pinned: true,
-                              delegate: _SliverAppBarDelegate(
-                                TabBar(
-                                  controller: _tabController,
-                                  labelPadding: const EdgeInsets.only(top: 4, bottom: 4, left: 4, right: 4),
-                                  labelColor: Theme.of(context).extension<CarpColors>()!.grey900,
-                                  unselectedLabelColor: Theme.of(context).extension<CarpColors>()!.grey900,
-                                  dividerColor: Colors.transparent,
-                                  indicator: ShapeDecoration(
-                                    shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(8)),
-                                    color: Theme.of(context).extension<CarpColors>()!.white,
-                                  ),
-                                  tabs: [
-                                    Container(
-                                      width: double.infinity,
-                                      child: Tab(text: locale.translate('pages.task_list.pending')),
-                                    ),
-                                    Container(
-                                      width: double.infinity,
-                                      child: Tab(text: locale.translate('pages.task_list.completed')),
-                                    ),
-                                  ],
-                                ),
+    final locale = RPLocalizations.of(context)!;
+    final colors = Theme.of(context).extension<CarpColors>()!;
+
+    return Scaffold(
+      backgroundColor: colors.backgroundGray,
+      body: SafeArea(
+        child: Column(
+          children: [
+            Padding(
+              padding: const EdgeInsets.symmetric(vertical: 8.0, horizontal: 10),
+              child: const CarpAppBar(hasProfileIcon: true),
+            ),
+            CarpPageTitle(locale.translate('pages.task_list.title')),
+            Expanded(
+              child: StreamBuilder<UserTask>(
+                stream: widget.model.userTaskEvents,
+                builder: (context, snapshot) {
+                  final pending = widget.model.pendingTasks;
+                  final completed = widget.model.completedTasks;
+                  final showing = _tabController.index == 0 ? pending : completed;
+                  final showParticipantData = _tabController.index == 0 && widget.model.showParticipantDataCard;
+
+                  return Column(
+                    children: [
+                      _segmentedControl(colors, locale, pending.length, completed.length),
+                      Expanded(
+                        child: showing.isEmpty && !showParticipantData
+                            ? _emptyState(colors, locale)
+                            : ListView(
+                                padding: const EdgeInsets.only(bottom: 16),
+                                children: [
+                                  if (showParticipantData) _participantDataCard(colors),
+                                  for (final task in showing) _taskCard(context, colors, task),
+                                ],
                               ),
-                            ),
-                          ),
-                          if (widget.model.showParticipantDataCard)
-                            SliverToBoxAdapter(child: _buildParticipantDataCard()),
-                          SliverList(
-                            delegate: SliverChildBuilderDelegate((BuildContext context, int index) {
-                              UserTask userTask = widget.model.tasks[index];
-                              if (_tabController.index == 0) {
-                                if (userTask.availableForUser) {
-                                  return _buildAvailableTaskCard(context, userTask);
-                                }
-                              } else if (_tabController.index == 1) {
-                                if (userTask.state == UserTaskState.done || userTask.state == UserTaskState.expired) {
-                                  return _buildCompletedTaskCard(context, userTask);
-                                }
-                              }
-                              return const SizedBox.shrink();
-                            }, childCount: widget.model.tasks.length),
-                          ),
-                        ],
-                      );
-                    }
-                  },
-                ),
+                      ),
+                    ],
+                  );
+                },
               ),
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+
+  /// The Pending / Completed switch: a pill track with the selected segment
+  /// lifted out in white.
+  Widget _segmentedControl(CarpColors colors, RPLocalizations locale, int pending, int completed) => Padding(
+    padding: const EdgeInsets.fromLTRB(16, 0, 16, 16),
+    child: Container(
+      padding: const EdgeInsets.all(4),
+      decoration: BoxDecoration(color: colors.grey200, borderRadius: BorderRadius.circular(12)),
+      child: TabBar(
+        controller: _tabController,
+        labelPadding: EdgeInsets.zero,
+        dividerColor: Colors.transparent,
+        indicatorSize: TabBarIndicatorSize.tab,
+        splashBorderRadius: BorderRadius.circular(8),
+        indicator: ShapeDecoration(
+          shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(8)),
+          color: colors.white,
+          shadows: [BoxShadow(color: Colors.black.withValues(alpha: 0.06), blurRadius: 6, offset: const Offset(0, 2))],
+        ),
+        tabs: [
+          _tab(colors, locale.translate('pages.task_list.pending'), pending, 0),
+          _tab(colors, locale.translate('pages.task_list.completed'), completed, 1),
+        ],
+      ),
+    ),
+  );
+
+  /// One segment of the Pending / Completed switch, with a count badge.
+  Widget _tab(CarpColors colors, String label, int count, int index) {
+    final selected = _tabController.index == index;
+    return Tab(
+      height: 40,
+      child: Row(
+        mainAxisAlignment: MainAxisAlignment.center,
+        children: [
+          Flexible(
+            child: Text(
+              label,
+              overflow: TextOverflow.ellipsis,
+              style: fs14fw600.copyWith(color: selected ? colors.grey900 : colors.grey600),
+            ),
+          ),
+          const SizedBox(width: 6),
+          Container(
+            padding: const EdgeInsets.symmetric(horizontal: 7, vertical: 2),
+            decoration: BoxDecoration(
+              color: selected ? colors.primary!.withValues(alpha: 0.12) : colors.grey300,
+              borderRadius: BorderRadius.circular(100),
+            ),
+            child: Text('$count', style: fs12fw600.copyWith(color: selected ? colors.primary : colors.grey600)),
+          ),
+        ],
+      ),
+    );
+  }
+
+  /// A task card, in either tab - the state decides the accent colour, the
+  /// badge and which meta chips are shown.
+  Widget _taskCard(BuildContext context, CarpColors colors, UserTask userTask) {
+    final locale = RPLocalizations.of(context)!;
+    final done = userTask.state == UserTaskState.done;
+    final expired = userTask.state == UserTaskState.expired;
+    final accent = done
+        ? CACHET.TASK_COMPLETED_BLUE
+        : expired
+        ? colors.grey500!
+        : taskTypeColors[userTask.type] ?? colors.primary!;
+    final description = locale.translate(userTask.description);
+    final (expiry, urgent) = _expiry(locale, userTask);
+
+    return _card(
+      colors,
+      onTap: done || expired
+          ? null
+          : () {
+              if (widget.model.startUserTask(userTask)) context.push('/task/${userTask.id}');
+            },
+      badge: _badge(accent, child: _taskBadgeIcon(colors, userTask, accent)),
+      children: [
+        Row(
+          children: [
+            Expanded(
+              child: Text(
+                userTask.type[0].toUpperCase() + userTask.type.substring(1),
+                overflow: TextOverflow.ellipsis,
+                style: fs12fw600.copyWith(color: accent),
+              ),
+            ),
+            if (!done && !expired && expiry.isNotEmpty)
+              _chip(colors, Icons.alarm, expiry, urgent ? colors.warningColor! : colors.grey500!, filled: urgent),
+            if (done && userTask.doneTime != null)
+              Text(
+                DateFormat('MMM d, yyyy').format(userTask.doneTime!),
+                style: fs12fw600.copyWith(color: colors.grey500),
+              ),
+          ],
+        ),
+        const SizedBox(height: 4),
+        Text(locale.translate(userTask.title), style: fs16fw600.copyWith(color: colors.grey900)),
+        if (!done && !expired && description.isNotEmpty) ...[
+          const SizedBox(height: 4),
+          Text(
+            description,
+            maxLines: 5,
+            overflow: TextOverflow.ellipsis,
+            style: fs14fw600.copyWith(color: colors.grey600),
+          ),
+        ],
+        if (!done && !expired) ...[
+          const SizedBox(height: 10),
+          _chip(colors, Icons.schedule, _estimatedTime(locale, userTask), colors.grey500!),
+        ],
+      ],
+    );
+  }
+
+  Widget _participantDataCard(CarpColors colors) {
+    final accent = taskTypeColors["ExpectedParticipantData"]!;
+    return _card(
+      colors,
+      onTap: () => context.push(ParticipantDataPage.route),
+      badge: _badge(accent, child: Icon(taskTypeIcons["ExpectedParticipantData"]!.icon, color: accent, size: 20)),
+      children: [
+        Text("Input Data", style: fs12fw600.copyWith(color: accent)),
+        const SizedBox(height: 4),
+        Text("Participant Data", style: fs16fw600.copyWith(color: colors.grey900)),
+        const SizedBox(height: 4),
+        Text(
+          "Fill in the required participant data to continue with the study.",
+          style: fs14fw600.copyWith(color: colors.grey600),
+        ),
+      ],
+    );
+  }
+
+  /// The shared card shell: badge on the left, content column, chevron when
+  /// the card leads somewhere.
+  Widget _card(CarpColors colors, {required Widget badge, required List<Widget> children, VoidCallback? onTap}) {
+    return StudiesMaterial(
+      backgroundColor: colors.grey50!,
+      child: InkWell(
+        onTap: onTap,
+        child: Padding(
+          padding: const EdgeInsets.all(16),
+          child: Row(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              badge,
+              const SizedBox(width: 12),
+              Expanded(child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: children)),
+              if (onTap != null) ...[
+                const SizedBox(width: 8),
+                Icon(Icons.chevron_right, size: 20, color: colors.grey400),
+              ],
             ],
           ),
         ),
@@ -167,335 +262,89 @@ class TaskListPageState extends State<TaskListPage> with TickerProviderStateMixi
     );
   }
 
-  Widget _buildParticipantDataCard() {
-    return GestureDetector(
-      child: StudiesMaterial(
-        hasBorder: true,
-        borderColor: taskTypeColors["ExpectedParticipantData"]!,
-        shape: RoundedRectangleBorder(
-          borderRadius: BorderRadius.horizontal(left: Radius.circular(2.0), right: Radius.circular(8.0)),
-        ),
-        backgroundColor: Theme.of(context).extension<CarpColors>()!.grey50!,
-        child: Padding(
-          padding: const EdgeInsets.symmetric(vertical: 16),
-          child: IntrinsicHeight(
-            child: Row(
-              crossAxisAlignment: CrossAxisAlignment.stretch,
-              children: [
-                const SizedBox(width: 12.0),
-                Expanded(
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      Row(
-                        children: [
-                          Icon(
-                            taskTypeIcons["ExpectedParticipantData"]!.icon,
-                            color: taskTypeColors["ExpectedParticipantData"],
-                          ),
-                          Padding(
-                            padding: const EdgeInsets.only(left: 4.0),
-                            child: Text(
-                              "Input Data",
-                              style: TextStyle(
-                                color: taskTypeColors["ExpectedParticipantData"],
-                                fontWeight: FontWeight.bold,
-                              ),
-                            ),
-                          ),
-                        ],
-                      ),
-                      const SizedBox(height: 8.0),
-                      Padding(
-                        padding: const EdgeInsets.all(4.0),
-                        child: Column(
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          children: [
-                            Text(
-                              "Participant Data",
-                              style: const TextStyle(fontWeight: FontWeight.bold, fontSize: 16.0),
-                            ),
-                            const SizedBox(height: 4.0),
-                            Padding(
-                              padding: const EdgeInsets.only(right: 20),
-                              child: Text("Fill in the required participant data to continue with the study."),
-                            ),
-                          ],
-                        ),
-                      ),
-                    ],
-                  ),
-                ),
-              ],
-            ),
-          ),
-        ),
-      ),
-      onTap: () {
-        context.push(ParticipantDataPage.route);
-      },
-    );
-  }
+  /// Rounded-square badge: the accent colour tinted, with the icon on top.
+  Widget _badge(Color accent, {required Widget child}) => Container(
+    width: 40,
+    height: 40,
+    alignment: Alignment.center,
+    decoration: BoxDecoration(color: accent.withValues(alpha: 0.12), borderRadius: BorderRadius.circular(12)),
+    child: child,
+  );
 
-  Widget _buildAvailableTaskCard(BuildContext context, UserTask userTask) {
-    RPLocalizations locale = RPLocalizations.of(context)!;
+  /// A small icon + label chip, outlined by default and tinted when [filled].
+  Widget _chip(CarpColors colors, IconData icon, String label, Color color, {bool filled = false}) => Container(
+    padding: EdgeInsets.symmetric(horizontal: filled ? 8 : 0, vertical: filled ? 4 : 0),
+    decoration: filled
+        ? BoxDecoration(color: color.withValues(alpha: 0.12), borderRadius: BorderRadius.circular(100))
+        : null,
+    child: Row(
+      mainAxisSize: MainAxisSize.min,
+      children: [
+        Icon(icon, size: 14, color: color),
+        const SizedBox(width: 4),
+        Text(label, style: fs12fw600.copyWith(color: color)),
+      ],
+    ),
+  );
 
-    return Center(
-      child: GestureDetector(
-        child: StudiesMaterial(
-          hasBorder: true,
-          borderColor: taskTypeColors[userTask.type]!,
-          shape: RoundedRectangleBorder(
-            borderRadius: BorderRadius.horizontal(left: Radius.circular(2.0), right: Radius.circular(8.0)),
-          ),
-          backgroundColor: userTask.expiresIn != null && userTask.expiresIn!.inHours < 24
-              ? CACHET.TASK_TO_EXPIRE_BACKGROUND
-              : Theme.of(context).extension<CarpColors>()!.grey50!,
-          child: Padding(
-            padding: const EdgeInsets.symmetric(vertical: 16),
-            child: IntrinsicHeight(
-              child: Row(
-                crossAxisAlignment: CrossAxisAlignment.stretch,
-                children: [
-                  const SizedBox(width: 12.0), // Space between line and content
-                  Expanded(
-                    // Allows the content to take remaining space
-                    child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        Row(
-                          children: [
-                            if (userTask.state == UserTaskState.started) CircularProgressIndicator(),
-                            if (userTask.state != UserTaskState.started) _taskTypeIcon(userTask),
-                            Padding(
-                              padding: const EdgeInsets.only(left: 4.0),
-                              child: Text(
-                                userTask.type[0].toUpperCase() + userTask.type.substring(1),
-                                style: TextStyle(color: taskTypeColors[userTask.type], fontWeight: FontWeight.bold),
-                              ),
-                            ),
-                            Spacer(),
-                            if (_timeRemainingSubtitle(userTask).isNotEmpty)
-                              Icon(
-                                Icons.alarm,
-                                color: userTask.expiresIn != null && userTask.expiresIn!.inHours < 24
-                                    ? Theme.of(context).extension<CarpColors>()!.warningColor
-                                    : Colors.grey,
-                              ),
-                            const SizedBox(width: 4.0),
-                            Padding(
-                              padding: const EdgeInsets.only(right: 20),
-                              child: Text(
-                                _timeRemainingSubtitle(userTask),
-                                style: TextStyle(
-                                  color: userTask.expiresIn != null && userTask.expiresIn!.inHours < 24
-                                      ? Theme.of(context).extension<CarpColors>()!.warningColor
-                                      : Colors.grey,
-                                  fontSize: 12.0,
-                                ),
-                              ),
-                            ),
-                          ],
-                        ),
-                        const SizedBox(height: 8.0),
-                        Padding(
-                          padding: const EdgeInsets.all(4.0),
-                          child: Column(
-                            crossAxisAlignment: CrossAxisAlignment.start,
-                            children: [
-                              Text(
-                                locale.translate(userTask.title),
-                                style: const TextStyle(fontWeight: FontWeight.bold, fontSize: 16.0),
-                              ),
-                              const SizedBox(height: 4.0),
-                              Padding(
-                                padding: const EdgeInsets.only(right: 20),
-                                child: Text(locale.translate(userTask.description)),
-                              ),
-                              Padding(
-                                padding: const EdgeInsets.only(top: 8.0),
-                                child: Row(
-                                  mainAxisAlignment: MainAxisAlignment.end,
-                                  children: [
-                                    Padding(
-                                      padding: const EdgeInsets.only(right: 20),
-                                      child: Text(
-                                        _estimatedTimeSubtitle(userTask),
-                                        style: TextStyle(color: Colors.grey, fontSize: 12.0),
-                                      ),
-                                    ),
-                                  ],
-                                ),
-                              ),
-                            ],
-                          ),
-                        ),
-                      ],
-                    ),
-                  ),
-                ],
-              ),
-            ),
-          ),
-        ),
-        onTap: () {
-          if (widget.model.startUserTask(userTask)) {
-            context.push('/task/${userTask.id}');
-          }
-        },
-      ),
-    );
-  }
-
-  /// Get an icon for the [userTask] based on its type. If there is no icon for
-  /// the type, use the 1st measure in the task as an icon. If there is no
-  /// icon for the measure, use a default icon.
-  Widget _taskTypeIcon(UserTask userTask) {
-    Icon originalIcon = taskTypeIcons[userTask.type] as Icon;
+  /// The icon for [userTask], or a spinner while it is running.
+  Widget _taskBadgeIcon(CarpColors colors, UserTask userTask, Color accent) {
     return StreamBuilder(
       stream: userTask.stateEvents,
-      initialData: UserTaskState.enqueued,
+      initialData: userTask.state,
       builder: (context, snapshot) {
-        if (taskTypeIcons[userTask.type] != null && userTask.availableForUser) {
-          return originalIcon;
-        } else if (taskTypeIcons[userTask.type] != null && userTask.state == UserTaskState.started) {
-          return Padding(
-            padding: const EdgeInsets.all(4),
-            child: SizedBox(child: CircularProgressIndicator(strokeWidth: 3), height: 14, width: 14),
-          );
-        } else if (taskTypeIcons[userTask.type] != null && userTask.state == UserTaskState.done) {
-          return Icon(originalIcon.icon, color: CACHET.TASK_COMPLETED_BLUE);
-        } else {
-          return Icon(originalIcon.icon, color: Theme.of(context).extension<CarpColors>()!.grey600);
+        if (userTask.state == UserTaskState.started) {
+          return SizedBox(width: 16, height: 16, child: CircularProgressIndicator(strokeWidth: 2.5, color: accent));
         }
+        final icon = taskTypeIcons[userTask.type]?.icon ?? Icons.assignment;
+        return Icon(userTask.state == UserTaskState.done ? Icons.check : icon, color: accent, size: 20);
       },
     );
   }
 
-  String _estimatedTimeSubtitle(UserTask userTask) {
-    RPLocalizations locale = RPLocalizations.of(context)!;
-    String subtitle = (userTask.task.minutesToComplete != null)
-        ? '${locale.translate('pages.task_list.task.estimated_time')} ${userTask.task.minutesToComplete} min'
-        : locale.translate('pages.task_list.task.auto_complete');
+  /// How long [userTask] takes, or that it completes on its own.
+  String _estimatedTime(RPLocalizations locale, UserTask userTask) => userTask.task.minutesToComplete != null
+      ? '${locale.translate('pages.task_list.task.estimated_time')} ${userTask.task.minutesToComplete} min'
+      : locale.translate('pages.task_list.task.auto_complete');
 
-    if (userTask.expiresIn != null) {
-      if (userTask.expiresIn!.isNegative) {
-        userTask.onExpired();
-      }
+  /// The humanized time left on [userTask], and whether that is under a day.
+  (String, bool) _expiry(RPLocalizations locale, UserTask userTask) {
+    final expiresIn = userTask.expiresIn;
+    if (expiresIn == null) return ('', false);
+    if (expiresIn.isNegative) {
+      userTask.onExpired();
+      return ('', false);
     }
-
-    return subtitle.isEmpty ? locale.translate(userTask.description) : subtitle;
+    return (expiresIn.humanize(locale), expiresIn.inHours < 24);
   }
 
-  String _timeRemainingSubtitle(UserTask userTask) {
-    RPLocalizations locale = RPLocalizations.of(context)!;
-    String humanizedTimeRemaining = "";
-    if (userTask.expiresIn != null) {
-      if (userTask.expiresIn!.isNegative) {
-        userTask.onExpired();
-      }
-
-      humanizedTimeRemaining = userTask.expiresIn!.humanize(locale);
-    }
-
-    return humanizedTimeRemaining.isNotEmpty ? humanizedTimeRemaining : "";
-  }
-
-  Widget _buildCompletedTaskCard(BuildContext context, UserTask userTask) {
-    RPLocalizations locale = RPLocalizations.of(context)!;
-    return Center(
-      child: GestureDetector(
-        child: StudiesMaterial(
-          backgroundColor: Theme.of(context).extension<CarpColors>()!.grey50!,
-          hasBorder: true,
-          shape: RoundedRectangleBorder(
-            borderRadius: BorderRadius.horizontal(left: Radius.circular(2.0), right: Radius.circular(8.0)),
-          ),
-          borderColor: (userTask.state == UserTaskState.done) ? CACHET.TASK_COMPLETED_BLUE : CACHET.GREY_6,
-          child: Padding(
-            padding: const EdgeInsets.only(top: 16, bottom: 16, right: 16),
-            child: IntrinsicHeight(
-              child: Row(
-                crossAxisAlignment: CrossAxisAlignment.stretch,
-                children: [
-                  const SizedBox(width: 12.0), // Space between line and content
-                  Expanded(
-                    // Allows the content to take remaining space
-                    child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        Row(
-                          children: [
-                            _taskTypeIcon(userTask),
-                            Padding(
-                              padding: const EdgeInsets.only(left: 4.0),
-                              child: Text(
-                                userTask.type,
-                                style: TextStyle(
-                                  color: (userTask.state == UserTaskState.done)
-                                      ? CACHET.TASK_COMPLETED_BLUE
-                                      : CACHET.GREY_6,
-                                  fontWeight: FontWeight.bold,
-                                ),
-                              ),
-                            ),
-                            Spacer(),
-                            Text(
-                              userTask.doneTime != null
-                                  ? DateFormat('MMMM dd yyyy').format(userTask.doneTime!)
-                                  : 'Done time null',
-                              style: TextStyle(
-                                color: userTask.expiresIn != null && userTask.expiresIn!.inHours < 24
-                                    ? Theme.of(context).extension<CarpColors>()!.warningColor
-                                    : Colors.grey,
-                                fontSize: 12.0,
-                              ),
-                            ),
-                          ],
-                        ),
-                        const SizedBox(height: 8.0),
-                        Padding(
-                          padding: const EdgeInsets.all(4.0),
-                          child: Column(
-                            crossAxisAlignment: CrossAxisAlignment.start,
-                            children: [
-                              Text(
-                                locale.translate(userTask.title),
-                                style: const TextStyle(fontWeight: FontWeight.bold, fontSize: 16.0),
-                              ),
-                            ],
-                          ),
-                        ),
-                      ],
-                    ),
-                  ),
-                ],
-              ),
+  Widget _emptyState(CarpColors colors, RPLocalizations locale) {
+    return Padding(
+      padding: const EdgeInsets.fromLTRB(32, 48, 32, 48),
+      child: Column(
+        mainAxisAlignment: MainAxisAlignment.center,
+        children: [
+          Container(
+            width: 64,
+            height: 64,
+            decoration: BoxDecoration(
+              color: colors.primary!.withValues(alpha: 0.1),
+              borderRadius: BorderRadius.circular(20),
+            ),
+            child: Icon(
+              _tabController.index == 0 ? Icons.playlist_add_check : Icons.history,
+              color: colors.primary,
+              size: 28,
             ),
           ),
-        ),
+          const SizedBox(height: 16),
+          Text(
+            locale.translate("pages.task_list.no_tasks"),
+            style: fs14fw600.copyWith(color: colors.grey600),
+            textAlign: TextAlign.center,
+          ),
+        ],
       ),
-    );
-  }
-
-  Widget _noTasks(BuildContext context) {
-    RPLocalizations locale = RPLocalizations.of(context)!;
-
-    return Column(
-      mainAxisAlignment: MainAxisAlignment.center,
-      crossAxisAlignment: CrossAxisAlignment.center,
-      children: [
-        Ink(
-          width: 60,
-          height: 60,
-          decoration: const ShapeDecoration(color: CACHET.GREY_1, shape: CircleBorder()),
-          child: const Icon(Icons.playlist_add_check, color: Colors.white),
-        ),
-        Padding(
-          padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 5),
-          child: Text(locale.translate("pages.task_list.no_tasks"), style: fs16fw600, textAlign: TextAlign.center),
-        ),
-      ],
     );
   }
 
