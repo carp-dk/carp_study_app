@@ -142,7 +142,7 @@
   "pages.ic.need_accept": "Du skal acceptere denne informerede samtykke for at kunne deltage i dette studie.",
   "pages.ic.go_to_ic": "Tilbage til samtykke",
   "pages.devices.title": "Enheder",
-  "pages.devices.message": "Her kan du se hvilke enheder og online tjenester som anvendes i dette studie.",
+  "pages.devices.message": "Her kan du forbinde de online tjenester og enheder, som dette studie bruger til at indsamle data.",
   "pages.devices.phone.title": "Telefon",
   "pages.devices.devices.title": "Enheder",
   "pages.devices.services.title": "Ydelser",

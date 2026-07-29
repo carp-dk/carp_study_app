@@ -38,41 +38,28 @@ class DeviceListPageState extends State<DeviceListPage> {
 
   @override
   Widget build(BuildContext context) {
-    RPLocalizations locale = RPLocalizations.of(context)!;
+    final locale = RPLocalizations.of(context)!;
+    final colors = Theme.of(context).extension<CarpColors>()!;
+
     return Scaffold(
-      backgroundColor: Theme.of(context).extension<CarpColors>()!.backgroundGray,
+      backgroundColor: colors.backgroundGray,
       body: SafeArea(
         child: Column(
-          crossAxisAlignment: CrossAxisAlignment.center,
-          mainAxisAlignment: MainAxisAlignment.center,
+          crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             Padding(
               padding: const EdgeInsets.symmetric(vertical: 8.0, horizontal: 10),
               child: const CarpAppBar(hasProfileIcon: true),
             ),
-            CarpPageTitle(locale.translate('pages.devices.title')),
-            Container(
-              color: Colors.transparent,
-              child: Padding(
-                padding: const EdgeInsets.symmetric(horizontal: 20),
-                child: Align(
-                  alignment: Alignment.centerLeft,
-                  child: Column(
-                    mainAxisAlignment: MainAxisAlignment.start,
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      Text(
-                        locale.translate("pages.devices.message"),
-                        style: fs16fw600.copyWith(color: Theme.of(context).extension<CarpColors>()!.grey600),
-                      ),
-                      const SizedBox(height: 15),
-                    ],
-                  ),
-                ),
+            CarpPageTitle(locale.translate('app_home.nav_bar_item.connections')),
+            Padding(
+              padding: const EdgeInsets.fromLTRB(16, 0, 16, 16),
+              child: Text(
+                locale.translate("pages.devices.message"),
+                style: fs14fw600.copyWith(color: colors.grey600, height: 1.4),
               ),
             ),
             Expanded(
-              flex: 4,
               child: RefreshIndicator(
                 onRefresh: _refreshStatuses,
                 child: CustomScrollView(
@@ -81,6 +68,7 @@ class DeviceListPageState extends State<DeviceListPage> {
                     ..._smartphoneDeviceList(locale),
                     if (_hardwareDevices.isNotEmpty) ..._hardwareDevicesList(locale),
                     if (_onlineServices.isNotEmpty) ..._onlineServicesList(locale),
+                    const SliverToBoxAdapter(child: SizedBox(height: 16)),
                   ],
                 ),
               ),
@@ -202,50 +190,54 @@ class DeviceListPageState extends State<DeviceListPage> {
     String? subtitle,
     void Function()? onTap,
     Widget? trailing,
-  }) => ListTile(
-    contentPadding: const EdgeInsets.symmetric(vertical: 8, horizontal: 16),
-    enableFeedback: enableFeedback,
-    leading: Column(
-      mainAxisAlignment: MainAxisAlignment.center,
-      crossAxisAlignment: CrossAxisAlignment.center,
-      children: [leading!],
-    ),
-    title: FittedBox(
-      fit: BoxFit.scaleDown,
-      alignment: Alignment.centerLeft,
-      child: Row(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        mainAxisAlignment: MainAxisAlignment.start,
+  }) {
+    final colors = Theme.of(context).extension<CarpColors>()!;
+    return ListTile(
+      contentPadding: const EdgeInsets.symmetric(vertical: 12, horizontal: 16),
+      minVerticalPadding: 0,
+      enableFeedback: enableFeedback,
+      // The tinted rounded-square badge shared with the task and feed cards.
+      leading: Container(
+        width: 40,
+        height: 40,
+        alignment: Alignment.center,
+        decoration: BoxDecoration(
+          color: (leading!.color ?? colors.primary!).withValues(alpha: 0.12),
+          borderRadius: BorderRadius.circular(12),
+        ),
+        child: Icon(leading.icon, color: leading.color ?? colors.primary, size: 20),
+      ),
+      title: Row(
         children: [
-          Text(title!.$1, style: fs16fw700.copyWith(color: Theme.of(context).extension<CarpColors>()!.grey900)),
-          SizedBox(width: 6),
-          if (title.$2 != null && title.$2! > 0) BatteryPercentage(batteryLevel: title.$2 ?? 0),
+          Flexible(
+            child: Text(
+              title!.$1,
+              maxLines: 2,
+              overflow: TextOverflow.ellipsis,
+              style: fs16fw600.copyWith(color: colors.grey900),
+            ),
+          ),
+          if (title.$2 != null && title.$2! > 0) ...[
+            const SizedBox(width: 6),
+            BatteryPercentage(batteryLevel: title.$2!),
+          ],
         ],
       ),
-    ),
-    subtitle: subtitle != null && subtitle.isNotEmpty
-        ? Column(
-            mainAxisAlignment: MainAxisAlignment.start,
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              FittedBox(
-                fit: BoxFit.scaleDown,
-                alignment: Alignment.centerLeft,
-                child: Text(
-                  subtitle,
-                  style: fs12fw700.copyWith(color: Theme.of(context).extension<CarpColors>()!.grey700),
-                ),
+      subtitle: subtitle != null && subtitle.isNotEmpty
+          ? Padding(
+              padding: const EdgeInsets.only(top: 2),
+              child: Text(
+                subtitle,
+                maxLines: 2,
+                overflow: TextOverflow.ellipsis,
+                style: fs12fw600.copyWith(color: colors.grey600),
               ),
-            ],
-          )
-        : null,
-    trailing: Column(
-      mainAxisAlignment: MainAxisAlignment.center,
-      crossAxisAlignment: CrossAxisAlignment.center,
-      children: [?trailing],
-    ),
-    onTap: onTap,
-  );
+            )
+          : null,
+      trailing: trailing,
+      onTap: onTap,
+    );
+  }
 
   Widget _devicesPageCardStream<T>(Stream<T> stream, T? initialData, Widget Function() childBuilder) => Center(
     child: StudiesMaterial(

@@ -150,7 +150,7 @@
   "pages.ic.need_accept": "You need to accept the informed consent to participate in this study.",
   "pages.ic.go_to_ic": "Back to informed consent",
   "pages.devices.title": "Devices",
-  "pages.devices.message": "Here you can see the devices and online services used in your study.",
+  "pages.devices.message": "Here you can connect the online services and devices this study uses to collect data.",
   "pages.devices.phone.title": "Phone",
   "pages.devices.devices.title": "Devices",
   "pages.devices.services.title": "Online Services",
