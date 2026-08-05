@@ -45,50 +45,57 @@ class _BluetoothConnectionPageState extends State<BluetoothConnectionPage> {
   Widget build(BuildContext context) {
     RPLocalizations locale = RPLocalizations.of(context)!;
 
-    return Scaffold(
-      backgroundColor: Theme.of(context).extension<CarpColors>()!.backgroundGray,
-      body: SafeArea(
-        child: Stack(
-          children: [
-            Container(
-              child: Column(
-                children: [
-                  Padding(
-                    padding: const EdgeInsets.symmetric(vertical: 8.0, horizontal: 16),
-                    child: const CarpAppBar(hasProfileIcon: true),
-                  ),
-                  Expanded(
-                    child: Padding(
-                      padding: const EdgeInsets.symmetric(horizontal: 20.0),
-                      child: Column(
-                        children: [
-                          _buildDialogTitle(locale),
-                          Expanded(
-                            child: Padding(
-                              padding: const EdgeInsets.all(8.0),
-                              child: SizedBox(child: _buildStepContent(locale)),
+    return PopScope(
+      // The device is connected on the last step - leave only via 'done', so
+      // the system back gesture does not skip past the confirmation.
+      canPop: currentStep != CurrentStep.done,
+      child: Scaffold(
+        backgroundColor: Theme.of(context).extension<CarpColors>()!.backgroundGray,
+        body: SafeArea(
+          child: Stack(
+            children: [
+              Container(
+                child: Column(
+                  children: [
+                    Padding(
+                      padding: const EdgeInsets.symmetric(vertical: 8.0, horizontal: 16),
+                      child: const CarpAppBar(hasProfileIcon: true),
+                    ),
+                    Expanded(
+                      child: Padding(
+                        padding: const EdgeInsets.symmetric(horizontal: 20.0),
+                        child: Column(
+                          children: [
+                            _buildDialogTitle(locale),
+                            Expanded(
+                              child: Padding(
+                                padding: const EdgeInsets.all(8.0),
+                                child: SizedBox(child: _buildStepContent(locale)),
+                              ),
                             ),
-                          ),
-                          Padding(
-                            padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 16),
-                            child: Row(
-                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                              children: _buildActionButtons(locale),
+                            Padding(
+                              padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 16),
+                              child: Row(
+                                mainAxisAlignment: currentStep == CurrentStep.done
+                                    ? MainAxisAlignment.end
+                                    : MainAxisAlignment.spaceBetween,
+                                children: _buildActionButtons(locale),
+                              ),
                             ),
-                          ),
-                        ],
+                          ],
+                        ),
                       ),
                     ),
-                  ),
-                ],
+                  ],
+                ),
               ),
-            ),
-            if (isConnecting)
-              Container(
-                color: Colors.black26,
-                child: const Center(child: CircularProgressIndicator()),
-              ),
-          ],
+              if (isConnecting)
+                Container(
+                  color: Colors.black26,
+                  child: const Center(child: CircularProgressIndicator()),
+                ),
+            ],
+          ),
         ),
       ),
     );
@@ -191,16 +198,9 @@ class _BluetoothConnectionPageState extends State<BluetoothConnectionPage> {
           TextStyle(color: Colors.white),
         ),
       ],
+      // The device is connected at this point, so there is nothing to go back
+      // to - only 'done' is offered.
       CurrentStep.done: [
-        buildTranslatedButton(
-          "back",
-          () {
-            setState(() => currentStep = CurrentStep.scan);
-          },
-          true,
-          null,
-          null,
-        ),
         buildTranslatedButton(
           "done",
           () {
