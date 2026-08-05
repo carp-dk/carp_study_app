@@ -137,7 +137,9 @@ class TaskListPageState extends State<TaskListPage> with TickerProviderStateMixi
             child: Text(
               label,
               overflow: TextOverflow.ellipsis,
-              style: Theme.of(context).textTheme.labelMedium!.copyWith(color: selected ? Colors.grey.shade900 : Colors.grey.shade600),
+              style: Theme.of(
+                context,
+              ).textTheme.labelMedium!.copyWith(color: selected ? Colors.grey.shade900 : Colors.grey.shade600),
             ),
           ),
           const SizedBox(width: 6),
@@ -147,7 +149,12 @@ class TaskListPageState extends State<TaskListPage> with TickerProviderStateMixi
               color: selected ? Theme.of(context).colorScheme.primary.withValues(alpha: 0.12) : Colors.grey.shade300,
               borderRadius: BorderRadius.circular(100),
             ),
-            child: Text('$count', style: Theme.of(context).textTheme.labelSmall!.copyWith(color: selected ? Theme.of(context).colorScheme.primary : Colors.grey.shade600)),
+            child: Text(
+              '$count',
+              style: Theme.of(context).textTheme.labelSmall!.copyWith(
+                color: selected ? Theme.of(context).colorScheme.primary : Colors.grey.shade600,
+              ),
+            ),
           ),
         ],
       ),
@@ -245,7 +252,9 @@ class TaskListPageState extends State<TaskListPage> with TickerProviderStateMixi
             children: [
               badge,
               const SizedBox(width: 12),
-              Expanded(child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: children)),
+              Expanded(
+                child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: children),
+              ),
               if (onTap != null) ...[
                 const SizedBox(width: 8),
                 Icon(Icons.chevron_right, size: 20, color: Colors.grey.shade400),

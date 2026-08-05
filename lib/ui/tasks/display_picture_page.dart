@@ -86,12 +86,18 @@ class DisplayPicturePageState extends State<DisplayPicturePage> {
                 children: [
                   Padding(
                     padding: const EdgeInsets.symmetric(horizontal: 10),
-                    child: Text(locale.translate('pages.audio_task.done'), style: Theme.of(context).textTheme.titleLarge!),
+                    child: Text(
+                      locale.translate('pages.audio_task.done'),
+                      style: Theme.of(context).textTheme.titleLarge!,
+                    ),
                   ),
                   const SizedBox(height: 40),
                   Padding(
                     padding: const EdgeInsets.symmetric(horizontal: 10),
-                    child: Text(locale.translate('pages.audio_task.recording_completed'), style: Theme.of(context).textTheme.labelLarge!),
+                    child: Text(
+                      locale.translate('pages.audio_task.recording_completed'),
+                      style: Theme.of(context).textTheme.labelLarge!,
+                    ),
                   ),
                   const SizedBox(height: 20),
                   Align(

@@ -43,12 +43,7 @@ class _InvitationListPageState extends State<InvitationListPage> {
               // zero or one invitation and the content doesn't fill the screen.
               physics: const AlwaysScrollableScrollPhysics(),
               slivers: [
-                SliverAppBar(
-                  title: const CarpAppBar(),
-                  centerTitle: true,
-                  pinned: true,
-                  scrolledUnderElevation: 0,
-                ),
+                SliverAppBar(title: const CarpAppBar(), centerTitle: true, pinned: true, scrolledUnderElevation: 0),
                 SliverToBoxAdapter(
                   child: Padding(
                     padding: const EdgeInsets.symmetric(vertical: 16.0),
@@ -122,24 +117,24 @@ class InvitationMaterial extends StatelessWidget {
               Text(
                 invitation.invitation.name,
                 maxLines: 1,
-                style: Theme.of(context).textTheme.headlineSmall!.copyWith(fontWeight: FontWeight.w600).copyWith(color: const Color(0xff006398), overflow: TextOverflow.ellipsis),
+                style: Theme.of(context).textTheme.headlineSmall!
+                    .copyWith(fontWeight: FontWeight.w600)
+                    .copyWith(color: const Color(0xff006398), overflow: TextOverflow.ellipsis),
               ),
               Text.rich(
                 TextSpan(
                   children: [
                     TextSpan(
                       text: locale.translate('invitation_list.roles_in_the_study.description'),
-                      style: Theme.of(context).textTheme.titleSmall!.copyWith(
-                        color: Colors.grey.shade600,
-                        fontSize: 12,
-                      ),
+                      style: Theme.of(
+                        context,
+                      ).textTheme.titleSmall!.copyWith(color: Colors.grey.shade600, fontSize: 12),
                     ),
                     TextSpan(
                       text: invitation.participantRoleName,
-                      style: Theme.of(context).textTheme.titleSmall!.copyWith(
-                        color: Colors.grey.shade600,
-                        fontSize: 12,
-                      ),
+                      style: Theme.of(
+                        context,
+                      ).textTheme.titleSmall!.copyWith(color: Colors.grey.shade600, fontSize: 12),
                     ),
                   ],
                 ),
@@ -147,10 +142,9 @@ class InvitationMaterial extends StatelessWidget {
               Text(
                 invitation.invitation.description ?? '',
                 maxLines: 2,
-                style: Theme.of(context).textTheme.titleSmall!.copyWith(
-                  color: Colors.grey.shade900,
-                  overflow: TextOverflow.ellipsis,
-                ),
+                style: Theme.of(
+                  context,
+                ).textTheme.titleSmall!.copyWith(color: Colors.grey.shade900, overflow: TextOverflow.ellipsis),
               ),
             ],
           ),

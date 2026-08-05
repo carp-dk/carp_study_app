@@ -53,7 +53,10 @@ class _SurveyCardState extends State<SurveyCard> {
               if (widget.showTitle)
                 Padding(
                   padding: const EdgeInsets.only(bottom: 8),
-                  child: Text(locale.translate('cards.survey.title').toUpperCase(), style: Theme.of(context).textTheme.bodyLarge!.copyWith(letterSpacing: 1)),
+                  child: Text(
+                    locale.translate('cards.survey.title').toUpperCase(),
+                    style: Theme.of(context).textTheme.bodyLarge!.copyWith(letterSpacing: 1),
+                  ),
                 ),
               Row(
                 children: [
@@ -69,7 +72,6 @@ class _SurveyCardState extends State<SurveyCard> {
   }
 
   Widget _legend(RPLocalizations locale) {
-
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       mainAxisSize: MainAxisSize.min,
@@ -84,7 +86,9 @@ class _SurveyCardState extends State<SurveyCard> {
                   // Pad to two digits so the labels line up in a column.
                   Text(
                     '${survey.value}'.padLeft(2, '0'),
-                    style: Theme.of(context).textTheme.headlineSmall!.copyWith(color: _shade(widget.colors[index], index)),
+                    style: Theme.of(
+                      context,
+                    ).textTheme.headlineSmall!.copyWith(color: _shade(widget.colors[index], index)),
                   ),
                   const SizedBox(width: 12),
                   Flexible(
@@ -92,7 +96,9 @@ class _SurveyCardState extends State<SurveyCard> {
                       locale.translate(survey.key),
                       maxLines: 1,
                       overflow: TextOverflow.ellipsis,
-                      style: (_selected == index ? Theme.of(context).textTheme.titleSmall! : Theme.of(context).textTheme.bodyLarge!),
+                      style: (_selected == index
+                          ? Theme.of(context).textTheme.titleSmall!
+                          : Theme.of(context).textTheme.bodyLarge!),
                     ),
                   ),
                 ],

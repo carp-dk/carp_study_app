@@ -50,11 +50,7 @@ class ProfilePageState extends State<ProfilePage> {
                 children: [
                   _sectionCard([
                     _fieldTile(locale.translate('pages.profile.username'), widget.model.username),
-                    _fieldTile(
-                      locale.translate('pages.profile.account_id'),
-                      widget.model.userId,
-                      copyable: true,
-                    ),
+                    _fieldTile(locale.translate('pages.profile.account_id'), widget.model.userId, copyable: true),
                     _fieldTile(
                       locale.translate('pages.profile.full_name'),
                       widget.model.isAnonymous
@@ -70,11 +66,7 @@ class ProfilePageState extends State<ProfilePage> {
                   ]),
                   _sectionHeader('Study'),
                   _sectionCard([
-                    _fieldTile(
-                      locale.translate('pages.profile.study_id'),
-                      widget.model.studyId,
-                      copyable: true,
-                    ),
+                    _fieldTile(locale.translate('pages.profile.study_id'), widget.model.studyId, copyable: true),
                     _fieldTile(
                       locale.translate('pages.profile.study_deployment_id'),
                       widget.model.studyDeploymentId,
@@ -90,10 +82,7 @@ class ProfilePageState extends State<ProfilePage> {
                       widget.model.participantId,
                       copyable: true,
                     ),
-                    _fieldTile(
-                      locale.translate('pages.profile.participant_role'),
-                      widget.model.participantRole,
-                    ),
+                    _fieldTile(locale.translate('pages.profile.participant_role'), widget.model.participantRole),
                     _fieldTile(locale.translate('pages.profile.device_role'), widget.model.deviceRole),
                   ]),
                   _sectionHeader('App'),
@@ -216,9 +205,7 @@ class ProfilePageState extends State<ProfilePage> {
             children: [
               Icon(icon, size: 22, color: iconColor),
               const SizedBox(width: 12),
-              Expanded(
-                child: Text(title, style: Theme.of(context).textTheme.labelLarge!),
-              ),
+              Expanded(child: Text(title, style: Theme.of(context).textTheme.labelLarge!)),
               if (hasChevron) Icon(Icons.arrow_forward_ios, size: 16, color: Colors.grey.shade400),
             ],
           ),

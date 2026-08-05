@@ -65,7 +65,10 @@ class MessageDetailsPage extends StatelessWidget {
                               ),
                               if (subTitle.isNotEmpty) ...[
                                 const SizedBox(height: 8),
-                                Text(locale.translate(subTitle), style: Theme.of(context).textTheme.labelMedium!.copyWith(color: Colors.grey.shade600)),
+                                Text(
+                                  locale.translate(subTitle),
+                                  style: Theme.of(context).textTheme.labelMedium!.copyWith(color: Colors.grey.shade600),
+                                ),
                               ],
                               if (body.isNotEmpty) ...[
                                 // The divider only earns its place when it has a
@@ -77,7 +80,9 @@ class MessageDetailsPage extends StatelessWidget {
                                 const SizedBox(height: 12),
                                 Text(
                                   locale.translate(body),
-                                  style: Theme.of(context).textTheme.bodyLarge!.copyWith(color: Colors.grey.shade900, height: 1.5),
+                                  style: Theme.of(
+                                    context,
+                                  ).textTheme.bodyLarge!.copyWith(color: Colors.grey.shade900, height: 1.5),
                                 ),
                               ],
                             ],

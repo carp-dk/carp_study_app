@@ -44,7 +44,10 @@ class AudioTaskPageState extends State<AudioTaskPage> {
                   ),
                   Padding(
                     padding: const EdgeInsets.symmetric(vertical: 12),
-                    child: Text(locale.translate(widget.audioUserTask!.title), style: Theme.of(context).textTheme.titleLarge!),
+                    child: Text(
+                      locale.translate(widget.audioUserTask!.title),
+                      style: Theme.of(context).textTheme.titleLarge!,
+                    ),
                   ),
                   Padding(
                     padding: const EdgeInsets.symmetric(vertical: 12, horizontal: 20),

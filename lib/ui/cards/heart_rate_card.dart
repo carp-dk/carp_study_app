@@ -79,10 +79,16 @@ class HeartRateCardWidgetState extends State<HeartRateCardWidget> {
           crossAxisAlignment: CrossAxisAlignment.baseline,
           textBaseline: TextBaseline.alphabetic,
           children: [
-            Text(measured ? '${range.min!.toInt()} - ${range.max!.toInt()}' : '-', style: Theme.of(context).textTheme.headlineMedium!),
+            Text(
+              measured ? '${range.min!.toInt()} - ${range.max!.toInt()}' : '-',
+              style: Theme.of(context).textTheme.headlineMedium!,
+            ),
             if (measured) ...[
               const SizedBox(width: 6),
-              Text(locale.translate('cards.heartrate.bpm'), style: Theme.of(context).textTheme.labelSmall!.copyWith(color: Colors.grey.shade600)),
+              Text(
+                locale.translate('cards.heartrate.bpm'),
+                style: Theme.of(context).textTheme.labelSmall!.copyWith(color: Colors.grey.shade600),
+              ),
             ],
           ],
         ),
@@ -112,7 +118,9 @@ class HeartRateCardWidgetState extends State<HeartRateCardWidget> {
                 ),
                 child: Text(
                   locale.translate('cards.heartrate.${range.name}'),
-                  style: Theme.of(context).textTheme.labelSmall!.copyWith(color: _range == range ? Colors.grey.shade900 : Colors.grey.shade600),
+                  style: Theme.of(context).textTheme.labelSmall!.copyWith(
+                    color: _range == range ? Colors.grey.shade900 : Colors.grey.shade600,
+                  ),
                 ),
               ),
             ),
@@ -132,11 +140,17 @@ class HeartRateCardWidgetState extends State<HeartRateCardWidget> {
       children: [
         Icon(Icons.favorite, color: const Color(0xffEB4B62), size: 16),
         const SizedBox(width: 8),
-        Text(locale.translate('cards.heartrate.average'), style: Theme.of(context).textTheme.labelMedium!.copyWith(color: Colors.grey.shade600)),
+        Text(
+          locale.translate('cards.heartrate.average'),
+          style: Theme.of(context).textTheme.labelMedium!.copyWith(color: Colors.grey.shade600),
+        ),
         const Spacer(),
         Text(average != null ? average.toStringAsFixed(0) : '-', style: Theme.of(context).textTheme.titleMedium!),
         const SizedBox(width: 4),
-        Text(locale.translate('cards.heartrate.bpm'), style: Theme.of(context).textTheme.labelSmall!.copyWith(color: Colors.grey.shade600)),
+        Text(
+          locale.translate('cards.heartrate.bpm'),
+          style: Theme.of(context).textTheme.labelSmall!.copyWith(color: Colors.grey.shade600),
+        ),
       ],
     );
   }

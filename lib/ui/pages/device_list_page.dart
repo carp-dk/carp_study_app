@@ -132,13 +132,12 @@ class DeviceListPageState extends State<DeviceListPage> {
                 ? device.getDeviceStatusIcon as Icon
                 : Container(
                     padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
-                    decoration: BoxDecoration(
-                      color: const Color(0xff006398),
-                      borderRadius: BorderRadius.circular(100),
-                    ),
+                    decoration: BoxDecoration(color: const Color(0xff006398), borderRadius: BorderRadius.circular(100)),
                     child: Text(
                       locale.translate(device.getDeviceStatusIcon as String),
-                      style: Theme.of(context).textTheme.titleLarge!.copyWith(fontSize: 20).copyWith(color: Colors.white),
+                      style: Theme.of(
+                        context,
+                      ).textTheme.titleLarge!.copyWith(fontSize: 20).copyWith(color: Colors.white),
                     ),
                   ),
           ),
@@ -164,13 +163,12 @@ class DeviceListPageState extends State<DeviceListPage> {
             trailing: service.getServiceStatusIcon is String
                 ? Container(
                     padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
-                    decoration: BoxDecoration(
-                      color: const Color(0xff006398),
-                      borderRadius: BorderRadius.circular(100),
-                    ),
+                    decoration: BoxDecoration(color: const Color(0xff006398), borderRadius: BorderRadius.circular(100)),
                     child: Text(
                       locale.translate(service.getServiceStatusIcon as String),
-                      style: Theme.of(context).textTheme.titleLarge!.copyWith(fontSize: 20).copyWith(color: Colors.white),
+                      style: Theme.of(
+                        context,
+                      ).textTheme.titleLarge!.copyWith(fontSize: 20).copyWith(color: Colors.white),
                     ),
                   )
                 : service.getServiceStatusIcon as Icon,

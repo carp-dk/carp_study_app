@@ -3,7 +3,11 @@ part of carp_study_app;
 class ActivityCard extends StatefulWidget {
   final ActivityCardViewModel model;
   final List<Color> colors;
-  const ActivityCard(this.model, {super.key, this.colors = const [Color(0xff7E9146), Color(0xff228B89), Color(0xff82CEE9)]});
+  const ActivityCard(
+    this.model, {
+    super.key,
+    this.colors = const [Color(0xff7E9146), Color(0xff228B89), Color(0xff82CEE9)],
+  });
 
   @override
   State<StatefulWidget> createState() => ActivityCardState();
@@ -51,15 +55,14 @@ class ActivityCardState extends State<ActivityCard> {
             children: [
               Row(
                 children: [
-                  Text(
-                    '${_walk + _run + _cycle}',
-                    style: Theme.of(context).textTheme.headlineMedium!,
-                  ),
+                  Text('${_walk + _run + _cycle}', style: Theme.of(context).textTheme.headlineMedium!),
                   Padding(
                     padding: const EdgeInsets.only(left: 4.0),
                     child: Text(
                       '${locale.translate('cards.activity.total.min')} ${_selectedDay != null ? _getDayName(_selectedDay!) : ''}',
-                      style: Theme.of(context).textTheme.labelSmall!.copyWith(fontWeight: FontWeight.w700).copyWith(color: Colors.grey.shade600),
+                      style: Theme.of(context).textTheme.labelSmall!
+                          .copyWith(fontWeight: FontWeight.w700)
+                          .copyWith(color: Colors.grey.shade600),
                     ),
                   ),
                 ],
@@ -68,7 +71,9 @@ class ActivityCardState extends State<ActivityCard> {
                 children: [
                   Text(
                     "${widget.model.currentMonth} ${widget.model.startOfWeek} - ${int.parse(widget.model.endOfWeek) < int.parse(widget.model.startOfWeek) ? widget.model.nextMonth : widget.model.currentMonth} ${widget.model.endOfWeek}, ${widget.model.currentYear}",
-                    style: Theme.of(context).textTheme.labelSmall!.copyWith(fontWeight: FontWeight.w700).copyWith(color: Colors.grey.shade600),
+                    style: Theme.of(
+                      context,
+                    ).textTheme.labelSmall!.copyWith(fontWeight: FontWeight.w700).copyWith(color: Colors.grey.shade600),
                   ),
                   Spacer(),
                 ],
@@ -90,12 +95,17 @@ class ActivityCardState extends State<ActivityCard> {
                       Expanded(
                         child: Row(
                           children: [
-                            Text('$_walk', style: Theme.of(context).textTheme.titleLarge!.copyWith(color: widget.colors[0])),
+                            Text(
+                              '$_walk',
+                              style: Theme.of(context).textTheme.titleLarge!.copyWith(color: widget.colors[0]),
+                            ),
                             Padding(
                               padding: const EdgeInsets.all(4.0),
                               child: Text(
                                 locale.translate('cards.activity.walking'),
-                                style: Theme.of(context).textTheme.labelSmall!.copyWith(fontWeight: FontWeight.w700).copyWith(color: Colors.grey.shade900),
+                                style: Theme.of(context).textTheme.labelSmall!
+                                    .copyWith(fontWeight: FontWeight.w700)
+                                    .copyWith(color: Colors.grey.shade900),
                               ),
                             ),
                           ],
@@ -106,13 +116,20 @@ class ActivityCardState extends State<ActivityCard> {
                           children: [
                             Padding(
                               padding: const EdgeInsets.only(left: 8.0),
-                              child: Text('$_run', style: Theme.of(context).textTheme.labelSmall!.copyWith(fontWeight: FontWeight.w700).copyWith(color: widget.colors[1])),
+                              child: Text(
+                                '$_run',
+                                style: Theme.of(context).textTheme.labelSmall!
+                                    .copyWith(fontWeight: FontWeight.w700)
+                                    .copyWith(color: widget.colors[1]),
+                              ),
                             ),
                             Padding(
                               padding: const EdgeInsets.all(4.0),
                               child: Text(
                                 locale.translate('cards.activity.running'),
-                                style: Theme.of(context).textTheme.labelSmall!.copyWith(fontWeight: FontWeight.w700).copyWith(color: Colors.grey.shade900),
+                                style: Theme.of(context).textTheme.labelSmall!
+                                    .copyWith(fontWeight: FontWeight.w700)
+                                    .copyWith(color: Colors.grey.shade900),
                               ),
                             ),
                           ],
@@ -127,7 +144,9 @@ class ActivityCardState extends State<ActivityCard> {
                         padding: const EdgeInsets.only(left: 4.0),
                         child: Text(
                           locale.translate('cards.activity.cycling'),
-                          style: Theme.of(context).textTheme.labelSmall!.copyWith(fontWeight: FontWeight.w700).copyWith(color: Colors.grey.shade900),
+                          style: Theme.of(context).textTheme.labelSmall!
+                              .copyWith(fontWeight: FontWeight.w700)
+                              .copyWith(color: Colors.grey.shade900),
                         ),
                       ),
                     ],

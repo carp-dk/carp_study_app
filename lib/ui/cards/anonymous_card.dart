@@ -46,10 +46,9 @@ class AnonymousCard extends StatelessWidget {
                         padding: const EdgeInsets.only(left: 16.0),
                         child: Text(
                           locale.translate('pages.about.anonymous.message'),
-                          style: Theme.of(context).textTheme.labelLarge!.copyWith(
-                            color: Colors.grey.shade900,
-                            fontSize: 14,
-                          ),
+                          style: Theme.of(
+                            context,
+                          ).textTheme.labelLarge!.copyWith(color: Colors.grey.shade900, fontSize: 14),
                         ),
                       ),
                     ),

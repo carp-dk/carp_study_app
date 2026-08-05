@@ -4,7 +4,11 @@ class DistanceCard extends StatefulWidget {
   final List<Color> colors;
 
   final MobilityCardViewModel model;
-  const DistanceCard(this.model, {super.key, this.colors = const [Color(0xff2192C9), Color(0xff82CEE9), Color(0xffB2E1F2)]});
+  const DistanceCard(
+    this.model, {
+    super.key,
+    this.colors = const [Color(0xff2192C9), Color(0xff82CEE9), Color(0xffB2E1F2)],
+  });
 
   @override
   State<DistanceCard> createState() => _DistanceCardState();
@@ -43,7 +47,9 @@ class _DistanceCardState extends State<DistanceCard> {
                   padding: const EdgeInsets.only(left: 4.0),
                   child: Text(
                     'km ${_getDayName(touchedIndex)}',
-                    style: Theme.of(context).textTheme.labelSmall!.copyWith(fontWeight: FontWeight.w700).copyWith(color: Colors.grey.shade600),
+                    style: Theme.of(
+                      context,
+                    ).textTheme.labelSmall!.copyWith(fontWeight: FontWeight.w700).copyWith(color: Colors.grey.shade600),
                   ),
                 ),
               ],
@@ -52,7 +58,9 @@ class _DistanceCardState extends State<DistanceCard> {
               children: [
                 Text(
                   "${widget.model.currentMonth} ${widget.model.startOfWeek} - ${int.parse(widget.model.endOfWeek) < int.parse(widget.model.startOfWeek) ? widget.model.nextMonth : widget.model.currentMonth} ${widget.model.endOfWeek}, ${widget.model.currentYear}",
-                  style: Theme.of(context).textTheme.labelSmall!.copyWith(fontWeight: FontWeight.w700).copyWith(color: Colors.grey.shade600),
+                  style: Theme.of(
+                    context,
+                  ).textTheme.labelSmall!.copyWith(fontWeight: FontWeight.w700).copyWith(color: Colors.grey.shade600),
                 ),
                 Spacer(),
               ],

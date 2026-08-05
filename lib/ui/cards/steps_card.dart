@@ -4,7 +4,11 @@ class StepsCardWidget extends StatefulWidget {
   final List<Color> colors;
 
   final StepsCardViewModel model;
-  const StepsCardWidget(this.model, {super.key, this.colors = const [Color(0xffEC6330), Color(0xff82CEE9), Color(0xffB2E1F2)]});
+  const StepsCardWidget(
+    this.model, {
+    super.key,
+    this.colors = const [Color(0xffEC6330), Color(0xff82CEE9), Color(0xffB2E1F2)],
+  });
 
   @override
   StepsCardWidgetState createState() => StepsCardWidgetState();
@@ -42,11 +46,7 @@ class StepsCardWidgetState extends State<StepsCardWidget> {
                     child: FittedBox(
                       fit: BoxFit.scaleDown,
                       alignment: Alignment.centerLeft,
-                      child: Text(
-                        '$_step',
-                        maxLines: 1,
-                        style: Theme.of(context).textTheme.headlineMedium!,
-                      ),
+                      child: Text('$_step', maxLines: 1, style: Theme.of(context).textTheme.headlineMedium!),
                     ),
                   ),
                   Padding(
@@ -55,7 +55,9 @@ class StepsCardWidgetState extends State<StepsCardWidget> {
                       _selectedDay != null
                           ? '${locale.translate('cards.steps.steps')} ${_getDayName(_selectedDay!)}'
                           : locale.translate('cards.steps.per_week'),
-                      style: Theme.of(context).textTheme.labelSmall!.copyWith(fontWeight: FontWeight.w700).copyWith(color: Colors.grey.shade600),
+                      style: Theme.of(context).textTheme.labelSmall!
+                          .copyWith(fontWeight: FontWeight.w700)
+                          .copyWith(color: Colors.grey.shade600),
                     ),
                   ),
                 ],
@@ -64,7 +66,9 @@ class StepsCardWidgetState extends State<StepsCardWidget> {
                 children: [
                   Text(
                     "${widget.model.currentMonth} ${widget.model.startOfWeek} - ${int.parse(widget.model.endOfWeek) < int.parse(widget.model.startOfWeek) ? widget.model.nextMonth : widget.model.currentMonth} ${widget.model.endOfWeek}, ${widget.model.currentYear}",
-                    style: Theme.of(context).textTheme.labelSmall!.copyWith(fontWeight: FontWeight.w700).copyWith(color: Colors.grey.shade600),
+                    style: Theme.of(
+                      context,
+                    ).textTheme.labelSmall!.copyWith(fontWeight: FontWeight.w700).copyWith(color: Colors.grey.shade600),
                   ),
                   Spacer(),
                 ],

@@ -191,9 +191,7 @@ class StudyAboutPage extends StatelessWidget {
             children: [
               Icon(icon, size: 22, color: Theme.of(context).colorScheme.primary),
               const SizedBox(width: 12),
-              Expanded(
-                child: Text(title, style: Theme.of(context).textTheme.labelLarge!),
-              ),
+              Expanded(child: Text(title, style: Theme.of(context).textTheme.labelLarge!)),
               Icon(Icons.arrow_forward_ios, size: 16, color: Colors.grey.shade400),
             ],
           ),

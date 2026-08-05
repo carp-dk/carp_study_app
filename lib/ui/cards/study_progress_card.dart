@@ -96,7 +96,12 @@ class _StudyProgressCardWidgetState extends State<StudyProgressCardWidget> {
         PieChartData(
           centerSpaceRadius: 28,
           sections: [
-            PieChartSectionData(color: const Color(0xff848484).withValues(alpha: 0.2), value: 1, showTitle: false, radius: 22),
+            PieChartSectionData(
+              color: const Color(0xff848484).withValues(alpha: 0.2),
+              value: 1,
+              showTitle: false,
+              radius: 22,
+            ),
           ],
         ),
       );

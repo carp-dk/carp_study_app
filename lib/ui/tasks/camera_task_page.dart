@@ -53,11 +53,17 @@ class CameraTaskPageState extends State<CameraTaskPage> {
                             ),
                             Padding(
                               padding: const EdgeInsets.symmetric(vertical: 12),
-                              child: Text(locale.translate(widget.mediaUserTask.title), style: Theme.of(context).textTheme.titleLarge!),
+                              child: Text(
+                                locale.translate(widget.mediaUserTask.title),
+                                style: Theme.of(context).textTheme.titleLarge!,
+                              ),
                             ),
                             Padding(
                               padding: const EdgeInsets.symmetric(vertical: 12, horizontal: 20),
-                              child: Text(locale.translate(widget.mediaUserTask.description), style: Theme.of(context).textTheme.labelLarge!),
+                              child: Text(
+                                locale.translate(widget.mediaUserTask.description),
+                                style: Theme.of(context).textTheme.labelLarge!,
+                              ),
                             ),
                             Padding(
                               padding: const EdgeInsets.symmetric(vertical: 30),

@@ -97,7 +97,10 @@ class HomePage extends StatelessWidget {
       icon: Icons.calendar_today_outlined,
       iconColor: Theme.of(context).colorScheme.primary,
       label: 'Active Days in Study',
-      value: Text('${model.activeDaysInStudy}', style: Theme.of(context).textTheme.displaySmall!.copyWith(color: Colors.grey.shade900, fontSize: 28)),
+      value: Text(
+        '${model.activeDaysInStudy}',
+        style: Theme.of(context).textTheme.displaySmall!.copyWith(color: Colors.grey.shade900, fontSize: 28),
+      ),
       footer: Row(
         children: [
           for (final active in model.lastWeekActivity)
@@ -124,7 +127,10 @@ class HomePage extends StatelessWidget {
     Widget count(int n, String label) => Row(
       crossAxisAlignment: CrossAxisAlignment.end,
       children: [
-        Text('$n'.padLeft(2, '0'), style: Theme.of(context).textTheme.displaySmall!.copyWith(color: Colors.grey.shade900, fontSize: 28)),
+        Text(
+          '$n'.padLeft(2, '0'),
+          style: Theme.of(context).textTheme.displaySmall!.copyWith(color: Colors.grey.shade900, fontSize: 28),
+        ),
         const SizedBox(width: 8),
         Padding(
           padding: const EdgeInsets.only(bottom: 4),
@@ -172,7 +178,10 @@ class HomePage extends StatelessWidget {
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 Expanded(
-                  child: Text(label, style: Theme.of(context).textTheme.labelMedium!.copyWith(color: Colors.grey.shade600)),
+                  child: Text(
+                    label,
+                    style: Theme.of(context).textTheme.labelMedium!.copyWith(color: Colors.grey.shade600),
+                  ),
                 ),
                 _iconBadge(icon, iconColor),
               ],
@@ -220,17 +229,17 @@ class HomePage extends StatelessWidget {
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   Expanded(
-                    child: Text(
-                      locale.translate(message.title ?? ''),
-                      style: Theme.of(context).textTheme.titleMedium!,
-                    ),
+                    child: Text(locale.translate(message.title ?? ''), style: Theme.of(context).textTheme.titleMedium!),
                   ),
                   _iconBadge(message.type.icon, Theme.of(context).colorScheme.primary),
                 ],
               ),
               if (subTitle.isNotEmpty) ...[
                 const SizedBox(height: 4),
-                Text(locale.translate(subTitle), style: Theme.of(context).textTheme.labelMedium!.copyWith(color: Colors.grey.shade600)),
+                Text(
+                  locale.translate(subTitle),
+                  style: Theme.of(context).textTheme.labelMedium!.copyWith(color: Colors.grey.shade600),
+                ),
               ],
               if (body.isNotEmpty) ...[
                 const SizedBox(height: 8),
@@ -246,7 +255,10 @@ class HomePage extends StatelessWidget {
                 children: [
                   Icon(Icons.access_time, size: 14, color: Colors.grey.shade500),
                   const SizedBox(width: 4),
-                  Text(timeago.format(message.timestamp.toLocal()), style: Theme.of(context).textTheme.labelSmall!.copyWith(color: Colors.grey.shade500)),
+                  Text(
+                    timeago.format(message.timestamp.toLocal()),
+                    style: Theme.of(context).textTheme.labelSmall!.copyWith(color: Colors.grey.shade500),
+                  ),
                 ],
               ),
             ],
@@ -343,10 +355,15 @@ class StudyAboutCard extends StatelessWidget {
               maintainSize: true,
               maintainAnimation: true,
               maintainState: true,
-              child: Row(children: [_statusBubble(context, model.deploymentStatus ?? StudyDeploymentStatusTypes.Running)]),
+              child: Row(
+                children: [_statusBubble(context, model.deploymentStatus ?? StudyDeploymentStatusTypes.Running)],
+              ),
             ),
             const SizedBox(height: 8),
-            Text(locale.translate(model.studyTitle), style: Theme.of(context).textTheme.titleLarge!.copyWith(color: Colors.white)),
+            Text(
+              locale.translate(model.studyTitle),
+              style: Theme.of(context).textTheme.titleLarge!.copyWith(color: Colors.white),
+            ),
             const SizedBox(height: 8),
             Text(
               locale.translate(model.studyDescription),

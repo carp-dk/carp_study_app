@@ -66,7 +66,10 @@ class _ConnectionsStatusCardState extends State<ConnectionsStatusCard> {
                       children: [
                         Text(title, style: Theme.of(context).textTheme.titleMedium!),
                         const SizedBox(height: 4),
-                        Text(sources, style: Theme.of(context).textTheme.labelMedium!.copyWith(color: Colors.grey.shade600)),
+                        Text(
+                          sources,
+                          style: Theme.of(context).textTheme.labelMedium!.copyWith(color: Colors.grey.shade600),
+                        ),
                       ],
                     ),
                   ),
@@ -101,12 +104,12 @@ class _ConnectionsStatusCardState extends State<ConnectionsStatusCard> {
               children: [
                 Icon(Icons.circle, size: 10, color: model.isSourceActive(d) ? _green : Colors.grey.shade400),
                 const SizedBox(width: 8),
-                Expanded(
-                  child: Text(locale.translate(d.typeName), style: Theme.of(context).textTheme.bodyLarge!),
-                ),
+                Expanded(child: Text(locale.translate(d.typeName), style: Theme.of(context).textTheme.bodyLarge!)),
                 Text(
                   model.isSourceActive(d) ? 'ON' : 'OFF',
-                  style: Theme.of(context).textTheme.labelMedium!.copyWith(color: model.isSourceActive(d) ? _green : Colors.grey.shade500),
+                  style: Theme.of(
+                    context,
+                  ).textTheme.labelMedium!.copyWith(color: model.isSourceActive(d) ? _green : Colors.grey.shade500),
                 ),
               ],
             ),
@@ -118,7 +121,10 @@ class _ConnectionsStatusCardState extends State<ConnectionsStatusCard> {
             padding: const EdgeInsets.all(16),
             child: Row(
               children: [
-                Text('Manage in Connections', style: Theme.of(context).textTheme.labelLarge!.copyWith(color: Theme.of(context).colorScheme.primary)),
+                Text(
+                  'Manage in Connections',
+                  style: Theme.of(context).textTheme.labelLarge!.copyWith(color: Theme.of(context).colorScheme.primary),
+                ),
                 const SizedBox(width: 4),
                 Icon(Icons.chevron_right, size: 20, color: Theme.of(context).colorScheme.primary),
               ],
