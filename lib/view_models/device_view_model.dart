@@ -1,8 +1,7 @@
 part of carp_study_app;
 
-// Status icon colors for the const device/service icon maps below. These mirror
-// CarpColors.success / .error; kept as consts because the maps are const lookups
-// consumed without a BuildContext.
+// Status icon colors for the const device/service icon maps below; kept as
+// consts because the maps are const lookups consumed without a BuildContext.
 const Color _statusSuccess = Color(0xff67CE67);
 const Color _statusError = Color(0xffEB4B62);
 

@@ -21,12 +21,12 @@ dependencies:
   carp_polar_package: ^2.0.0
   carp_health_package: ^4.0.2
   carp_movesense_package: ^2.0.0
-  carp_themes_package: ^0.0.5
+  carp_themes_package: ^0.1.0
 
   carp_webservices: ^4.0.0
   carp_backend: ^2.0.0
 
-  research_package: ^2.2.0
+  research_package: ^2.5.0
   cognition_package: ^1.7.0
 
   url_launcher: ^6.1.5

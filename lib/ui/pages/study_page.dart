@@ -419,7 +419,7 @@ class StudyPageState extends State<StudyPage> {
     }
   }
 
-  // Mirrors CarpColors.deployment*; kept static const as this is a context-free
+  // Deployment status colors; kept static const as this is a context-free
   // status lookup.
   static const Map<StudyDeploymentStatusTypes, Color> studyStatusColors = {
     StudyDeploymentStatusTypes.Invited: Color(0xffDF7801),

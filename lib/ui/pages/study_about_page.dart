@@ -13,8 +13,6 @@ class StudyAboutPage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     RPLocalizations locale = RPLocalizations.of(context)!;
-    final colors = Theme.of(context).extension<CarpColors>()!;
-
     return Scaffold(
       body: SafeArea(
         child: Column(
@@ -92,21 +90,18 @@ class StudyAboutPage extends StatelessWidget {
                       children: [
                         _field(
                           context,
-                          colors,
                           locale.translate('widgets.study_card.responsible'),
                           locale.translate(model.responsibleName),
                         ),
                         Divider(height: 1, indent: 16, endIndent: 16, color: Colors.grey.shade200),
                         _field(
                           context,
-                          colors,
                           locale.translate('widgets.study_card.participant_role'),
                           locale.translate(model.participantRole),
                         ),
                         Divider(height: 1, indent: 16, endIndent: 16, color: Colors.grey.shade200),
                         _field(
                           context,
-                          colors,
                           locale.translate('widgets.study_card.device_role'),
                           locale.translate(model.deviceRole),
                         ),
@@ -117,21 +112,18 @@ class StudyAboutPage extends StatelessWidget {
                     backgroundColor: Colors.grey.shade50,
                     child: _field(
                       context,
-                      colors,
                       locale.translate('widgets.study_card.study_purpose'),
                       locale.translate(model.purpose),
                     ),
                   ),
                   _actionCard(
                     context,
-                    colors,
                     icon: Icons.policy_outlined,
                     title: locale.translate('pages.profile.privacy'),
                     onTap: () => _launch(model.privacyPolicyUrl),
                   ),
                   _actionCard(
                     context,
-                    colors,
                     icon: Icons.mail_outline,
                     title: locale.translate('pages.profile.contact'),
                     onTap: () => _sendEmailToContactResearcher(
@@ -141,7 +133,6 @@ class StudyAboutPage extends StatelessWidget {
                   ),
                   _actionCard(
                     context,
-                    colors,
                     icon: Icons.download,
                     title: locale.translate('pages.profile.download_consent'),
                     onTap: () => _downloadInformedConsent(context),
@@ -185,8 +176,7 @@ class StudyAboutPage extends StatelessWidget {
   }
 
   Widget _actionCard(
-    BuildContext context,
-    CarpColors colors, {
+    BuildContext context, {
     required IconData icon,
     required String title,
     required VoidCallback onTap,
@@ -213,7 +203,7 @@ class StudyAboutPage extends StatelessWidget {
   }
 
   // Same field style as the profile page: grey label over a dark bold value.
-  Widget _field(BuildContext context, CarpColors colors, String label, String value) {
+  Widget _field(BuildContext context, String label, String value) {
     return Padding(
       padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 10),
       child: Column(

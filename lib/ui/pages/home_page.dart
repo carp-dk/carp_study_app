@@ -8,7 +8,6 @@ class HomePage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final colors = Theme.of(context).extension<CarpColors>()!;
     return Scaffold(
       body: SafeArea(
         child: ListenableBuilder(
@@ -21,7 +20,7 @@ class HomePage extends StatelessWidget {
                 child: CarpAppBar(hasProfileIcon: true),
               ),
               if (!model.isLoaded)
-                _skeleton(colors)
+                _skeleton()
               else ...[
                 AppUpdateCard(model: model),
                 StudyAboutCard(model: model),
@@ -32,14 +31,14 @@ class HomePage extends StatelessWidget {
                   child: Row(
                     crossAxisAlignment: CrossAxisAlignment.stretch,
                     children: [
-                      Expanded(child: _activeDaysTile(context, colors)),
-                      Expanded(child: _taskStatusTile(context, colors)),
+                      Expanded(child: _activeDaysTile(context)),
+                      Expanded(child: _taskStatusTile(context)),
                     ],
                   ),
                 ),
                 if (model.messages.isNotEmpty) ...[
                   CarpSectionTitle('Feeds'),
-                  for (final message in model.messages) _feedCard(context, colors, message),
+                  for (final message in model.messages) _feedCard(context, message),
                 ],
               ],
             ],
@@ -51,7 +50,7 @@ class HomePage extends StatelessWidget {
 
   /// Shimmer placeholders mirroring the page layout (about card, connections,
   /// progress tiles, feeds), shown until the study is loaded.
-  Widget _skeleton(CarpColors colors) {
+  Widget _skeleton() {
     Widget box(double height, {EdgeInsetsGeometry? margin}) => Container(
       height: height,
       margin: margin ?? const EdgeInsets.only(left: 16, right: 16, bottom: 16),
@@ -92,10 +91,9 @@ class HomePage extends StatelessWidget {
 
   /// "Active Days in Study" tile: total active days, a dot per day for the
   /// last 7 days (filled if at least one task was done), and a stats link.
-  Widget _activeDaysTile(BuildContext context, CarpColors colors) {
+  Widget _activeDaysTile(BuildContext context) {
     return _statTile(
       context,
-      colors,
       icon: Icons.calendar_today_outlined,
       iconColor: Theme.of(context).colorScheme.primary,
       label: 'Active Days in Study',
@@ -122,7 +120,7 @@ class HomePage extends StatelessWidget {
   }
 
   /// "Task status" tile: completed and pending counts and a tasks link.
-  Widget _taskStatusTile(BuildContext context, CarpColors colors) {
+  Widget _taskStatusTile(BuildContext context) {
     Widget count(int n, String label) => Row(
       crossAxisAlignment: CrossAxisAlignment.end,
       children: [
@@ -136,7 +134,6 @@ class HomePage extends StatelessWidget {
     );
     return _statTile(
       context,
-      colors,
       icon: Icons.task_alt,
       iconColor: const Color(0xffF57C00),
       label: 'Task status',
@@ -153,8 +150,7 @@ class HomePage extends StatelessWidget {
   // Shared stat tile chrome: label + icon badge on top, main content, optional
   // footer row, and a link at the bottom.
   Widget _statTile(
-    BuildContext context,
-    CarpColors colors, {
+    BuildContext context, {
     required IconData icon,
     required Color iconColor,
     required String label,
@@ -206,7 +202,7 @@ class HomePage extends StatelessWidget {
 
   /// A message (announcement / news / article) from the backend, tappable to
   /// open its details page.
-  Widget _feedCard(BuildContext context, CarpColors colors, Message message) {
+  Widget _feedCard(BuildContext context, Message message) {
     final locale = RPLocalizations.of(context)!;
     final subTitle = message.subTitle ?? '';
     final body = message.message ?? '';
