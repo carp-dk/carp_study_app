@@ -173,7 +173,9 @@ class DeviceListPageState extends State<DeviceListPage> {
                       borderRadius: BorderRadius.circular(100),
                     ),
                     child: Text(
-                      locale.translate(device.getDeviceStatusIcon as String),
+                      locale.translate(
+                        device.getDeviceStatusIcon as String? ?? "pages.devices.status.action.connect",
+                      ),
                       style: fs20fw700.copyWith(color: Colors.white),
                     ),
                   ),
@@ -319,6 +321,21 @@ class DeviceListPageState extends State<DeviceListPage> {
               false;
           if (disconnect) await device.disconnectFromDevice();
         } else {
+          // The device manager declares the permissions BLE needs (bluetooth +
+          // location on Android); request them before opening the scan page.
+          if (!await device.deviceManager.hasPermissions()) {
+            await device.deviceManager.requestPermissions();
+          }
+          if (!mounted) return;
+          if (!await device.deviceManager.hasPermissions()) {
+            await showDialog<void>(
+              context: context,
+              barrierDismissible: true,
+              builder: (context) => _permissionDeniedDialog(context),
+            );
+            return;
+          }
+
           final hasSeenInstructions = LocalSettings().hasSeenBluetoothConnectionInstructions;
           Navigator.push(
             context,
@@ -338,5 +355,28 @@ class DeviceListPageState extends State<DeviceListPage> {
         );
       }
     }
+  }
+
+  /// Dialog shown when the BLE permissions are still denied after requesting,
+  /// pointing the user to the app settings.
+  Widget _permissionDeniedDialog(BuildContext context) {
+    final locale = RPLocalizations.of(context)!;
+    return AlertDialog(
+      title: Text(locale.translate("pages.devices.location_permission.title")),
+      content: SingleChildScrollView(
+        child: Text(locale.translate("pages.devices.location_permission.message")),
+      ),
+      actions: [
+        TextButton(child: Text(locale.translate("cancel")), onPressed: () => Navigator.pop(context)),
+        ElevatedButton(
+          style: ElevatedButton.styleFrom(backgroundColor: Theme.of(context).extension<CarpColors>()!.primary),
+          child: Text(locale.translate("settings"), style: const TextStyle(color: Colors.white)),
+          onPressed: () {
+            Platform.isAndroid ? OpenSettingsPlusAndroid().applicationDetails() : OpenSettingsPlusIOS().appSettings();
+            Navigator.pop(context);
+          },
+        ),
+      ],
+    );
   }
 }
