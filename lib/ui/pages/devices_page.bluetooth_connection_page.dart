@@ -39,7 +39,7 @@ class _BluetoothConnectionPageState extends State<BluetoothConnectionPage> {
   }
 
   BluetoothDevice? selectedDevice;
-  int selected = 40;
+  bool showAllDevices = false;
 
   @override
   Widget build(BuildContext context) {
@@ -240,6 +240,11 @@ class _BluetoothConnectionPageState extends State<BluetoothConnectionPage> {
                 isConnecting = false;
               });
             }
+          } else if (state == DeviceStatus.reconnected) {
+            // BLE link is up; some devices (e.g. Polar) only reach `connected`
+            // after negotiating SDK features and data types. Give that extra time.
+            _connectionTimeoutTimer?.cancel();
+            _connectionTimeoutTimer = _startConnectionTimeout(locale);
           } else if (state == DeviceStatus.disconnected) {
             _connectionTimeoutTimer?.cancel();
             if (mounted) {
@@ -252,35 +257,39 @@ class _BluetoothConnectionPageState extends State<BluetoothConnectionPage> {
           }
         });
 
-        // Start 7-second timeout
-        _connectionTimeoutTimer = Timer(const Duration(seconds: 7), () {
-          if (isConnecting && mounted) {
-            setState(() {
-              isConnecting = false;
-            });
-            showDialog<void>(
-              context: context,
-              builder: (BuildContext context) {
-                return AlertDialog(
-                  title: Text(locale.translate("pages.devices.connection.connection_failed.title")),
-                  content: Text(locale.translate("pages.devices.connection.connection_failed.message")),
-                  actions: [
-                    TextButton(
-                      onPressed: () {
-                        Navigator.of(context).pop();
-                      },
-                      child: Text(locale.translate("ok")),
-                    ),
-                  ],
-                );
-              },
-            );
-            widget.device.status = DeviceStatus.disconnected;
-          }
-        });
+        _connectionTimeoutTimer = _startConnectionTimeout(locale);
       }
     };
   }
+
+  /// Fail the connection attempt if the device does not reach
+  /// [DeviceStatus.connected] within the timeout.
+  Timer _startConnectionTimeout(RPLocalizations locale) =>
+      Timer(const Duration(seconds: 7), () {
+        if (isConnecting && mounted) {
+          setState(() {
+            isConnecting = false;
+          });
+          showDialog<void>(
+            context: context,
+            builder: (BuildContext context) {
+              return AlertDialog(
+                title: Text(locale.translate("pages.devices.connection.connection_failed.title")),
+                content: Text(locale.translate("pages.devices.connection.connection_failed.message")),
+                actions: [
+                  TextButton(
+                    onPressed: () {
+                      Navigator.of(context).pop();
+                    },
+                    child: Text(locale.translate("ok")),
+                  ),
+                ],
+              );
+            },
+          );
+          widget.device.status = DeviceStatus.disconnected;
+        }
+      });
 
   Widget stepContent(CurrentStep currentStep, DeviceViewModel device) {
     if (currentStep == CurrentStep.scan) {
@@ -306,46 +315,79 @@ class _BluetoothConnectionPageState extends State<BluetoothConnectionPage> {
             style: fs22fw700,
             textAlign: TextAlign.justify,
           ),
+          if (device.bleNamePrefix != null)
+            Align(
+              alignment: Alignment.centerRight,
+              child: TextButton(
+                onPressed: () => setState(() => showAllDevices = !showAllDevices),
+                child: Text(
+                  locale.translate(showAllDevices
+                      ? "pages.devices.connection.step.scan.filtered"
+                      : "pages.devices.connection.step.scan.show_all"),
+                  style: fs16fw400.copyWith(fontSize: 14),
+                ),
+              ),
+            ),
           Expanded(
             child: StreamBuilder<List<ScanResult>>(
               stream: FlutterBluePlus.scanResults,
               initialData: const [],
-              builder: (context, snapshot) => Scrollbar(
-                thumbVisibility: true,
-                child: SingleChildScrollView(
-                  padding: const EdgeInsets.only(top: 16),
-                  child: Column(
-                    children: snapshot.data!
-                        .where((element) => element.device.platformName.isNotEmpty)
-                        .toList()
-                        .asMap()
-                        .entries
+                builder: (context, snapshot) {
+                // Show devices whose advertised name contains this type's prefix
+                // (e.g. "Polar", "Movesense"), so the user can't pick the wrong
+                // device type. "Show all" is the escape hatch for anything the
+                // filter would otherwise hide.
+                final prefix = device.bleNamePrefix?.toLowerCase();
+                final results = snapshot.data!.where((r) {
+                  // Skip nameless devices - they can't be identified or paired.
+                  final name = r.device.platformName;
+                  if (name.isEmpty) return false;
+                  if (showAllDevices || prefix == null) return true;
+                  return name.toLowerCase().contains(prefix);
+                }).toList();
+
+                if (results.isEmpty) {
+                  return Center(
+                    child: Text(
+                      locale.translate("pages.devices.connection.step.scan.searching"),
+                      style: fs16fw400.copyWith(color: Theme.of(context).extension<CarpColors>()!.grey700),
+                      textAlign: TextAlign.center,
+                    ),
+                  );
+                }
+
+                return Scrollbar(
+                  thumbVisibility: true,
+                  child: SingleChildScrollView(
+                    padding: const EdgeInsets.only(top: 16),
+                    child: Column(
+                      children: results
                         .map(
-                          (bluetoothDevice) => StudiesMaterial(
+                          (r) => StudiesMaterial(
                             // hasBorder: true,
                             backgroundColor: Theme.of(context).extension<CarpColors>()!.grey50!,
                             child: InkWell(
                               child: ListTile(
-                                selected: bluetoothDevice.key == selected,
+                                selected: r.device.remoteId == selectedDevice?.remoteId,
                                 title: Text(
-                                  bluetoothDevice.value.device.platformName,
+                                  r.device.platformName,
                                   style: fs22fw700.copyWith(fontSize: 20),
                                 ),
                                 selectedTileColor: Theme.of(context).primaryColor.withValues(alpha: 0.2),
                               ),
                               onTap: () {
-                                selectedDevice = bluetoothDevice.value.device;
                                 setState(() {
-                                  selected = bluetoothDevice.key;
+                                  selectedDevice = r.device;
                                 });
                               },
                             ),
                           ),
                         )
                         .toList(),
+                    ),
                   ),
-                ),
-              ),
+                );
+              },
             ),
           ),
           Padding(
