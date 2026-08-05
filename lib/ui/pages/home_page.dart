@@ -360,7 +360,7 @@ class StudyAboutCard extends StatelessWidget {
             ),
             const SizedBox(height: 8),
             InkWell(
-              onTap: () => context.push(StudyDetailsPage.route),
+              onTap: () => context.push(StudyAboutPage.route),
               child: Row(
                 mainAxisSize: MainAxisSize.min,
                 children: [

@@ -65,7 +65,7 @@ class StudyPageState extends State<StudyPage> {
         context,
         widget.model.studyDescriptionMessage,
         onTap: () {
-          context.push(StudyDetailsPage.route);
+          context.push(StudyAboutPage.route);
         },
       ),
     );

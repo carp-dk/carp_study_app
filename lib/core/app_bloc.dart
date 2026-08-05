@@ -98,10 +98,11 @@ class AppBloc extends ChangeNotifier {
     CarpResourceManager().initialize();
 
     if (AppConfig.deploymentMode != DeploymentMode.local) {
-      // Initialize and use the CAWS backend if not in local deployment mode
-      if (await system.checkConnectivity()) {
-        await auth.initialize();
-      }
+      // Configure the CAWS backend if not in local deployment mode. This is
+      // offline-safe (it only configures the CAWS services locally; only
+      // authentication/token refresh hit the network), and must run so the
+      // deployment service is configured before Sensing().initialize uses it.
+      await auth.initialize();
     } else {
       // Deploy the local protocol if running in local mode
       await study.deployLocalProtocol();

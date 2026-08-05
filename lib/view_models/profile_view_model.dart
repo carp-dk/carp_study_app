@@ -5,7 +5,7 @@ part of carp_study_app;
 /// State: the signed-in user's name and id, and the active study's ids, roles
 /// and server.
 ///
-/// Handles leaving the study, signing out, and downloading the signed consent.
+/// Handles leaving the study and signing out.
 class ProfilePageViewModel extends ViewModel {
   ProfilePageViewModel({AuthService? authService, StudyService? studyService, SystemInfoService? systemInfoService})
     : _authService = authService,
@@ -46,24 +46,6 @@ class ProfilePageViewModel extends ViewModel {
   String get participantRole => _study.study?.participantRoleName ?? '';
   String get deviceRole => _study.deployment?.deviceRoleName ?? '';
 
-  String get responsibleEmail => _study.deployment?.studyDescription?.responsible?.email ?? 'study@carp.dk';
-  String get privacyPolicyUrl =>
-      _study.deployment?.studyDescription?.privacyPolicyUrl ?? 'https://carp.dk/privacy-policy-app/';
-  String get studyDescriptionUrl => _study.deployment?.studyDescription?.studyDescriptionUrl ?? '';
   String get deviceID => DeviceInfoService().deviceID ?? '';
   String get currentServer => _auth.serverUri.toString();
-
-  /// Fetch the signed informed consent from the backend and save it as a JSON
-  /// file. Returns null when no signed consent exists (e.g. local deployments).
-  Future<File?> downloadInformedConsent() async {
-    try {
-      final consent = await CarpBackend().getInformedConsentByRole(studyDeploymentId, participantRole);
-      if (consent == null) return null;
-      final dir = await getApplicationDocumentsDirectory();
-      return File('${dir.path}/informed_consent.json').writeAsString(toJsonString(consent.toJson()));
-    } catch (e) {
-      warning('$runtimeType - could not download informed consent - $e');
-      return null;
-    }
-  }
 }

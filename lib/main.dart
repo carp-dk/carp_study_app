@@ -107,8 +107,6 @@ part 'ui/pages/informed_consent_page.dart';
 part 'ui/pages/carp_app_shell.dart';
 part 'ui/pages/home_page.dart';
 part 'ui/pages/home_page.install_health_connect_dialog.dart';
-part 'ui/carp_study_style.dart';
-part 'ui/colors.dart';
 part 'ui/helpers.dart';
 part 'ui/pages/statistics_page.dart';
 part 'ui/pages/study_page.dart';
@@ -128,7 +126,7 @@ part 'ui/pages/devices_page.health_service_connect.dart';
 
 part 'ui/tasks/audio_task_page.dart';
 part 'ui/tasks/audio_page.dart';
-part 'ui/pages/study_details_page.dart';
+part 'ui/pages/study_about_page.dart';
 part 'ui/pages/message_details_page.dart';
 part 'ui/pages/invitation_details_page.dart';
 part 'ui/pages/invitation_list_page.dart';

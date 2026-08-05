@@ -123,9 +123,9 @@ class CarpAppState extends State<CarpStudyApp> {
         builder: (context, state) => InformedConsentPage(model: bloc.appViewModel.informedConsentViewModel),
       ),
       GoRoute(
-        path: StudyDetailsPage.route,
+        path: StudyAboutPage.route,
         parentNavigatorKey: _rootNavigatorKey,
-        builder: (context, state) => StudyDetailsPage(model: bloc.appViewModel.studyPageViewModel),
+        builder: (context, state) => StudyAboutPage(model: bloc.appViewModel.studyPageViewModel),
       ),
       GoRoute(
         path: ParticipantDataPage.route,
@@ -206,8 +206,6 @@ class CarpAppState extends State<CarpStudyApp> {
 
   @override
   Widget build(BuildContext context) {
-    final studyAppColors = Theme.of(context).extension<StudyAppColors>();
-
     // Apply system overlay style after frame so Theme.of(context) is ready
     WidgetsBinding.instance.addPostFrameCallback((_) {
       SystemChrome.setSystemUIOverlayStyle(SystemUiOverlayStyle(statusBarColor: Colors.transparent));
@@ -235,13 +233,8 @@ class CarpAppState extends State<CarpStudyApp> {
         return supportedLocales.first; // default to EN
       },
       locale: AppConfig.localization?.locale,
-      theme: carpTheme.copyWith(
-        extensions: [carpTheme.extension<CarpColors>()!.copyWith(primary: studyAppColors?.primary)],
-      ),
-      // Light only until the dark palette is finished; also keeps OS dark mode
-      // from affecting system-styled surfaces (e.g. system dialogs).
+      theme: carpTheme,
       themeMode: ThemeMode.light,
-      // darkTheme: carpDarkTheme,
       debugShowCheckedModeBanner: true,
       routerConfig: _router,
     );

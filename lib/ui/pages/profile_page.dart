@@ -114,49 +114,14 @@ class ProfilePageState extends State<ProfilePage> {
                     _fieldTile(colors, locale.translate('pages.profile.server_name'), widget.model.currentServer),
                     _fieldTile(colors, locale.translate('pages.profile.device_id'), widget.model.deviceID),
                   ]),
-                  _sectionHeader(colors, 'Resources'),
+                  const SizedBox(height: 8),
                   _actionCard(
                     colors,
-                    icon: Icons.policy_outlined,
+                    icon: Icons.info_outline,
                     iconColor: colors.primary!,
-                    title: locale.translate('pages.profile.privacy'),
+                    title: locale.translate('pages.profile.study_details'),
                     hasChevron: true,
-                    onTap: () async {
-                      try {
-                        launchUrl(Uri.parse(CarpBackend.carpPrivacyUrl));
-                      } finally {}
-                    },
-                  ),
-                  _actionCard(
-                    colors,
-                    icon: Icons.public,
-                    iconColor: colors.primary!,
-                    title: locale.translate('pages.profile.study_website'),
-                    hasChevron: true,
-                    onTap: () async {
-                      try {
-                        launchUrl(Uri.parse(CarpBackend.carpWebsiteUrl));
-                      } finally {}
-                    },
-                  ),
-                  _actionCard(
-                    colors,
-                    icon: Icons.mail_outline,
-                    iconColor: colors.primary!,
-                    title: locale.translate('pages.profile.contact'),
-                    hasChevron: true,
-                    onTap: () => _sendEmailToContactResearcher(
-                      locale.translate(widget.model.responsibleEmail),
-                      'Support for study: ${locale.translate(widget.model.studyDeploymentTitle)} - User: ${widget.model.username}',
-                    ),
-                  ),
-                  _actionCard(
-                    colors,
-                    icon: Icons.download,
-                    iconColor: colors.primary!,
-                    title: locale.translate('pages.profile.download_consent'),
-                    hasChevron: true,
-                    onTap: _downloadInformedConsent,
+                    onTap: () => context.push(StudyAboutPage.route),
                   ),
                   const SizedBox(height: 8),
                   _actionCard(
@@ -285,22 +250,6 @@ class ProfilePageState extends State<ProfilePage> {
       appVersion = packageInfo.version;
       buildNumber = packageInfo.buildNumber;
     });
-  }
-
-  /// Fetch the signed consent and hand it to the OS share sheet, so the user
-  /// can save or send it. Shows a snackbar when there is nothing to download.
-  Future<void> _downloadInformedConsent() async {}
-
-  /// Sends and email to the researcher with the name of the study + user id
-  void _sendEmailToContactResearcher(String email, String subject) async {
-    final url = Uri(
-      scheme: 'mailto',
-      path: email,
-      queryParameters: {'subject': subject},
-    ).toString().replaceAll("+", "%20");
-    try {
-      await launchUrl(Uri.parse(url));
-    } finally {}
   }
 
   Future<void> _showLogoutConfirmationDialog() {

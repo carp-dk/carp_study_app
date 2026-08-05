@@ -10,10 +10,15 @@ class SystemInfoService {
   final AppCheck _appCheck;
   final Connectivity _connectivity;
 
-  /// Is the phone connected to the internet either via wifi or mobile network?
+  /// Is the phone connected to the internet?
+  ///
+  /// Any active interface counts as connected. We deliberately do NOT restrict
+  /// to wifi/mobile: the iOS Simulator, desktops, and wired setups report
+  /// `ethernet`/`vpn`/`other` while still having working internet, so limiting
+  /// to wifi/mobile falsely reports "offline".
   Future<bool> checkConnectivity() async {
     final results = await _connectivity.checkConnectivity();
-    return results.any((result) => result == ConnectivityResult.mobile || result == ConnectivityResult.wifi);
+    return results.any((result) => result != ConnectivityResult.none);
   }
 
   /// Check if the Health database is installed on this phone.

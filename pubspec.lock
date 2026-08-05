@@ -364,10 +364,9 @@ packages:
   carp_themes_package:
     dependency: "direct main"
     description:
-      name: carp_themes_package
-      sha256: "9753723406efa78fe7f379d3a5a51751acd427b89f5787bfc64f2b89eb3a8f78"
-      url: "https://pub.dev"
-    source: hosted
+      path: "../carp_themes_package"
+      relative: true
+    source: path
     version: "0.0.5"
   carp_webservices:
     dependency: "direct main"

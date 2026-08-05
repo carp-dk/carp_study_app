@@ -5,10 +5,10 @@ part of carp_study_app;
 ///
 /// Pushed full-screen on the root navigator (outside the app shell).
 // ponytail: static labels hardcoded EN like the rest of design 2.0; i18n later.
-class StudyDetailsPage extends StatelessWidget {
-  static const String route = '/study_details';
+class StudyAboutPage extends StatelessWidget {
+  static const String route = '/study_about';
   final StudyPageViewModel model;
-  StudyDetailsPage({super.key, required this.model});
+  StudyAboutPage({super.key, required this.model});
 
   @override
   Widget build(BuildContext context) {
@@ -119,10 +119,87 @@ class StudyDetailsPage extends StatelessWidget {
                       locale.translate(model.purpose),
                     ),
                   ),
+                  _actionCard(
+                    colors,
+                    icon: Icons.policy_outlined,
+                    title: locale.translate('pages.profile.privacy'),
+                    onTap: () => _launch(model.privacyPolicyUrl),
+                  ),
+                  _actionCard(
+                    colors,
+                    icon: Icons.mail_outline,
+                    title: locale.translate('pages.profile.contact'),
+                    onTap: () => _sendEmailToContactResearcher(
+                      locale.translate(model.responsibleEmail),
+                      'Support for study: ${locale.translate(model.title)} - User: ${model.username}',
+                    ),
+                  ),
+                  _actionCard(
+                    colors,
+                    icon: Icons.download,
+                    title: locale.translate('pages.profile.download_consent'),
+                    onTap: () => _downloadInformedConsent(context),
+                  ),
                 ],
               ),
             ),
           ],
+        ),
+      ),
+    );
+  }
+
+  Future<void> _launch(String url) async {
+    try {
+      await launchUrl(Uri.parse(url));
+    } catch (error) {
+      warning('Could not launch URL - $url');
+    }
+  }
+
+  /// Sends an email to the researcher with the name of the study + user id.
+  Future<void> _sendEmailToContactResearcher(String email, String subject) async {
+    final url = Uri(
+      scheme: 'mailto',
+      path: email,
+      queryParameters: {'subject': subject},
+    ).toString().replaceAll("+", "%20");
+    await _launch(url);
+  }
+
+  /// Fetch the signed consent and save it, informing the user of the outcome.
+  Future<void> _downloadInformedConsent(BuildContext context) async {
+    final locale = RPLocalizations.of(context)!;
+    final file = await model.downloadInformedConsent();
+    if (!context.mounted) return;
+    final message = file != null
+        ? locale.translate('pages.profile.download_consent.success')
+        : locale.translate('pages.profile.download_consent.unavailable');
+    ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text(message)));
+  }
+
+  Widget _actionCard(
+    CarpColors colors, {
+    required IconData icon,
+    required String title,
+    required VoidCallback onTap,
+  }) {
+    return StudiesMaterial(
+      backgroundColor: colors.grey50!,
+      child: InkWell(
+        onTap: onTap,
+        child: Padding(
+          padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 14),
+          child: Row(
+            children: [
+              Icon(icon, size: 22, color: colors.primary),
+              const SizedBox(width: 12),
+              Expanded(
+                child: Text(title, style: fs16fw600.copyWith(color: colors.grey900)),
+              ),
+              Icon(Icons.arrow_forward_ios, size: 16, color: colors.grey400),
+            ],
+          ),
         ),
       ),
     );
