@@ -10,7 +10,6 @@ class HomePage extends StatelessWidget {
   Widget build(BuildContext context) {
     final colors = Theme.of(context).extension<CarpColors>()!;
     return Scaffold(
-      backgroundColor: colors.backgroundGray,
       body: SafeArea(
         child: ListenableBuilder(
           listenable: model,
@@ -69,8 +68,8 @@ class HomePage extends StatelessWidget {
     );
 
     return Shimmer.fromColors(
-      baseColor: colors.grey200,
-      highlightColor: colors.grey100,
+      baseColor: Colors.grey.shade200,
+      highlightColor: Colors.grey.shade100,
       child: Column(
         children: [
           box(195),
@@ -100,7 +99,7 @@ class HomePage extends StatelessWidget {
       icon: Icons.calendar_today_outlined,
       iconColor: Theme.of(context).colorScheme.primary,
       label: 'Active Days in Study',
-      value: Text('${model.activeDaysInStudy}', style: Theme.of(context).textTheme.displaySmall!.copyWith(color: colors.grey900, fontSize: 28)),
+      value: Text('${model.activeDaysInStudy}', style: Theme.of(context).textTheme.displaySmall!.copyWith(color: Colors.grey.shade900, fontSize: 28)),
       footer: Row(
         children: [
           for (final active in model.lastWeekActivity)
@@ -127,11 +126,11 @@ class HomePage extends StatelessWidget {
     Widget count(int n, String label) => Row(
       crossAxisAlignment: CrossAxisAlignment.end,
       children: [
-        Text('$n'.padLeft(2, '0'), style: Theme.of(context).textTheme.displaySmall!.copyWith(color: colors.grey900, fontSize: 28)),
+        Text('$n'.padLeft(2, '0'), style: Theme.of(context).textTheme.displaySmall!.copyWith(color: Colors.grey.shade900, fontSize: 28)),
         const SizedBox(width: 8),
         Padding(
           padding: const EdgeInsets.only(bottom: 4),
-          child: Text(label, style: Theme.of(context).textTheme.labelMedium!.copyWith(color: colors.grey600)),
+          child: Text(label, style: Theme.of(context).textTheme.labelMedium!.copyWith(color: Colors.grey.shade600)),
         ),
       ],
     );
@@ -139,7 +138,7 @@ class HomePage extends StatelessWidget {
       context,
       colors,
       icon: Icons.task_alt,
-      iconColor: colors.warning,
+      iconColor: const Color(0xffF57C00),
       label: 'Task status',
       value: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
@@ -166,7 +165,7 @@ class HomePage extends StatelessWidget {
     required EdgeInsetsGeometry margin,
   }) {
     return StudiesMaterial(
-      backgroundColor: colors.grey50,
+      backgroundColor: Colors.grey.shade50,
       margin: margin,
       child: Padding(
         padding: const EdgeInsets.all(12),
@@ -177,7 +176,7 @@ class HomePage extends StatelessWidget {
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 Expanded(
-                  child: Text(label, style: Theme.of(context).textTheme.labelMedium!.copyWith(color: colors.grey600)),
+                  child: Text(label, style: Theme.of(context).textTheme.labelMedium!.copyWith(color: Colors.grey.shade600)),
                 ),
                 _iconBadge(icon, iconColor),
               ],
@@ -213,7 +212,7 @@ class HomePage extends StatelessWidget {
     final body = message.message ?? '';
 
     return StudiesMaterial(
-      backgroundColor: colors.grey50,
+      backgroundColor: Colors.grey.shade50,
       child: InkWell(
         onTap: () => context.push('${MessageDetailsPage.route}/${message.id}'),
         child: Padding(
@@ -235,7 +234,7 @@ class HomePage extends StatelessWidget {
               ),
               if (subTitle.isNotEmpty) ...[
                 const SizedBox(height: 4),
-                Text(locale.translate(subTitle), style: Theme.of(context).textTheme.labelMedium!.copyWith(color: colors.grey600)),
+                Text(locale.translate(subTitle), style: Theme.of(context).textTheme.labelMedium!.copyWith(color: Colors.grey.shade600)),
               ],
               if (body.isNotEmpty) ...[
                 const SizedBox(height: 8),
@@ -249,9 +248,9 @@ class HomePage extends StatelessWidget {
               const SizedBox(height: 12),
               Row(
                 children: [
-                  Icon(Icons.access_time, size: 14, color: colors.grey500),
+                  Icon(Icons.access_time, size: 14, color: Colors.grey.shade500),
                   const SizedBox(width: 4),
-                  Text(timeago.format(message.timestamp.toLocal()), style: Theme.of(context).textTheme.labelSmall!.copyWith(color: colors.grey500)),
+                  Text(timeago.format(message.timestamp.toLocal()), style: Theme.of(context).textTheme.labelSmall!.copyWith(color: Colors.grey.shade500)),
                 ],
               ),
             ],
@@ -280,11 +279,10 @@ class AppUpdateCard extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     if (!model.appUpdateAvailable) return const SizedBox.shrink();
-    final colors = Theme.of(context).extension<CarpColors>()!;
     final locale = RPLocalizations.of(context)!;
 
     return StudiesMaterial(
-      backgroundColor: colors.grey50,
+      backgroundColor: Colors.grey.shade50,
       child: Padding(
         padding: const EdgeInsets.fromLTRB(16, 8, 8, 8),
         child: Row(

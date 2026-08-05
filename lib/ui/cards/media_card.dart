@@ -3,7 +3,7 @@ part of carp_study_app;
 class MediaCardWidget extends StatefulWidget {
   final List<TaskCardViewModel> modelsList;
   final List<Color> colors;
-  const MediaCardWidget(this.modelsList, {super.key, this.colors = kCarpChartColors});
+  const MediaCardWidget(this.modelsList, {super.key, this.colors = kChartColors});
   @override
   MediaCardWidgetState createState() => MediaCardWidgetState();
 }
@@ -18,7 +18,7 @@ class MediaCardWidgetState extends State<MediaCardWidget> {
     }
 
     return StudiesMaterial(
-      backgroundColor: Theme.of(context).extension<CarpColors>()!.white,
+      backgroundColor: Colors.white,
       child: Padding(
         padding: const EdgeInsets.all(8.0),
         child: Column(
@@ -55,7 +55,7 @@ class MediaCardWidgetState extends State<MediaCardWidget> {
                                                 .map((task) => locale.translate(task.title))
                                                 .toList(),
                                             values: entry.value.taskCount.map((task) => task.size).toList(),
-                                            colors: Theme.of(context).extension<CarpColors>()!.chartColors,
+                                            colors: kChartColors,
                                             height: 18,
                                           );
                                         },

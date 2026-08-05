@@ -24,10 +24,8 @@ class HeartRateCardWidgetState extends State<HeartRateCardWidget> {
 
   @override
   Widget build(BuildContext context) {
-    final colors = Theme.of(context).extension<CarpColors>()!;
-
     return StudiesMaterial(
-      backgroundColor: colors.white,
+      backgroundColor: Colors.white,
       child: Padding(
         padding: const EdgeInsets.all(16),
         child: StreamBuilder(
@@ -38,14 +36,14 @@ class HeartRateCardWidgetState extends State<HeartRateCardWidget> {
               Row(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  Expanded(child: _rangeSummary(colors)),
-                  _rangePicker(colors),
+                  Expanded(child: _rangeSummary()),
+                  _rangePicker(),
                 ],
               ),
               const SizedBox(height: 16),
-              SizedBox(height: 200, child: _chart(colors)),
+              SizedBox(height: 200, child: _chart()),
               const SizedBox(height: 12),
-              _averageHeartRate(colors),
+              _averageHeartRate(),
             ],
           ),
         ),
@@ -59,7 +57,7 @@ class HeartRateCardWidgetState extends State<HeartRateCardWidget> {
       _bands.entries.where((entry) => entry.value.max != null).toList();
 
   /// The selected bar's band, or the range over everything on screen.
-  Widget _rangeSummary(CarpColors colors) {
+  Widget _rangeSummary() {
     final locale = RPLocalizations.of(context)!;
     final measuredBands = _measuredBands;
     final selected = _touched != null && _touched! < measuredBands.length ? measuredBands[_touched!] : null;
@@ -74,7 +72,7 @@ class HeartRateCardWidgetState extends State<HeartRateCardWidget> {
       children: [
         Text(
           selected != null ? _label(selected.key) : locale.translate('cards.heartrate.range'),
-          style: Theme.of(context).textTheme.labelSmall!.copyWith(color: colors.grey600),
+          style: Theme.of(context).textTheme.labelSmall!.copyWith(color: Colors.grey.shade600),
         ),
         const SizedBox(height: 2),
         Row(
@@ -84,7 +82,7 @@ class HeartRateCardWidgetState extends State<HeartRateCardWidget> {
             Text(measured ? '${range.min!.toInt()} - ${range.max!.toInt()}' : '-', style: Theme.of(context).textTheme.headlineMedium!),
             if (measured) ...[
               const SizedBox(width: 6),
-              Text(locale.translate('cards.heartrate.bpm'), style: Theme.of(context).textTheme.labelSmall!.copyWith(color: colors.grey600)),
+              Text(locale.translate('cards.heartrate.bpm'), style: Theme.of(context).textTheme.labelSmall!.copyWith(color: Colors.grey.shade600)),
             ],
           ],
         ),
@@ -93,12 +91,12 @@ class HeartRateCardWidgetState extends State<HeartRateCardWidget> {
   }
 
   /// A segmented day / week switch.
-  Widget _rangePicker(CarpColors colors) {
+  Widget _rangePicker() {
     final locale = RPLocalizations.of(context)!;
 
     return Container(
       padding: const EdgeInsets.all(3),
-      decoration: BoxDecoration(color: colors.grey100, borderRadius: BorderRadius.circular(100)),
+      decoration: BoxDecoration(color: Colors.grey.shade100, borderRadius: BorderRadius.circular(100)),
       child: Row(
         mainAxisSize: MainAxisSize.min,
         children: [
@@ -109,12 +107,12 @@ class HeartRateCardWidgetState extends State<HeartRateCardWidget> {
                 duration: const Duration(milliseconds: 150),
                 padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 6),
                 decoration: BoxDecoration(
-                  color: _range == range ? colors.white : Colors.transparent,
+                  color: _range == range ? Colors.white : Colors.transparent,
                   borderRadius: BorderRadius.circular(100),
                 ),
                 child: Text(
                   locale.translate('cards.heartrate.${range.name}'),
-                  style: Theme.of(context).textTheme.labelSmall!.copyWith(color: _range == range ? colors.grey900 : colors.grey600),
+                  style: Theme.of(context).textTheme.labelSmall!.copyWith(color: _range == range ? Colors.grey.shade900 : Colors.grey.shade600),
                 ),
               ),
             ),
@@ -125,20 +123,20 @@ class HeartRateCardWidgetState extends State<HeartRateCardWidget> {
 
   /// The average over what is on screen, spelled out rather than left as a
   /// bare number.
-  Widget _averageHeartRate(CarpColors colors) {
+  Widget _averageHeartRate() {
     final locale = RPLocalizations.of(context)!;
     final average = HeartRateCardViewModel.averageOf(_bands.values);
 
     return Row(
       crossAxisAlignment: CrossAxisAlignment.center,
       children: [
-        Icon(Icons.favorite, color: Theme.of(context).extension<CarpColors>()!.heartRate, size: 16),
+        Icon(Icons.favorite, color: const Color(0xffEB4B62), size: 16),
         const SizedBox(width: 8),
-        Text(locale.translate('cards.heartrate.average'), style: Theme.of(context).textTheme.labelMedium!.copyWith(color: colors.grey600)),
+        Text(locale.translate('cards.heartrate.average'), style: Theme.of(context).textTheme.labelMedium!.copyWith(color: Colors.grey.shade600)),
         const Spacer(),
         Text(average != null ? average.toStringAsFixed(0) : '-', style: Theme.of(context).textTheme.titleMedium!),
         const SizedBox(width: 4),
-        Text(locale.translate('cards.heartrate.bpm'), style: Theme.of(context).textTheme.labelSmall!.copyWith(color: colors.grey600)),
+        Text(locale.translate('cards.heartrate.bpm'), style: Theme.of(context).textTheme.labelSmall!.copyWith(color: Colors.grey.shade600)),
       ],
     );
   }
@@ -161,7 +159,7 @@ class HeartRateCardWidgetState extends State<HeartRateCardWidget> {
     return (low, low + interval * 4, interval);
   }
 
-  Widget _chart(CarpColors colors) {
+  Widget _chart() {
     final (minY, maxY, interval) = _axis;
 
     return BarChart(
@@ -172,7 +170,7 @@ class HeartRateCardWidgetState extends State<HeartRateCardWidget> {
         groupsSpace: 4,
         barTouchData: BarTouchData(
           enabled: true,
-          touchTooltipData: _tooltip(colors),
+          touchTooltipData: _tooltip(),
           touchCallback: (event, response) {
             // Only settle on tap-up, so the selection is not dragged around -
             // and a tap on empty chart space clears it.
@@ -193,8 +191,8 @@ class HeartRateCardWidgetState extends State<HeartRateCardWidget> {
                   // Dim the other bars while one is held, so the tooltip is
                   // clearly about this bar.
                   color: _touched == null || _touched == index
-                      ? Theme.of(context).extension<CarpColors>()!.heartRate
-                      : Theme.of(context).extension<CarpColors>()!.heartRate.withValues(alpha: 0.25),
+                      ? const Color(0xffEB4B62)
+                      : const Color(0xffEB4B62).withValues(alpha: 0.25),
                   width: _range == HeartRateRange.day ? 6 : 14,
                   borderRadius: BorderRadius.circular(8),
                 ),
@@ -220,14 +218,14 @@ class HeartRateCardWidgetState extends State<HeartRateCardWidget> {
           show: true,
           horizontalInterval: interval,
           drawVerticalLine: false,
-          getDrawingHorizontalLine: (_) => FlLine(color: colors.grey300, strokeWidth: 1),
+          getDrawingHorizontalLine: (_) => FlLine(color: Colors.grey.shade300, strokeWidth: 1),
         ),
         borderData: FlBorderData(show: false),
       ),
     );
   }
 
-  BarTouchTooltipData _tooltip(CarpColors colors) {
+  BarTouchTooltipData _tooltip() {
     final locale = RPLocalizations.of(context)!;
 
     return BarTouchTooltipData(
@@ -235,15 +233,15 @@ class HeartRateCardWidgetState extends State<HeartRateCardWidget> {
       fitInsideVertically: true,
       tooltipPadding: const EdgeInsets.symmetric(horizontal: 10, vertical: 6),
       tooltipMargin: 4,
-      getTooltipColor: (_) => colors.grey900,
+      getTooltipColor: (_) => Colors.grey.shade900,
       getTooltipItem: (group, groupIndex, rod, rodIndex) => BarTooltipItem(
         '${_label(group.x)}\n',
-        Theme.of(context).textTheme.labelSmall!.copyWith(color: colors.grey300),
+        Theme.of(context).textTheme.labelSmall!.copyWith(color: Colors.grey.shade300),
         textAlign: TextAlign.left,
         children: [
           TextSpan(
             text: '${rod.fromY.toInt()}-${rod.toY.toInt()} ${locale.translate('cards.heartrate.bpm')}',
-            style: Theme.of(context).textTheme.labelMedium!.copyWith(color: colors.white),
+            style: Theme.of(context).textTheme.labelMedium!.copyWith(color: Colors.white),
           ),
         ],
       ),
@@ -270,7 +268,7 @@ class HeartRateCardWidgetState extends State<HeartRateCardWidget> {
       space: 6,
       child: Text(
         _range == HeartRateRange.day ? hour.toString().padLeft(2, '0') : DateFormat('dd/MM').format(_dateOf(hour)),
-        style: Theme.of(context).textTheme.labelSmall!.copyWith(color: Theme.of(context).extension<CarpColors>()!.grey600),
+        style: Theme.of(context).textTheme.labelSmall!.copyWith(color: Colors.grey.shade600),
       ),
     );
   }
@@ -280,7 +278,7 @@ class HeartRateCardWidgetState extends State<HeartRateCardWidget> {
     space: 6,
     child: Text(
       value.toInt().toString(),
-      style: Theme.of(context).textTheme.labelSmall!.copyWith(color: Theme.of(context).extension<CarpColors>()!.grey600),
+      style: Theme.of(context).textTheme.labelSmall!.copyWith(color: Colors.grey.shade600),
     ),
   );
 }

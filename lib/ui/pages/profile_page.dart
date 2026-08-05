@@ -24,10 +24,7 @@ class ProfilePageState extends State<ProfilePage> {
   @override
   Widget build(BuildContext context) {
     RPLocalizations locale = RPLocalizations.of(context)!;
-    final colors = Theme.of(context).extension<CarpColors>()!;
-
     return Scaffold(
-      backgroundColor: colors.backgroundGray,
       body: SafeArea(
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
@@ -51,72 +48,63 @@ class ProfilePageState extends State<ProfilePage> {
               child: ListView(
                 padding: const EdgeInsets.only(bottom: 24),
                 children: [
-                  _sectionCard(colors, [
-                    _fieldTile(colors, locale.translate('pages.profile.username'), widget.model.username),
+                  _sectionCard([
+                    _fieldTile(locale.translate('pages.profile.username'), widget.model.username),
                     _fieldTile(
-                      colors,
                       locale.translate('pages.profile.account_id'),
                       widget.model.userId,
                       copyable: true,
                     ),
                     _fieldTile(
-                      colors,
                       locale.translate('pages.profile.full_name'),
                       widget.model.isAnonymous
                           ? locale.translate('pages.about.anonymous.anonymous')
                           : widget.model.fullName,
                     ),
                     _fieldTile(
-                      colors,
                       locale.translate('pages.profile.email'),
                       widget.model.isAnonymous
                           ? locale.translate('pages.about.anonymous.anonymous')
                           : widget.model.email,
                     ),
                   ]),
-                  _sectionHeader(colors, 'Study'),
-                  _sectionCard(colors, [
+                  _sectionHeader('Study'),
+                  _sectionCard([
                     _fieldTile(
-                      colors,
                       locale.translate('pages.profile.study_id'),
                       widget.model.studyId,
                       copyable: true,
                     ),
                     _fieldTile(
-                      colors,
                       locale.translate('pages.profile.study_deployment_id'),
                       widget.model.studyDeploymentId,
                       copyable: true,
                     ),
                     _fieldTile(
-                      colors,
                       locale.translate('pages.profile.study_name'),
                       locale.translate(widget.model.studyDeploymentTitle),
                       copyable: true,
                     ),
                     _fieldTile(
-                      colors,
                       locale.translate('pages.profile.participant_id'),
                       widget.model.participantId,
                       copyable: true,
                     ),
                     _fieldTile(
-                      colors,
                       locale.translate('pages.profile.participant_role'),
                       widget.model.participantRole,
                     ),
-                    _fieldTile(colors, locale.translate('pages.profile.device_role'), widget.model.deviceRole),
+                    _fieldTile(locale.translate('pages.profile.device_role'), widget.model.deviceRole),
                   ]),
-                  _sectionHeader(colors, 'App'),
-                  _sectionCard(colors, [
-                    _fieldTile(colors, locale.translate('pages.profile.app_version'), appVersion),
-                    _fieldTile(colors, locale.translate('pages.profile.app_version_code'), buildNumber),
-                    _fieldTile(colors, locale.translate('pages.profile.server_name'), widget.model.currentServer),
-                    _fieldTile(colors, locale.translate('pages.profile.device_id'), widget.model.deviceID),
+                  _sectionHeader('App'),
+                  _sectionCard([
+                    _fieldTile(locale.translate('pages.profile.app_version'), appVersion),
+                    _fieldTile(locale.translate('pages.profile.app_version_code'), buildNumber),
+                    _fieldTile(locale.translate('pages.profile.server_name'), widget.model.currentServer),
+                    _fieldTile(locale.translate('pages.profile.device_id'), widget.model.deviceID),
                   ]),
                   const SizedBox(height: 8),
                   _actionCard(
-                    colors,
                     icon: Icons.info_outline,
                     iconColor: Theme.of(context).colorScheme.primary,
                     title: locale.translate('pages.profile.study_details'),
@@ -125,16 +113,14 @@ class ProfilePageState extends State<ProfilePage> {
                   ),
                   const SizedBox(height: 8),
                   _actionCard(
-                    colors,
                     icon: Icons.logout,
-                    iconColor: Theme.of(context).extension<CarpColors>()!.error,
+                    iconColor: const Color(0xffEB4B62),
                     title: locale.translate('pages.profile.leave_study'),
                     onTap: _showLeaveStudyConfirmationDialog,
                   ),
                   _actionCard(
-                    colors,
                     icon: Icons.power_settings_new,
-                    iconColor: Theme.of(context).extension<CarpColors>()!.error,
+                    iconColor: const Color(0xffEB4B62),
                     title: locale.translate('pages.profile.log_out'),
                     onTap: () async {
                       bool isConnected = await widget.model.checkConnectivity();
@@ -154,28 +140,28 @@ class ProfilePageState extends State<ProfilePage> {
     );
   }
 
-  Widget _sectionHeader(CarpColors colors, String title) {
+  Widget _sectionHeader(String title) {
     return Padding(
       padding: const EdgeInsets.fromLTRB(16, 8, 16, 8),
       child: Text(title, style: Theme.of(context).textTheme.titleMedium!),
     );
   }
 
-  Widget _sectionCard(CarpColors colors, List<Widget> children) {
+  Widget _sectionCard(List<Widget> children) {
     return StudiesMaterial(
-      backgroundColor: colors.grey50,
+      backgroundColor: Colors.grey.shade50,
       child: Column(
         children: [
           for (var i = 0; i < children.length; i++) ...[
             children[i],
-            if (i < children.length - 1) Divider(height: 1, indent: 16, endIndent: 16, color: colors.grey200),
+            if (i < children.length - 1) Divider(height: 1, indent: 16, endIndent: 16, color: Colors.grey.shade200),
           ],
         ],
       ),
     );
   }
 
-  Widget _fieldTile(CarpColors colors, String label, String value, {bool copyable = false}) {
+  Widget _fieldTile(String label, String value, {bool copyable = false}) {
     return Padding(
       padding: const EdgeInsets.fromLTRB(16, 10, 8, 10),
       child: Row(
@@ -184,7 +170,7 @@ class ProfilePageState extends State<ProfilePage> {
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                Text(label, style: Theme.of(context).textTheme.labelSmall!.copyWith(color: colors.grey600)),
+                Text(label, style: Theme.of(context).textTheme.labelSmall!.copyWith(color: Colors.grey.shade600)),
                 const SizedBox(height: 2),
                 Text(
                   value,
@@ -197,7 +183,7 @@ class ProfilePageState extends State<ProfilePage> {
           ),
           if (copyable)
             IconButton(
-              icon: Icon(Icons.copy_outlined, size: 18, color: colors.grey500),
+              icon: Icon(Icons.copy_outlined, size: 18, color: Colors.grey.shade500),
               visualDensity: VisualDensity.compact,
               onPressed: () {
                 Clipboard.setData(ClipboardData(text: value));
@@ -212,8 +198,7 @@ class ProfilePageState extends State<ProfilePage> {
     );
   }
 
-  Widget _actionCard(
-    CarpColors colors, {
+  Widget _actionCard({
     required IconData icon,
     required Color iconColor,
     required String title,
@@ -221,7 +206,7 @@ class ProfilePageState extends State<ProfilePage> {
     required VoidCallback onTap,
   }) {
     return StudiesMaterial(
-      backgroundColor: colors.grey50,
+      backgroundColor: Colors.grey.shade50,
       margin: const EdgeInsets.only(bottom: 8, left: 16, right: 16),
       child: InkWell(
         onTap: onTap,
@@ -234,7 +219,7 @@ class ProfilePageState extends State<ProfilePage> {
               Expanded(
                 child: Text(title, style: Theme.of(context).textTheme.labelLarge!),
               ),
-              if (hasChevron) Icon(Icons.arrow_forward_ios, size: 16, color: colors.grey400),
+              if (hasChevron) Icon(Icons.arrow_forward_ios, size: 16, color: Colors.grey.shade400),
             ],
           ),
         ),

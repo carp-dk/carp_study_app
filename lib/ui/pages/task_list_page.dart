@@ -41,7 +41,7 @@ class TaskListPageState extends State<TaskListPage> with TickerProviderStateMixi
       widget.model.autoCompletedTaskShown();
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(
-          backgroundColor: Theme.of(context).extension<CarpColors>()!.grey900,
+          backgroundColor: Colors.grey.shade900,
           content: Text(RPLocalizations.of(context)!.translate('Done!')),
           behavior: SnackBarBehavior.floating,
           shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
@@ -56,10 +56,7 @@ class TaskListPageState extends State<TaskListPage> with TickerProviderStateMixi
   @override
   Widget build(BuildContext context) {
     final locale = RPLocalizations.of(context)!;
-    final colors = Theme.of(context).extension<CarpColors>()!;
-
     return Scaffold(
-      backgroundColor: colors.backgroundGray,
       body: SafeArea(
         child: Column(
           children: [
@@ -79,15 +76,15 @@ class TaskListPageState extends State<TaskListPage> with TickerProviderStateMixi
 
                   return Column(
                     children: [
-                      _segmentedControl(colors, locale, pending.length, completed.length),
+                      _segmentedControl(locale, pending.length, completed.length),
                       Expanded(
                         child: showing.isEmpty && !showParticipantData
-                            ? _emptyState(colors, locale)
+                            ? _emptyState(locale)
                             : ListView(
                                 padding: const EdgeInsets.only(bottom: 16),
                                 children: [
-                                  if (showParticipantData) _participantDataCard(colors),
-                                  for (final task in showing) _taskCard(context, colors, task),
+                                  if (showParticipantData) _participantDataCard(),
+                                  for (final task in showing) _taskCard(context, task),
                                 ],
                               ),
                       ),
@@ -104,11 +101,11 @@ class TaskListPageState extends State<TaskListPage> with TickerProviderStateMixi
 
   /// The Pending / Completed switch: a pill track with the selected segment
   /// lifted out in white.
-  Widget _segmentedControl(CarpColors colors, RPLocalizations locale, int pending, int completed) => Padding(
+  Widget _segmentedControl(RPLocalizations locale, int pending, int completed) => Padding(
     padding: const EdgeInsets.fromLTRB(16, 0, 16, 16),
     child: Container(
       padding: const EdgeInsets.all(4),
-      decoration: BoxDecoration(color: colors.grey200, borderRadius: BorderRadius.circular(12)),
+      decoration: BoxDecoration(color: Colors.grey.shade200, borderRadius: BorderRadius.circular(12)),
       child: TabBar(
         controller: _tabController,
         labelPadding: EdgeInsets.zero,
@@ -117,19 +114,19 @@ class TaskListPageState extends State<TaskListPage> with TickerProviderStateMixi
         splashBorderRadius: BorderRadius.circular(8),
         indicator: ShapeDecoration(
           shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(8)),
-          color: colors.white,
+          color: Colors.white,
           shadows: [BoxShadow(color: Colors.black.withValues(alpha: 0.06), blurRadius: 6, offset: const Offset(0, 2))],
         ),
         tabs: [
-          _tab(colors, locale.translate('pages.task_list.pending'), pending, 0),
-          _tab(colors, locale.translate('pages.task_list.completed'), completed, 1),
+          _tab(locale.translate('pages.task_list.pending'), pending, 0),
+          _tab(locale.translate('pages.task_list.completed'), completed, 1),
         ],
       ),
     ),
   );
 
   /// One segment of the Pending / Completed switch, with a count badge.
-  Widget _tab(CarpColors colors, String label, int count, int index) {
+  Widget _tab(String label, int count, int index) {
     final selected = _tabController.index == index;
     return Tab(
       height: 40,
@@ -140,17 +137,17 @@ class TaskListPageState extends State<TaskListPage> with TickerProviderStateMixi
             child: Text(
               label,
               overflow: TextOverflow.ellipsis,
-              style: Theme.of(context).textTheme.labelMedium!.copyWith(color: selected ? colors.grey900 : colors.grey600),
+              style: Theme.of(context).textTheme.labelMedium!.copyWith(color: selected ? Colors.grey.shade900 : Colors.grey.shade600),
             ),
           ),
           const SizedBox(width: 6),
           Container(
             padding: const EdgeInsets.symmetric(horizontal: 7, vertical: 2),
             decoration: BoxDecoration(
-              color: selected ? Theme.of(context).colorScheme.primary.withValues(alpha: 0.12) : colors.grey300,
+              color: selected ? Theme.of(context).colorScheme.primary.withValues(alpha: 0.12) : Colors.grey.shade300,
               borderRadius: BorderRadius.circular(100),
             ),
-            child: Text('$count', style: Theme.of(context).textTheme.labelSmall!.copyWith(color: selected ? Theme.of(context).colorScheme.primary : colors.grey600)),
+            child: Text('$count', style: Theme.of(context).textTheme.labelSmall!.copyWith(color: selected ? Theme.of(context).colorScheme.primary : Colors.grey.shade600)),
           ),
         ],
       ),
@@ -159,26 +156,25 @@ class TaskListPageState extends State<TaskListPage> with TickerProviderStateMixi
 
   /// A task card, in either tab - the state decides the accent colour, the
   /// badge and which meta chips are shown.
-  Widget _taskCard(BuildContext context, CarpColors colors, UserTask userTask) {
+  Widget _taskCard(BuildContext context, UserTask userTask) {
     final locale = RPLocalizations.of(context)!;
     final done = userTask.state == UserTaskState.done;
     final expired = userTask.state == UserTaskState.expired;
     final accent = done
-        ? Theme.of(context).extension<CarpColors>()!.taskCompleted
+        ? const Color(0xff006398)
         : expired
-        ? colors.grey500
+        ? Colors.grey.shade500
         : taskTypeColors[userTask.type] ?? Theme.of(context).colorScheme.primary;
     final description = locale.translate(userTask.description);
     final (expiry, urgent) = _expiry(locale, userTask);
 
     return _card(
-      colors,
       onTap: done || expired
           ? null
           : () {
               if (widget.model.startUserTask(userTask)) context.push('/task/${userTask.id}');
             },
-      badge: _badge(accent, child: _taskBadgeIcon(colors, userTask, accent)),
+      badge: _badge(accent, child: _taskBadgeIcon(userTask, accent)),
       children: [
         Row(
           children: [
@@ -190,11 +186,11 @@ class TaskListPageState extends State<TaskListPage> with TickerProviderStateMixi
               ),
             ),
             if (!done && !expired && expiry.isNotEmpty)
-              _chip(colors, Icons.alarm, expiry, urgent ? colors.warning : colors.grey500, filled: urgent),
+              _chip(Icons.alarm, expiry, urgent ? const Color(0xffF57C00) : Colors.grey.shade500, filled: urgent),
             if (done && userTask.doneTime != null)
               Text(
                 DateFormat('MMM d, yyyy').format(userTask.doneTime!),
-                style: Theme.of(context).textTheme.labelSmall!.copyWith(color: colors.grey500),
+                style: Theme.of(context).textTheme.labelSmall!.copyWith(color: Colors.grey.shade500),
               ),
           ],
         ),
@@ -206,21 +202,20 @@ class TaskListPageState extends State<TaskListPage> with TickerProviderStateMixi
             description,
             maxLines: 5,
             overflow: TextOverflow.ellipsis,
-            style: Theme.of(context).textTheme.labelMedium!.copyWith(color: colors.grey600),
+            style: Theme.of(context).textTheme.labelMedium!.copyWith(color: Colors.grey.shade600),
           ),
         ],
         if (!done && !expired) ...[
           const SizedBox(height: 10),
-          _chip(colors, Icons.schedule, _estimatedTime(locale, userTask), colors.grey500),
+          _chip(Icons.schedule, _estimatedTime(locale, userTask), Colors.grey.shade500),
         ],
       ],
     );
   }
 
-  Widget _participantDataCard(CarpColors colors) {
+  Widget _participantDataCard() {
     final accent = taskTypeColors["ExpectedParticipantData"]!;
     return _card(
-      colors,
       onTap: () => context.push(ParticipantDataPage.route),
       badge: _badge(accent, child: Icon(taskTypeIcons["ExpectedParticipantData"]!.icon, color: accent, size: 20)),
       children: [
@@ -230,7 +225,7 @@ class TaskListPageState extends State<TaskListPage> with TickerProviderStateMixi
         const SizedBox(height: 4),
         Text(
           "Fill in the required participant data to continue with the study.",
-          style: Theme.of(context).textTheme.labelMedium!.copyWith(color: colors.grey600),
+          style: Theme.of(context).textTheme.labelMedium!.copyWith(color: Colors.grey.shade600),
         ),
       ],
     );
@@ -238,9 +233,9 @@ class TaskListPageState extends State<TaskListPage> with TickerProviderStateMixi
 
   /// The shared card shell: badge on the left, content column, chevron when
   /// the card leads somewhere.
-  Widget _card(CarpColors colors, {required Widget badge, required List<Widget> children, VoidCallback? onTap}) {
+  Widget _card({required Widget badge, required List<Widget> children, VoidCallback? onTap}) {
     return StudiesMaterial(
-      backgroundColor: colors.grey50,
+      backgroundColor: Colors.grey.shade50,
       child: InkWell(
         onTap: onTap,
         child: Padding(
@@ -253,7 +248,7 @@ class TaskListPageState extends State<TaskListPage> with TickerProviderStateMixi
               Expanded(child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: children)),
               if (onTap != null) ...[
                 const SizedBox(width: 8),
-                Icon(Icons.chevron_right, size: 20, color: colors.grey400),
+                Icon(Icons.chevron_right, size: 20, color: Colors.grey.shade400),
               ],
             ],
           ),
@@ -272,7 +267,7 @@ class TaskListPageState extends State<TaskListPage> with TickerProviderStateMixi
   );
 
   /// A small icon + label chip, outlined by default and tinted when [filled].
-  Widget _chip(CarpColors colors, IconData icon, String label, Color color, {bool filled = false}) => Container(
+  Widget _chip(IconData icon, String label, Color color, {bool filled = false}) => Container(
     padding: EdgeInsets.symmetric(horizontal: filled ? 8 : 0, vertical: filled ? 4 : 0),
     decoration: filled
         ? BoxDecoration(color: color.withValues(alpha: 0.12), borderRadius: BorderRadius.circular(100))
@@ -288,7 +283,7 @@ class TaskListPageState extends State<TaskListPage> with TickerProviderStateMixi
   );
 
   /// The icon for [userTask], or a spinner while it is running.
-  Widget _taskBadgeIcon(CarpColors colors, UserTask userTask, Color accent) {
+  Widget _taskBadgeIcon(UserTask userTask, Color accent) {
     return StreamBuilder(
       stream: userTask.stateEvents,
       initialData: userTask.state,
@@ -318,7 +313,7 @@ class TaskListPageState extends State<TaskListPage> with TickerProviderStateMixi
     return (expiresIn.humanize(locale), expiresIn.inHours < 24);
   }
 
-  Widget _emptyState(CarpColors colors, RPLocalizations locale) {
+  Widget _emptyState(RPLocalizations locale) {
     return Padding(
       padding: const EdgeInsets.fromLTRB(32, 48, 32, 48),
       child: Column(
@@ -340,7 +335,7 @@ class TaskListPageState extends State<TaskListPage> with TickerProviderStateMixi
           const SizedBox(height: 16),
           Text(
             locale.translate("pages.task_list.no_tasks"),
-            style: Theme.of(context).textTheme.labelMedium!.copyWith(color: colors.grey600),
+            style: Theme.of(context).textTheme.labelMedium!.copyWith(color: Colors.grey.shade600),
             textAlign: TextAlign.center,
           ),
         ],

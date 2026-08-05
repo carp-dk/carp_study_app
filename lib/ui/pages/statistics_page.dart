@@ -14,7 +14,6 @@ class _StatisticsPageState extends State<StatisticsPage> {
   Widget build(BuildContext context) {
     RPLocalizations locale = RPLocalizations.of(context)!;
     return Scaffold(
-      backgroundColor: Theme.of(context).extension<CarpColors>()!.backgroundGray,
       body: SafeArea(
         child: ListView(
           padding: const EdgeInsets.only(bottom: 24),

@@ -10,7 +10,7 @@ class HealthServiceConnectPage extends StatelessWidget {
     DeviceViewModel healthServive = bloc.appViewModel.devicesPageViewModel.healthService!;
 
     return Scaffold(
-      backgroundColor: Theme.of(context).extension<CarpColors>()!.grey100,
+      backgroundColor: Colors.grey.shade100,
       body: SafeArea(
         child: Container(
           child: Column(
@@ -144,11 +144,10 @@ class HealthServiceConnectPage extends StatelessWidget {
   );
 
   Widget _dataDisclosure(BuildContext context, RPLocalizations locale) {
-    final colors = Theme.of(context).extension<CarpColors>()!;
     return Container(
       width: double.infinity,
       padding: const EdgeInsets.all(16),
-      decoration: BoxDecoration(color: colors.grey200, borderRadius: BorderRadius.circular(12)),
+      decoration: BoxDecoration(color: Colors.grey.shade200, borderRadius: BorderRadius.circular(12)),
       child: Row(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [

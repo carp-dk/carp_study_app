@@ -13,7 +13,6 @@ class StudyPageState extends State<StudyPage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: Theme.of(context).extension<CarpColors>()!.backgroundGray,
       body: SafeArea(
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.center,
@@ -89,7 +88,7 @@ class StudyPageState extends State<StudyPage> {
   Widget _hasUpdateCard() {
     RPLocalizations locale = RPLocalizations.of(context)!;
     return StudiesMaterial(
-      backgroundColor: Theme.of(context).extension<CarpColors>()!.grey50,
+      backgroundColor: Colors.grey.shade50,
       elevation: 8,
       child: Padding(
         padding: const EdgeInsets.only(left: 16.0),
@@ -111,7 +110,7 @@ class StudyPageState extends State<StudyPage> {
                   _redirectToUpdateStore();
                 },
                 style: ElevatedButton.styleFrom(
-                  backgroundColor: Theme.of(context).extension<CarpColors>()!.deploymentDeploying,
+                  backgroundColor: const Color(0xff006398),
                   padding: const EdgeInsets.symmetric(horizontal: 30, vertical: 12),
                 ),
                 child: Text(locale.translate("get"), style: TextStyle(color: Colors.white)),
@@ -131,7 +130,7 @@ class StudyPageState extends State<StudyPage> {
     timeago.setLocaleMessages('es', timeago.EsMessages());
 
     return StudiesMaterial(
-      backgroundColor: Theme.of(context).extension<CarpColors>()!.grey50,
+      backgroundColor: Colors.grey.shade50,
       child: InkWell(
         onTap: () {
           if (onTap != null) {
@@ -167,7 +166,7 @@ class StudyPageState extends State<StudyPage> {
                     Expanded(
                       child: Text(
                         locale.translate(message.subTitle!),
-                        style: Theme.of(context).textTheme.bodyLarge!.copyWith(color: Theme.of(context).extension<CarpColors>()!.grey700),
+                        style: Theme.of(context).textTheme.bodyLarge!.copyWith(color: Colors.grey.shade800),
                       ),
                     ),
                   ],
@@ -223,7 +222,7 @@ class StudyPageState extends State<StudyPage> {
 
         return StudiesMaterial(
           margin: const EdgeInsets.all(16.0),
-          backgroundColor: Theme.of(context).extension<CarpColors>()!.grey50,
+          backgroundColor: Colors.grey.shade50,
           shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(8)),
           child: Container(
             decoration: BoxDecoration(borderRadius: BorderRadius.circular(16.0)),
@@ -258,7 +257,7 @@ class StudyPageState extends State<StudyPage> {
                             child: Text(
                               getStatusText(locale, deploymentStatus, snapshot),
                               style: Theme.of(context).textTheme.labelLarge!.copyWith(
-                                color: Theme.of(context).extension<CarpColors>()!.grey900,
+                                color: Colors.grey.shade900,
                                 fontSize: 14,
                               ),
                             ),
@@ -291,7 +290,7 @@ class StudyPageState extends State<StudyPage> {
               Text(
                 locale.translate('Announcements'),
                 style: Theme.of(context).textTheme.headlineSmall!.copyWith(
-                  color: Theme.of(context).extension<CarpColors>()!.grey900,
+                  color: Colors.grey.shade900,
                   fontWeight: FontWeight.bold,
                 ),
               ),
@@ -311,7 +310,7 @@ class StudyPageState extends State<StudyPage> {
 
     return Container(
       child: StudiesMaterial(
-        backgroundColor: Theme.of(context).extension<CarpColors>()!.grey50,
+        backgroundColor: Colors.grey.shade50,
         child: InkWell(
           onTap: () {
             if (onTap != null) {
@@ -339,7 +338,7 @@ class StudyPageState extends State<StudyPage> {
                       ),
                     ),
                     Material(
-                      color: Theme.of(context).extension<CarpColors>()!.deploymentDeploying,
+                      color: const Color(0xff006398),
                       borderRadius: BorderRadius.circular(100.0),
                       child: Padding(
                         padding: const EdgeInsets.all(4.0),
@@ -356,13 +355,13 @@ class StudyPageState extends State<StudyPage> {
                         Expanded(
                           child: Text(
                             locale.translate(message.subTitle!),
-                            style: Theme.of(context).textTheme.bodyLarge!.copyWith(color: Theme.of(context).extension<CarpColors>()!.grey700),
+                            style: Theme.of(context).textTheme.bodyLarge!.copyWith(color: Colors.grey.shade800),
                           ),
                         ),
                       Spacer(),
                       Text(
                         timeago.format(message.timestamp.toLocal()),
-                        style: Theme.of(context).textTheme.labelSmall!.copyWith(fontSize: 10).copyWith(color: Theme.of(context).extension<CarpColors>()!.grey600),
+                        style: Theme.of(context).textTheme.labelSmall!.copyWith(fontSize: 10).copyWith(color: Colors.grey.shade600),
                       ),
                     ],
                   ),

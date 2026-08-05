@@ -41,7 +41,7 @@ class ActivityCardState extends State<ActivityCard> {
     RPLocalizations locale = RPLocalizations.of(context)!;
 
     return StudiesMaterial(
-      backgroundColor: Theme.of(context).extension<CarpColors>()!.white,
+      backgroundColor: Colors.white,
       // Tapping anywhere else on the card drops the selection.
       child: GestureDetector(
         onTap: () => setState(() => _selectedDay = null),
@@ -59,7 +59,7 @@ class ActivityCardState extends State<ActivityCard> {
                     padding: const EdgeInsets.only(left: 4.0),
                     child: Text(
                       '${locale.translate('cards.activity.total.min')} ${_selectedDay != null ? _getDayName(_selectedDay!) : ''}',
-                      style: Theme.of(context).textTheme.labelSmall!.copyWith(fontWeight: FontWeight.w700).copyWith(color: Theme.of(context).extension<CarpColors>()!.grey600),
+                      style: Theme.of(context).textTheme.labelSmall!.copyWith(fontWeight: FontWeight.w700).copyWith(color: Colors.grey.shade600),
                     ),
                   ),
                 ],
@@ -68,7 +68,7 @@ class ActivityCardState extends State<ActivityCard> {
                 children: [
                   Text(
                     "${widget.model.currentMonth} ${widget.model.startOfWeek} - ${int.parse(widget.model.endOfWeek) < int.parse(widget.model.startOfWeek) ? widget.model.nextMonth : widget.model.currentMonth} ${widget.model.endOfWeek}, ${widget.model.currentYear}",
-                    style: Theme.of(context).textTheme.labelSmall!.copyWith(fontWeight: FontWeight.w700).copyWith(color: Theme.of(context).extension<CarpColors>()!.grey600),
+                    style: Theme.of(context).textTheme.labelSmall!.copyWith(fontWeight: FontWeight.w700).copyWith(color: Colors.grey.shade600),
                   ),
                   Spacer(),
                 ],
@@ -95,7 +95,7 @@ class ActivityCardState extends State<ActivityCard> {
                               padding: const EdgeInsets.all(4.0),
                               child: Text(
                                 locale.translate('cards.activity.walking'),
-                                style: Theme.of(context).textTheme.labelSmall!.copyWith(fontWeight: FontWeight.w700).copyWith(color: Theme.of(context).extension<CarpColors>()!.grey800),
+                                style: Theme.of(context).textTheme.labelSmall!.copyWith(fontWeight: FontWeight.w700).copyWith(color: Colors.grey.shade900),
                               ),
                             ),
                           ],
@@ -112,7 +112,7 @@ class ActivityCardState extends State<ActivityCard> {
                               padding: const EdgeInsets.all(4.0),
                               child: Text(
                                 locale.translate('cards.activity.running'),
-                                style: Theme.of(context).textTheme.labelSmall!.copyWith(fontWeight: FontWeight.w700).copyWith(color: Theme.of(context).extension<CarpColors>()!.grey800),
+                                style: Theme.of(context).textTheme.labelSmall!.copyWith(fontWeight: FontWeight.w700).copyWith(color: Colors.grey.shade900),
                               ),
                             ),
                           ],
@@ -127,7 +127,7 @@ class ActivityCardState extends State<ActivityCard> {
                         padding: const EdgeInsets.only(left: 4.0),
                         child: Text(
                           locale.translate('cards.activity.cycling'),
-                          style: Theme.of(context).textTheme.labelSmall!.copyWith(fontWeight: FontWeight.w700).copyWith(color: Theme.of(context).extension<CarpColors>()!.grey800),
+                          style: Theme.of(context).textTheme.labelSmall!.copyWith(fontWeight: FontWeight.w700).copyWith(color: Colors.grey.shade900),
                         ),
                       ),
                     ],
@@ -238,7 +238,7 @@ class ActivityCardState extends State<ActivityCard> {
       space: 6,
       child: Text(
         value.toInt() % meta.appliedInterval == 0 ? value.toInt().toString() : '',
-        style: Theme.of(context).textTheme.bodyMedium!.copyWith(letterSpacing: 1).copyWith(color: Theme.of(context).extension<CarpColors>()!.grey600),
+        style: Theme.of(context).textTheme.bodyMedium!.copyWith(letterSpacing: 1).copyWith(color: Colors.grey.shade600),
       ),
     );
   }

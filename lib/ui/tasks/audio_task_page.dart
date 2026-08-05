@@ -30,7 +30,7 @@ class AudioTaskPageState extends State<AudioTaskPage> {
                       ),
                       Spacer(),
                       IconButton(
-                        color: Theme.of(context).extension<CarpColors>()!.grey900,
+                        color: Colors.grey.shade900,
                         onPressed: () {
                           _showCancelConfirmationDialog();
                         },

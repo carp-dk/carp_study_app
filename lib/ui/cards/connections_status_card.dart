@@ -23,7 +23,6 @@ class _ConnectionsStatusCardState extends State<ConnectionsStatusCard> {
 
   @override
   Widget build(BuildContext context) {
-    final colors = Theme.of(context).extension<CarpColors>()!;
     final locale = RPLocalizations.of(context)!;
     final model = widget.model;
     final total = model.totalSourceCount;
@@ -42,7 +41,7 @@ class _ConnectionsStatusCardState extends State<ConnectionsStatusCard> {
     };
 
     return StudiesMaterial(
-      backgroundColor: colors.grey50,
+      backgroundColor: Colors.grey.shade50,
       hasBorder: true,
       borderColor: accent,
       child: Column(
@@ -67,14 +66,14 @@ class _ConnectionsStatusCardState extends State<ConnectionsStatusCard> {
                       children: [
                         Text(title, style: Theme.of(context).textTheme.titleMedium!),
                         const SizedBox(height: 4),
-                        Text(sources, style: Theme.of(context).textTheme.labelMedium!.copyWith(color: colors.grey600)),
+                        Text(sources, style: Theme.of(context).textTheme.labelMedium!.copyWith(color: Colors.grey.shade600)),
                       ],
                     ),
                   ),
                   Container(
-                    decoration: BoxDecoration(color: colors.grey100, shape: BoxShape.circle),
+                    decoration: BoxDecoration(color: Colors.grey.shade100, shape: BoxShape.circle),
                     padding: const EdgeInsets.all(4),
-                    child: Icon(_expanded ? Icons.keyboard_arrow_up : Icons.chevron_right, color: colors.grey600),
+                    child: Icon(_expanded ? Icons.keyboard_arrow_up : Icons.chevron_right, color: Colors.grey.shade600),
                   ),
                 ],
               ),
@@ -83,14 +82,14 @@ class _ConnectionsStatusCardState extends State<ConnectionsStatusCard> {
           AnimatedSize(
             duration: const Duration(milliseconds: 200),
             alignment: Alignment.topCenter,
-            child: _expanded ? _details(context, colors, locale) : const SizedBox(width: double.infinity),
+            child: _expanded ? _details(context, locale) : const SizedBox(width: double.infinity),
           ),
         ],
       ),
     );
   }
 
-  Widget _details(BuildContext context, CarpColors colors, RPLocalizations locale) {
+  Widget _details(BuildContext context, RPLocalizations locale) {
     final model = widget.model;
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
@@ -100,19 +99,19 @@ class _ConnectionsStatusCardState extends State<ConnectionsStatusCard> {
             padding: const EdgeInsets.fromLTRB(16, 0, 16, 12),
             child: Row(
               children: [
-                Icon(Icons.circle, size: 10, color: model.isSourceActive(d) ? _green : colors.grey400),
+                Icon(Icons.circle, size: 10, color: model.isSourceActive(d) ? _green : Colors.grey.shade400),
                 const SizedBox(width: 8),
                 Expanded(
                   child: Text(locale.translate(d.typeName), style: Theme.of(context).textTheme.bodyLarge!),
                 ),
                 Text(
                   model.isSourceActive(d) ? 'ON' : 'OFF',
-                  style: Theme.of(context).textTheme.labelMedium!.copyWith(color: model.isSourceActive(d) ? _green : colors.grey500),
+                  style: Theme.of(context).textTheme.labelMedium!.copyWith(color: model.isSourceActive(d) ? _green : Colors.grey.shade500),
                 ),
               ],
             ),
           ),
-        Divider(height: 1, color: colors.grey200),
+        Divider(height: 1, color: Colors.grey.shade200),
         InkWell(
           onTap: () => context.go(DeviceListPage.route),
           child: Padding(

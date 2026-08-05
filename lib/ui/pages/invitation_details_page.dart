@@ -12,11 +12,10 @@ class InvitationDetailsPage extends StatelessWidget {
     RPLocalizations locale = RPLocalizations.of(context)!;
     final invitation = model.getInvitation(invitationId);
     if (invitation == null) {
-      return Scaffold(backgroundColor: Theme.of(context).extension<CarpColors>()!.backgroundGray);
+      return const Scaffold();
     }
 
     return Scaffold(
-      backgroundColor: Theme.of(context).extension<CarpColors>()!.backgroundGray,
       body: Padding(
         padding: const EdgeInsets.symmetric(vertical: 16.0),
         child: SafeArea(
@@ -54,7 +53,7 @@ class InvitationDetailsPage extends StatelessWidget {
               Padding(
                 padding: const EdgeInsets.only(top: 16.0),
                 child: StudiesMaterial(
-                  backgroundColor: Theme.of(context).extension<CarpColors>()!.white,
+                  backgroundColor: Colors.white,
                   shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12.0)),
                   child: Padding(
                     padding: const EdgeInsets.all(16),
@@ -81,7 +80,7 @@ class InvitationDetailsPage extends StatelessWidget {
                 child: Padding(
                   padding: const EdgeInsets.only(top: 16.0),
                   child: StudiesMaterial(
-                    backgroundColor: Theme.of(context).extension<CarpColors>()!.white,
+                    backgroundColor: Colors.white,
                     shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12.0)),
                     child: Padding(
                       padding: const EdgeInsets.only(right: 24.0, left: 24.0, top: 16.0, bottom: 16.0),
@@ -110,7 +109,7 @@ class InvitationDetailsPage extends StatelessWidget {
                                         style: TextStyle(
                                           fontWeight: FontWeight.bold,
                                           fontSize: 14,
-                                          color: Theme.of(context).extension<CarpColors>()!.grey600,
+                                          color: Colors.grey.shade600,
                                         ),
                                         maxLines: 1,
                                         textScaler: TextScaler.linear(0.9),

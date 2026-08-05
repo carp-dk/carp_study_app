@@ -16,13 +16,12 @@ class _TaskCompletionCardState extends State<TaskCompletionCard> {
 
   @override
   Widget build(BuildContext context) {
-    final colors = Theme.of(context).extension<CarpColors>()!;
     final locale = RPLocalizations.of(context)!;
     final completions = widget.model.recentCompletions;
     final selected = _selected;
 
     return StudiesMaterial(
-      backgroundColor: colors.white,
+      backgroundColor: Colors.white,
       // Tapping anywhere else on the card drops the selection.
       child: GestureDetector(
         onTap: () => setState(() => _selected = null),
@@ -53,7 +52,7 @@ class _TaskCompletionCardState extends State<TaskCompletionCard> {
                 ],
               ),
               const SizedBox(height: 8),
-              _headline(colors, locale, completions),
+              _headline(locale, completions),
               const SizedBox(height: 8),
               SizedBox(height: 140, child: _chart(context, completions)),
             ],
@@ -64,7 +63,7 @@ class _TaskCompletionCardState extends State<TaskCompletionCard> {
   }
 
   /// The count the title refers to: the selected day, or the fortnight total.
-  Widget _headline(CarpColors colors, RPLocalizations locale, List<int> completions) {
+  Widget _headline(RPLocalizations locale, List<int> completions) {
     final count = _selected != null ? completions[_selected!] : completions.fold(0, (sum, day) => sum + day);
     return Row(
       crossAxisAlignment: CrossAxisAlignment.baseline,
@@ -74,7 +73,7 @@ class _TaskCompletionCardState extends State<TaskCompletionCard> {
         const SizedBox(width: 6),
         Text(
           locale.translate('pages.task_list.title').toLowerCase(),
-          style: Theme.of(context).textTheme.labelMedium!.copyWith(color: colors.grey600),
+          style: Theme.of(context).textTheme.labelMedium!.copyWith(color: Colors.grey.shade600),
         ),
       ],
     );
@@ -85,7 +84,6 @@ class _TaskCompletionCardState extends State<TaskCompletionCard> {
       DateTime.now().subtract(Duration(days: StudyProgressCardViewModel.completionHistoryDays - 1 - index));
 
   Widget _chart(BuildContext context, List<int> completions) {
-    final colors = Theme.of(context).extension<CarpColors>()!;
     final busiest = completions.fold(0, max);
     // Whole-number gridlines - a fractional interval renders as repeated
     // labels ("1 1 0 0") once the busiest day is only a task or two.
@@ -112,7 +110,7 @@ class _TaskCompletionCardState extends State<TaskCompletionCard> {
           show: true,
           drawVerticalLine: false,
           horizontalInterval: step.toDouble(),
-          getDrawingHorizontalLine: (_) => FlLine(color: colors.grey300, strokeWidth: 1),
+          getDrawingHorizontalLine: (_) => FlLine(color: Colors.grey.shade300, strokeWidth: 1),
         ),
         borderData: FlBorderData(show: false),
         titlesData: FlTitlesData(
@@ -158,6 +156,6 @@ class _TaskCompletionCardState extends State<TaskCompletionCard> {
 
   Widget _axisLabel(BuildContext context, TitleMeta meta, String text) => SideTitleWidget(
     meta: meta,
-    child: Text(text, style: Theme.of(context).textTheme.bodySmall!.copyWith(color: Theme.of(context).extension<CarpColors>()!.grey600)),
+    child: Text(text, style: Theme.of(context).textTheme.bodySmall!.copyWith(color: Colors.grey.shade600)),
   );
 }

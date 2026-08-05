@@ -26,7 +26,7 @@ class _StudyProgressCardWidgetState extends State<StudyProgressCardWidget> {
   @override
   Widget build(BuildContext context) {
     return StudiesMaterial(
-      backgroundColor: Theme.of(context).extension<CarpColors>()!.white,
+      backgroundColor: Colors.white,
       // Tapping anywhere else on the card drops the selection.
       child: GestureDetector(
         onTap: () => setState(() => _selected = null),

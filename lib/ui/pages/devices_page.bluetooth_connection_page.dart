@@ -46,7 +46,6 @@ class _BluetoothConnectionPageState extends State<BluetoothConnectionPage> {
     RPLocalizations locale = RPLocalizations.of(context)!;
 
     return Scaffold(
-      backgroundColor: Theme.of(context).extension<CarpColors>()!.backgroundGray,
       body: SafeArea(
         child: Stack(
           children: [
@@ -323,7 +322,7 @@ class _BluetoothConnectionPageState extends State<BluetoothConnectionPage> {
                         .map(
                           (bluetoothDevice) => StudiesMaterial(
                             // hasBorder: true,
-                            backgroundColor: Theme.of(context).extension<CarpColors>()!.grey50,
+                            backgroundColor: Colors.grey.shade50,
                             child: InkWell(
                               child: ListTile(
                                 selected: bluetoothDevice.key == selected,

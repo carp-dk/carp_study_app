@@ -37,7 +37,7 @@ class CameraTaskPageState extends State<CameraTaskPage> {
                             ),
                             Spacer(),
                             IconButton(
-                              color: Theme.of(context).extension<CarpColors>()!.grey900,
+                              color: Colors.grey.shade900,
                               onPressed: () {
                                 _showCancelConfirmationDialog();
                               },

@@ -33,7 +33,7 @@ class AudioPageState extends State<AudioPage> {
                           ),
                           Spacer(),
                           IconButton(
-                            color: Theme.of(context).extension<CarpColors>()!.grey900,
+                            color: Colors.grey.shade900,
                             onPressed: () {
                               _showCancelConfirmationDialog();
                             },
@@ -61,7 +61,7 @@ class AudioPageState extends State<AudioPage> {
                                         ),
                                       ),
                                       StudiesMaterial(
-                                        backgroundColor: Theme.of(context).extension<CarpColors>()!.white,
+                                        backgroundColor: Colors.white,
                                         child: Scrollbar(
                                           child: SingleChildScrollView(
                                             scrollDirection: Axis.vertical, //.horizontal
@@ -106,7 +106,7 @@ class AudioPageState extends State<AudioPage> {
                                         ),
                                       ),
                                       StudiesMaterial(
-                                        backgroundColor: Theme.of(context).extension<CarpColors>()!.white,
+                                        backgroundColor: Colors.white,
                                         child: Scrollbar(
                                           child: SingleChildScrollView(
                                             scrollDirection: Axis.vertical, //.horizontal
@@ -126,7 +126,7 @@ class AudioPageState extends State<AudioPage> {
                                         children: [
                                           CircleAvatar(
                                             radius: 30,
-                                            backgroundColor: Theme.of(context).extension<CarpColors>()!.error,
+                                            backgroundColor: const Color(0xffEB4B62),
                                             child: IconButton(
                                               onPressed: () => widget.audioUserTask!.onRecordStop(),
                                               padding: const EdgeInsets.all(0),
@@ -174,7 +174,7 @@ class AudioPageState extends State<AudioPage> {
                                                 onPressed: () => widget.audioUserTask!.onRecordReset(),
                                                 icon: Icon(
                                                   Icons.replay,
-                                                  color: Theme.of(context).extension<CarpColors>()!.grey700,
+                                                  color: Colors.grey.shade800,
                                                   size: 30,
                                                 ),
                                               ),
@@ -183,7 +183,7 @@ class AudioPageState extends State<AudioPage> {
                                               flex: 3,
                                               child: CircleAvatar(
                                                 radius: 30,
-                                                backgroundColor: Theme.of(context).extension<CarpColors>()!.success,
+                                                backgroundColor: const Color(0xff67CE67),
                                                 child: IconButton(
                                                   onPressed: () {
                                                     Navigator.of(context).pop();

@@ -39,10 +39,7 @@ class DeviceListPageState extends State<DeviceListPage> {
   @override
   Widget build(BuildContext context) {
     final locale = RPLocalizations.of(context)!;
-    final colors = Theme.of(context).extension<CarpColors>()!;
-
     return Scaffold(
-      backgroundColor: colors.backgroundGray,
       body: SafeArea(
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
@@ -56,7 +53,7 @@ class DeviceListPageState extends State<DeviceListPage> {
               padding: const EdgeInsets.fromLTRB(16, 0, 16, 16),
               child: Text(
                 locale.translate("pages.devices.message"),
-                style: Theme.of(context).textTheme.labelMedium!.copyWith(color: colors.grey600, height: 1.4),
+                style: Theme.of(context).textTheme.labelMedium!.copyWith(color: Colors.grey.shade600, height: 1.4),
               ),
             ),
             Expanded(
@@ -99,7 +96,7 @@ class DeviceListPageState extends State<DeviceListPage> {
           listenable: _smartphoneDevice[index],
           builder: (BuildContext context, Widget? widget) => Center(
             child: StudiesMaterial(
-              backgroundColor: Theme.of(context).extension<CarpColors>()!.grey50,
+              backgroundColor: Colors.grey.shade50,
               child: _cardListBuilder(
                 leading: _smartphoneDevice[index].icon!,
                 title: (
@@ -136,7 +133,7 @@ class DeviceListPageState extends State<DeviceListPage> {
                 : Container(
                     padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
                     decoration: BoxDecoration(
-                      color: Theme.of(context).extension<CarpColors>()!.deploymentDeploying,
+                      color: const Color(0xff006398),
                       borderRadius: BorderRadius.circular(100),
                     ),
                     child: Text(
@@ -168,7 +165,7 @@ class DeviceListPageState extends State<DeviceListPage> {
                 ? Container(
                     padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
                     decoration: BoxDecoration(
-                      color: Theme.of(context).extension<CarpColors>()!.deploymentDeploying,
+                      color: const Color(0xff006398),
                       borderRadius: BorderRadius.circular(100),
                     ),
                     child: Text(
@@ -191,7 +188,6 @@ class DeviceListPageState extends State<DeviceListPage> {
     void Function()? onTap,
     Widget? trailing,
   }) {
-    final colors = Theme.of(context).extension<CarpColors>()!;
     return ListTile(
       contentPadding: const EdgeInsets.symmetric(vertical: 12, horizontal: 16),
       minVerticalPadding: 0,
@@ -230,7 +226,7 @@ class DeviceListPageState extends State<DeviceListPage> {
                 subtitle,
                 maxLines: 2,
                 overflow: TextOverflow.ellipsis,
-                style: Theme.of(context).textTheme.labelSmall!.copyWith(color: colors.grey600),
+                style: Theme.of(context).textTheme.labelSmall!.copyWith(color: Colors.grey.shade600),
               ),
             )
           : null,
@@ -241,7 +237,7 @@ class DeviceListPageState extends State<DeviceListPage> {
 
   Widget _devicesPageCardStream<T>(Stream<T> stream, T? initialData, Widget Function() childBuilder) => Center(
     child: StudiesMaterial(
-      backgroundColor: Theme.of(context).extension<CarpColors>()!.grey50,
+      backgroundColor: Colors.grey.shade50,
       child: StreamBuilder<T>(
         stream: stream,
         initialData: initialData,

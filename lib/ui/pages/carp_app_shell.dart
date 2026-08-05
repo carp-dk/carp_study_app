@@ -72,7 +72,6 @@ class CarpAppShellState extends State<CarpAppShell> {
     RPLocalizations locale = RPLocalizations.of(context)!;
 
     return Scaffold(
-      backgroundColor: Theme.of(context).extension<CarpColors>()!.backgroundGray,
       body: SafeArea(child: widget.child),
       // The tabs have nothing to show until the study is loaded - the home page
       // is still a skeleton at that point - so keep them inert and dimmed.
@@ -83,7 +82,7 @@ class CarpAppShellState extends State<CarpAppShell> {
           child: Opacity(opacity: widget.model.isLoaded ? 1 : 0.4, child: navigationBar),
         ),
         child: BottomNavigationBar(
-          backgroundColor: Theme.of(context).extension<CarpColors>()!.white,
+          backgroundColor: Colors.white,
           type: BottomNavigationBarType.fixed,
           selectedItemColor: Theme.of(context).colorScheme.primary,
           items: <BottomNavigationBarItem>[

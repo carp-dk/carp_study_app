@@ -13,7 +13,7 @@ class SurveyCard extends StatefulWidget {
   /// already labels the card (e.g. the home page).
   final bool showTitle;
 
-  const SurveyCard(this.model, {super.key, this.colors = kCarpChartColors, this.showTitle = true});
+  const SurveyCard(this.model, {super.key, this.colors = kChartColors, this.showTitle = true});
 
   @override
   State<SurveyCard> createState() => _SurveyCardState();
@@ -39,7 +39,7 @@ class _SurveyCardState extends State<SurveyCard> {
     if (_surveys.isEmpty) return const SizedBox();
 
     return StudiesMaterial(
-      backgroundColor: Theme.of(context).extension<CarpColors>()!.white,
+      backgroundColor: Colors.white,
       // Tapping anywhere else on the card drops the selection.
       child: GestureDetector(
         onTap: () => setState(() => _selected = null),

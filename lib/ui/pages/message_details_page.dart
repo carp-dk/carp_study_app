@@ -12,14 +12,12 @@ class MessageDetailsPage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final locale = RPLocalizations.of(context)!;
-    final colors = Theme.of(context).extension<CarpColors>()!;
     final message = bloc.appViewModel.studyPageViewModel.messageById(messageId);
     final subTitle = message.subTitle ?? '';
     final body = message.message ?? '';
     final hasImage = message.image != null && message.image!.isNotEmpty;
 
     return Scaffold(
-      backgroundColor: colors.backgroundGray,
       body: SafeArea(
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
@@ -40,7 +38,7 @@ class MessageDetailsPage extends StatelessWidget {
                 padding: const EdgeInsets.only(top: 8, bottom: 24),
                 children: [
                   StudiesMaterial(
-                    backgroundColor: colors.grey50,
+                    backgroundColor: Colors.grey.shade50,
                     child: Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
@@ -59,7 +57,7 @@ class MessageDetailsPage extends StatelessWidget {
                           child: Column(
                             crossAxisAlignment: CrossAxisAlignment.start,
                             children: [
-                              _typeChip(context, colors, message.type),
+                              _typeChip(context, message.type),
                               const SizedBox(height: 12),
                               Text(
                                 locale.translate(message.title ?? ''),
@@ -67,19 +65,19 @@ class MessageDetailsPage extends StatelessWidget {
                               ),
                               if (subTitle.isNotEmpty) ...[
                                 const SizedBox(height: 8),
-                                Text(locale.translate(subTitle), style: Theme.of(context).textTheme.labelMedium!.copyWith(color: colors.grey600)),
+                                Text(locale.translate(subTitle), style: Theme.of(context).textTheme.labelMedium!.copyWith(color: Colors.grey.shade600)),
                               ],
                               if (body.isNotEmpty) ...[
                                 // The divider only earns its place when it has a
                                 // subtitle to separate the body from.
                                 if (subTitle.isNotEmpty) ...[
                                   const SizedBox(height: 16),
-                                  Divider(height: 1, color: colors.grey200),
+                                  Divider(height: 1, color: Colors.grey.shade200),
                                 ],
                                 const SizedBox(height: 12),
                                 Text(
                                   locale.translate(body),
-                                  style: Theme.of(context).textTheme.bodyLarge!.copyWith(color: colors.grey900, height: 1.5),
+                                  style: Theme.of(context).textTheme.bodyLarge!.copyWith(color: Colors.grey.shade900, height: 1.5),
                                 ),
                               ],
                             ],
@@ -98,7 +96,7 @@ class MessageDetailsPage extends StatelessWidget {
   }
 
   /// A pill with the message type's icon and label, in the accent colour.
-  Widget _typeChip(BuildContext context, CarpColors colors, MessageType type) {
+  Widget _typeChip(BuildContext context, MessageType type) {
     final locale = RPLocalizations.of(context)!;
     return Container(
       padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 6),

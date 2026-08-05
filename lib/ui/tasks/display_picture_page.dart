@@ -53,7 +53,7 @@ class DisplayPicturePageState extends State<DisplayPicturePage> {
                 ),
                 Spacer(),
                 IconButton(
-                  color: Theme.of(context).extension<CarpColors>()!.grey900,
+                  color: Colors.grey.shade900,
                   onPressed: () {
                     _showCancelConfirmationDialog();
                   },
@@ -110,7 +110,7 @@ class DisplayPicturePageState extends State<DisplayPicturePage> {
                           const SizedBox(width: 20),
                           CircleAvatar(
                             radius: 30,
-                            backgroundColor: Theme.of(context).extension<CarpColors>()!.success,
+                            backgroundColor: const Color(0xff67CE67),
                             child: IconButton(
                               onPressed: () {
                                 widget.videoUserTask.onSave();

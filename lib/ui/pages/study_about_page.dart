@@ -16,7 +16,6 @@ class StudyAboutPage extends StatelessWidget {
     final colors = Theme.of(context).extension<CarpColors>()!;
 
     return Scaffold(
-      backgroundColor: colors.backgroundGray,
       body: SafeArea(
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
@@ -37,7 +36,7 @@ class StudyAboutPage extends StatelessWidget {
                 padding: const EdgeInsets.only(top: 8, bottom: 24),
                 children: [
                   StudiesMaterial(
-                    backgroundColor: colors.grey50,
+                    backgroundColor: Colors.grey.shade50,
                     child: Padding(
                       padding: const EdgeInsets.all(16),
                       child: Column(
@@ -87,7 +86,7 @@ class StudyAboutPage extends StatelessWidget {
                     ),
                   ),
                   StudiesMaterial(
-                    backgroundColor: colors.grey50,
+                    backgroundColor: Colors.grey.shade50,
                     child: Column(
                       crossAxisAlignment: CrossAxisAlignment.stretch,
                       children: [
@@ -97,14 +96,14 @@ class StudyAboutPage extends StatelessWidget {
                           locale.translate('widgets.study_card.responsible'),
                           locale.translate(model.responsibleName),
                         ),
-                        Divider(height: 1, indent: 16, endIndent: 16, color: colors.grey200),
+                        Divider(height: 1, indent: 16, endIndent: 16, color: Colors.grey.shade200),
                         _field(
                           context,
                           colors,
                           locale.translate('widgets.study_card.participant_role'),
                           locale.translate(model.participantRole),
                         ),
-                        Divider(height: 1, indent: 16, endIndent: 16, color: colors.grey200),
+                        Divider(height: 1, indent: 16, endIndent: 16, color: Colors.grey.shade200),
                         _field(
                           context,
                           colors,
@@ -115,7 +114,7 @@ class StudyAboutPage extends StatelessWidget {
                     ),
                   ),
                   StudiesMaterial(
-                    backgroundColor: colors.grey50,
+                    backgroundColor: Colors.grey.shade50,
                     child: _field(
                       context,
                       colors,
@@ -193,7 +192,7 @@ class StudyAboutPage extends StatelessWidget {
     required VoidCallback onTap,
   }) {
     return StudiesMaterial(
-      backgroundColor: colors.grey50,
+      backgroundColor: Colors.grey.shade50,
       child: InkWell(
         onTap: onTap,
         child: Padding(
@@ -205,7 +204,7 @@ class StudyAboutPage extends StatelessWidget {
               Expanded(
                 child: Text(title, style: Theme.of(context).textTheme.labelLarge!),
               ),
-              Icon(Icons.arrow_forward_ios, size: 16, color: colors.grey400),
+              Icon(Icons.arrow_forward_ios, size: 16, color: Colors.grey.shade400),
             ],
           ),
         ),
@@ -220,7 +219,7 @@ class StudyAboutPage extends StatelessWidget {
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          Text(label, style: Theme.of(context).textTheme.labelSmall!.copyWith(color: colors.grey600)),
+          Text(label, style: Theme.of(context).textTheme.labelSmall!.copyWith(color: Colors.grey.shade600)),
           const SizedBox(height: 2),
           Text(value, style: Theme.of(context).textTheme.labelMedium!),
         ],

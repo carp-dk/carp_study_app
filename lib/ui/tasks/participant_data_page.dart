@@ -255,7 +255,6 @@ class ParticipantDataPageState extends State<ParticipantDataPage> {
   Widget build(BuildContext context) {
     RPLocalizations locale = RPLocalizations.of(context)!;
     return Scaffold(
-      backgroundColor: Theme.of(context).extension<CarpColors>()!.backgroundGray,
       body: SafeArea(
         child: Container(
           padding: const EdgeInsets.all(16.0),
@@ -269,7 +268,7 @@ class ParticipantDataPageState extends State<ParticipantDataPage> {
                   ),
                   Spacer(),
                   IconButton(
-                    color: Theme.of(context).extension<CarpColors>()!.grey900,
+                    color: Colors.grey.shade900,
                     onPressed: () {
                       _showCancelConfirmationDialog();
                     },
@@ -483,7 +482,7 @@ class ParticipantDataPageState extends State<ParticipantDataPage> {
                 width: 125,
                 child: Container(
                   decoration: BoxDecoration(
-                    border: Border.all(color: Theme.of(context).extension<CarpColors>()!.grey600, width: 1.0),
+                    border: Border.all(color: Colors.grey.shade600, width: 1.0),
                     borderRadius: BorderRadius.circular(16.0),
                   ),
                   child: CountryCodePicker(

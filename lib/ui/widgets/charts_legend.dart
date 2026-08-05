@@ -1,5 +1,20 @@
 part of carp_study_app;
 
+/// Ordered palette for multi-series charts and their legends.
+const List<Color> kChartColors = <Color>[
+  Color(0xFF7FC9E3),
+  Color(0xFFEB4B62),
+  Color(0xFF2192C9),
+  Color(0xFF809AE5),
+  Color(0xFF630A1A),
+  Color(0xFF1282B0),
+  Color(0xFFC052A2),
+  Color(0xFFBA0022),
+  Color(0xFF6FB4E9),
+  Color(0xFFA379CE),
+  Color(0xFFCA2366),
+];
+
 class ChartsLegend extends StatelessWidget {
   final Icon? iconAssetName;
   final String title;
