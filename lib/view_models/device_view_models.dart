@@ -70,8 +70,13 @@ class DeviceViewModel extends ViewModel {
   }
 
   /// A printer-friendly name for this device.
+  ///
+  /// The BLE name of a disconnected device is only a remembered pairing, so it
+  /// is not shown - otherwise the device looks connected while offering a
+  /// 'connect' action.
   String get name {
     if (deviceManager is BLEDeviceManager) {
+      if (status == DeviceStatus.disconnected || status == DeviceStatus.configured) return '';
       return (deviceManager as BLEDeviceManager).bleName ?? '';
     } else if (deviceManager is PolarDeviceManager) {
       return (deviceManager as PolarDeviceManager).displayName ?? '';
@@ -150,21 +155,6 @@ class DeviceViewModel extends ViewModel {
     }
 
     deviceManager.connect();
-  }
-
-  /// Disconnect from the currently connected device
-  Future<void> disconnectFromDevice() async {
-    try {
-      await deviceManager.disconnect();
-
-      // Erase BLE information so the user can connect to another device, if needed.
-      if (deviceManager is BLEDeviceManager) {
-        (deviceManager as BLEDeviceManager).bleAddress = '';
-        (deviceManager as BLEDeviceManager).bleName = '';
-      }
-    } catch (error) {
-      warning("$runtimeType - Error disconnecting to device '${deviceManager.displayName}' - $error.");
-    }
   }
 }
 

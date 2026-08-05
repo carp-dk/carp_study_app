@@ -163,7 +163,11 @@ class DeviceListPageState extends State<DeviceListPage> {
             leading: device.icon!,
             title: (locale.translate(device.typeName), device.batteryLevel ?? 0),
             subtitle: device.name,
-            onTap: () async => await _hardwareDeviceClicked(device),
+            // A connected device is managed by the study and cannot be
+            // disconnected by the user, so there is nothing to tap.
+            onTap: device.status == DeviceStatus.connected || device.status == DeviceStatus.connecting
+                ? null
+                : () async => await _hardwareDeviceClicked(device),
             trailing: device.getDeviceStatusIcon is Icon
                 ? device.getDeviceStatusIcon as Icon
                 : Container(
@@ -309,42 +313,31 @@ class DeviceListPageState extends State<DeviceListPage> {
           builder: (context) => EnableBluetoothDialog(device: device),
         );
       } else if (bluetoothAdapterState == BluetoothAdapterState.on) {
-        if (device.status == DeviceStatus.connected || device.status == DeviceStatus.connecting) {
-          bool disconnect =
-              await showDialog<bool?>(
-                context: context,
-                barrierDismissible: true,
-                builder: (context) => DisconnectionDialog(device: device),
-              ) ??
-              false;
-          if (disconnect) await device.disconnectFromDevice();
-        } else {
-          // The device manager declares the permissions BLE needs (bluetooth +
-          // location on Android); request them before opening the scan page.
-          if (!await device.deviceManager.hasPermissions()) {
-            await device.deviceManager.requestPermissions();
-          }
-          if (!mounted) return;
-          if (!await device.deviceManager.hasPermissions()) {
-            await showDialog<void>(
-              context: context,
-              barrierDismissible: true,
-              builder: (context) => _permissionDeniedDialog(context),
-            );
-            return;
-          }
-
-          final hasSeenInstructions = LocalSettings().hasSeenBluetoothConnectionInstructions;
-          Navigator.push(
-            context,
-            MaterialPageRoute<void>(
-              builder: (context) => BluetoothConnectionPage(
-                hasSeenInstructions ? CurrentStep.scan : CurrentStep.instructions,
-                device: device,
-              ),
-            ),
-          );
+        // The device manager declares the permissions BLE needs (bluetooth +
+        // location on Android); request them before opening the scan page.
+        if (!await device.deviceManager.hasPermissions()) {
+          await device.deviceManager.requestPermissions();
         }
+        if (!mounted) return;
+        if (!await device.deviceManager.hasPermissions()) {
+          await showDialog<void>(
+            context: context,
+            barrierDismissible: true,
+            builder: (context) => _permissionDeniedDialog(context),
+          );
+          return;
+        }
+
+        final hasSeenInstructions = LocalSettings().hasSeenBluetoothConnectionInstructions;
+        Navigator.push(
+          context,
+          MaterialPageRoute<void>(
+            builder: (context) => BluetoothConnectionPage(
+              hasSeenInstructions ? CurrentStep.scan : CurrentStep.instructions,
+              device: device,
+            ),
+          ),
+        );
       } else if (bluetoothAdapterState == BluetoothAdapterState.unauthorized && Platform.isIOS) {
         await showDialog<void>(
           context: context,

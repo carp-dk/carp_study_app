@@ -286,7 +286,11 @@ class _BluetoothConnectionPageState extends State<BluetoothConnectionPage> {
           );
         },
       );
-      widget.device.status = DeviceStatus.disconnected;
+      // Tear the connection attempt down instead of only stamping the status:
+      // the native SDK otherwise keeps the link open and retries in the
+      // background, leaving the device connected in reality but shown as
+      // disconnected in the app.
+      widget.device.deviceManager.disconnect();
     }
   });
 
