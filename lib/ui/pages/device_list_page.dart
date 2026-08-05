@@ -173,9 +173,7 @@ class DeviceListPageState extends State<DeviceListPage> {
                       borderRadius: BorderRadius.circular(100),
                     ),
                     child: Text(
-                      locale.translate(
-                        device.getDeviceStatusIcon as String? ?? "pages.devices.status.action.connect",
-                      ),
+                      locale.translate(device.getDeviceStatusIcon as String? ?? "pages.devices.status.action.connect"),
                       style: fs20fw700.copyWith(color: Colors.white),
                     ),
                   ),
@@ -363,9 +361,7 @@ class DeviceListPageState extends State<DeviceListPage> {
     final locale = RPLocalizations.of(context)!;
     return AlertDialog(
       title: Text(locale.translate("pages.devices.location_permission.title")),
-      content: SingleChildScrollView(
-        child: Text(locale.translate("pages.devices.location_permission.message")),
-      ),
+      content: SingleChildScrollView(child: Text(locale.translate("pages.devices.location_permission.message"))),
       actions: [
         TextButton(child: Text(locale.translate("cancel")), onPressed: () => Navigator.pop(context)),
         ElevatedButton(

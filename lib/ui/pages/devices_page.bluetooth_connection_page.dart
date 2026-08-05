@@ -264,32 +264,31 @@ class _BluetoothConnectionPageState extends State<BluetoothConnectionPage> {
 
   /// Fail the connection attempt if the device does not reach
   /// [DeviceStatus.connected] within the timeout.
-  Timer _startConnectionTimeout(RPLocalizations locale) =>
-      Timer(const Duration(seconds: 7), () {
-        if (isConnecting && mounted) {
-          setState(() {
-            isConnecting = false;
-          });
-          showDialog<void>(
-            context: context,
-            builder: (BuildContext context) {
-              return AlertDialog(
-                title: Text(locale.translate("pages.devices.connection.connection_failed.title")),
-                content: Text(locale.translate("pages.devices.connection.connection_failed.message")),
-                actions: [
-                  TextButton(
-                    onPressed: () {
-                      Navigator.of(context).pop();
-                    },
-                    child: Text(locale.translate("ok")),
-                  ),
-                ],
-              );
-            },
-          );
-          widget.device.status = DeviceStatus.disconnected;
-        }
+  Timer _startConnectionTimeout(RPLocalizations locale) => Timer(const Duration(seconds: 7), () {
+    if (isConnecting && mounted) {
+      setState(() {
+        isConnecting = false;
       });
+      showDialog<void>(
+        context: context,
+        builder: (BuildContext context) {
+          return AlertDialog(
+            title: Text(locale.translate("pages.devices.connection.connection_failed.title")),
+            content: Text(locale.translate("pages.devices.connection.connection_failed.message")),
+            actions: [
+              TextButton(
+                onPressed: () {
+                  Navigator.of(context).pop();
+                },
+                child: Text(locale.translate("ok")),
+              ),
+            ],
+          );
+        },
+      );
+      widget.device.status = DeviceStatus.disconnected;
+    }
+  });
 
   Widget stepContent(CurrentStep currentStep, DeviceViewModel device) {
     if (currentStep == CurrentStep.scan) {
@@ -321,9 +320,11 @@ class _BluetoothConnectionPageState extends State<BluetoothConnectionPage> {
               child: TextButton(
                 onPressed: () => setState(() => showAllDevices = !showAllDevices),
                 child: Text(
-                  locale.translate(showAllDevices
-                      ? "pages.devices.connection.step.scan.filtered"
-                      : "pages.devices.connection.step.scan.show_all"),
+                  locale.translate(
+                    showAllDevices
+                        ? "pages.devices.connection.step.scan.filtered"
+                        : "pages.devices.connection.step.scan.show_all",
+                  ),
                   style: fs16fw400.copyWith(fontSize: 14),
                 ),
               ),
@@ -332,7 +333,7 @@ class _BluetoothConnectionPageState extends State<BluetoothConnectionPage> {
             child: StreamBuilder<List<ScanResult>>(
               stream: FlutterBluePlus.scanResults,
               initialData: const [],
-                builder: (context, snapshot) {
+              builder: (context, snapshot) {
                 // Show devices whose advertised name contains this type's prefix
                 // (e.g. "Polar", "Movesense"), so the user can't pick the wrong
                 // device type. "Show all" is the escape hatch for anything the
@@ -362,28 +363,25 @@ class _BluetoothConnectionPageState extends State<BluetoothConnectionPage> {
                     padding: const EdgeInsets.only(top: 16),
                     child: Column(
                       children: results
-                        .map(
-                          (r) => StudiesMaterial(
-                            // hasBorder: true,
-                            backgroundColor: Theme.of(context).extension<CarpColors>()!.grey50!,
-                            child: InkWell(
-                              child: ListTile(
-                                selected: r.device.remoteId == selectedDevice?.remoteId,
-                                title: Text(
-                                  r.device.platformName,
-                                  style: fs22fw700.copyWith(fontSize: 20),
+                          .map(
+                            (r) => StudiesMaterial(
+                              // hasBorder: true,
+                              backgroundColor: Theme.of(context).extension<CarpColors>()!.grey50!,
+                              child: InkWell(
+                                child: ListTile(
+                                  selected: r.device.remoteId == selectedDevice?.remoteId,
+                                  title: Text(r.device.platformName, style: fs22fw700.copyWith(fontSize: 20)),
+                                  selectedTileColor: Theme.of(context).primaryColor.withValues(alpha: 0.2),
                                 ),
-                                selectedTileColor: Theme.of(context).primaryColor.withValues(alpha: 0.2),
+                                onTap: () {
+                                  setState(() {
+                                    selectedDevice = r.device;
+                                  });
+                                },
                               ),
-                              onTap: () {
-                                setState(() {
-                                  selectedDevice = r.device;
-                                });
-                              },
                             ),
-                          ),
-                        )
-                        .toList(),
+                          )
+                          .toList(),
                     ),
                   ),
                 );
