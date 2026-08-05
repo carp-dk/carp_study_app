@@ -369,7 +369,7 @@ class _BluetoothConnectionPageState extends State<BluetoothConnectionPage> {
                   TextSpan(text: locale.translate("pages.devices.connection.step.start.2")),
                 ],
               ),
-              style: Theme.of(context).textTheme.titleLarge!.copyWith(color: Theme.of(context).extension<CarpColors>()!.grey900),
+              style: Theme.of(context).textTheme.titleLarge!,
               textAlign: TextAlign.center,
             ),
           ),

@@ -496,7 +496,7 @@ class ParticipantDataPageState extends State<ParticipantDataPage> {
                     showCountryOnly: true,
                     showOnlyCountryWhenClosed: true,
                     alignLeft: false,
-                    textStyle: Theme.of(context).textTheme.labelLarge!.copyWith(color: Theme.of(context).extension<CarpColors>()!.grey900),
+                    textStyle: Theme.of(context).textTheme.labelLarge!,
                   ),
                 ),
               ),

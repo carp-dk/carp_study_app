@@ -100,7 +100,7 @@ class StudyPageState extends State<StudyPage> {
                 padding: const EdgeInsets.all(8.0),
                 child: Text(
                   locale.translate('pages.about.app_update'),
-                  style: Theme.of(context).textTheme.labelLarge!.copyWith(color: Theme.of(context).extension<CarpColors>()!.grey900),
+                  style: Theme.of(context).textTheme.labelLarge!,
                 ),
               ),
             ),
@@ -178,7 +178,7 @@ class StudyPageState extends State<StudyPage> {
                     Expanded(
                       child: Text(
                         "${locale.translate(message.message!).substring(0, (message.message!.length > 150) ? 150 : null)}...",
-                        style: Theme.of(context).textTheme.bodyLarge!.copyWith(color: Theme.of(context).extension<CarpColors>()!.grey900),
+                        style: Theme.of(context).textTheme.bodyLarge!,
                         textAlign: TextAlign.start,
                       ),
                     ),
@@ -334,7 +334,7 @@ class StudyPageState extends State<StudyPage> {
                         child: Text(
                           locale.translate(message.title!),
                           overflow: TextOverflow.ellipsis,
-                          style: Theme.of(context).textTheme.titleLarge!.copyWith(fontSize: 20).copyWith(color: Theme.of(context).extension<CarpColors>()!.grey900),
+                          style: Theme.of(context).textTheme.titleLarge!.copyWith(fontSize: 20),
                         ),
                       ),
                     ),

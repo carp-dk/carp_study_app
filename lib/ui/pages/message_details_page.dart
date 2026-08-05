@@ -63,7 +63,7 @@ class MessageDetailsPage extends StatelessWidget {
                               const SizedBox(height: 12),
                               Text(
                                 locale.translate(message.title ?? ''),
-                                style: Theme.of(context).textTheme.titleLarge!.copyWith(fontSize: 20).copyWith(color: colors.grey900),
+                                style: Theme.of(context).textTheme.titleLarge!.copyWith(fontSize: 20),
                               ),
                               if (subTitle.isNotEmpty) ...[
                                 const SizedBox(height: 8),

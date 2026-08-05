@@ -227,7 +227,7 @@ class HomePage extends StatelessWidget {
                   Expanded(
                     child: Text(
                       locale.translate(message.title ?? ''),
-                      style: Theme.of(context).textTheme.titleMedium!.copyWith(color: colors.grey900),
+                      style: Theme.of(context).textTheme.titleMedium!,
                     ),
                   ),
                   _iconBadge(message.type.icon, Theme.of(context).colorScheme.primary),
@@ -243,7 +243,7 @@ class HomePage extends StatelessWidget {
                   locale.translate(body),
                   maxLines: 3,
                   overflow: TextOverflow.ellipsis,
-                  style: Theme.of(context).textTheme.bodyLarge!.copyWith(color: colors.grey900),
+                  style: Theme.of(context).textTheme.bodyLarge!,
                 ),
               ],
               const SizedBox(height: 12),
@@ -290,7 +290,7 @@ class AppUpdateCard extends StatelessWidget {
         child: Row(
           children: [
             Expanded(
-              child: Text(locale.translate('pages.about.app_update'), style: Theme.of(context).textTheme.labelMedium!.copyWith(color: colors.grey900)),
+              child: Text(locale.translate('pages.about.app_update'), style: Theme.of(context).textTheme.labelMedium!),
             ),
             const SizedBox(width: 8),
             FilledButton(

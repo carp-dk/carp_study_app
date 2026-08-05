@@ -40,7 +40,7 @@ class _MobilityCardState extends State<MobilityCard> {
                   padding: const EdgeInsets.only(left: 4.0),
                   child: Text(
                     "${locale.translate('cards.mobility.homestay')} ${_getDayName(touchedIndex)}",
-                    style: Theme.of(context).textTheme.labelSmall!.copyWith(fontWeight: FontWeight.w700).copyWith(color: Theme.of(context).extension<CarpColors>()!.grey900),
+                    style: Theme.of(context).textTheme.labelSmall!.copyWith(fontWeight: FontWeight.w700),
                   ),
                 ),
               ],

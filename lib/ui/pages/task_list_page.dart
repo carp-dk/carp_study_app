@@ -199,7 +199,7 @@ class TaskListPageState extends State<TaskListPage> with TickerProviderStateMixi
           ],
         ),
         const SizedBox(height: 4),
-        Text(locale.translate(userTask.title), style: Theme.of(context).textTheme.labelLarge!.copyWith(color: colors.grey900)),
+        Text(locale.translate(userTask.title), style: Theme.of(context).textTheme.labelLarge!),
         if (!done && !expired && description.isNotEmpty) ...[
           const SizedBox(height: 4),
           Text(
@@ -226,7 +226,7 @@ class TaskListPageState extends State<TaskListPage> with TickerProviderStateMixi
       children: [
         Text("Input Data", style: Theme.of(context).textTheme.labelSmall!.copyWith(color: accent)),
         const SizedBox(height: 4),
-        Text("Participant Data", style: Theme.of(context).textTheme.labelLarge!.copyWith(color: colors.grey900)),
+        Text("Participant Data", style: Theme.of(context).textTheme.labelLarge!),
         const SizedBox(height: 4),
         Text(
           "Fill in the required participant data to continue with the study.",

@@ -37,7 +37,7 @@ class ProfilePageState extends State<ProfilePage> {
               child: Row(
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
-                  Text(locale.translate("pages.profile.title"), style: Theme.of(context).textTheme.headlineSmall!.copyWith(color: colors.grey900)),
+                  Text(locale.translate("pages.profile.title"), style: Theme.of(context).textTheme.headlineSmall!),
                   IconButton(
                     icon: Icon(Icons.close, color: Theme.of(context).colorScheme.primary, size: 28),
                     tooltip: locale.translate('Back'),
@@ -157,7 +157,7 @@ class ProfilePageState extends State<ProfilePage> {
   Widget _sectionHeader(CarpColors colors, String title) {
     return Padding(
       padding: const EdgeInsets.fromLTRB(16, 8, 16, 8),
-      child: Text(title, style: Theme.of(context).textTheme.titleMedium!.copyWith(color: colors.grey900)),
+      child: Text(title, style: Theme.of(context).textTheme.titleMedium!),
     );
   }
 
@@ -188,7 +188,7 @@ class ProfilePageState extends State<ProfilePage> {
                 const SizedBox(height: 2),
                 Text(
                   value,
-                  style: Theme.of(context).textTheme.labelMedium!.copyWith(color: colors.grey900),
+                  style: Theme.of(context).textTheme.labelMedium!,
                   maxLines: 1,
                   overflow: TextOverflow.ellipsis,
                 ),
@@ -232,7 +232,7 @@ class ProfilePageState extends State<ProfilePage> {
               Icon(icon, size: 22, color: iconColor),
               const SizedBox(width: 12),
               Expanded(
-                child: Text(title, style: Theme.of(context).textTheme.labelLarge!.copyWith(color: colors.grey900)),
+                child: Text(title, style: Theme.of(context).textTheme.labelLarge!),
               ),
               if (hasChevron) Icon(Icons.arrow_forward_ios, size: 16, color: colors.grey400),
             ],

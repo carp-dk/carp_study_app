@@ -53,7 +53,7 @@ class ActivityCardState extends State<ActivityCard> {
                 children: [
                   Text(
                     '${_walk + _run + _cycle}',
-                    style: Theme.of(context).textTheme.headlineMedium!.copyWith(color: Theme.of(context).extension<CarpColors>()!.grey900),
+                    style: Theme.of(context).textTheme.headlineMedium!,
                   ),
                   Padding(
                     padding: const EdgeInsets.only(left: 4.0),

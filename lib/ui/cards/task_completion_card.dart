@@ -70,7 +70,7 @@ class _TaskCompletionCardState extends State<TaskCompletionCard> {
       crossAxisAlignment: CrossAxisAlignment.baseline,
       textBaseline: TextBaseline.alphabetic,
       children: [
-        Text('$count', style: Theme.of(context).textTheme.headlineMedium!.copyWith(color: colors.grey900)),
+        Text('$count', style: Theme.of(context).textTheme.headlineMedium!),
         const SizedBox(width: 6),
         Text(
           locale.translate('pages.task_list.title').toLowerCase(),

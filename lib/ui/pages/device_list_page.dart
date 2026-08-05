@@ -214,7 +214,7 @@ class DeviceListPageState extends State<DeviceListPage> {
               title!.$1,
               maxLines: 2,
               overflow: TextOverflow.ellipsis,
-              style: Theme.of(context).textTheme.labelLarge!.copyWith(color: colors.grey900),
+              style: Theme.of(context).textTheme.labelLarge!,
             ),
           ),
           if (title.$2 != null && title.$2! > 0) ...[

@@ -136,7 +136,7 @@ class HeartRateCardWidgetState extends State<HeartRateCardWidget> {
         const SizedBox(width: 8),
         Text(locale.translate('cards.heartrate.average'), style: Theme.of(context).textTheme.labelMedium!.copyWith(color: colors.grey600)),
         const Spacer(),
-        Text(average != null ? average.toStringAsFixed(0) : '-', style: Theme.of(context).textTheme.titleMedium!.copyWith(color: colors.grey900)),
+        Text(average != null ? average.toStringAsFixed(0) : '-', style: Theme.of(context).textTheme.titleMedium!),
         const SizedBox(width: 4),
         Text(locale.translate('cards.heartrate.bpm'), style: Theme.of(context).textTheme.labelSmall!.copyWith(color: colors.grey600)),
       ],

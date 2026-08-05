@@ -134,9 +134,9 @@ class InvitationDetailsPage extends StatelessWidget {
               // button to accept the invitation
               Container(
                 margin: const EdgeInsets.only(left: 16, right: 16, bottom: 16),
-                height: 56,
-                decoration: BoxDecoration(color: const Color(0xff006398), borderRadius: BorderRadius.circular(100)),
-                child: TextButton(
+                width: double.infinity,
+                child: FilledButton(
+                  style: carpPillButtonStyle,
                   // Consent is gated by the app shell, which this navigation
                   // mounts - declining there leaves the study and the router
                   // brings the user back to the invitation list.
@@ -144,11 +144,7 @@ class InvitationDetailsPage extends StatelessWidget {
                     model.accept(invitation);
                     context.go(HomePage.route);
                   },
-                  child: Text(
-                    locale.translate("invitation.accept_invite"),
-                    style: const TextStyle(color: Color(0xffffffff), fontSize: 22),
-                    textAlign: TextAlign.center,
-                  ),
+                  child: Text(locale.translate("invitation.accept_invite"), textAlign: TextAlign.center),
                 ),
               ),
             ],

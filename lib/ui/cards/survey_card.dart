@@ -69,7 +69,6 @@ class _SurveyCardState extends State<SurveyCard> {
   }
 
   Widget _legend(RPLocalizations locale) {
-    final colors = Theme.of(context).extension<CarpColors>()!;
 
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
@@ -93,7 +92,7 @@ class _SurveyCardState extends State<SurveyCard> {
                       locale.translate(survey.key),
                       maxLines: 1,
                       overflow: TextOverflow.ellipsis,
-                      style: (_selected == index ? Theme.of(context).textTheme.titleSmall! : Theme.of(context).textTheme.bodyLarge!).copyWith(color: colors.grey900),
+                      style: (_selected == index ? Theme.of(context).textTheme.titleSmall! : Theme.of(context).textTheme.bodyLarge!),
                     ),
                   ),
                 ],
@@ -133,7 +132,7 @@ class _SurveyCardState extends State<SurveyCard> {
             ],
           ),
         ),
-        Text('$_centreCount', style: Theme.of(context).textTheme.headlineSmall!.copyWith(color: Theme.of(context).extension<CarpColors>()!.grey900)),
+        Text('$_centreCount', style: Theme.of(context).textTheme.headlineSmall!),
       ],
     );
   }

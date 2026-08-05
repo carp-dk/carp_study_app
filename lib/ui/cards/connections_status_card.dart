@@ -65,7 +65,7 @@ class _ConnectionsStatusCardState extends State<ConnectionsStatusCard> {
                     child: Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
-                        Text(title, style: Theme.of(context).textTheme.titleMedium!.copyWith(color: colors.grey900)),
+                        Text(title, style: Theme.of(context).textTheme.titleMedium!),
                         const SizedBox(height: 4),
                         Text(sources, style: Theme.of(context).textTheme.labelMedium!.copyWith(color: colors.grey600)),
                       ],
@@ -103,7 +103,7 @@ class _ConnectionsStatusCardState extends State<ConnectionsStatusCard> {
                 Icon(Icons.circle, size: 10, color: model.isSourceActive(d) ? _green : colors.grey400),
                 const SizedBox(width: 8),
                 Expanded(
-                  child: Text(locale.translate(d.typeName), style: Theme.of(context).textTheme.bodyLarge!.copyWith(color: colors.grey900)),
+                  child: Text(locale.translate(d.typeName), style: Theme.of(context).textTheme.bodyLarge!),
                 ),
                 Text(
                   model.isSourceActive(d) ? 'ON' : 'OFF',

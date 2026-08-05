@@ -45,7 +45,7 @@ class StepsCardWidgetState extends State<StepsCardWidget> {
                       child: Text(
                         '$_step',
                         maxLines: 1,
-                        style: Theme.of(context).textTheme.headlineMedium!.copyWith(color: Theme.of(context).extension<CarpColors>()!.grey900),
+                        style: Theme.of(context).textTheme.headlineMedium!,
                       ),
                     ),
                   ),

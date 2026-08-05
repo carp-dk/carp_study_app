@@ -38,7 +38,7 @@ class _DistanceCardState extends State<DistanceCard> {
           children: [
             Row(
               children: [
-                Text(_distance, style: Theme.of(context).textTheme.headlineMedium!.copyWith(color: Theme.of(context).extension<CarpColors>()!.grey900)),
+                Text(_distance, style: Theme.of(context).textTheme.headlineMedium!),
                 Padding(
                   padding: const EdgeInsets.only(left: 4.0),
                   child: Text(

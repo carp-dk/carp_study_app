@@ -12,7 +12,7 @@ class CarpPageTitle extends StatelessWidget {
       padding: const EdgeInsets.fromLTRB(16, 8, 16, 16),
       child: Align(
         alignment: Alignment.centerLeft,
-        child: Text(title, style: Theme.of(context).textTheme.headlineSmall!.copyWith(color: Theme.of(context).extension<CarpColors>()!.grey900)),
+        child: Text(title, style: Theme.of(context).textTheme.headlineSmall!),
       ),
     );
   }
@@ -29,7 +29,7 @@ class CarpSectionTitle extends StatelessWidget {
       padding: const EdgeInsets.fromLTRB(16, 8, 16, 8),
       child: Align(
         alignment: Alignment.centerLeft,
-        child: Text(title, style: Theme.of(context).textTheme.titleMedium!.copyWith(color: Theme.of(context).extension<CarpColors>()!.grey900)),
+        child: Text(title, style: Theme.of(context).textTheme.titleMedium!),
       ),
     );
   }

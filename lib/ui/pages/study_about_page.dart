@@ -52,9 +52,9 @@ class StudyAboutPage extends StatelessWidget {
                             ),
                           ),
                           const SizedBox(height: 16),
-                          Text(locale.translate(model.title), style: Theme.of(context).textTheme.titleMedium!.copyWith(color: colors.grey900)),
+                          Text(locale.translate(model.title), style: Theme.of(context).textTheme.titleMedium!),
                           const SizedBox(height: 8),
-                          Text(locale.translate(model.description), style: Theme.of(context).textTheme.labelMedium!.copyWith(color: colors.grey900)),
+                          Text(locale.translate(model.description), style: Theme.of(context).textTheme.labelMedium!),
                           const SizedBox(height: 12),
                           InkWell(
                             onTap: () async {
@@ -203,7 +203,7 @@ class StudyAboutPage extends StatelessWidget {
               Icon(icon, size: 22, color: Theme.of(context).colorScheme.primary),
               const SizedBox(width: 12),
               Expanded(
-                child: Text(title, style: Theme.of(context).textTheme.labelLarge!.copyWith(color: colors.grey900)),
+                child: Text(title, style: Theme.of(context).textTheme.labelLarge!),
               ),
               Icon(Icons.arrow_forward_ios, size: 16, color: colors.grey400),
             ],
@@ -222,7 +222,7 @@ class StudyAboutPage extends StatelessWidget {
         children: [
           Text(label, style: Theme.of(context).textTheme.labelSmall!.copyWith(color: colors.grey600)),
           const SizedBox(height: 2),
-          Text(value, style: Theme.of(context).textTheme.labelMedium!.copyWith(color: colors.grey900)),
+          Text(value, style: Theme.of(context).textTheme.labelMedium!),
         ],
       ),
     );

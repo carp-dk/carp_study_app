@@ -29,28 +29,22 @@ class _LoginPageState extends State<LoginPage> {
               Container(
                 margin: const EdgeInsets.symmetric(vertical: 16, horizontal: 64),
                 width: MediaQuery.of(context).size.width,
-                height: 56,
-                decoration: BoxDecoration(color: const Color(0xff006398), borderRadius: BorderRadius.circular(100)),
-                child: TextButton(
+                child: FilledButton(
+                  style: carpPillButtonStyle,
                   onPressed: () {
                     showDialog<void>(
                       context: context,
                       builder: (context) => QRViewExample(model: widget.model),
                     );
                   },
-                  child: Text(
-                    locale.translate("scan"),
-                    style: const TextStyle(color: Color(0xffffffff), fontSize: 22),
-                    textAlign: TextAlign.center,
-                  ),
+                  child: Text(locale.translate("scan"), textAlign: TextAlign.center),
                 ),
               ),
               Container(
                 margin: const EdgeInsets.symmetric(vertical: 16, horizontal: 64),
                 width: MediaQuery.of(context).size.width,
-                height: 56,
-                decoration: BoxDecoration(color: const Color(0xff006398), borderRadius: BorderRadius.circular(100)),
-                child: TextButton(
+                child: FilledButton(
+                  style: carpPillButtonStyle,
                   onPressed: () async {
                     final result = await widget.model.signIn();
                     if (!context.mounted) return;
@@ -75,11 +69,7 @@ class _LoginPageState extends State<LoginPage> {
                       );
                     }
                   },
-                  child: Text(
-                    locale.translate("pages.login.login"),
-                    style: const TextStyle(color: Color(0xffffffff), fontSize: 22),
-                    textAlign: TextAlign.center,
-                  ),
+                  child: Text(locale.translate("pages.login.login"), textAlign: TextAlign.center),
                 ),
               ),
               if (widget.model.isAuthenticated)

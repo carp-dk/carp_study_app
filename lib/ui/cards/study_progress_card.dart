@@ -58,7 +58,6 @@ class _StudyProgressCardWidgetState extends State<StudyProgressCardWidget> {
   }
 
   Widget _count(BuildContext context, int index, StudyProgress state) {
-    final colors = Theme.of(context).extension<CarpColors>()!;
     final locale = RPLocalizations.of(context)!;
     final isSelected = _selected == index;
 
@@ -76,7 +75,7 @@ class _StudyProgressCardWidgetState extends State<StudyProgressCardWidget> {
             const SizedBox(width: 12),
             Text(
               locale.translate('cards.study_progress.${state.state}'),
-              style: (isSelected ? Theme.of(context).textTheme.titleSmall! : Theme.of(context).textTheme.bodyLarge!).copyWith(color: colors.grey900),
+              style: (isSelected ? Theme.of(context).textTheme.titleSmall! : Theme.of(context).textTheme.bodyLarge!),
             ),
           ],
         ),

@@ -101,7 +101,6 @@ class ProcessMessagePage extends StatelessWidget {
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
               ElevatedButton(
-                style: ElevatedButton.styleFrom(backgroundColor: Theme.of(context).primaryColor),
                 onPressed: () {
                   actionFunction();
                 },
