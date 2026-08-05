@@ -1,5 +1,11 @@
 part of carp_study_app;
 
+// Status icon colors for the const device/service icon maps below. These mirror
+// CarpColors.success / .error; kept as consts because the maps are const lookups
+// consumed without a BuildContext.
+const Color _statusSuccess = Color(0xff67CE67);
+const Color _statusError = Color(0xffEB4B62);
+
 /// View model for [DeviceListPage].
 ///
 /// State: the devices and online services of the deployment, as
@@ -201,31 +207,31 @@ const Map<String, String> _deviceTypeDescription = {
 };
 
 const Map<String, Icon> _deviceTypeIcon = {
-  Smartphone.DEVICE_TYPE: Icon(Icons.phone_android, size: 30, color: CACHET.GREEN_1),
-  WeatherService.DEVICE_TYPE: Icon(Icons.wb_cloudy, color: CACHET.BLUE_1),
-  AirQualityService.DEVICE_TYPE: Icon(Icons.air, color: CACHET.LIGHT_BLUE),
-  LocationService.DEVICE_TYPE: Icon(Icons.location_on, color: CACHET.GREEN),
-  PolarDevice.DEVICE_TYPE: Icon(Icons.monitor_heart, size: 30, color: CACHET.RED),
-  MovesenseDevice.DEVICE_TYPE: Icon(Icons.circle, size: 30, color: CACHET.GREY_1),
-  HealthService.DEVICE_TYPE: Icon(Icons.favorite_rounded, size: 30, color: CACHET.RED_1),
+  Smartphone.DEVICE_TYPE: Icon(Icons.phone_android, size: 30, color: _statusSuccess),
+  WeatherService.DEVICE_TYPE: Icon(Icons.wb_cloudy, color: Color(0xff2192C9)),
+  AirQualityService.DEVICE_TYPE: Icon(Icons.air, color: Color(0xff81CFFA)),
+  LocationService.DEVICE_TYPE: Icon(Icons.location_on, color: _statusSuccess),
+  PolarDevice.DEVICE_TYPE: Icon(Icons.monitor_heart, size: 30, color: _statusError),
+  MovesenseDevice.DEVICE_TYPE: Icon(Icons.circle, size: 30, color: Color(0xff646363)),
+  HealthService.DEVICE_TYPE: Icon(Icons.favorite_rounded, size: 30, color: _statusError),
 };
 
 const Map<DeviceStatus, dynamic> _deviceStatusIcon = {
   DeviceStatus.configured: "pages.devices.status.action.connect",
-  DeviceStatus.connecting: Icon(Icons.bluetooth_searching_rounded, color: CACHET.DARK_BLUE, size: 30),
-  DeviceStatus.connected: Icon(Icons.bluetooth_rounded, color: CACHET.GREEN_1, size: 30),
+  DeviceStatus.connecting: Icon(Icons.bluetooth_searching_rounded, color: Color(0xff3260A4), size: 30),
+  DeviceStatus.connected: Icon(Icons.bluetooth_rounded, color: _statusSuccess, size: 30),
   DeviceStatus.disconnected: "pages.devices.status.action.connect",
   DeviceStatus.paired: "pages.devices.status.action.connect",
-  DeviceStatus.unknown: Icon(Icons.error_outline, color: CACHET.RED_1, size: 30),
+  DeviceStatus.unknown: Icon(Icons.error_outline, color: _statusError, size: 30),
 };
 
 const Map<DeviceStatus, dynamic> _serviceStatusIcon = {
   DeviceStatus.configured: "pages.devices.status.action.connect",
-  DeviceStatus.connecting: Icon(Icons.sensors_off_rounded, color: CACHET.GREEN_1, size: 30),
-  DeviceStatus.connected: Icon(Icons.sensors_rounded, color: CACHET.GREEN_1, size: 30),
+  DeviceStatus.connecting: Icon(Icons.sensors_off_rounded, color: _statusSuccess, size: 30),
+  DeviceStatus.connected: Icon(Icons.sensors_rounded, color: _statusSuccess, size: 30),
   DeviceStatus.disconnected: "pages.devices.status.action.connect",
   DeviceStatus.paired: "pages.devices.status.action.connect",
-  DeviceStatus.unknown: Icon(Icons.error_outline, color: CACHET.RED_1, size: 30),
+  DeviceStatus.unknown: Icon(Icons.error_outline, color: _statusError, size: 30),
 };
 
 const Map<DeviceStatus, String> _deviceStatusText = {

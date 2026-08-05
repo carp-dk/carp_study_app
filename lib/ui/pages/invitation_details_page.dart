@@ -54,7 +54,7 @@ class InvitationDetailsPage extends StatelessWidget {
               Padding(
                 padding: const EdgeInsets.only(top: 16.0),
                 child: StudiesMaterial(
-                  backgroundColor: Theme.of(context).extension<CarpColors>()!.white!,
+                  backgroundColor: Theme.of(context).extension<CarpColors>()!.white,
                   shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12.0)),
                   child: Padding(
                     padding: const EdgeInsets.all(16),
@@ -81,7 +81,7 @@ class InvitationDetailsPage extends StatelessWidget {
                 child: Padding(
                   padding: const EdgeInsets.only(top: 16.0),
                   child: StudiesMaterial(
-                    backgroundColor: Theme.of(context).extension<CarpColors>()!.white!,
+                    backgroundColor: Theme.of(context).extension<CarpColors>()!.white,
                     shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12.0)),
                     child: Padding(
                       padding: const EdgeInsets.only(right: 24.0, left: 24.0, top: 16.0, bottom: 16.0),
@@ -98,7 +98,7 @@ class InvitationDetailsPage extends StatelessWidget {
                                     style: TextStyle(
                                       fontWeight: FontWeight.bold,
                                       fontSize: 22.0,
-                                      color: Theme.of(context).extension<CarpColors>()!.primary,
+                                      color: Theme.of(context).colorScheme.primary,
                                     ),
                                   ),
                                   Padding(

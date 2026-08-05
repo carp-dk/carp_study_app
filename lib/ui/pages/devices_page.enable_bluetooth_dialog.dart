@@ -29,13 +29,13 @@ class EnableBluetoothDialog extends StatelessWidget {
               children: [
                 Text(
                   locale.translate("pages.devices.connection.enable_bluetooth.message1"),
-                  style: fs16fw400,
+                  style: Theme.of(context).textTheme.bodyLarge!,
                   textAlign: TextAlign.justify,
                 ),
                 Padding(padding: EdgeInsets.symmetric(vertical: 16.0)),
                 Text(
                   locale.translate("pages.devices.connection.enable_bluetooth.message2"),
-                  style: fs16fw400,
+                  style: Theme.of(context).textTheme.bodyLarge!,
                   textAlign: TextAlign.justify,
                 ),
                 if (Platform.isAndroid || Platform.isIOS)
@@ -49,7 +49,7 @@ class EnableBluetoothDialog extends StatelessWidget {
                   ),
                 Text(
                   locale.translate("pages.devices.connection.enable_bluetooth.message3"),
-                  style: fs16fw400,
+                  style: Theme.of(context).textTheme.bodyLarge!,
                   textAlign: TextAlign.justify,
                 ),
               ],

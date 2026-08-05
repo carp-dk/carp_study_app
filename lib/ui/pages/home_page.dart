@@ -69,8 +69,8 @@ class HomePage extends StatelessWidget {
     );
 
     return Shimmer.fromColors(
-      baseColor: colors.grey200!,
-      highlightColor: colors.grey100!,
+      baseColor: colors.grey200,
+      highlightColor: colors.grey100,
       child: Column(
         children: [
           box(195),
@@ -95,11 +95,12 @@ class HomePage extends StatelessWidget {
   /// last 7 days (filled if at least one task was done), and a stats link.
   Widget _activeDaysTile(BuildContext context, CarpColors colors) {
     return _statTile(
+      context,
       colors,
       icon: Icons.calendar_today_outlined,
-      iconColor: colors.primary!,
+      iconColor: Theme.of(context).colorScheme.primary,
       label: 'Active Days in Study',
-      value: Text('${model.activeDaysInStudy}', style: fs30fw800.copyWith(color: colors.grey900, fontSize: 28)),
+      value: Text('${model.activeDaysInStudy}', style: Theme.of(context).textTheme.displaySmall!.copyWith(color: colors.grey900, fontSize: 28)),
       footer: Row(
         children: [
           for (final active in model.lastWeekActivity)
@@ -109,8 +110,8 @@ class HomePage extends StatelessWidget {
               margin: const EdgeInsets.only(right: 5),
               decoration: BoxDecoration(
                 shape: BoxShape.circle,
-                color: active ? colors.primary : null,
-                border: Border.all(color: colors.primary!, width: 1.5),
+                color: active ? Theme.of(context).colorScheme.primary : null,
+                border: Border.all(color: Theme.of(context).colorScheme.primary, width: 1.5),
               ),
             ),
         ],
@@ -126,18 +127,19 @@ class HomePage extends StatelessWidget {
     Widget count(int n, String label) => Row(
       crossAxisAlignment: CrossAxisAlignment.end,
       children: [
-        Text('$n'.padLeft(2, '0'), style: fs30fw800.copyWith(color: colors.grey900, fontSize: 28)),
+        Text('$n'.padLeft(2, '0'), style: Theme.of(context).textTheme.displaySmall!.copyWith(color: colors.grey900, fontSize: 28)),
         const SizedBox(width: 8),
         Padding(
           padding: const EdgeInsets.only(bottom: 4),
-          child: Text(label, style: fs14fw600.copyWith(color: colors.grey600)),
+          child: Text(label, style: Theme.of(context).textTheme.labelMedium!.copyWith(color: colors.grey600)),
         ),
       ],
     );
     return _statTile(
+      context,
       colors,
       icon: Icons.task_alt,
-      iconColor: colors.warningColor!,
+      iconColor: colors.warning,
       label: 'Task status',
       value: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
@@ -152,6 +154,7 @@ class HomePage extends StatelessWidget {
   // Shared stat tile chrome: label + icon badge on top, main content, optional
   // footer row, and a link at the bottom.
   Widget _statTile(
+    BuildContext context,
     CarpColors colors, {
     required IconData icon,
     required Color iconColor,
@@ -163,7 +166,7 @@ class HomePage extends StatelessWidget {
     required EdgeInsetsGeometry margin,
   }) {
     return StudiesMaterial(
-      backgroundColor: colors.grey50!,
+      backgroundColor: colors.grey50,
       margin: margin,
       child: Padding(
         padding: const EdgeInsets.all(12),
@@ -174,7 +177,7 @@ class HomePage extends StatelessWidget {
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 Expanded(
-                  child: Text(label, style: fs14fw600.copyWith(color: colors.grey600)),
+                  child: Text(label, style: Theme.of(context).textTheme.labelMedium!.copyWith(color: colors.grey600)),
                 ),
                 _iconBadge(icon, iconColor),
               ],
@@ -189,10 +192,10 @@ class HomePage extends StatelessWidget {
               onTap: onLink,
               child: Text(
                 linkLabel,
-                style: fs14fw600.copyWith(
-                  color: colors.primary,
+                style: Theme.of(context).textTheme.labelMedium!.copyWith(
+                  color: Theme.of(context).colorScheme.primary,
                   decoration: TextDecoration.underline,
-                  decorationColor: colors.primary,
+                  decorationColor: Theme.of(context).colorScheme.primary,
                 ),
               ),
             ),
@@ -210,7 +213,7 @@ class HomePage extends StatelessWidget {
     final body = message.message ?? '';
 
     return StudiesMaterial(
-      backgroundColor: colors.grey50!,
+      backgroundColor: colors.grey50,
       child: InkWell(
         onTap: () => context.push('${MessageDetailsPage.route}/${message.id}'),
         child: Padding(
@@ -224,15 +227,15 @@ class HomePage extends StatelessWidget {
                   Expanded(
                     child: Text(
                       locale.translate(message.title ?? ''),
-                      style: fs18fw700.copyWith(color: colors.grey900),
+                      style: Theme.of(context).textTheme.titleMedium!.copyWith(color: colors.grey900),
                     ),
                   ),
-                  _iconBadge(message.type.icon, colors.primary!),
+                  _iconBadge(message.type.icon, Theme.of(context).colorScheme.primary),
                 ],
               ),
               if (subTitle.isNotEmpty) ...[
                 const SizedBox(height: 4),
-                Text(locale.translate(subTitle), style: fs14fw600.copyWith(color: colors.grey600)),
+                Text(locale.translate(subTitle), style: Theme.of(context).textTheme.labelMedium!.copyWith(color: colors.grey600)),
               ],
               if (body.isNotEmpty) ...[
                 const SizedBox(height: 8),
@@ -240,7 +243,7 @@ class HomePage extends StatelessWidget {
                   locale.translate(body),
                   maxLines: 3,
                   overflow: TextOverflow.ellipsis,
-                  style: fs16fw400.copyWith(color: colors.grey900),
+                  style: Theme.of(context).textTheme.bodyLarge!.copyWith(color: colors.grey900),
                 ),
               ],
               const SizedBox(height: 12),
@@ -248,7 +251,7 @@ class HomePage extends StatelessWidget {
                 children: [
                   Icon(Icons.access_time, size: 14, color: colors.grey500),
                   const SizedBox(width: 4),
-                  Text(timeago.format(message.timestamp.toLocal()), style: fs12fw600.copyWith(color: colors.grey500)),
+                  Text(timeago.format(message.timestamp.toLocal()), style: Theme.of(context).textTheme.labelSmall!.copyWith(color: colors.grey500)),
                 ],
               ),
             ],
@@ -281,19 +284,19 @@ class AppUpdateCard extends StatelessWidget {
     final locale = RPLocalizations.of(context)!;
 
     return StudiesMaterial(
-      backgroundColor: colors.grey50!,
+      backgroundColor: colors.grey50,
       child: Padding(
         padding: const EdgeInsets.fromLTRB(16, 8, 8, 8),
         child: Row(
           children: [
             Expanded(
-              child: Text(locale.translate('pages.about.app_update'), style: fs14fw600.copyWith(color: colors.grey900)),
+              child: Text(locale.translate('pages.about.app_update'), style: Theme.of(context).textTheme.labelMedium!.copyWith(color: colors.grey900)),
             ),
             const SizedBox(width: 8),
             FilledButton(
               onPressed: model.openAppStore,
               style: FilledButton.styleFrom(
-                backgroundColor: colors.primary,
+                backgroundColor: Theme.of(context).colorScheme.primary,
                 visualDensity: VisualDensity.compact,
                 padding: const EdgeInsets.symmetric(horizontal: 20),
               ),
@@ -321,8 +324,7 @@ class StudyAboutCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final colors = Theme.of(context).extension<CarpColors>()!;
-    final primary = colors.primary!;
+    final primary = Theme.of(context).colorScheme.primary;
     final locale = RPLocalizations.of(context)!;
 
     return StudiesMaterial(
@@ -347,16 +349,16 @@ class StudyAboutCard extends StatelessWidget {
               maintainSize: true,
               maintainAnimation: true,
               maintainState: true,
-              child: Row(children: [_statusBubble(model.deploymentStatus ?? StudyDeploymentStatusTypes.Running)]),
+              child: Row(children: [_statusBubble(context, model.deploymentStatus ?? StudyDeploymentStatusTypes.Running)]),
             ),
             const SizedBox(height: 8),
-            Text(locale.translate(model.studyTitle), style: fs22fw700.copyWith(color: Colors.white)),
+            Text(locale.translate(model.studyTitle), style: Theme.of(context).textTheme.titleLarge!.copyWith(color: Colors.white)),
             const SizedBox(height: 8),
             Text(
               locale.translate(model.studyDescription),
               maxLines: 3,
               overflow: TextOverflow.ellipsis,
-              style: fs14fw600.copyWith(color: Colors.white.withValues(alpha: 0.9)),
+              style: Theme.of(context).textTheme.labelMedium!.copyWith(color: Colors.white.withValues(alpha: 0.9)),
             ),
             const SizedBox(height: 8),
             InkWell(
@@ -366,7 +368,7 @@ class StudyAboutCard extends StatelessWidget {
                 children: [
                   Text(
                     'About the study',
-                    style: fs14fw600.copyWith(
+                    style: Theme.of(context).textTheme.labelMedium!.copyWith(
                       color: Colors.white,
                       decoration: TextDecoration.underline,
                       decorationColor: Colors.white,
@@ -384,7 +386,7 @@ class StudyAboutCard extends StatelessWidget {
   }
 
   // Transparent pill with the status dot and label in white.
-  Widget _statusBubble(StudyDeploymentStatusTypes status) {
+  Widget _statusBubble(BuildContext context, StudyDeploymentStatusTypes status) {
     final (dot, label) = _status[status] ?? (const Color(0xFFF43F5E), '');
     return Container(
       padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 5),
@@ -394,7 +396,7 @@ class StudyAboutCard extends StatelessWidget {
         children: [
           Icon(Icons.circle, size: 8, color: dot),
           const SizedBox(width: 6),
-          Text(label, style: fs12fw600.copyWith(color: Colors.white)),
+          Text(label, style: Theme.of(context).textTheme.labelSmall!.copyWith(color: Colors.white)),
         ],
       ),
     );

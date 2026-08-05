@@ -3,7 +3,7 @@ part of carp_study_app;
 class ActivityCard extends StatefulWidget {
   final ActivityCardViewModel model;
   final List<Color> colors;
-  const ActivityCard(this.model, {super.key, this.colors = const [CACHET.CAQUI, CACHET.OCEAN, CACHET.BLUE_2]});
+  const ActivityCard(this.model, {super.key, this.colors = const [Color(0xff7E9146), Color(0xff228B89), Color(0xff82CEE9)]});
 
   @override
   State<StatefulWidget> createState() => ActivityCardState();
@@ -41,7 +41,7 @@ class ActivityCardState extends State<ActivityCard> {
     RPLocalizations locale = RPLocalizations.of(context)!;
 
     return StudiesMaterial(
-      backgroundColor: Theme.of(context).extension<CarpColors>()!.white!,
+      backgroundColor: Theme.of(context).extension<CarpColors>()!.white,
       // Tapping anywhere else on the card drops the selection.
       child: GestureDetector(
         onTap: () => setState(() => _selectedDay = null),
@@ -53,13 +53,13 @@ class ActivityCardState extends State<ActivityCard> {
                 children: [
                   Text(
                     '${_walk + _run + _cycle}',
-                    style: fs28fw700.copyWith(color: Theme.of(context).extension<CarpColors>()!.grey900!),
+                    style: Theme.of(context).textTheme.headlineMedium!.copyWith(color: Theme.of(context).extension<CarpColors>()!.grey900),
                   ),
                   Padding(
                     padding: const EdgeInsets.only(left: 4.0),
                     child: Text(
                       '${locale.translate('cards.activity.total.min')} ${_selectedDay != null ? _getDayName(_selectedDay!) : ''}',
-                      style: fs12fw700.copyWith(color: Theme.of(context).extension<CarpColors>()!.grey600),
+                      style: Theme.of(context).textTheme.labelSmall!.copyWith(fontWeight: FontWeight.w700).copyWith(color: Theme.of(context).extension<CarpColors>()!.grey600),
                     ),
                   ),
                 ],
@@ -68,7 +68,7 @@ class ActivityCardState extends State<ActivityCard> {
                 children: [
                   Text(
                     "${widget.model.currentMonth} ${widget.model.startOfWeek} - ${int.parse(widget.model.endOfWeek) < int.parse(widget.model.startOfWeek) ? widget.model.nextMonth : widget.model.currentMonth} ${widget.model.endOfWeek}, ${widget.model.currentYear}",
-                    style: fs12fw700.copyWith(color: Theme.of(context).extension<CarpColors>()!.grey600),
+                    style: Theme.of(context).textTheme.labelSmall!.copyWith(fontWeight: FontWeight.w700).copyWith(color: Theme.of(context).extension<CarpColors>()!.grey600),
                   ),
                   Spacer(),
                 ],
@@ -90,12 +90,12 @@ class ActivityCardState extends State<ActivityCard> {
                       Expanded(
                         child: Row(
                           children: [
-                            Text('$_walk', style: fs22fw700.copyWith(color: widget.colors[0])),
+                            Text('$_walk', style: Theme.of(context).textTheme.titleLarge!.copyWith(color: widget.colors[0])),
                             Padding(
                               padding: const EdgeInsets.all(4.0),
                               child: Text(
                                 locale.translate('cards.activity.walking'),
-                                style: fs12fw700.copyWith(color: Theme.of(context).extension<CarpColors>()!.grey800),
+                                style: Theme.of(context).textTheme.labelSmall!.copyWith(fontWeight: FontWeight.w700).copyWith(color: Theme.of(context).extension<CarpColors>()!.grey800),
                               ),
                             ),
                           ],
@@ -106,13 +106,13 @@ class ActivityCardState extends State<ActivityCard> {
                           children: [
                             Padding(
                               padding: const EdgeInsets.only(left: 8.0),
-                              child: Text('$_run', style: fs12fw700.copyWith(color: widget.colors[1])),
+                              child: Text('$_run', style: Theme.of(context).textTheme.labelSmall!.copyWith(fontWeight: FontWeight.w700).copyWith(color: widget.colors[1])),
                             ),
                             Padding(
                               padding: const EdgeInsets.all(4.0),
                               child: Text(
                                 locale.translate('cards.activity.running'),
-                                style: fs12fw700.copyWith(color: Theme.of(context).extension<CarpColors>()!.grey800),
+                                style: Theme.of(context).textTheme.labelSmall!.copyWith(fontWeight: FontWeight.w700).copyWith(color: Theme.of(context).extension<CarpColors>()!.grey800),
                               ),
                             ),
                           ],
@@ -122,12 +122,12 @@ class ActivityCardState extends State<ActivityCard> {
                   ),
                   Row(
                     children: [
-                      Text('$_cycle', style: fs22fw700.copyWith(color: widget.colors[2])),
+                      Text('$_cycle', style: Theme.of(context).textTheme.titleLarge!.copyWith(color: widget.colors[2])),
                       Padding(
                         padding: const EdgeInsets.only(left: 4.0),
                         child: Text(
                           locale.translate('cards.activity.cycling'),
-                          style: fs12fw700.copyWith(color: Theme.of(context).extension<CarpColors>()!.grey800),
+                          style: Theme.of(context).textTheme.labelSmall!.copyWith(fontWeight: FontWeight.w700).copyWith(color: Theme.of(context).extension<CarpColors>()!.grey800),
                         ),
                       ),
                     ],
@@ -238,7 +238,7 @@ class ActivityCardState extends State<ActivityCard> {
       space: 6,
       child: Text(
         value.toInt() % meta.appliedInterval == 0 ? value.toInt().toString() : '',
-        style: fs14ls1.copyWith(color: Theme.of(context).extension<CarpColors>()!.grey600),
+        style: Theme.of(context).textTheme.bodyMedium!.copyWith(letterSpacing: 1).copyWith(color: Theme.of(context).extension<CarpColors>()!.grey600),
       ),
     );
   }

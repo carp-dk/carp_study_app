@@ -4,7 +4,7 @@ class StepsCardWidget extends StatefulWidget {
   final List<Color> colors;
 
   final StepsCardViewModel model;
-  const StepsCardWidget(this.model, {super.key, this.colors = const [CACHET.ORANGE, CACHET.BLUE_2, CACHET.BLUE_3]});
+  const StepsCardWidget(this.model, {super.key, this.colors = const [Color(0xffEC6330), Color(0xff82CEE9), Color(0xffB2E1F2)]});
 
   @override
   StepsCardWidgetState createState() => StepsCardWidgetState();
@@ -26,7 +26,7 @@ class StepsCardWidgetState extends State<StepsCardWidget> {
     RPLocalizations locale = RPLocalizations.of(context)!;
 
     return StudiesMaterial(
-      backgroundColor: Theme.of(context).extension<CarpColors>()!.white!,
+      backgroundColor: Theme.of(context).extension<CarpColors>()!.white,
       // Tapping anywhere else on the card drops the selection.
       child: GestureDetector(
         onTap: () => setState(() => _selectedDay = null),
@@ -45,7 +45,7 @@ class StepsCardWidgetState extends State<StepsCardWidget> {
                       child: Text(
                         '$_step',
                         maxLines: 1,
-                        style: fs28fw700.copyWith(color: Theme.of(context).extension<CarpColors>()!.grey900!),
+                        style: Theme.of(context).textTheme.headlineMedium!.copyWith(color: Theme.of(context).extension<CarpColors>()!.grey900),
                       ),
                     ),
                   ),
@@ -55,7 +55,7 @@ class StepsCardWidgetState extends State<StepsCardWidget> {
                       _selectedDay != null
                           ? '${locale.translate('cards.steps.steps')} ${_getDayName(_selectedDay!)}'
                           : locale.translate('cards.steps.per_week'),
-                      style: fs12fw700.copyWith(color: Theme.of(context).extension<CarpColors>()!.grey600),
+                      style: Theme.of(context).textTheme.labelSmall!.copyWith(fontWeight: FontWeight.w700).copyWith(color: Theme.of(context).extension<CarpColors>()!.grey600),
                     ),
                   ),
                 ],
@@ -64,7 +64,7 @@ class StepsCardWidgetState extends State<StepsCardWidget> {
                 children: [
                   Text(
                     "${widget.model.currentMonth} ${widget.model.startOfWeek} - ${int.parse(widget.model.endOfWeek) < int.parse(widget.model.startOfWeek) ? widget.model.nextMonth : widget.model.currentMonth} ${widget.model.endOfWeek}, ${widget.model.currentYear}",
-                    style: fs12fw700.copyWith(color: Theme.of(context).extension<CarpColors>()!.grey600),
+                    style: Theme.of(context).textTheme.labelSmall!.copyWith(fontWeight: FontWeight.w700).copyWith(color: Theme.of(context).extension<CarpColors>()!.grey600),
                   ),
                   Spacer(),
                 ],
@@ -158,7 +158,7 @@ class StepsCardWidgetState extends State<StepsCardWidget> {
       space: 6,
       child: Text(
         value.toInt() % meta.appliedInterval == 0 ? value.toInt().toString() : '',
-        style: fs14ls1.copyWith(color: Theme.of(context).extension<CarpColors>()!.grey600),
+        style: Theme.of(context).textTheme.bodyMedium!.copyWith(letterSpacing: 1).copyWith(color: Theme.of(context).extension<CarpColors>()!.grey600),
       ),
     );
   }

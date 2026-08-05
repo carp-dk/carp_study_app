@@ -13,7 +13,7 @@ class SurveyCard extends StatefulWidget {
   /// already labels the card (e.g. the home page).
   final bool showTitle;
 
-  const SurveyCard(this.model, {super.key, this.colors = CACHET.COLOR_LIST, this.showTitle = true});
+  const SurveyCard(this.model, {super.key, this.colors = kCarpChartColors, this.showTitle = true});
 
   @override
   State<SurveyCard> createState() => _SurveyCardState();
@@ -39,7 +39,7 @@ class _SurveyCardState extends State<SurveyCard> {
     if (_surveys.isEmpty) return const SizedBox();
 
     return StudiesMaterial(
-      backgroundColor: Theme.of(context).extension<CarpColors>()!.white!,
+      backgroundColor: Theme.of(context).extension<CarpColors>()!.white,
       // Tapping anywhere else on the card drops the selection.
       child: GestureDetector(
         onTap: () => setState(() => _selected = null),
@@ -53,7 +53,7 @@ class _SurveyCardState extends State<SurveyCard> {
               if (widget.showTitle)
                 Padding(
                   padding: const EdgeInsets.only(bottom: 8),
-                  child: Text(locale.translate('cards.survey.title').toUpperCase(), style: fs16fw400ls1),
+                  child: Text(locale.translate('cards.survey.title').toUpperCase(), style: Theme.of(context).textTheme.bodyLarge!.copyWith(letterSpacing: 1)),
                 ),
               Row(
                 children: [
@@ -85,7 +85,7 @@ class _SurveyCardState extends State<SurveyCard> {
                   // Pad to two digits so the labels line up in a column.
                   Text(
                     '${survey.value}'.padLeft(2, '0'),
-                    style: fs24fw700.copyWith(color: _shade(widget.colors[index], index)),
+                    style: Theme.of(context).textTheme.headlineSmall!.copyWith(color: _shade(widget.colors[index], index)),
                   ),
                   const SizedBox(width: 12),
                   Flexible(
@@ -93,7 +93,7 @@ class _SurveyCardState extends State<SurveyCard> {
                       locale.translate(survey.key),
                       maxLines: 1,
                       overflow: TextOverflow.ellipsis,
-                      style: (_selected == index ? fs16fw700 : fs16fw400).copyWith(color: colors.grey900),
+                      style: (_selected == index ? Theme.of(context).textTheme.titleSmall! : Theme.of(context).textTheme.bodyLarge!).copyWith(color: colors.grey900),
                     ),
                   ),
                 ],
@@ -133,7 +133,7 @@ class _SurveyCardState extends State<SurveyCard> {
             ],
           ),
         ),
-        Text('$_centreCount', style: fs24fw700.copyWith(color: Theme.of(context).extension<CarpColors>()!.grey900)),
+        Text('$_centreCount', style: Theme.of(context).textTheme.headlineSmall!.copyWith(color: Theme.of(context).extension<CarpColors>()!.grey900)),
       ],
     );
   }

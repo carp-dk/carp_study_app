@@ -9,7 +9,6 @@ import 'dart:io';
 
 import 'package:app_version_update/data/models/app_version_result.dart';
 import 'package:async/async.dart';
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/gestures.dart';
 
 import 'package:flutter/material.dart';

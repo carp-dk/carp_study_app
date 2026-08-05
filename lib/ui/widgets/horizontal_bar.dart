@@ -136,7 +136,7 @@ class MyAssetsBar extends StatelessWidget {
     );
   }
 
-  Widget _labelOrientation() {
+  Widget _labelOrientation(BuildContext context) {
     if (labelOrientation == LabelOrientation.horizontal) {
       return Column(
         mainAxisAlignment: MainAxisAlignment.center,
@@ -150,7 +150,7 @@ class MyAssetsBar extends StatelessWidget {
                   mainAxisAlignment: MainAxisAlignment.start,
                   children: [
                     Icon(Icons.circle, color: entry.value.color, size: 12.0),
-                    Text(' ${entry.value.name!} ${entry.value.size}', style: fs12fw400, textAlign: TextAlign.right),
+                    Text(' ${entry.value.name!} ${entry.value.size}', style: Theme.of(context).textTheme.bodySmall!, textAlign: TextAlign.right),
                   ],
                 ),
               ),
@@ -178,11 +178,11 @@ class MyAssetsBar extends StatelessWidget {
                   mainAxisAlignment: MainAxisAlignment.start,
                   children: [
                     Icon(Icons.circle, color: entry.value.color, size: 12.0),
-                    Text(' ${entry.value.size}', style: fs12fw400, textAlign: TextAlign.left),
+                    Text(' ${entry.value.size}', style: Theme.of(context).textTheme.bodySmall!, textAlign: TextAlign.left),
                     Expanded(
                       child: Text(
                         ' ${entry.value.name!}',
-                        style: fs12fw400,
+                        style: Theme.of(context).textTheme.bodySmall!,
                         textAlign: TextAlign.left,
                         overflow: TextOverflow.ellipsis,
                       ),
@@ -215,7 +215,7 @@ class MyAssetsBar extends StatelessWidget {
             child: Row(children: assets.map((singleAsset) => _createSingle(singleAsset)).toList()),
           ),
         ),
-        _labelOrientation(),
+        _labelOrientation(context),
       ],
     );
   }

@@ -37,9 +37,9 @@ class ProfilePageState extends State<ProfilePage> {
               child: Row(
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
-                  Text(locale.translate("pages.profile.title"), style: fs24fw700.copyWith(color: colors.grey900)),
+                  Text(locale.translate("pages.profile.title"), style: Theme.of(context).textTheme.headlineSmall!.copyWith(color: colors.grey900)),
                   IconButton(
-                    icon: Icon(Icons.close, color: colors.primary, size: 28),
+                    icon: Icon(Icons.close, color: Theme.of(context).colorScheme.primary, size: 28),
                     tooltip: locale.translate('Back'),
                     onPressed: () => context.pop(),
                   ),
@@ -118,7 +118,7 @@ class ProfilePageState extends State<ProfilePage> {
                   _actionCard(
                     colors,
                     icon: Icons.info_outline,
-                    iconColor: colors.primary!,
+                    iconColor: Theme.of(context).colorScheme.primary,
                     title: locale.translate('pages.profile.study_details'),
                     hasChevron: true,
                     onTap: () => context.push(StudyAboutPage.route),
@@ -127,14 +127,14 @@ class ProfilePageState extends State<ProfilePage> {
                   _actionCard(
                     colors,
                     icon: Icons.logout,
-                    iconColor: CACHET.RED_1,
+                    iconColor: Theme.of(context).extension<CarpColors>()!.error,
                     title: locale.translate('pages.profile.leave_study'),
                     onTap: _showLeaveStudyConfirmationDialog,
                   ),
                   _actionCard(
                     colors,
                     icon: Icons.power_settings_new,
-                    iconColor: CACHET.RED_1,
+                    iconColor: Theme.of(context).extension<CarpColors>()!.error,
                     title: locale.translate('pages.profile.log_out'),
                     onTap: () async {
                       bool isConnected = await widget.model.checkConnectivity();
@@ -157,13 +157,13 @@ class ProfilePageState extends State<ProfilePage> {
   Widget _sectionHeader(CarpColors colors, String title) {
     return Padding(
       padding: const EdgeInsets.fromLTRB(16, 8, 16, 8),
-      child: Text(title, style: fs18fw700.copyWith(color: colors.grey900)),
+      child: Text(title, style: Theme.of(context).textTheme.titleMedium!.copyWith(color: colors.grey900)),
     );
   }
 
   Widget _sectionCard(CarpColors colors, List<Widget> children) {
     return StudiesMaterial(
-      backgroundColor: colors.grey50!,
+      backgroundColor: colors.grey50,
       child: Column(
         children: [
           for (var i = 0; i < children.length; i++) ...[
@@ -184,11 +184,11 @@ class ProfilePageState extends State<ProfilePage> {
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                Text(label, style: fs12fw600.copyWith(color: colors.grey600)),
+                Text(label, style: Theme.of(context).textTheme.labelSmall!.copyWith(color: colors.grey600)),
                 const SizedBox(height: 2),
                 Text(
                   value,
-                  style: fs14fw600.copyWith(color: colors.grey900),
+                  style: Theme.of(context).textTheme.labelMedium!.copyWith(color: colors.grey900),
                   maxLines: 1,
                   overflow: TextOverflow.ellipsis,
                 ),
@@ -221,7 +221,7 @@ class ProfilePageState extends State<ProfilePage> {
     required VoidCallback onTap,
   }) {
     return StudiesMaterial(
-      backgroundColor: colors.grey50!,
+      backgroundColor: colors.grey50,
       margin: const EdgeInsets.only(bottom: 8, left: 16, right: 16),
       child: InkWell(
         onTap: onTap,
@@ -232,7 +232,7 @@ class ProfilePageState extends State<ProfilePage> {
               Icon(icon, size: 22, color: iconColor),
               const SizedBox(width: 12),
               Expanded(
-                child: Text(title, style: fs16fw600.copyWith(color: colors.grey900)),
+                child: Text(title, style: Theme.of(context).textTheme.labelLarge!.copyWith(color: colors.grey900)),
               ),
               if (hasChevron) Icon(Icons.arrow_forward_ios, size: 16, color: colors.grey400),
             ],

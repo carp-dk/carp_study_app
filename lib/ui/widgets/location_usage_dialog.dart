@@ -15,7 +15,7 @@ class LocationUsageDialog {
             width: MediaQuery.of(context).size.width * 0.15,
             height: MediaQuery.of(context).size.height * 0.15,
           ),
-          Text(locale.translate("dialog.location.permission"), style: fs20fw700),
+          Text(locale.translate("dialog.location.permission"), style: Theme.of(context).textTheme.titleLarge!.copyWith(fontSize: 20)),
         ],
       ),
       contentPadding: const EdgeInsets.all(15),
@@ -24,7 +24,7 @@ class LocationUsageDialog {
         child: SingleChildScrollView(
           child: Column(
             mainAxisSize: MainAxisSize.min,
-            children: [Text(locale.translate(message), style: fs16fw400, textAlign: TextAlign.justify)],
+            children: [Text(locale.translate(message), style: Theme.of(context).textTheme.bodyLarge!, textAlign: TextAlign.justify)],
           ),
         ),
       ),

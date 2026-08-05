@@ -27,7 +27,7 @@ class ChartsLegend extends StatelessWidget {
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                Text(title.toUpperCase(), style: fs16fw400ls1),
+                Text(title.toUpperCase(), style: Theme.of(context).textTheme.bodyLarge!.copyWith(letterSpacing: 1)),
                 Padding(
                   padding: const EdgeInsets.symmetric(vertical: 8.0),
                   child: Row(
@@ -39,7 +39,7 @@ class ChartsLegend extends StatelessWidget {
                             mainAxisAlignment: MainAxisAlignment.spaceAround,
                             children: [
                               Icon(Icons.circle, color: colors[entry.key], size: 12.0),
-                              Text(' ${entry.value} ', style: fs12fw400),
+                              Text(' ${entry.value} ', style: Theme.of(context).textTheme.bodySmall!),
                             ],
                           ),
                         )

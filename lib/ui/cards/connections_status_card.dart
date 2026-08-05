@@ -42,7 +42,7 @@ class _ConnectionsStatusCardState extends State<ConnectionsStatusCard> {
     };
 
     return StudiesMaterial(
-      backgroundColor: colors.grey50!,
+      backgroundColor: colors.grey50,
       hasBorder: true,
       borderColor: accent,
       child: Column(
@@ -65,9 +65,9 @@ class _ConnectionsStatusCardState extends State<ConnectionsStatusCard> {
                     child: Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
-                        Text(title, style: fs18fw700.copyWith(color: colors.grey900)),
+                        Text(title, style: Theme.of(context).textTheme.titleMedium!.copyWith(color: colors.grey900)),
                         const SizedBox(height: 4),
-                        Text(sources, style: fs14fw600.copyWith(color: colors.grey600)),
+                        Text(sources, style: Theme.of(context).textTheme.labelMedium!.copyWith(color: colors.grey600)),
                       ],
                     ),
                   ),
@@ -103,11 +103,11 @@ class _ConnectionsStatusCardState extends State<ConnectionsStatusCard> {
                 Icon(Icons.circle, size: 10, color: model.isSourceActive(d) ? _green : colors.grey400),
                 const SizedBox(width: 8),
                 Expanded(
-                  child: Text(locale.translate(d.typeName), style: fs16fw400.copyWith(color: colors.grey900)),
+                  child: Text(locale.translate(d.typeName), style: Theme.of(context).textTheme.bodyLarge!.copyWith(color: colors.grey900)),
                 ),
                 Text(
                   model.isSourceActive(d) ? 'ON' : 'OFF',
-                  style: fs14fw600.copyWith(color: model.isSourceActive(d) ? _green : colors.grey500),
+                  style: Theme.of(context).textTheme.labelMedium!.copyWith(color: model.isSourceActive(d) ? _green : colors.grey500),
                 ),
               ],
             ),
@@ -119,9 +119,9 @@ class _ConnectionsStatusCardState extends State<ConnectionsStatusCard> {
             padding: const EdgeInsets.all(16),
             child: Row(
               children: [
-                Text('Manage in Connections', style: fs16fw600.copyWith(color: colors.primary)),
+                Text('Manage in Connections', style: Theme.of(context).textTheme.labelLarge!.copyWith(color: Theme.of(context).colorScheme.primary)),
                 const SizedBox(width: 4),
-                Icon(Icons.chevron_right, size: 20, color: colors.primary),
+                Icon(Icons.chevron_right, size: 20, color: Theme.of(context).colorScheme.primary),
               ],
             ),
           ),

@@ -140,17 +140,17 @@ class TaskListPageState extends State<TaskListPage> with TickerProviderStateMixi
             child: Text(
               label,
               overflow: TextOverflow.ellipsis,
-              style: fs14fw600.copyWith(color: selected ? colors.grey900 : colors.grey600),
+              style: Theme.of(context).textTheme.labelMedium!.copyWith(color: selected ? colors.grey900 : colors.grey600),
             ),
           ),
           const SizedBox(width: 6),
           Container(
             padding: const EdgeInsets.symmetric(horizontal: 7, vertical: 2),
             decoration: BoxDecoration(
-              color: selected ? colors.primary!.withValues(alpha: 0.12) : colors.grey300,
+              color: selected ? Theme.of(context).colorScheme.primary.withValues(alpha: 0.12) : colors.grey300,
               borderRadius: BorderRadius.circular(100),
             ),
-            child: Text('$count', style: fs12fw600.copyWith(color: selected ? colors.primary : colors.grey600)),
+            child: Text('$count', style: Theme.of(context).textTheme.labelSmall!.copyWith(color: selected ? Theme.of(context).colorScheme.primary : colors.grey600)),
           ),
         ],
       ),
@@ -164,10 +164,10 @@ class TaskListPageState extends State<TaskListPage> with TickerProviderStateMixi
     final done = userTask.state == UserTaskState.done;
     final expired = userTask.state == UserTaskState.expired;
     final accent = done
-        ? CACHET.TASK_COMPLETED_BLUE
+        ? Theme.of(context).extension<CarpColors>()!.taskCompleted
         : expired
-        ? colors.grey500!
-        : taskTypeColors[userTask.type] ?? colors.primary!;
+        ? colors.grey500
+        : taskTypeColors[userTask.type] ?? Theme.of(context).colorScheme.primary;
     final description = locale.translate(userTask.description);
     final (expiry, urgent) = _expiry(locale, userTask);
 
@@ -186,32 +186,32 @@ class TaskListPageState extends State<TaskListPage> with TickerProviderStateMixi
               child: Text(
                 userTask.type[0].toUpperCase() + userTask.type.substring(1),
                 overflow: TextOverflow.ellipsis,
-                style: fs12fw600.copyWith(color: accent),
+                style: Theme.of(context).textTheme.labelSmall!.copyWith(color: accent),
               ),
             ),
             if (!done && !expired && expiry.isNotEmpty)
-              _chip(colors, Icons.alarm, expiry, urgent ? colors.warningColor! : colors.grey500!, filled: urgent),
+              _chip(colors, Icons.alarm, expiry, urgent ? colors.warning : colors.grey500, filled: urgent),
             if (done && userTask.doneTime != null)
               Text(
                 DateFormat('MMM d, yyyy').format(userTask.doneTime!),
-                style: fs12fw600.copyWith(color: colors.grey500),
+                style: Theme.of(context).textTheme.labelSmall!.copyWith(color: colors.grey500),
               ),
           ],
         ),
         const SizedBox(height: 4),
-        Text(locale.translate(userTask.title), style: fs16fw600.copyWith(color: colors.grey900)),
+        Text(locale.translate(userTask.title), style: Theme.of(context).textTheme.labelLarge!.copyWith(color: colors.grey900)),
         if (!done && !expired && description.isNotEmpty) ...[
           const SizedBox(height: 4),
           Text(
             description,
             maxLines: 5,
             overflow: TextOverflow.ellipsis,
-            style: fs14fw600.copyWith(color: colors.grey600),
+            style: Theme.of(context).textTheme.labelMedium!.copyWith(color: colors.grey600),
           ),
         ],
         if (!done && !expired) ...[
           const SizedBox(height: 10),
-          _chip(colors, Icons.schedule, _estimatedTime(locale, userTask), colors.grey500!),
+          _chip(colors, Icons.schedule, _estimatedTime(locale, userTask), colors.grey500),
         ],
       ],
     );
@@ -224,13 +224,13 @@ class TaskListPageState extends State<TaskListPage> with TickerProviderStateMixi
       onTap: () => context.push(ParticipantDataPage.route),
       badge: _badge(accent, child: Icon(taskTypeIcons["ExpectedParticipantData"]!.icon, color: accent, size: 20)),
       children: [
-        Text("Input Data", style: fs12fw600.copyWith(color: accent)),
+        Text("Input Data", style: Theme.of(context).textTheme.labelSmall!.copyWith(color: accent)),
         const SizedBox(height: 4),
-        Text("Participant Data", style: fs16fw600.copyWith(color: colors.grey900)),
+        Text("Participant Data", style: Theme.of(context).textTheme.labelLarge!.copyWith(color: colors.grey900)),
         const SizedBox(height: 4),
         Text(
           "Fill in the required participant data to continue with the study.",
-          style: fs14fw600.copyWith(color: colors.grey600),
+          style: Theme.of(context).textTheme.labelMedium!.copyWith(color: colors.grey600),
         ),
       ],
     );
@@ -240,7 +240,7 @@ class TaskListPageState extends State<TaskListPage> with TickerProviderStateMixi
   /// the card leads somewhere.
   Widget _card(CarpColors colors, {required Widget badge, required List<Widget> children, VoidCallback? onTap}) {
     return StudiesMaterial(
-      backgroundColor: colors.grey50!,
+      backgroundColor: colors.grey50,
       child: InkWell(
         onTap: onTap,
         child: Padding(
@@ -282,7 +282,7 @@ class TaskListPageState extends State<TaskListPage> with TickerProviderStateMixi
       children: [
         Icon(icon, size: 14, color: color),
         const SizedBox(width: 4),
-        Text(label, style: fs12fw600.copyWith(color: color)),
+        Text(label, style: Theme.of(context).textTheme.labelSmall!.copyWith(color: color)),
       ],
     ),
   );
@@ -328,19 +328,19 @@ class TaskListPageState extends State<TaskListPage> with TickerProviderStateMixi
             width: 64,
             height: 64,
             decoration: BoxDecoration(
-              color: colors.primary!.withValues(alpha: 0.1),
+              color: Theme.of(context).colorScheme.primary.withValues(alpha: 0.1),
               borderRadius: BorderRadius.circular(20),
             ),
             child: Icon(
               _tabController.index == 0 ? Icons.playlist_add_check : Icons.history,
-              color: colors.primary,
+              color: Theme.of(context).colorScheme.primary,
               size: 28,
             ),
           ),
           const SizedBox(height: 16),
           Text(
             locale.translate("pages.task_list.no_tasks"),
-            style: fs14fw600.copyWith(color: colors.grey600),
+            style: Theme.of(context).textTheme.labelMedium!.copyWith(color: colors.grey600),
             textAlign: TextAlign.center,
           ),
         ],
@@ -349,55 +349,55 @@ class TaskListPageState extends State<TaskListPage> with TickerProviderStateMixi
   }
 
   static Map<String, Icon> taskTypeIcons = {
-    AppTask.SURVEY_TYPE: const Icon(Icons.workspaces, color: CACHET.TASK_BLUE),
-    AppTask.COGNITIVE_ASSESSMENT_TYPE: const Icon(Icons.psychology, color: CACHET.LIGHT_PURPLE),
-    AppTask.AUDIO_TYPE: const Icon(Icons.hearing, color: CACHET.GREEN),
-    AppTask.VIDEO_TYPE: const Icon(Icons.videocam, color: CACHET.LIGHT_BLUE),
-    AppTask.IMAGE_TYPE: const Icon(Icons.image, color: CACHET.YELLOW),
-    AppTask.HEALTH_ASSESSMENT_TYPE: const Icon(Icons.favorite_rounded, color: CACHET.RED_1),
-    AppTask.SENSING_TYPE: const Icon(Icons.sensors, color: CACHET.LIGHT_BROWN),
-    "ExpectedParticipantData": const Icon(Icons.dataset, color: CACHET.TASK_INPUT_DATA),
+    AppTask.SURVEY_TYPE: const Icon(Icons.workspaces, color: Color(0xff3A82F7)),
+    AppTask.COGNITIVE_ASSESSMENT_TYPE: const Icon(Icons.psychology, color: Color(0xffB25FEA)),
+    AppTask.AUDIO_TYPE: const Icon(Icons.hearing, color: Color(0xff67CE67)),
+    AppTask.VIDEO_TYPE: const Icon(Icons.videocam, color: Color(0xff81CFFA)),
+    AppTask.IMAGE_TYPE: const Icon(Icons.image, color: Color(0xffF8D100)),
+    AppTask.HEALTH_ASSESSMENT_TYPE: const Icon(Icons.favorite_rounded, color: Color(0xffEB4B62)),
+    AppTask.SENSING_TYPE: const Icon(Icons.sensors, color: Color(0xffA1616A)),
+    "ExpectedParticipantData": const Icon(Icons.dataset, color: Color(0xffA1616A)),
   };
 
   static Map<String, Color> taskTypeColors = {
-    AppTask.SURVEY_TYPE: CACHET.TASK_BLUE,
-    AppTask.COGNITIVE_ASSESSMENT_TYPE: CACHET.LIGHT_PURPLE,
-    AppTask.AUDIO_TYPE: CACHET.GREEN,
-    AppTask.VIDEO_TYPE: CACHET.LIGHT_BLUE,
-    AppTask.IMAGE_TYPE: CACHET.YELLOW,
-    AppTask.HEALTH_ASSESSMENT_TYPE: CACHET.RED_1,
-    AppTask.SENSING_TYPE: CACHET.LIGHT_BROWN,
-    "ExpectedParticipantData": CACHET.TASK_INPUT_DATA,
+    AppTask.SURVEY_TYPE: Color(0xff3A82F7),
+    AppTask.COGNITIVE_ASSESSMENT_TYPE: const Color(0xffB25FEA),
+    AppTask.AUDIO_TYPE: Color(0xff67CE67),
+    AppTask.VIDEO_TYPE: const Color(0xff81CFFA),
+    AppTask.IMAGE_TYPE: const Color(0xffF8D100),
+    AppTask.HEALTH_ASSESSMENT_TYPE: Color(0xffEB4B62),
+    AppTask.SENSING_TYPE: const Color(0xffA1616A),
+    "ExpectedParticipantData": Color(0xffA1616A),
   };
 
   static Map<String, Icon> measureTypeIcons = {
-    DeviceSamplingPackage.FREE_MEMORY: const Icon(Icons.memory, color: CACHET.GREY_4),
-    DeviceSamplingPackage.DEVICE_INFORMATION: const Icon(Icons.phone_android, color: CACHET.GREY_4),
-    DeviceSamplingPackage.BATTERY_STATE: const Icon(Icons.battery_charging_full, color: CACHET.GREEN),
-    CarpDataTypes.STEP_COUNT: const Icon(Icons.directions_walk, color: CACHET.LIGHT_PURPLE),
-    SensorSamplingPackage.ACCELERATION: const Icon(Icons.adb, color: CACHET.GREY_4),
-    SensorSamplingPackage.ROTATION: const Icon(Icons.adb, color: CACHET.GREY_4),
-    SensorSamplingPackage.AMBIENT_LIGHT: const Icon(Icons.highlight, color: CACHET.YELLOW),
-    MediaSamplingPackage.AUDIO: const Icon(Icons.mic, color: CACHET.GREEN),
-    MediaSamplingPackage.NOISE: const Icon(Icons.hearing, color: CACHET.YELLOW),
-    MediaSamplingPackage.VIDEO: const Icon(Icons.videocam, color: CACHET.LIGHT_BLUE),
-    MediaSamplingPackage.IMAGE: const Icon(Icons.image, color: CACHET.YELLOW),
-    DeviceSamplingPackage.SCREEN_EVENT: const Icon(Icons.screen_lock_portrait, color: CACHET.LIGHT_PURPLE),
-    ContextSamplingPackage.LOCATION: const Icon(Icons.location_searching, color: CACHET.CYAN),
-    ContextSamplingPackage.ACTIVITY: const Icon(Icons.local_fire_department, color: CACHET.ORANGE),
-    ContextSamplingPackage.WEATHER: const Icon(Icons.cloud, color: CACHET.LIGHT_BLUE),
-    ContextSamplingPackage.AIR_QUALITY: const Icon(Icons.air, color: CACHET.GREY_3),
-    ContextSamplingPackage.GEOFENCE: const Icon(Icons.location_on, color: CACHET.CYAN),
-    ContextSamplingPackage.MOBILITY: const Icon(Icons.location_on, color: CACHET.ORANGE),
-    SurveySamplingPackage.SURVEY: const Icon(Icons.workspaces, color: CACHET.ORANGE),
+    DeviceSamplingPackage.FREE_MEMORY: const Icon(Icons.memory, color: Color(0xffDADADA)),
+    DeviceSamplingPackage.DEVICE_INFORMATION: const Icon(Icons.phone_android, color: Color(0xffDADADA)),
+    DeviceSamplingPackage.BATTERY_STATE: const Icon(Icons.battery_charging_full, color: Color(0xff67CE67)),
+    CarpDataTypes.STEP_COUNT: const Icon(Icons.directions_walk, color: Color(0xffB25FEA)),
+    SensorSamplingPackage.ACCELERATION: const Icon(Icons.adb, color: Color(0xffDADADA)),
+    SensorSamplingPackage.ROTATION: const Icon(Icons.adb, color: Color(0xffDADADA)),
+    SensorSamplingPackage.AMBIENT_LIGHT: const Icon(Icons.highlight, color: Color(0xffF8D100)),
+    MediaSamplingPackage.AUDIO: const Icon(Icons.mic, color: Color(0xff67CE67)),
+    MediaSamplingPackage.NOISE: const Icon(Icons.hearing, color: Color(0xffF8D100)),
+    MediaSamplingPackage.VIDEO: const Icon(Icons.videocam, color: Color(0xff81CFFA)),
+    MediaSamplingPackage.IMAGE: const Icon(Icons.image, color: Color(0xffF8D100)),
+    DeviceSamplingPackage.SCREEN_EVENT: const Icon(Icons.screen_lock_portrait, color: Color(0xffB25FEA)),
+    ContextSamplingPackage.LOCATION: const Icon(Icons.location_searching, color: Color(0xff4F6432)),
+    ContextSamplingPackage.ACTIVITY: const Icon(Icons.local_fire_department, color: Color(0xffEC6330)),
+    ContextSamplingPackage.WEATHER: const Icon(Icons.cloud, color: Color(0xff81CFFA)),
+    ContextSamplingPackage.AIR_QUALITY: const Icon(Icons.air, color: Color(0xffB2B2B2)),
+    ContextSamplingPackage.GEOFENCE: const Icon(Icons.location_on, color: Color(0xff4F6432)),
+    ContextSamplingPackage.MOBILITY: const Icon(Icons.location_on, color: Color(0xffEC6330)),
+    SurveySamplingPackage.SURVEY: const Icon(Icons.workspaces, color: Color(0xffEC6330)),
   };
 
   static Map<UserTaskState, Icon> get taskStateIcon => {
-    UserTaskState.initialized: const Icon(Icons.stream, color: CACHET.YELLOW),
-    UserTaskState.enqueued: const Icon(Icons.notifications, color: CACHET.YELLOW),
-    UserTaskState.dequeued: const Icon(Icons.stop, color: CACHET.YELLOW),
-    UserTaskState.started: const Icon(Icons.play_arrow, color: CACHET.GREY_4),
-    UserTaskState.canceled: const Icon(Icons.pause, color: CACHET.GREY_4),
-    UserTaskState.done: const Icon(Icons.check, color: CACHET.GREEN),
+    UserTaskState.initialized: const Icon(Icons.stream, color: Color(0xffF8D100)),
+    UserTaskState.enqueued: const Icon(Icons.notifications, color: Color(0xffF8D100)),
+    UserTaskState.dequeued: const Icon(Icons.stop, color: Color(0xffF8D100)),
+    UserTaskState.started: const Icon(Icons.play_arrow, color: Color(0xffDADADA)),
+    UserTaskState.canceled: const Icon(Icons.pause, color: Color(0xffDADADA)),
+    UserTaskState.done: const Icon(Icons.check, color: Color(0xff67CE67)),
   };
 }

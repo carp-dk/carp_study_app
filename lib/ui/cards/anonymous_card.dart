@@ -27,7 +27,7 @@ class AnonymousCard extends StatelessWidget {
                           padding: const EdgeInsets.symmetric(horizontal: 6.0, vertical: 4),
                           child: CircleAvatar(
                             radius: 18,
-                            backgroundColor: CACHET.ANONYMOUS,
+                            backgroundColor: Theme.of(context).extension<CarpColors>()!.anonymous,
                             child: Icon(Icons.info_outline, color: Colors.white),
                           ),
                         ),
@@ -36,7 +36,7 @@ class AnonymousCard extends StatelessWidget {
                           child: Text(
                             locale.translate('pages.about.anonymous.anonymous'),
                             maxLines: 2,
-                            style: fs16fw600.copyWith(color: CACHET.ANONYMOUS),
+                            style: Theme.of(context).textTheme.labelLarge!.copyWith(color: Theme.of(context).extension<CarpColors>()!.anonymous),
                           ),
                         ),
                       ],
@@ -46,7 +46,7 @@ class AnonymousCard extends StatelessWidget {
                         padding: const EdgeInsets.only(left: 16.0),
                         child: Text(
                           locale.translate('pages.about.anonymous.message'),
-                          style: fs16fw600.copyWith(
+                          style: Theme.of(context).textTheme.labelLarge!.copyWith(
                             color: Theme.of(context).extension<CarpColors>()!.grey900,
                             fontSize: 14,
                           ),

@@ -11,7 +11,7 @@ class StudyProgressCardWidget extends StatefulWidget {
   const StudyProgressCardWidget(
     this.model, {
     super.key,
-    this.colors = const [CACHET.BLUE_1, CACHET.RED_1, CACHET.ORANGE],
+    this.colors = const [Color(0xff2192C9), Color(0xffEB4B62), Color(0xffEC6330)],
   });
 
   @override
@@ -26,7 +26,7 @@ class _StudyProgressCardWidgetState extends State<StudyProgressCardWidget> {
   @override
   Widget build(BuildContext context) {
     return StudiesMaterial(
-      backgroundColor: Theme.of(context).extension<CarpColors>()!.white!,
+      backgroundColor: Theme.of(context).extension<CarpColors>()!.white,
       // Tapping anywhere else on the card drops the selection.
       child: GestureDetector(
         onTap: () => setState(() => _selected = null),
@@ -71,12 +71,12 @@ class _StudyProgressCardWidgetState extends State<StudyProgressCardWidget> {
             // Pad to two digits so the labels line up in a column.
             Text(
               '${state.value}'.padLeft(2, '0'),
-              style: fs24fw700.copyWith(color: _shade(widget.colors[index], index)),
+              style: Theme.of(context).textTheme.headlineSmall!.copyWith(color: _shade(widget.colors[index], index)),
             ),
             const SizedBox(width: 12),
             Text(
               locale.translate('cards.study_progress.${state.state}'),
-              style: (isSelected ? fs16fw700 : fs16fw400).copyWith(color: colors.grey900),
+              style: (isSelected ? Theme.of(context).textTheme.titleSmall! : Theme.of(context).textTheme.bodyLarge!).copyWith(color: colors.grey900),
             ),
           ],
         ),
@@ -97,7 +97,7 @@ class _StudyProgressCardWidgetState extends State<StudyProgressCardWidget> {
         PieChartData(
           centerSpaceRadius: 28,
           sections: [
-            PieChartSectionData(color: CACHET.GREY_6.withValues(alpha: 0.2), value: 1, showTitle: false, radius: 22),
+            PieChartSectionData(color: const Color(0xff848484).withValues(alpha: 0.2), value: 1, showTitle: false, radius: 22),
           ],
         ),
       );

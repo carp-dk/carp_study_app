@@ -22,7 +22,7 @@ class _TaskCompletionCardState extends State<TaskCompletionCard> {
     final selected = _selected;
 
     return StudiesMaterial(
-      backgroundColor: colors.white!,
+      backgroundColor: colors.white,
       // Tapping anywhere else on the card drops the selection.
       child: GestureDetector(
         onTap: () => setState(() => _selected = null),
@@ -39,16 +39,16 @@ class _TaskCompletionCardState extends State<TaskCompletionCard> {
                           ? locale.translate('cards.task_completion.title')
                           : '${locale.translate('cards.task_completion.title_on')} '
                                 '${DateFormat('dd/MM').format(_dateOf(selected))}',
-                      style: fs16fw700,
+                      style: Theme.of(context).textTheme.titleSmall!,
                     ),
                   ),
                   Container(
                     padding: const EdgeInsets.all(8),
                     decoration: BoxDecoration(
-                      color: colors.primary!.withValues(alpha: 0.1),
+                      color: Theme.of(context).colorScheme.primary.withValues(alpha: 0.1),
                       borderRadius: BorderRadius.circular(10),
                     ),
-                    child: Icon(Icons.event_note_outlined, color: colors.primary, size: 18),
+                    child: Icon(Icons.event_note_outlined, color: Theme.of(context).colorScheme.primary, size: 18),
                   ),
                 ],
               ),
@@ -70,11 +70,11 @@ class _TaskCompletionCardState extends State<TaskCompletionCard> {
       crossAxisAlignment: CrossAxisAlignment.baseline,
       textBaseline: TextBaseline.alphabetic,
       children: [
-        Text('$count', style: fs28fw700.copyWith(color: colors.grey900)),
+        Text('$count', style: Theme.of(context).textTheme.headlineMedium!.copyWith(color: colors.grey900)),
         const SizedBox(width: 6),
         Text(
           locale.translate('pages.task_list.title').toLowerCase(),
-          style: fs14fw600.copyWith(color: colors.grey600),
+          style: Theme.of(context).textTheme.labelMedium!.copyWith(color: colors.grey600),
         ),
       ],
     );
@@ -112,7 +112,7 @@ class _TaskCompletionCardState extends State<TaskCompletionCard> {
           show: true,
           drawVerticalLine: false,
           horizontalInterval: step.toDouble(),
-          getDrawingHorizontalLine: (_) => FlLine(color: colors.grey300!, strokeWidth: 1),
+          getDrawingHorizontalLine: (_) => FlLine(color: colors.grey300, strokeWidth: 1),
         ),
         borderData: FlBorderData(show: false),
         titlesData: FlTitlesData(
@@ -144,8 +144,8 @@ class _TaskCompletionCardState extends State<TaskCompletionCard> {
                   // Nothing selected means the fortnight as a whole - every bar
                   // reads the same. Otherwise only the selected one is solid.
                   color: _selected == null || index == _selected
-                      ? colors.primary
-                      : colors.primary!.withValues(alpha: 0.25),
+                      ? Theme.of(context).colorScheme.primary
+                      : Theme.of(context).colorScheme.primary.withValues(alpha: 0.25),
                   width: 12,
                   borderRadius: const BorderRadius.vertical(top: Radius.circular(3)),
                 ),
@@ -158,6 +158,6 @@ class _TaskCompletionCardState extends State<TaskCompletionCard> {
 
   Widget _axisLabel(BuildContext context, TitleMeta meta, String text) => SideTitleWidget(
     meta: meta,
-    child: Text(text, style: fs12fw400.copyWith(color: Theme.of(context).extension<CarpColors>()!.grey600)),
+    child: Text(text, style: Theme.of(context).textTheme.bodySmall!.copyWith(color: Theme.of(context).extension<CarpColors>()!.grey600)),
   );
 }

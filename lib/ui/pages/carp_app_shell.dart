@@ -85,7 +85,7 @@ class CarpAppShellState extends State<CarpAppShell> {
         child: BottomNavigationBar(
           backgroundColor: Theme.of(context).extension<CarpColors>()!.white,
           type: BottomNavigationBarType.fixed,
-          selectedItemColor: Theme.of(context).extension<CarpColors>()!.primary,
+          selectedItemColor: Theme.of(context).colorScheme.primary,
           items: <BottomNavigationBarItem>[
             BottomNavigationBarItem(
               icon: const Icon(Icons.home),

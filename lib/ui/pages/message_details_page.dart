@@ -28,10 +28,10 @@ class MessageDetailsPage extends StatelessWidget {
               padding: const EdgeInsets.fromLTRB(8, 8, 16, 8),
               child: TextButton.icon(
                 onPressed: () => context.canPop() ? context.pop() : context.go(CarpAppState.homeRoute),
-                icon: Icon(Icons.arrow_back_ios, size: 18, color: colors.primary),
+                icon: Icon(Icons.arrow_back_ios, size: 18, color: Theme.of(context).colorScheme.primary),
                 label: Text(
                   locale.translate('app_home.nav_bar_item.home'),
-                  style: fs16fw600.copyWith(color: colors.primary),
+                  style: Theme.of(context).textTheme.labelLarge!.copyWith(color: Theme.of(context).colorScheme.primary),
                 ),
               ),
             ),
@@ -40,7 +40,7 @@ class MessageDetailsPage extends StatelessWidget {
                 padding: const EdgeInsets.only(top: 8, bottom: 24),
                 children: [
                   StudiesMaterial(
-                    backgroundColor: colors.grey50!,
+                    backgroundColor: colors.grey50,
                     child: Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
@@ -63,11 +63,11 @@ class MessageDetailsPage extends StatelessWidget {
                               const SizedBox(height: 12),
                               Text(
                                 locale.translate(message.title ?? ''),
-                                style: fs20fw700.copyWith(color: colors.grey900),
+                                style: Theme.of(context).textTheme.titleLarge!.copyWith(fontSize: 20).copyWith(color: colors.grey900),
                               ),
                               if (subTitle.isNotEmpty) ...[
                                 const SizedBox(height: 8),
-                                Text(locale.translate(subTitle), style: fs14fw600.copyWith(color: colors.grey600)),
+                                Text(locale.translate(subTitle), style: Theme.of(context).textTheme.labelMedium!.copyWith(color: colors.grey600)),
                               ],
                               if (body.isNotEmpty) ...[
                                 // The divider only earns its place when it has a
@@ -79,7 +79,7 @@ class MessageDetailsPage extends StatelessWidget {
                                 const SizedBox(height: 12),
                                 Text(
                                   locale.translate(body),
-                                  style: fs16fw400.copyWith(color: colors.grey900, height: 1.5),
+                                  style: Theme.of(context).textTheme.bodyLarge!.copyWith(color: colors.grey900, height: 1.5),
                                 ),
                               ],
                             ],
@@ -103,18 +103,18 @@ class MessageDetailsPage extends StatelessWidget {
     return Container(
       padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 6),
       decoration: BoxDecoration(
-        color: colors.primary!.withValues(alpha: 0.1),
+        color: Theme.of(context).colorScheme.primary.withValues(alpha: 0.1),
         borderRadius: BorderRadius.circular(100),
       ),
       child: Row(
         mainAxisSize: MainAxisSize.min,
         children: [
-          Icon(type.icon, size: 14, color: colors.primary),
+          Icon(type.icon, size: 14, color: Theme.of(context).colorScheme.primary),
           const SizedBox(width: 6),
           Flexible(
             child: Text(
               locale.translate(type.name.toLowerCase()),
-              style: fs12fw600.copyWith(color: colors.primary),
+              style: Theme.of(context).textTheme.labelSmall!.copyWith(color: Theme.of(context).colorScheme.primary),
             ),
           ),
         ],

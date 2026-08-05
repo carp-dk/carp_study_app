@@ -3,7 +3,7 @@ part of carp_study_app;
 class MediaCardWidget extends StatefulWidget {
   final List<TaskCardViewModel> modelsList;
   final List<Color> colors;
-  const MediaCardWidget(this.modelsList, {super.key, this.colors = CACHET.COLOR_LIST});
+  const MediaCardWidget(this.modelsList, {super.key, this.colors = kCarpChartColors});
   @override
   MediaCardWidgetState createState() => MediaCardWidgetState();
 }
@@ -18,7 +18,7 @@ class MediaCardWidgetState extends State<MediaCardWidget> {
     }
 
     return StudiesMaterial(
-      backgroundColor: Theme.of(context).extension<CarpColors>()!.white!,
+      backgroundColor: Theme.of(context).extension<CarpColors>()!.white,
       child: Padding(
         padding: const EdgeInsets.all(8.0),
         child: Column(
@@ -33,7 +33,7 @@ class MediaCardWidgetState extends State<MediaCardWidget> {
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: <Widget>[
                           const SizedBox(height: 5),
-                          Text('$total MEDIA', style: fs16fw400ls1),
+                          Text('$total MEDIA', style: Theme.of(context).textTheme.bodyLarge!.copyWith(letterSpacing: 1)),
                           Column(
                             children: widget.modelsList
                                 .asMap()
@@ -45,7 +45,7 @@ class MediaCardWidgetState extends State<MediaCardWidget> {
                                       const SizedBox(height: 15),
                                       Text(
                                         '${entry.value.tasksDone} ${locale.translate('cards.${entry.value.taskType}.title')}',
-                                        style: fs16fw400ls1.copyWith(fontSize: 14),
+                                        style: Theme.of(context).textTheme.bodyLarge!.copyWith(letterSpacing: 1).copyWith(fontSize: 14),
                                       ),
                                       LayoutBuilder(
                                         builder: (BuildContext context, BoxConstraints constraints) {
@@ -55,7 +55,7 @@ class MediaCardWidgetState extends State<MediaCardWidget> {
                                                 .map((task) => locale.translate(task.title))
                                                 .toList(),
                                             values: entry.value.taskCount.map((task) => task.size).toList(),
-                                            colors: CACHET.COLOR_LIST,
+                                            colors: Theme.of(context).extension<CarpColors>()!.chartColors,
                                             height: 18,
                                           );
                                         },

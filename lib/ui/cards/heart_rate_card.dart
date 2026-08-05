@@ -27,7 +27,7 @@ class HeartRateCardWidgetState extends State<HeartRateCardWidget> {
     final colors = Theme.of(context).extension<CarpColors>()!;
 
     return StudiesMaterial(
-      backgroundColor: colors.white!,
+      backgroundColor: colors.white,
       child: Padding(
         padding: const EdgeInsets.all(16),
         child: StreamBuilder(
@@ -74,17 +74,17 @@ class HeartRateCardWidgetState extends State<HeartRateCardWidget> {
       children: [
         Text(
           selected != null ? _label(selected.key) : locale.translate('cards.heartrate.range'),
-          style: fs12fw600.copyWith(color: colors.grey600),
+          style: Theme.of(context).textTheme.labelSmall!.copyWith(color: colors.grey600),
         ),
         const SizedBox(height: 2),
         Row(
           crossAxisAlignment: CrossAxisAlignment.baseline,
           textBaseline: TextBaseline.alphabetic,
           children: [
-            Text(measured ? '${range.min!.toInt()} - ${range.max!.toInt()}' : '-', style: fs28fw700),
+            Text(measured ? '${range.min!.toInt()} - ${range.max!.toInt()}' : '-', style: Theme.of(context).textTheme.headlineMedium!),
             if (measured) ...[
               const SizedBox(width: 6),
-              Text(locale.translate('cards.heartrate.bpm'), style: fs12fw600.copyWith(color: colors.grey600)),
+              Text(locale.translate('cards.heartrate.bpm'), style: Theme.of(context).textTheme.labelSmall!.copyWith(color: colors.grey600)),
             ],
           ],
         ),
@@ -114,7 +114,7 @@ class HeartRateCardWidgetState extends State<HeartRateCardWidget> {
                 ),
                 child: Text(
                   locale.translate('cards.heartrate.${range.name}'),
-                  style: fs12fw600.copyWith(color: _range == range ? colors.grey900 : colors.grey600),
+                  style: Theme.of(context).textTheme.labelSmall!.copyWith(color: _range == range ? colors.grey900 : colors.grey600),
                 ),
               ),
             ),
@@ -132,13 +132,13 @@ class HeartRateCardWidgetState extends State<HeartRateCardWidget> {
     return Row(
       crossAxisAlignment: CrossAxisAlignment.center,
       children: [
-        Icon(Icons.favorite, color: CACHET.HEART_RATE_RED, size: 16),
+        Icon(Icons.favorite, color: Theme.of(context).extension<CarpColors>()!.heartRate, size: 16),
         const SizedBox(width: 8),
-        Text(locale.translate('cards.heartrate.average'), style: fs14fw600.copyWith(color: colors.grey600)),
+        Text(locale.translate('cards.heartrate.average'), style: Theme.of(context).textTheme.labelMedium!.copyWith(color: colors.grey600)),
         const Spacer(),
-        Text(average != null ? average.toStringAsFixed(0) : '-', style: fs18fw700.copyWith(color: colors.grey900)),
+        Text(average != null ? average.toStringAsFixed(0) : '-', style: Theme.of(context).textTheme.titleMedium!.copyWith(color: colors.grey900)),
         const SizedBox(width: 4),
-        Text(locale.translate('cards.heartrate.bpm'), style: fs12fw600.copyWith(color: colors.grey600)),
+        Text(locale.translate('cards.heartrate.bpm'), style: Theme.of(context).textTheme.labelSmall!.copyWith(color: colors.grey600)),
       ],
     );
   }
@@ -193,8 +193,8 @@ class HeartRateCardWidgetState extends State<HeartRateCardWidget> {
                   // Dim the other bars while one is held, so the tooltip is
                   // clearly about this bar.
                   color: _touched == null || _touched == index
-                      ? CACHET.HEART_RATE_RED
-                      : CACHET.HEART_RATE_RED.withValues(alpha: 0.25),
+                      ? Theme.of(context).extension<CarpColors>()!.heartRate
+                      : Theme.of(context).extension<CarpColors>()!.heartRate.withValues(alpha: 0.25),
                   width: _range == HeartRateRange.day ? 6 : 14,
                   borderRadius: BorderRadius.circular(8),
                 ),
@@ -220,7 +220,7 @@ class HeartRateCardWidgetState extends State<HeartRateCardWidget> {
           show: true,
           horizontalInterval: interval,
           drawVerticalLine: false,
-          getDrawingHorizontalLine: (_) => FlLine(color: colors.grey300!, strokeWidth: 1),
+          getDrawingHorizontalLine: (_) => FlLine(color: colors.grey300, strokeWidth: 1),
         ),
         borderData: FlBorderData(show: false),
       ),
@@ -235,15 +235,15 @@ class HeartRateCardWidgetState extends State<HeartRateCardWidget> {
       fitInsideVertically: true,
       tooltipPadding: const EdgeInsets.symmetric(horizontal: 10, vertical: 6),
       tooltipMargin: 4,
-      getTooltipColor: (_) => colors.grey900!,
+      getTooltipColor: (_) => colors.grey900,
       getTooltipItem: (group, groupIndex, rod, rodIndex) => BarTooltipItem(
         '${_label(group.x)}\n',
-        fs12fw600.copyWith(color: colors.grey300),
+        Theme.of(context).textTheme.labelSmall!.copyWith(color: colors.grey300),
         textAlign: TextAlign.left,
         children: [
           TextSpan(
             text: '${rod.fromY.toInt()}-${rod.toY.toInt()} ${locale.translate('cards.heartrate.bpm')}',
-            style: fs14fw600.copyWith(color: colors.white),
+            style: Theme.of(context).textTheme.labelMedium!.copyWith(color: colors.white),
           ),
         ],
       ),
@@ -270,7 +270,7 @@ class HeartRateCardWidgetState extends State<HeartRateCardWidget> {
       space: 6,
       child: Text(
         _range == HeartRateRange.day ? hour.toString().padLeft(2, '0') : DateFormat('dd/MM').format(_dateOf(hour)),
-        style: fs12fw600.copyWith(color: Theme.of(context).extension<CarpColors>()!.grey600),
+        style: Theme.of(context).textTheme.labelSmall!.copyWith(color: Theme.of(context).extension<CarpColors>()!.grey600),
       ),
     );
   }
@@ -280,7 +280,7 @@ class HeartRateCardWidgetState extends State<HeartRateCardWidget> {
     space: 6,
     child: Text(
       value.toInt().toString(),
-      style: fs12fw600.copyWith(color: Theme.of(context).extension<CarpColors>()!.grey600),
+      style: Theme.of(context).textTheme.labelSmall!.copyWith(color: Theme.of(context).extension<CarpColors>()!.grey600),
     ),
   );
 }

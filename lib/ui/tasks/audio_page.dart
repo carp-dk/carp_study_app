@@ -33,7 +33,7 @@ class AudioPageState extends State<AudioPage> {
                           ),
                           Spacer(),
                           IconButton(
-                            color: Theme.of(context).extension<CarpColors>()!.grey900!,
+                            color: Theme.of(context).extension<CarpColors>()!.grey900,
                             onPressed: () {
                               _showCancelConfirmationDialog();
                             },
@@ -55,13 +55,13 @@ class AudioPageState extends State<AudioPage> {
                                         padding: const EdgeInsets.only(bottom: 24),
                                         child: Text(
                                           locale.translate(widget.audioUserTask!.title),
-                                          style: fs22fw700.copyWith(
-                                            color: Theme.of(context).extension<CarpColors>()!.primary,
+                                          style: Theme.of(context).textTheme.titleLarge!.copyWith(
+                                            color: Theme.of(context).colorScheme.primary,
                                           ),
                                         ),
                                       ),
                                       StudiesMaterial(
-                                        backgroundColor: Theme.of(context).extension<CarpColors>()!.white!,
+                                        backgroundColor: Theme.of(context).extension<CarpColors>()!.white,
                                         child: Scrollbar(
                                           child: SingleChildScrollView(
                                             scrollDirection: Axis.vertical, //.horizontal
@@ -69,7 +69,7 @@ class AudioPageState extends State<AudioPage> {
                                               padding: const EdgeInsets.all(8.0),
                                               child: Text(
                                                 locale.translate(widget.audioUserTask!.instructions),
-                                                style: fs16fw600,
+                                                style: Theme.of(context).textTheme.labelLarge!,
                                               ),
                                             ),
                                           ),
@@ -78,7 +78,7 @@ class AudioPageState extends State<AudioPage> {
                                       Spacer(),
                                       CircleAvatar(
                                         radius: 30,
-                                        backgroundColor: Theme.of(context).extension<CarpColors>()!.primary,
+                                        backgroundColor: Theme.of(context).colorScheme.primary,
                                         child: IconButton(
                                           onPressed: () => widget.audioUserTask!.onRecordStart(),
                                           padding: const EdgeInsets.all(0),
@@ -87,7 +87,7 @@ class AudioPageState extends State<AudioPage> {
                                       ),
                                       Padding(
                                         padding: const EdgeInsets.only(top: 8, bottom: 40),
-                                        child: Text(locale.translate("pages.audio_task.play"), style: fs16fw600),
+                                        child: Text(locale.translate("pages.audio_task.play"), style: Theme.of(context).textTheme.labelLarge!),
                                       ),
                                     ],
                                   ),
@@ -100,13 +100,13 @@ class AudioPageState extends State<AudioPage> {
                                         padding: const EdgeInsets.only(bottom: 24),
                                         child: Text(
                                           locale.translate(widget.audioUserTask!.title),
-                                          style: fs22fw700.copyWith(
-                                            color: Theme.of(context).extension<CarpColors>()!.primary,
+                                          style: Theme.of(context).textTheme.titleLarge!.copyWith(
+                                            color: Theme.of(context).colorScheme.primary,
                                           ),
                                         ),
                                       ),
                                       StudiesMaterial(
-                                        backgroundColor: Theme.of(context).extension<CarpColors>()!.white!,
+                                        backgroundColor: Theme.of(context).extension<CarpColors>()!.white,
                                         child: Scrollbar(
                                           child: SingleChildScrollView(
                                             scrollDirection: Axis.vertical, //.horizontal
@@ -114,7 +114,7 @@ class AudioPageState extends State<AudioPage> {
                                               padding: const EdgeInsets.all(8.0),
                                               child: Text(
                                                 locale.translate(widget.audioUserTask!.instructions),
-                                                style: fs16fw600,
+                                                style: Theme.of(context).textTheme.labelLarge!,
                                               ),
                                             ),
                                           ),
@@ -126,7 +126,7 @@ class AudioPageState extends State<AudioPage> {
                                         children: [
                                           CircleAvatar(
                                             radius: 30,
-                                            backgroundColor: CACHET.RED_1,
+                                            backgroundColor: Theme.of(context).extension<CarpColors>()!.error,
                                             child: IconButton(
                                               onPressed: () => widget.audioUserTask!.onRecordStop(),
                                               padding: const EdgeInsets.all(0),
@@ -137,7 +137,7 @@ class AudioPageState extends State<AudioPage> {
                                       ),
                                       Padding(
                                         padding: const EdgeInsets.only(top: 8, bottom: 40),
-                                        child: Text(locale.translate("pages.audio_task.recording"), style: fs22fw700),
+                                        child: Text(locale.translate("pages.audio_task.recording"), style: Theme.of(context).textTheme.titleLarge!),
                                       ),
                                     ],
                                   ),
@@ -150,8 +150,8 @@ class AudioPageState extends State<AudioPage> {
                                         padding: const EdgeInsets.only(bottom: 32),
                                         child: Text(
                                           locale.translate('pages.audio_task.done'),
-                                          style: fs22fw700.copyWith(
-                                            color: Theme.of(context).extension<CarpColors>()!.primary,
+                                          style: Theme.of(context).textTheme.titleLarge!.copyWith(
+                                            color: Theme.of(context).colorScheme.primary,
                                           ),
                                         ),
                                       ),
@@ -159,7 +159,7 @@ class AudioPageState extends State<AudioPage> {
                                         padding: const EdgeInsets.only(bottom: 20),
                                         child: Text(
                                           locale.translate('pages.audio_task.recording_completed'),
-                                          style: fs16fw600,
+                                          style: Theme.of(context).textTheme.labelLarge!,
                                         ),
                                       ),
                                       Spacer(),
@@ -183,7 +183,7 @@ class AudioPageState extends State<AudioPage> {
                                               flex: 3,
                                               child: CircleAvatar(
                                                 radius: 30,
-                                                backgroundColor: CACHET.GREEN_1,
+                                                backgroundColor: Theme.of(context).extension<CarpColors>()!.success,
                                                 child: IconButton(
                                                   onPressed: () {
                                                     Navigator.of(context).pop();

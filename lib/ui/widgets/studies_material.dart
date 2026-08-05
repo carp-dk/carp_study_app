@@ -49,7 +49,7 @@ class StudiesMaterial extends StatelessWidget {
                   )
                 : hasBox
                 ? BoxDecoration(
-                    border: Border.all(color: CACHET.LIGHT_2, width: 1.0),
+                    border: Border.all(color: Theme.of(context).extension<CarpColors>()!.grey200, width: 1.0),
                     borderRadius: BorderRadius.circular(16.0),
                   )
                 : null,
