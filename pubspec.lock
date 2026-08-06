@@ -329,14 +329,21 @@ packages:
       url: "https://pub.dev"
     source: hosted
     version: "2.1.6"
+  carp_movesense_flutter:
+    dependency: transitive
+    description:
+      name: carp_movesense_flutter
+      sha256: b7317f260921cef2a89f3dcb4eb1cee71311134fe3e4f18fad48e80e51bdd8c0
+      url: "https://pub.dev"
+    source: hosted
+    version: "0.1.1"
   carp_movesense_package:
     dependency: "direct main"
     description:
-      name: carp_movesense_package
-      sha256: "3947c29511725fcd360a5b3ee09be0efdca48e4ae12e6ce26a2cc226fc333347"
-      url: "https://pub.dev"
-    source: hosted
-    version: "2.0.1"
+      path: "../carp.sensing-flutter/packages/carp_movesense_package"
+      relative: true
+    source: path
+    version: "3.0.0"
   carp_polar_package:
     dependency: "direct main"
     description:
@@ -1268,14 +1275,6 @@ packages:
       url: "https://pub.dev"
     source: hosted
     version: "0.13.0"
-  mdsflutter:
-    dependency: "direct main"
-    description:
-      name: mdsflutter
-      sha256: a3851fc11aefa034d147de394989994f99073ece98af89ef9d7bd496e979fafd
-      url: "https://pub.dev"
-    source: hosted
-    version: "2.3.1"
   meta:
     dependency: transitive
     description:
