@@ -1758,10 +1758,11 @@ packages:
   research_package:
     dependency: "direct main"
     description:
-      path: "../research.package"
-      relative: true
-    source: path
-    version: "2.5.0"
+      name: research_package
+      sha256: "399b3ed901aeb35641039dcf0a9ae3c96288054e30833b6ee4ae4cbbce566a3d"
+      url: "https://pub.dev"
+    source: hosted
+    version: "2.3.0"
   retry:
     dependency: transitive
     description:
