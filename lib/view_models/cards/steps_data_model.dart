@@ -7,24 +7,10 @@ class StepsCardViewModel extends SerializableViewModel<WeeklySteps> {
   WeeklySteps createModel() => WeeklySteps();
 
   /// A map of weekly steps organized by the day of the week.
-  Map<int, int> get weeklySteps => (_hasSteps ? model : _demo).weeklySteps;
+  Map<int, int> get weeklySteps => model.weeklySteps;
 
   /// The list of steps.
   List<DailySteps> get steps => weeklySteps.entries.map((entry) => DailySteps(entry.key, entry.value)).toList();
-
-  bool get _hasSteps => !AppConfig.useDemoChartData || model.weeklySteps.values.any((steps) => steps > 0);
-
-  /// The demo week, folded together by the same code that folds live readings.
-  late final WeeklySteps _demo = _aggregate(DemoChartData.stepMeasurements);
-
-  static WeeklySteps _aggregate(List<Measurement> measurements) {
-    final into = WeeklySteps();
-    StepCount? previous;
-    for (final measurement in measurements) {
-      previous = _addStepCount(into, measurement, previous);
-    }
-    return into;
-  }
 
   /// Fold [measurement] into [into] and return it as the new previous reading.
   ///

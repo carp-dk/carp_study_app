@@ -6,10 +6,10 @@ class HeartRateCardViewModel extends SerializableViewModel<HourlyHeartRate> {
 
   /// A map of heart rate values for each hour of the day.
   /// The key is the hour of the day (0-23) and the value is the min and max heart rate for that hour.
-  Map<int, HeartRateMinMaxPrHour> get hourlyHeartRate => (_hasHeartRate ? model : _demo).hourlyHeartRate;
+  Map<int, HeartRateMinMaxPrHour> get hourlyHeartRate => model.hourlyHeartRate;
 
   /// The min and max heart rate per weekday, Monday first.
-  Map<int, HeartRateMinMaxPrHour> get dailyHeartRate => (_hasHeartRate ? model : _demo).dailyHeartRate;
+  Map<int, HeartRateMinMaxPrHour> get dailyHeartRate => model.dailyHeartRate;
 
   /// The average heart rate across [bands], taking the middle of each measured
   /// band. Null when none of them hold a value.
@@ -32,27 +32,9 @@ class HeartRateCardViewModel extends SerializableViewModel<HourlyHeartRate> {
   }
 
   /// The current heart rate
-  double? get currentHeartRate => (_hasHeartRate ? model : _demo).currentHeartRate;
+  double? get currentHeartRate => model.currentHeartRate;
 
   HeartRateMinMaxPrHour get dayMinMax => rangeOf(hourlyHeartRate.values);
-
-  bool get _hasHeartRate => !AppConfig.useDemoChartData || model.hourlyHeartRate.values.any((band) => band.max != null);
-
-  /// The demo week, folded together by the same code that folds live readings.
-  late final HourlyHeartRate _demo = _aggregate(DemoChartData.heartRateMeasurements);
-
-  static HourlyHeartRate _aggregate(List<Measurement> measurements) {
-    final into = HourlyHeartRate();
-    final today = DateTime.now();
-    for (final measurement in measurements) {
-      // Every reading counts towards its weekday; only today's fill the hours,
-      // which is what a live model holds - the hours reset at midnight.
-      final isToday = measurement.dateTime.day == today.day && measurement.dateTime.month == today.month;
-      _record(into, measurement, hourly: isToday);
-      if (isToday) into.currentHeartRate = bpmOf(measurement) ?? into.currentHeartRate;
-    }
-    return into;
-  }
 
   /// Fold [measurement] into [into], as a band for its weekday and - unless
   /// [hourly] is off - for its hour of the day.

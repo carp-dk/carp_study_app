@@ -98,7 +98,6 @@ part 'view_models/cards/heart_rate_data_model.dart';
 part 'view_models/cards/measurements_data_model.dart';
 part 'view_models/cards/task_data_model.dart';
 part 'view_models/cards/study_progress_data_model.dart';
-part 'view_models/cards/demo_chart_data.dart';
 part 'view_models/user_tasks.dart';
 
 part 'carp_study_app.dart';

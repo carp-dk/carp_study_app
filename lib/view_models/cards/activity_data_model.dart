@@ -6,26 +6,10 @@ class ActivityCardViewModel extends SerializableViewModel<WeeklyActivities> {
   @override
   WeeklyActivities createModel() => WeeklyActivities();
 
-  Map<ActivityType, Map<int, int>> get activities => (_hasActivity ? model : _demo).activities;
+  Map<ActivityType, Map<int, int>> get activities => model.activities;
 
   List<DailyActivity> activitiesByType(ActivityType type) =>
       (activities[type] ?? const {}).entries.map((entry) => DailyActivity(entry.key, entry.value)).toList();
-
-  bool get _hasActivity =>
-      !AppConfig.useDemoChartData ||
-      model.activities.values.any((perDay) => perDay.values.any((minutes) => minutes > 0));
-
-  /// The demo week, folded together by the same code that folds live readings.
-  late final WeeklyActivities _demo = _aggregate(DemoChartData.activityMeasurements);
-
-  static WeeklyActivities _aggregate(List<Measurement> measurements) {
-    final into = WeeklyActivities();
-    Measurement? previous;
-    for (final measurement in measurements) {
-      previous = _addActivity(into, measurement, previous);
-    }
-    return into;
-  }
 
   /// Fold [measurement] into [into] and return it as the new previous reading.
   ///
