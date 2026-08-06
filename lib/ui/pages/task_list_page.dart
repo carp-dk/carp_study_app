@@ -101,27 +101,25 @@ class TaskListPageState extends State<TaskListPage> with TickerProviderStateMixi
 
   /// The Pending / Completed switch: a pill track with the selected segment
   /// lifted out in white.
-  Widget _segmentedControl(RPLocalizations locale, int pending, int completed) => Padding(
-    padding: const EdgeInsets.fromLTRB(16, 0, 16, 16),
-    child: Container(
-      padding: const EdgeInsets.all(4),
-      decoration: BoxDecoration(color: Colors.grey.shade200, borderRadius: BorderRadius.circular(12)),
-      child: TabBar(
-        controller: _tabController,
-        labelPadding: EdgeInsets.zero,
-        dividerColor: Colors.transparent,
-        indicatorSize: TabBarIndicatorSize.tab,
-        splashBorderRadius: BorderRadius.circular(8),
-        indicator: ShapeDecoration(
-          shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(8)),
-          color: Colors.white,
-          shadows: [BoxShadow(color: Colors.black.withValues(alpha: 0.06), blurRadius: 6, offset: const Offset(0, 2))],
-        ),
-        tabs: [
-          _tab(locale.translate('pages.task_list.pending'), pending, 0),
-          _tab(locale.translate('pages.task_list.completed'), completed, 1),
-        ],
+  Widget _segmentedControl(RPLocalizations locale, int pending, int completed) => Container(
+    margin: const EdgeInsets.only(left: 40, right: 40, bottom: 16),
+    padding: const EdgeInsets.all(4),
+    decoration: BoxDecoration(color: Colors.grey.shade200, borderRadius: BorderRadius.circular(12)),
+    child: TabBar(
+      controller: _tabController,
+      labelPadding: EdgeInsets.zero,
+      dividerColor: Colors.transparent,
+      indicatorSize: TabBarIndicatorSize.tab,
+      splashBorderRadius: BorderRadius.circular(8),
+      indicator: ShapeDecoration(
+        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(8)),
+        color: Colors.white,
+        shadows: [BoxShadow(color: Colors.black.withValues(alpha: 0.06), blurRadius: 6, offset: const Offset(0, 2))],
       ),
+      tabs: [
+        _tab(locale.translate('pages.task_list.pending'), pending, 0),
+        _tab(locale.translate('pages.task_list.completed'), completed, 1),
+      ],
     ),
   );
 
@@ -176,20 +174,17 @@ class TaskListPageState extends State<TaskListPage> with TickerProviderStateMixi
     final (expiry, urgent) = _expiry(locale, userTask);
 
     return _card(
-      onTap: done || expired
-          ? null
-          : () {
-              if (widget.model.startUserTask(userTask)) context.push('/task/${userTask.id}');
-            },
-      badge: _badge(accent, child: _taskBadgeIcon(userTask, accent)),
+      accent: accent,
       children: [
         Row(
           children: [
+            _taskBadgeIcon(userTask, accent),
+            const SizedBox(width: 6),
             Expanded(
               child: Text(
                 userTask.type[0].toUpperCase() + userTask.type.substring(1),
                 overflow: TextOverflow.ellipsis,
-                style: Theme.of(context).textTheme.labelSmall!.copyWith(color: accent),
+                style: Theme.of(context).textTheme.labelMedium!.copyWith(color: accent, fontWeight: FontWeight.w700),
               ),
             ),
             if (!done && !expired && expiry.isNotEmpty)
@@ -201,7 +196,7 @@ class TaskListPageState extends State<TaskListPage> with TickerProviderStateMixi
               ),
           ],
         ),
-        const SizedBox(height: 4),
+        const SizedBox(height: 8),
         Text(locale.translate(userTask.title), style: Theme.of(context).textTheme.labelLarge!),
         if (!done && !expired && description.isNotEmpty) ...[
           const SizedBox(height: 4),
@@ -213,8 +208,24 @@ class TaskListPageState extends State<TaskListPage> with TickerProviderStateMixi
           ),
         ],
         if (!done && !expired) ...[
-          const SizedBox(height: 10),
-          _chip(Icons.schedule, _estimatedTime(locale, userTask), Colors.grey.shade500),
+          const SizedBox(height: 12),
+          Row(
+            crossAxisAlignment: CrossAxisAlignment.center,
+            children: [
+              Expanded(child: _chip(Icons.schedule, _estimatedTime(locale, userTask), Colors.grey.shade500)),
+              FilledButton(
+                style: FilledButton.styleFrom(
+                  padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 8),
+                  minimumSize: const Size(0, 0),
+                  tapTargetSize: MaterialTapTargetSize.shrinkWrap,
+                ),
+                onPressed: () {
+                  if (widget.model.startUserTask(userTask)) context.push('/task/${userTask.id}');
+                },
+                child: Text(locale.translate('pages.task_list.start')),
+              ),
+            ],
+          ),
         ],
       ],
     );
@@ -223,11 +234,23 @@ class TaskListPageState extends State<TaskListPage> with TickerProviderStateMixi
   Widget _participantDataCard() {
     final accent = taskTypeColors["ExpectedParticipantData"]!;
     return _card(
+      accent: accent,
       onTap: () => context.push(ParticipantDataPage.route),
-      badge: _badge(accent, child: Icon(taskTypeIcons["ExpectedParticipantData"]!.icon, color: accent, size: 20)),
       children: [
-        Text("Input Data", style: Theme.of(context).textTheme.labelSmall!.copyWith(color: accent)),
-        const SizedBox(height: 4),
+        Row(
+          children: [
+            Icon(taskTypeIcons["ExpectedParticipantData"]!.icon, color: accent, size: 18),
+            const SizedBox(width: 6),
+            Expanded(
+              child: Text(
+                "Input Data",
+                style: Theme.of(context).textTheme.labelMedium!.copyWith(color: accent, fontWeight: FontWeight.w700),
+              ),
+            ),
+            Icon(Icons.chevron_right, size: 20, color: Colors.grey.shade400),
+          ],
+        ),
+        const SizedBox(height: 8),
         Text("Participant Data", style: Theme.of(context).textTheme.labelLarge!),
         const SizedBox(height: 4),
         Text(
@@ -238,42 +261,36 @@ class TaskListPageState extends State<TaskListPage> with TickerProviderStateMixi
     );
   }
 
-  /// The shared card shell: badge on the left, content column, chevron when
-  /// the card leads somewhere.
-  Widget _card({required Widget badge, required List<Widget> children, VoidCallback? onTap}) {
+  /// The shared card shell: a coloured accent bar down the left edge and the
+  /// content column beside it.
+  Widget _card({required Color accent, required List<Widget> children, VoidCallback? onTap}) {
     return StudiesMaterial(
       backgroundColor: Colors.grey.shade50,
       child: InkWell(
         onTap: onTap,
-        child: Padding(
-          padding: const EdgeInsets.all(16),
+        child: IntrinsicHeight(
           child: Row(
-            crossAxisAlignment: CrossAxisAlignment.start,
+            crossAxisAlignment: CrossAxisAlignment.stretch,
             children: [
-              badge,
-              const SizedBox(width: 12),
-              Expanded(
-                child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: children),
+              Container(
+                width: 4,
+                decoration: BoxDecoration(
+                  color: accent,
+                  borderRadius: const BorderRadius.horizontal(left: Radius.circular(12)),
+                ),
               ),
-              if (onTap != null) ...[
-                const SizedBox(width: 8),
-                Icon(Icons.chevron_right, size: 20, color: Colors.grey.shade400),
-              ],
+              Expanded(
+                child: Padding(
+                  padding: const EdgeInsets.all(16),
+                  child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: children),
+                ),
+              ),
             ],
           ),
         ),
       ),
     );
   }
-
-  /// Rounded-square badge: the accent colour tinted, with the icon on top.
-  Widget _badge(Color accent, {required Widget child}) => Container(
-    width: 40,
-    height: 40,
-    alignment: Alignment.center,
-    decoration: BoxDecoration(color: accent.withValues(alpha: 0.12), borderRadius: BorderRadius.circular(12)),
-    child: child,
-  );
 
   /// A small icon + label chip, outlined by default and tinted when [filled].
   Widget _chip(IconData icon, String label, Color color, {bool filled = false}) => Container(

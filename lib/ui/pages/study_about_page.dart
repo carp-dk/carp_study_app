@@ -83,6 +83,27 @@ class StudyAboutPage extends StatelessWidget {
                       ),
                     ),
                   ),
+                  _actionCard(
+                    context,
+                    icon: Icons.policy_outlined,
+                    title: locale.translate('pages.profile.privacy'),
+                    onTap: () => _launch(model.privacyPolicyUrl),
+                  ),
+                  _actionCard(
+                    context,
+                    icon: Icons.mail_outline,
+                    title: locale.translate('pages.profile.contact'),
+                    onTap: () => _sendEmailToContactResearcher(
+                      locale.translate(model.responsibleEmail),
+                      'Support for study: ${locale.translate(model.title)} - User: ${model.username}',
+                    ),
+                  ),
+                  _actionCard(
+                    context,
+                    icon: Icons.download,
+                    title: locale.translate('pages.profile.download_consent'),
+                    onTap: () => _downloadInformedConsent(context),
+                  ),
                   StudiesMaterial(
                     backgroundColor: Colors.grey.shade50,
                     child: Column(
@@ -115,27 +136,6 @@ class StudyAboutPage extends StatelessWidget {
                       locale.translate('widgets.study_card.study_purpose'),
                       locale.translate(model.purpose),
                     ),
-                  ),
-                  _actionCard(
-                    context,
-                    icon: Icons.policy_outlined,
-                    title: locale.translate('pages.profile.privacy'),
-                    onTap: () => _launch(model.privacyPolicyUrl),
-                  ),
-                  _actionCard(
-                    context,
-                    icon: Icons.mail_outline,
-                    title: locale.translate('pages.profile.contact'),
-                    onTap: () => _sendEmailToContactResearcher(
-                      locale.translate(model.responsibleEmail),
-                      'Support for study: ${locale.translate(model.title)} - User: ${model.username}',
-                    ),
-                  ),
-                  _actionCard(
-                    context,
-                    icon: Icons.download,
-                    title: locale.translate('pages.profile.download_consent'),
-                    onTap: () => _downloadInformedConsent(context),
                   ),
                 ],
               ),

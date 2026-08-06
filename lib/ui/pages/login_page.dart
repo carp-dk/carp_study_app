@@ -30,21 +30,23 @@ class _LoginPageState extends State<LoginPage> {
                 margin: const EdgeInsets.symmetric(vertical: 16, horizontal: 64),
                 width: MediaQuery.of(context).size.width,
                 child: FilledButton(
-                  style: carpPillButtonStyle,
                   onPressed: () {
                     showDialog<void>(
                       context: context,
                       builder: (context) => QRViewExample(model: widget.model),
                     );
                   },
-                  child: Text(locale.translate("scan"), textAlign: TextAlign.center),
+                  child: Text(
+                    locale.translate("scan"),
+                    textAlign: TextAlign.center,
+                    style: const TextStyle(fontSize: 22, fontWeight: FontWeight.w600),
+                  ),
                 ),
               ),
               Container(
                 margin: const EdgeInsets.symmetric(vertical: 16, horizontal: 64),
                 width: MediaQuery.of(context).size.width,
                 child: FilledButton(
-                  style: carpPillButtonStyle,
                   onPressed: () async {
                     final result = await widget.model.signIn();
                     if (!context.mounted) return;
@@ -69,7 +71,11 @@ class _LoginPageState extends State<LoginPage> {
                       );
                     }
                   },
-                  child: Text(locale.translate("pages.login.login"), textAlign: TextAlign.center),
+                  child: Text(
+                    locale.translate("pages.login.login"),
+                    textAlign: TextAlign.center,
+                    style: const TextStyle(fontSize: 22, fontWeight: FontWeight.w600),
+                  ),
                 ),
               ),
               if (widget.model.isAuthenticated)

@@ -582,7 +582,7 @@ class ParticipantDataPageState extends State<ParticipantDataPage> {
     ) {
       return ElevatedButton(
         onPressed: enabled ? onPressed : null,
-        child: Text(locale.translate(key).toUpperCase(), style: buttonTextStyle),
+        child: Text(locale.translate(key), style: buttonTextStyle),
         style: buttonStyle,
       );
     }

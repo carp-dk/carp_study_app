@@ -125,21 +125,13 @@ class DeviceListPageState extends State<DeviceListPage> {
           () => _cardListBuilder(
             enableFeedback: true,
             leading: device.icon!,
+            leadingImage: device.type == MovesenseDevice.DEVICE_TYPE ? 'assets/icons/movesense_logo.png' : null,
             title: (locale.translate(device.typeName), device.batteryLevel ?? 0),
             subtitle: device.name,
             onTap: () async => await _hardwareDeviceClicked(device),
             trailing: device.getDeviceStatusIcon is Icon
                 ? device.getDeviceStatusIcon as Icon
-                : Container(
-                    padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
-                    decoration: BoxDecoration(color: const Color(0xff006398), borderRadius: BorderRadius.circular(100)),
-                    child: Text(
-                      locale.translate(device.getDeviceStatusIcon as String),
-                      style: Theme.of(
-                        context,
-                      ).textTheme.titleLarge!.copyWith(fontSize: 20).copyWith(color: Colors.white),
-                    ),
-                  ),
+                : _connectPill(locale.translate(device.getDeviceStatusIcon as String)),
           ),
         );
       }),
@@ -161,16 +153,7 @@ class DeviceListPageState extends State<DeviceListPage> {
             subtitle: null,
             onTap: () async => await _onlineServiceClicked(service),
             trailing: service.getServiceStatusIcon is String
-                ? Container(
-                    padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
-                    decoration: BoxDecoration(color: const Color(0xff006398), borderRadius: BorderRadius.circular(100)),
-                    child: Text(
-                      locale.translate(service.getServiceStatusIcon as String),
-                      style: Theme.of(
-                        context,
-                      ).textTheme.titleLarge!.copyWith(fontSize: 20).copyWith(color: Colors.white),
-                    ),
-                  )
+                ? _connectPill(locale.translate(service.getServiceStatusIcon as String))
                 : service.getServiceStatusIcon as Icon,
           ),
         );
@@ -178,9 +161,22 @@ class DeviceListPageState extends State<DeviceListPage> {
     ),
   ];
 
+  /// The visual "Connect" pill shown as a card's trailing widget. The whole
+  /// tile is tappable, so this is a label styled like the themed FilledButton,
+  /// not an interactive button.
+  Widget _connectPill(String label) => Container(
+    padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 8),
+    decoration: BoxDecoration(color: Theme.of(context).colorScheme.primary, borderRadius: BorderRadius.circular(100)),
+    child: Text(
+      label,
+      style: Theme.of(context).textTheme.labelLarge!.copyWith(color: Theme.of(context).colorScheme.onPrimary),
+    ),
+  );
+
   Widget _cardListBuilder({
     bool enableFeedback = false,
     Icon? leading,
+    String? leadingImage,
     (String, int?)? title,
     String? subtitle,
     void Function()? onTap,
@@ -196,10 +192,12 @@ class DeviceListPageState extends State<DeviceListPage> {
         height: 40,
         alignment: Alignment.center,
         decoration: BoxDecoration(
-          color: (leading!.color ?? Theme.of(context).colorScheme.primary).withValues(alpha: 0.12),
+          color: (leading?.color ?? Theme.of(context).colorScheme.primary).withValues(alpha: 0.12),
           borderRadius: BorderRadius.circular(12),
         ),
-        child: Icon(leading.icon, color: leading.color ?? Theme.of(context).colorScheme.primary, size: 20),
+        child: leadingImage != null
+            ? Image.asset(leadingImage, width: 24, height: 24)
+            : Icon(leading!.icon, color: leading.color ?? Theme.of(context).colorScheme.primary, size: 20),
       ),
       title: Row(
         children: [

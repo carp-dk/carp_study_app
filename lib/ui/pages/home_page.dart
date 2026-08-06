@@ -341,7 +341,7 @@ class StudyAboutCard extends StatelessWidget {
           gradient: LinearGradient(
             begin: Alignment.topLeft,
             end: Alignment.bottomRight,
-            colors: [Color.lerp(primary, Colors.white, 0.3)!, primary],
+            colors: [Color.lerp(primary, Colors.white, 0.2)!, primary],
           ),
         ),
         child: Column(
