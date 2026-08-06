@@ -9,6 +9,16 @@ allprojects {
 rootProject.buildDir = '../build'
 subprojects {
     project.buildDir = "${rootProject.buildDir}/${project.name}"
+    // AGP 9 fails the build (instead of warning) when a plugin compiles against an
+    // older compileSdk than its dependencies require. Some plugins (e.g. flutter_appauth)
+    // still target android-33, so raise any library module below 36 to the app's level.
+    project.afterEvaluate {
+        if (project.plugins.hasPlugin("com.android.library")
+                && project.android.compileSdk != null
+                && project.android.compileSdk < 36) {
+            project.android.compileSdk = 36
+        }
+    }
     project.evaluationDependsOn(':app')
 }
 
