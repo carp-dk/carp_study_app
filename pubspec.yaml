@@ -80,9 +80,8 @@ dependency_overrides:
   #   path: ../carp.sensing-flutter/packages/carp_polar_package/
   # carp_movisens_package:
   #   path: ../carp.sensing-flutter/packages/carp_movisens_package/
-  # TODO: remove once carp_movesense_package 3.0.0 is live on pub.dev (published, still propagating).
-  carp_movesense_package:
-    path: ../carp.sensing-flutter/packages/carp_movesense_package/
+  # carp_movesense_package:
+  #   path: ../carp.sensing-flutter/packages/carp_movesense_package/
   # carp_connectivity_package:
   #   path: ../carp.sensing-flutter/packages/carp_connectivity_package/
   # carp_survey_package:
