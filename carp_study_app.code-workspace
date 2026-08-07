@@ -1,32 +1,32 @@
 {
-	"folders": [
-		{
-			"path": "."
-		}
-	],
-	"settings": {
-		"[dart]": {
-			"editor.formatOnSave": true,
-			"editor.formatOnType": true,
-			"editor.rulers": [
-				80
-			],
-			"editor.selectionHighlight": false,
-			"editor.suggest.snippetsPreventQuickSuggestions": false,
-			"editor.suggestSelection": "first",
-			"editor.tabCompletion": "onlySnippets",
-			"editor.wordBasedSuggestions": "off",
-			"editor.defaultFormatter": "Dart-Code.dart-code"
-		},
-		"dart.debugExternalPackageLibraries": false,
-		"dart.debugSdkLibraries": false,
-		"dart.openDevTools": "never",
-		"dart.flutterSdkPath": ".fvm/flutter_sdk",
-	},
-	"extensions": {
-		"recommendations": [
-			"dart-code.dart-code",
-			"dart-code.flutter",
-		]
-	}
+  "folders": [
+    {
+      "path": "."
+    }
+  ],
+  "settings": {
+    "[dart]": {
+      "editor.formatOnSave": true,
+      "editor.formatOnType": true,
+      "editor.rulers": [
+        80
+      ],
+      "editor.selectionHighlight": false,
+      "editor.suggest.snippetsPreventQuickSuggestions": false,
+      "editor.suggestSelection": "first",
+      "editor.tabCompletion": "onlySnippets",
+      "editor.wordBasedSuggestions": "off",
+      "editor.defaultFormatter": "Dart-Code.dart-code"
+    },
+    "dart.debugExternalPackageLibraries": false,
+    "dart.debugSdkLibraries": false,
+    "dart.openDevTools": "never",
+    "dart.flutterSdkPath": ".fvm/versions/3.44.6"
+  },
+  "extensions": {
+    "recommendations": [
+      "dart-code.dart-code",
+      "dart-code.flutter"
+    ]
+  }
 }
