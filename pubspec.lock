@@ -301,10 +301,10 @@ packages:
     dependency: "direct main"
     description:
       name: carp_context_package
-      sha256: "838c9db9d2d14da005acd461fedd76519e4db606a20d1169d701362ef6ab5db7"
+      sha256: "58534676bdb39242714b507a74c5ccf8e6f2e0e2caf051400a0290295911ea8b"
       url: "https://pub.dev"
     source: hosted
-    version: "2.0.2"
+    version: "2.0.3"
   carp_core:
     dependency: "direct main"
     description:
@@ -317,34 +317,34 @@ packages:
     dependency: "direct main"
     description:
       name: carp_health_package
-      sha256: "18e584a10c707e3582481396a119bbad9a942aad4628c166d134f6d04fb7a795"
+      sha256: "44ffd4d4e62aab7c576c8907cd0cce68fa08e3f254d03b9685b90701441df142"
       url: "https://pub.dev"
     source: hosted
-    version: "4.0.2"
+    version: "4.0.3"
   carp_mobile_sensing:
     dependency: "direct main"
     description:
       name: carp_mobile_sensing
-      sha256: "08578a423dcf62ad3589e9f23698ae26b910bc3d6fc3dfed6ba88a92b8b1a10d"
+      sha256: "5e0b1783b0368452213f2255f737b24747267afc77cfc952dd68417bbbd662bf"
       url: "https://pub.dev"
     source: hosted
-    version: "2.1.6"
+    version: "2.1.8"
   carp_movesense_package:
     dependency: "direct main"
     description:
       name: carp_movesense_package
-      sha256: "3947c29511725fcd360a5b3ee09be0efdca48e4ae12e6ce26a2cc226fc333347"
+      sha256: a75d7c1dbf4182f4add436732c323f58c6b765706dee1ddd5ac65672a32d7a4f
       url: "https://pub.dev"
     source: hosted
-    version: "2.0.1"
+    version: "2.0.2"
   carp_polar_package:
     dependency: "direct main"
     description:
       name: carp_polar_package
-      sha256: "9f73e858539c3567a917598189bcba4d93694d85da5609cb40c5e28849d07a72"
+      sha256: "80d5f1312e57d5d63d0c5e5f9e5e46328d903d37b7ab92931b4ba029f8c2b548"
       url: "https://pub.dev"
     source: hosted
-    version: "2.0.1"
+    version: "2.0.2"
   carp_serializable:
     dependency: "direct main"
     description:
