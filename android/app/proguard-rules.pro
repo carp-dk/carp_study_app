@@ -1,6 +1,5 @@
-# Preserve all classes and methods in the Suunto MDS library
+# Preserve app + Movesense MDS classes
 -keep class dk.cachet.carp_study_app.** { *; }
--keep class com.tugberka.mdsflutter.** { *; }
 -keep class com.google.android.play.core.** { *; }
 -keep class org.joda.convert.** { *; }
 
