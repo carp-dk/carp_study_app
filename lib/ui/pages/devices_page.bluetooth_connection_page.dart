@@ -39,56 +39,63 @@ class _BluetoothConnectionPageState extends State<BluetoothConnectionPage> {
   }
 
   BluetoothDevice? selectedDevice;
-  int selected = 40;
+  bool showAllDevices = false;
 
   @override
   Widget build(BuildContext context) {
     RPLocalizations locale = RPLocalizations.of(context)!;
 
-    return Scaffold(
-      backgroundColor: Theme.of(context).extension<CarpColors>()!.backgroundGray,
-      body: SafeArea(
-        child: Stack(
-          children: [
-            Container(
-              child: Column(
-                children: [
-                  Padding(
-                    padding: const EdgeInsets.symmetric(vertical: 8.0, horizontal: 16),
-                    child: const CarpAppBar(hasProfileIcon: true),
-                  ),
-                  Expanded(
-                    child: Padding(
-                      padding: const EdgeInsets.symmetric(horizontal: 20.0),
-                      child: Column(
-                        children: [
-                          _buildDialogTitle(locale),
-                          Expanded(
-                            child: Padding(
-                              padding: const EdgeInsets.all(8.0),
-                              child: SizedBox(child: _buildStepContent(locale)),
+    return PopScope(
+      // The device is connected on the last step - leave only via 'done', so
+      // the system back gesture does not skip past the confirmation.
+      canPop: currentStep != CurrentStep.done,
+      child: Scaffold(
+        backgroundColor: Theme.of(context).extension<CarpColors>()!.backgroundGray,
+        body: SafeArea(
+          child: Stack(
+            children: [
+              Container(
+                child: Column(
+                  children: [
+                    Padding(
+                      padding: const EdgeInsets.symmetric(vertical: 8.0, horizontal: 16),
+                      child: const CarpAppBar(hasProfileIcon: true),
+                    ),
+                    Expanded(
+                      child: Padding(
+                        padding: const EdgeInsets.symmetric(horizontal: 20.0),
+                        child: Column(
+                          children: [
+                            _buildDialogTitle(locale),
+                            Expanded(
+                              child: Padding(
+                                padding: const EdgeInsets.all(8.0),
+                                child: SizedBox(child: _buildStepContent(locale)),
+                              ),
                             ),
-                          ),
-                          Padding(
-                            padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 16),
-                            child: Row(
-                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                              children: _buildActionButtons(locale),
+                            Padding(
+                              padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 16),
+                              child: Row(
+                                mainAxisAlignment: currentStep == CurrentStep.done
+                                    ? MainAxisAlignment.end
+                                    : MainAxisAlignment.spaceBetween,
+                                children: _buildActionButtons(locale),
+                              ),
                             ),
-                          ),
-                        ],
+                          ],
+                        ),
                       ),
                     ),
-                  ),
-                ],
+                  ],
+                ),
               ),
-            ),
-            if (isConnecting)
-              Container(
-                color: Colors.black26,
-                child: const Center(child: CircularProgressIndicator()),
-              ),
-          ],
+              if (isConnecting)
+                Container(
+                  color: Colors.black26,
+                  child: const Center(child: CircularProgressIndicator()),
+                ),
+            ],
+          ),
         ),
       ),
     );
@@ -191,16 +198,9 @@ class _BluetoothConnectionPageState extends State<BluetoothConnectionPage> {
           TextStyle(color: Colors.white),
         ),
       ],
+      // The device is connected at this point, so there is nothing to go back
+      // to - only 'done' is offered.
       CurrentStep.done: [
-        buildTranslatedButton(
-          "back",
-          () {
-            setState(() => currentStep = CurrentStep.scan);
-          },
-          true,
-          null,
-          null,
-        ),
         buildTranslatedButton(
           "done",
           () {
@@ -240,6 +240,11 @@ class _BluetoothConnectionPageState extends State<BluetoothConnectionPage> {
                 isConnecting = false;
               });
             }
+          } else if (state == DeviceStatus.reconnected) {
+            // BLE link is up; some devices (e.g. Polar) only reach `connected`
+            // after negotiating SDK features and data types. Give that extra time.
+            _connectionTimeoutTimer?.cancel();
+            _connectionTimeoutTimer = _startConnectionTimeout(locale);
           } else if (state == DeviceStatus.disconnected) {
             _connectionTimeoutTimer?.cancel();
             if (mounted) {
@@ -252,35 +257,40 @@ class _BluetoothConnectionPageState extends State<BluetoothConnectionPage> {
           }
         });
 
-        // Start 7-second timeout
-        _connectionTimeoutTimer = Timer(const Duration(seconds: 7), () {
-          if (isConnecting && mounted) {
-            setState(() {
-              isConnecting = false;
-            });
-            showDialog<void>(
-              context: context,
-              builder: (BuildContext context) {
-                return AlertDialog(
-                  title: Text(locale.translate("pages.devices.connection.connection_failed.title")),
-                  content: Text(locale.translate("pages.devices.connection.connection_failed.message")),
-                  actions: [
-                    TextButton(
-                      onPressed: () {
-                        Navigator.of(context).pop();
-                      },
-                      child: Text(locale.translate("ok")),
-                    ),
-                  ],
-                );
-              },
-            );
-            widget.device.status = DeviceStatus.disconnected;
-          }
-        });
+        _connectionTimeoutTimer = _startConnectionTimeout(locale);
       }
     };
   }
+
+  /// Fail the connection attempt if the device does not reach
+  /// [DeviceStatus.connected] within the timeout.
+  Timer _startConnectionTimeout(RPLocalizations locale) => Timer(const Duration(seconds: 7), () {
+    if (isConnecting && mounted) {
+      setState(() {
+        isConnecting = false;
+      });
+      showDialog<void>(
+        context: context,
+        builder: (BuildContext context) {
+          return AlertDialog(
+            title: Text(locale.translate("pages.devices.connection.connection_failed.title")),
+            content: Text(locale.translate("pages.devices.connection.connection_failed.message")),
+            actions: [
+              TextButton(
+                onPressed: () {
+                  Navigator.of(context).pop();
+                },
+                child: Text(locale.translate("ok")),
+              ),
+            ],
+          );
+        },
+      );
+      // Tear down the attempt, else the native SDK keeps the link open and
+      // retries in the background while the app shows it as disconnected.
+      widget.device.deviceManager.disconnect();
+    }
+  });
 
   Widget stepContent(CurrentStep currentStep, DeviceViewModel device) {
     if (currentStep == CurrentStep.scan) {
@@ -306,46 +316,76 @@ class _BluetoothConnectionPageState extends State<BluetoothConnectionPage> {
             style: fs22fw700,
             textAlign: TextAlign.justify,
           ),
+          if (device.bleNamePrefix != null)
+            Align(
+              alignment: Alignment.centerRight,
+              child: TextButton(
+                onPressed: () => setState(() => showAllDevices = !showAllDevices),
+                child: Text(
+                  locale.translate(
+                    showAllDevices
+                        ? "pages.devices.connection.step.scan.filtered"
+                        : "pages.devices.connection.step.scan.show_all",
+                  ),
+                  style: fs16fw400.copyWith(fontSize: 14),
+                ),
+              ),
+            ),
           Expanded(
             child: StreamBuilder<List<ScanResult>>(
               stream: FlutterBluePlus.scanResults,
               initialData: const [],
-              builder: (context, snapshot) => Scrollbar(
-                thumbVisibility: true,
-                child: SingleChildScrollView(
-                  padding: const EdgeInsets.only(top: 16),
-                  child: Column(
-                    children: snapshot.data!
-                        .where((element) => element.device.platformName.isNotEmpty)
-                        .toList()
-                        .asMap()
-                        .entries
-                        .map(
-                          (bluetoothDevice) => StudiesMaterial(
-                            // hasBorder: true,
-                            backgroundColor: Theme.of(context).extension<CarpColors>()!.grey50!,
-                            child: InkWell(
-                              child: ListTile(
-                                selected: bluetoothDevice.key == selected,
-                                title: Text(
-                                  bluetoothDevice.value.device.platformName,
-                                  style: fs22fw700.copyWith(fontSize: 20),
+              builder: (context, snapshot) {
+                // Only show devices whose name contains this type's prefix, so
+                // the wrong device can't be picked. "Show all" is the escape hatch.
+                final prefix = device.bleNamePrefix?.toLowerCase();
+                final results = snapshot.data!.where((r) {
+                  // Skip nameless devices - they can't be identified or paired.
+                  final name = r.device.platformName;
+                  if (name.isEmpty) return false;
+                  if (showAllDevices || prefix == null) return true;
+                  return name.toLowerCase().contains(prefix);
+                }).toList();
+
+                if (results.isEmpty) {
+                  return Center(
+                    child: Text(
+                      locale.translate("pages.devices.connection.step.scan.searching"),
+                      style: fs16fw400.copyWith(color: Theme.of(context).extension<CarpColors>()!.grey700),
+                      textAlign: TextAlign.center,
+                    ),
+                  );
+                }
+
+                return Scrollbar(
+                  thumbVisibility: true,
+                  child: SingleChildScrollView(
+                    padding: const EdgeInsets.only(top: 16),
+                    child: Column(
+                      children: results
+                          .map(
+                            (r) => StudiesMaterial(
+                              // hasBorder: true,
+                              backgroundColor: Theme.of(context).extension<CarpColors>()!.grey50!,
+                              child: InkWell(
+                                child: ListTile(
+                                  selected: r.device.remoteId == selectedDevice?.remoteId,
+                                  title: Text(r.device.platformName, style: fs22fw700.copyWith(fontSize: 20)),
+                                  selectedTileColor: Theme.of(context).primaryColor.withValues(alpha: 0.2),
                                 ),
-                                selectedTileColor: Theme.of(context).primaryColor.withValues(alpha: 0.2),
+                                onTap: () {
+                                  setState(() {
+                                    selectedDevice = r.device;
+                                  });
+                                },
                               ),
-                              onTap: () {
-                                selectedDevice = bluetoothDevice.value.device;
-                                setState(() {
-                                  selected = bluetoothDevice.key;
-                                });
-                              },
                             ),
-                          ),
-                        )
-                        .toList(),
+                          )
+                          .toList(),
+                    ),
                   ),
-                ),
-              ),
+                );
+              },
             ),
           ),
           Padding(

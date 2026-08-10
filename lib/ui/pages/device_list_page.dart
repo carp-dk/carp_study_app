@@ -163,7 +163,11 @@ class DeviceListPageState extends State<DeviceListPage> {
             leading: device.icon!,
             title: (locale.translate(device.typeName), device.batteryLevel ?? 0),
             subtitle: device.name,
-            onTap: () async => await _hardwareDeviceClicked(device),
+            // A connected device is managed by the study and cannot be
+            // disconnected by the user, so there is nothing to tap.
+            onTap: device.status == DeviceStatus.connected || device.status == DeviceStatus.connecting
+                ? null
+                : () async => await _hardwareDeviceClicked(device),
             trailing: device.getDeviceStatusIcon is Icon
                 ? device.getDeviceStatusIcon as Icon
                 : Container(
@@ -173,7 +177,7 @@ class DeviceListPageState extends State<DeviceListPage> {
                       borderRadius: BorderRadius.circular(100),
                     ),
                     child: Text(
-                      locale.translate(device.getDeviceStatusIcon as String),
+                      locale.translate(device.getDeviceStatusIcon as String? ?? "pages.devices.status.action.connect"),
                       style: fs20fw700.copyWith(color: Colors.white),
                     ),
                   ),
@@ -309,27 +313,30 @@ class DeviceListPageState extends State<DeviceListPage> {
           builder: (context) => EnableBluetoothDialog(device: device),
         );
       } else if (bluetoothAdapterState == BluetoothAdapterState.on) {
-        if (device.status == DeviceStatus.connected || device.status == DeviceStatus.connecting) {
-          bool disconnect =
-              await showDialog<bool?>(
-                context: context,
-                barrierDismissible: true,
-                builder: (context) => DisconnectionDialog(device: device),
-              ) ??
-              false;
-          if (disconnect) await device.disconnectFromDevice();
-        } else {
-          final hasSeenInstructions = LocalSettings().hasSeenBluetoothConnectionInstructions;
-          Navigator.push(
-            context,
-            MaterialPageRoute<void>(
-              builder: (context) => BluetoothConnectionPage(
-                hasSeenInstructions ? CurrentStep.scan : CurrentStep.instructions,
-                device: device,
-              ),
-            ),
-          );
+        // Request the BLE permissions the device manager declares before scanning.
+        if (!await device.deviceManager.hasPermissions()) {
+          await device.deviceManager.requestPermissions();
         }
+        if (!mounted) return;
+        if (!await device.deviceManager.hasPermissions()) {
+          await showDialog<void>(
+            context: context,
+            barrierDismissible: true,
+            builder: (context) => _permissionDeniedDialog(context),
+          );
+          return;
+        }
+
+        final hasSeenInstructions = LocalSettings().hasSeenBluetoothConnectionInstructions;
+        Navigator.push(
+          context,
+          MaterialPageRoute<void>(
+            builder: (context) => BluetoothConnectionPage(
+              hasSeenInstructions ? CurrentStep.scan : CurrentStep.instructions,
+              device: device,
+            ),
+          ),
+        );
       } else if (bluetoothAdapterState == BluetoothAdapterState.unauthorized && Platform.isIOS) {
         await showDialog<void>(
           context: context,
@@ -338,5 +345,26 @@ class DeviceListPageState extends State<DeviceListPage> {
         );
       }
     }
+  }
+
+  /// Dialog shown when the BLE permissions are still denied after requesting,
+  /// pointing the user to the app settings.
+  Widget _permissionDeniedDialog(BuildContext context) {
+    final locale = RPLocalizations.of(context)!;
+    return AlertDialog(
+      title: Text(locale.translate("pages.devices.location_permission.title")),
+      content: SingleChildScrollView(child: Text(locale.translate("pages.devices.location_permission.message"))),
+      actions: [
+        TextButton(child: Text(locale.translate("cancel")), onPressed: () => Navigator.pop(context)),
+        ElevatedButton(
+          style: ElevatedButton.styleFrom(backgroundColor: Theme.of(context).extension<CarpColors>()!.primary),
+          child: Text(locale.translate("settings"), style: const TextStyle(color: Colors.white)),
+          onPressed: () {
+            Platform.isAndroid ? OpenSettingsPlusAndroid().applicationDetails() : OpenSettingsPlusIOS().appSettings();
+            Navigator.pop(context);
+          },
+        ),
+      ],
+    );
   }
 }
