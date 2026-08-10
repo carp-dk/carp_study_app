@@ -53,20 +53,11 @@ class DeviceViewModel extends ViewModel {
 
   /// The BLE name prefix used to filter scan results to devices of this type
   /// (e.g. "Polar", "Movesense"). Null for non-BLE devices.
-  ///
-  /// Prefers the prefix configured on the device, but falls back to a
-  /// prefix derived from the device type - deployments coming from CAWS often
-  /// don't include a `namePrefix`, and Movesense doesn't set one by default.
   String? get bleNamePrefix {
     final config = deviceManager.configuration;
     if (config is! BLEDevice) return null;
     final configured = config.namePrefix?.trim();
-    if (configured != null && configured.isNotEmpty) return configured;
-    return switch (type) {
-      PolarDevice.DEVICE_TYPE => 'Polar',
-      MovesenseDevice.DEVICE_TYPE => 'Movesense',
-      _ => null,
-    };
+    return (configured != null && configured.isNotEmpty) ? configured : null;
   }
 
   /// A printer-friendly name for this device.

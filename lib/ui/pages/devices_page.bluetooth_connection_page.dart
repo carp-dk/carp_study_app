@@ -286,10 +286,8 @@ class _BluetoothConnectionPageState extends State<BluetoothConnectionPage> {
           );
         },
       );
-      // Tear the connection attempt down instead of only stamping the status:
-      // the native SDK otherwise keeps the link open and retries in the
-      // background, leaving the device connected in reality but shown as
-      // disconnected in the app.
+      // Tear down the attempt, else the native SDK keeps the link open and
+      // retries in the background while the app shows it as disconnected.
       widget.device.deviceManager.disconnect();
     }
   });
@@ -338,10 +336,8 @@ class _BluetoothConnectionPageState extends State<BluetoothConnectionPage> {
               stream: FlutterBluePlus.scanResults,
               initialData: const [],
               builder: (context, snapshot) {
-                // Show devices whose advertised name contains this type's prefix
-                // (e.g. "Polar", "Movesense"), so the user can't pick the wrong
-                // device type. "Show all" is the escape hatch for anything the
-                // filter would otherwise hide.
+                // Only show devices whose name contains this type's prefix, so
+                // the wrong device can't be picked. "Show all" is the escape hatch.
                 final prefix = device.bleNamePrefix?.toLowerCase();
                 final results = snapshot.data!.where((r) {
                   // Skip nameless devices - they can't be identified or paired.

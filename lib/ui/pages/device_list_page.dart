@@ -313,8 +313,7 @@ class DeviceListPageState extends State<DeviceListPage> {
           builder: (context) => EnableBluetoothDialog(device: device),
         );
       } else if (bluetoothAdapterState == BluetoothAdapterState.on) {
-        // The device manager declares the permissions BLE needs (bluetooth +
-        // location on Android); request them before opening the scan page.
+        // Request the BLE permissions the device manager declares before scanning.
         if (!await device.deviceManager.hasPermissions()) {
           await device.deviceManager.requestPermissions();
         }
