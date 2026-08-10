@@ -7,7 +7,7 @@ class HealthServiceConnectPage extends StatelessWidget {
   Widget build(BuildContext context) {
     RPLocalizations locale = RPLocalizations.of(context)!;
 
-    DeviceViewModel healthServive = bloc.appViewModel.devicesPageViewModel.healthService!;
+    DeviceViewModel healthService = bloc.appViewModel.devicesPageViewModel.healthService!;
 
     return Scaffold(
       backgroundColor: Theme.of(context).extension<CarpColors>()!.grey100,
@@ -97,13 +97,14 @@ class HealthServiceConnectPage extends StatelessWidget {
                 padding: const EdgeInsets.symmetric(horizontal: 30, vertical: 12),
               ),
               onPressed: () async {
-                await healthServive.deviceManager.requestPermissions();
-                await healthServive.deviceManager.connect();
+                final manager = healthService.deviceManager;
+                await manager.requestPermissions();
+                await manager.connect();
 
                 if (!context.mounted) return;
                 // If access still isn't granted (e.g. permanently denied, so the
                 // system sheet no longer appears), guide the user to grant it.
-                if (!healthServive.deviceManager.isConnected) {
+                if (!healthService.deviceManager.isConnected) {
                   await showDialog<void>(context: context, builder: (context) => _accessDeniedDialog(context, locale));
                 }
                 if (context.mounted) Navigator.pop(context);
