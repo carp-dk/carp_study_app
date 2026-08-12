@@ -67,8 +67,8 @@ class HomePage extends StatelessWidget {
     );
 
     return Shimmer.fromColors(
-      baseColor: Colors.grey.shade200,
-      highlightColor: Colors.grey.shade100,
+      baseColor: Colors.grey.shade400,
+      highlightColor: Colors.grey.shade300,
       child: Column(
         children: [
           box(195),
