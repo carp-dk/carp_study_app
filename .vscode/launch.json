@@ -23,7 +23,26 @@
         "--dart-define",
         "deployment-mode=dev",
         "--dart-define",
-        "debug-level=debug"
+        "debug-level=debug",
+        "--dart-define",
+        "NOTIFICATION_EVENT_URL=http://localhost:8080/events"
+      ],
+      "flutterMode": "debug"
+    },
+    {
+      // same as DEV, but reaching the notification test server over wifi instead
+      // of the USB cable, so the phone can be unplugged and allowed to enter Doze.
+      // Update the IP when your network changes: `ipconfig getifaddr en0`.
+      "name": "DEV (unplugged) - carp-studies-app",
+      "request": "launch",
+      "type": "dart",
+      "toolArgs": [
+        "--dart-define",
+        "deployment-mode=dev",
+        "--dart-define",
+        "debug-level=debug",
+        "--dart-define",
+        "NOTIFICATION_EVENT_URL=http://10.197.43.64:8080/events"
       ],
       "flutterMode": "debug"
     },
@@ -65,6 +84,19 @@
         "debug-level=none"
       ],
       "flutterMode": "release"
+    },
+    {
+      // debug mode using the TEST CAWS instance
+      "name": "TEST - carp-studies-app (debug)",
+      "request": "launch",
+      "type": "dart",
+      "toolArgs": [
+        "--dart-define",
+        "deployment-mode=test",
+        "--dart-define",
+        "debug-level=debug"
+      ],
+      "flutterMode": "debug"
     },
     {
       // debug mode using COMPUTEROME CAWS instance
