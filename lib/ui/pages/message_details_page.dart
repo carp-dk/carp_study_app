@@ -26,7 +26,7 @@ class MessageDetailsPage extends StatelessWidget {
                 children: [
                   IconButton(
                     padding: const EdgeInsets.only(left: 26, right: 10, top: 16, bottom: 16),
-                    icon: Icon(Icons.arrow_back_ios, color: Theme.of(context).extension<CarpColors>()!.grey600),
+                    icon: Icon(Icons.arrow_back_ios, color: Colors.grey.shade600),
                     onPressed: () {
                       if (context.canPop()) {
                         context.pop();
@@ -39,20 +39,22 @@ class MessageDetailsPage extends StatelessWidget {
                     padding: const EdgeInsets.symmetric(vertical: 10.0),
                     child: Text(
                       locale.translate(message.title!),
-                      style: fs20fw700.copyWith(color: Theme.of(context).extension<CarpColors>()!.grey900),
+                      style: Theme.of(
+                        context,
+                      ).textTheme.titleLarge!.copyWith(fontSize: 20).copyWith(color: Colors.grey.shade900),
                     ),
                   ),
                   Spacer(),
                   Padding(
                     padding: const EdgeInsets.only(right: 24),
                     child: Material(
-                      color: Theme.of(context).extension<CarpColors>()!.primary,
+                      color: Theme.of(context).colorScheme.primary,
                       borderRadius: BorderRadius.circular(100.0),
                       child: Padding(
                         padding: const EdgeInsets.symmetric(horizontal: 12.0, vertical: 6.0),
                         child: Text(
                           locale.translate(message.type.toString().split('.').last.toLowerCase()),
-                          style: fs16fw600.copyWith(color: Colors.white),
+                          style: Theme.of(context).textTheme.labelLarge!.copyWith(color: Colors.white),
                         ),
                       ),
                     ),
@@ -68,7 +70,7 @@ class MessageDetailsPage extends StatelessWidget {
                             padding: const EdgeInsets.symmetric(horizontal: 10.0, vertical: 6.0),
                             child: Text(
                               locale.translate(message.subTitle!),
-                              style: fs16fw400.copyWith(color: Theme.of(context).extension<CarpColors>()!.grey700),
+                              style: Theme.of(context).textTheme.bodyLarge!.copyWith(color: Colors.grey.shade700),
                             ),
                           )
                         : const SizedBox.shrink(),
@@ -95,7 +97,7 @@ class MessageDetailsPage extends StatelessWidget {
                           if (message.message != null)
                             Text(
                               locale.translate(message.message!),
-                              style: fs16fw400.copyWith(color: Theme.of(context).extension<CarpColors>()!.grey900),
+                              style: Theme.of(context).textTheme.bodyLarge!.copyWith(color: Colors.grey.shade900),
                               textAlign: TextAlign.justify,
                             ),
                         ],

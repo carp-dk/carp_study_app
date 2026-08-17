@@ -31,19 +31,24 @@ class _DistanceCardState extends State<DistanceCard> {
   @override
   Widget build(BuildContext context) {
     return StudiesMaterial(
-      backgroundColor: Theme.of(context).extension<CarpColors>()!.white!,
+      backgroundColor: Colors.white,
       child: Padding(
         padding: const EdgeInsets.all(8.0),
         child: Column(
           children: [
             Row(
               children: [
-                Text(_distance, style: fs28fw700.copyWith(color: Theme.of(context).extension<CarpColors>()!.grey900!)),
+                Text(
+                  _distance,
+                  style: Theme.of(context).textTheme.headlineMedium!.copyWith(color: Colors.grey.shade900),
+                ),
                 Padding(
                   padding: const EdgeInsets.only(left: 4.0),
                   child: Text(
                     'km ${_getDayName(touchedIndex)}',
-                    style: fs12fw700.copyWith(color: Theme.of(context).extension<CarpColors>()!.grey600),
+                    style: Theme.of(
+                      context,
+                    ).textTheme.labelSmall!.copyWith(fontWeight: FontWeight.w700).copyWith(color: Colors.grey.shade600),
                   ),
                 ),
               ],
@@ -52,7 +57,9 @@ class _DistanceCardState extends State<DistanceCard> {
               children: [
                 Text(
                   "${widget.model.currentMonth} ${widget.model.startOfWeek} - ${int.parse(widget.model.endOfWeek) < int.parse(widget.model.startOfWeek) ? widget.model.nextMonth : widget.model.currentMonth} ${widget.model.endOfWeek}, ${widget.model.currentYear}",
-                  style: fs12fw700.copyWith(color: Theme.of(context).extension<CarpColors>()!.grey600),
+                  style: Theme.of(
+                    context,
+                  ).textTheme.labelSmall!.copyWith(fontWeight: FontWeight.w700).copyWith(color: Colors.grey.shade600),
                 ),
                 Spacer(),
               ],
@@ -136,7 +143,7 @@ class _DistanceCardState extends State<DistanceCard> {
       space: 6,
       child: Text(
         value.toInt() % meta.appliedInterval == 0 ? value.toInt().toString() : '',
-        style: fs14ls1.copyWith(color: Theme.of(context).extension<CarpColors>()!.grey600),
+        style: Theme.of(context).textTheme.bodyMedium!.copyWith(letterSpacing: 1, color: Colors.grey.shade600),
       ),
     );
   }

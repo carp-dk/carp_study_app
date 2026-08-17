@@ -21,7 +21,7 @@ class StudyProgressCardWidgetState extends State<StudyProgressCardWidget> {
 
     widget.model.updateProgress();
     return StudiesMaterial(
-      backgroundColor: Theme.of(context).extension<CarpColors>()!.white!,
+      backgroundColor: Colors.white,
       child: Padding(
         padding: const EdgeInsets.all(8.0),
         child: StreamBuilder(
@@ -33,7 +33,12 @@ class StudyProgressCardWidgetState extends State<StudyProgressCardWidget> {
                   padding: const EdgeInsets.only(left: 8),
                   child: Row(
                     mainAxisAlignment: MainAxisAlignment.start,
-                    children: <Widget>[Text(locale.translate('cards.study_progress.title'), style: fs16fw400ls1)],
+                    children: <Widget>[
+                      Text(
+                        locale.translate('cards.study_progress.title'),
+                        style: Theme.of(context).textTheme.bodyLarge!.copyWith(letterSpacing: 1),
+                      ),
+                    ],
                   ),
                 ),
                 SizedBox(

@@ -9,7 +9,6 @@ import 'dart:io';
 
 import 'package:app_version_update/data/models/app_version_result.dart';
 import 'package:async/async.dart';
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/gestures.dart';
 
 import 'package:flutter/material.dart';
@@ -102,7 +101,6 @@ part 'carp_study_app.dart';
 part 'ui/pages/informed_consent_page.dart';
 part 'ui/pages/home_page.dart';
 part 'ui/pages/home_page.install_health_connect_dialog.dart';
-part 'ui/carp_study_style.dart';
 part 'ui/colors.dart';
 part 'ui/helpers.dart';
 part 'ui/pages/data_visualization_page.dart';
