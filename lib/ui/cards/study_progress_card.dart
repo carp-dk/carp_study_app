@@ -1,166 +1,143 @@
 part of carp_study_app;
 
+/// How the user's tasks are split across completed, pending, and expired - as
+/// counts alongside a donut of the same three shares.
+///
+/// Tapping a slice highlights it and bolds the count it belongs to.
 class StudyProgressCardWidget extends StatefulWidget {
   final StudyProgressCardViewModel model;
-
   final List<Color> colors;
+
   const StudyProgressCardWidget(
     this.model, {
     super.key,
-    this.colors = const [CACHET.BLUE_1, CACHET.RED_1, CACHET.GREY_6],
+    this.colors = const [Color(0xff2192C9), Color(0xffEB4B62), Color(0xffEC6330)],
   });
 
   @override
-  StudyProgressCardWidgetState createState() => StudyProgressCardWidgetState();
+  State<StudyProgressCardWidget> createState() => _StudyProgressCardWidgetState();
 }
 
-class StudyProgressCardWidgetState extends State<StudyProgressCardWidget> {
+class _StudyProgressCardWidgetState extends State<StudyProgressCardWidget> {
+  /// The selected state, as an index into [StudyProgressCardViewModel.progress],
+  /// or null when the card shows all three equally.
+  int? _selected;
+
   @override
   Widget build(BuildContext context) {
-    RPLocalizations locale = RPLocalizations.of(context)!;
-
-    widget.model.updateProgress();
     return StudiesMaterial(
-      backgroundColor: Theme.of(context).extension<CarpColors>()!.white!,
-      child: Padding(
-        padding: const EdgeInsets.all(8.0),
+      backgroundColor: Colors.white,
+      // Tapping anywhere else on the card drops the selection.
+      child: GestureDetector(
+        onTap: () => setState(() => _selected = null),
         child: StreamBuilder(
           stream: widget.model.userTaskEvents,
           builder: (context, AsyncSnapshot<UserTask> snapshot) {
-            return Column(
-              children: [
-                Container(
-                  padding: const EdgeInsets.only(left: 8),
-                  child: Row(
-                    mainAxisAlignment: MainAxisAlignment.start,
-                    children: <Widget>[Text(locale.translate('cards.study_progress.title'), style: fs16fw400ls1)],
+            widget.model.updateProgress();
+            final progress = widget.model.progress;
+
+            return Padding(
+              padding: const EdgeInsets.all(16),
+              child: Row(
+                children: [
+                  Expanded(
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      mainAxisSize: MainAxisSize.min,
+                      children: [for (final (index, state) in progress.indexed) _count(context, index, state)],
+                    ),
                   ),
-                ),
-                SizedBox(
-                  height: 130,
-                  child: LayoutBuilder(
-                    builder: (BuildContext context, BoxConstraints constraints) {
-                      return Row(
-                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                        children: [
-                          Padding(
-                            padding: const EdgeInsets.symmetric(horizontal: 8.0),
-                            child: Column(
-                              crossAxisAlignment: CrossAxisAlignment.start,
-                              children: List.generate(
-                                widget.model.progress.length,
-                                (index) => Padding(
-                                  padding: const EdgeInsets.symmetric(vertical: 4.0),
-                                  child: Row(
-                                    children: [
-                                      Text(
-                                        widget.model.progress[index].value.toString(),
-                                        style: TextStyle(
-                                          fontSize: 22,
-                                          fontWeight: FontWeight.bold,
-                                          color: widget.colors[index],
-                                        ),
-                                      ),
-                                      const SizedBox(width: 4),
-                                      Text(
-                                        locale.translate(widget.model.progress[index].state),
-                                        style: const TextStyle(fontSize: 16),
-                                      ),
-                                    ],
-                                  ),
-                                ),
-                              ),
-                            ),
-                          ),
-                          // Circular Progress Representation
-                          Padding(
-                            padding: const EdgeInsets.only(bottom: 18, right: 24.0),
-                            child: SizedBox(
-                              width: 104,
-                              height: 104,
-                              child: CustomPaint(
-                                painter: TaskProgressPainter(
-                                  values: widget.model.progress.map((p) => p.value).toList(),
-                                  colors: widget.colors,
-                                  faintColors: widget.colors.map((c) => c.withValues(alpha: 0.2)).toList(),
-                                ),
-                              ),
-                            ),
-                          ),
-                        ],
-                      );
-                    },
-                  ),
-                ),
-              ],
+                  SizedBox(width: 110, height: 110, child: _donut(progress)),
+                ],
+              ),
             );
           },
         ),
       ),
     );
   }
-}
 
-class TaskProgressPainter extends CustomPainter {
-  final List<int> values;
-  final List<Color> colors;
-  final List<Color> faintColors;
-  final double pi = 3.141592;
+  Widget _count(BuildContext context, int index, StudyProgress state) {
+    final locale = RPLocalizations.of(context)!;
+    final isSelected = _selected == index;
 
-  TaskProgressPainter({required this.values, required this.colors, required this.faintColors});
-
-  @override
-  void paint(Canvas canvas, Size size) {
-    final double centerX = size.width / 2;
-    final double centerY = size.height / 2;
-    final Offset center = Offset(centerX, centerY);
-    final double maxRadius = size.width / 2;
-    final double ringWidth = maxRadius / 3;
-
-    int totalTasks = values.reduce((a, b) => a + b);
-    if (totalTasks == 0) return;
-
-    List<double> percentages = values.map((v) => v / totalTasks).toList();
-
-    Paint blackCircle = Paint()
-      ..color = Colors.black
-      ..style = PaintingStyle.fill;
-
-    // this -2 is to match the ring width of the other rings
-    canvas.drawCircle(center, maxRadius + ringWidth - 2, blackCircle);
-
-    for (int i = 0; i < 3; i++) {
-      // i * 2 is the space between the rings
-      double radius = maxRadius - (i * ringWidth) - i * 2;
-      double sweepAngle = 2 * pi * percentages[i];
-      Paint paintFill = Paint()
-        ..color = colors[i]
-        ..style = PaintingStyle.stroke
-        ..strokeWidth = ringWidth
-        ..strokeCap = StrokeCap.round;
-
-      Paint paintBackground = Paint()
-        ..color = faintColors[i]
-        ..style = PaintingStyle.stroke
-        ..strokeWidth = ringWidth
-        ..strokeCap = StrokeCap.round;
-
-      // draw the arc as a percentage of the full circle
-      canvas.drawArc(
-        Rect.fromCircle(center: center, radius: radius),
-        pi / 2,
-        sweepAngle > 0 ? sweepAngle : pi * (percentages[i] + 0.01),
-        false,
-        paintFill,
-      );
-
-      // draw a full circle as a background with a faint color
-      canvas.drawArc(Rect.fromCircle(center: center, radius: radius), 0, 2 * pi, false, paintBackground);
-    }
+    return GestureDetector(
+      onTap: () => setState(() => _selected = isSelected ? null : index),
+      child: Padding(
+        padding: const EdgeInsets.symmetric(vertical: 6),
+        child: Row(
+          children: [
+            // Pad to two digits so the labels line up in a column.
+            Text(
+              '${state.value}'.padLeft(2, '0'),
+              style: Theme.of(context).textTheme.headlineSmall!.copyWith(color: _shade(widget.colors[index], index)),
+            ),
+            const SizedBox(width: 12),
+            Text(
+              locale.translate('cards.study_progress.${state.state}'),
+              style: (isSelected ? Theme.of(context).textTheme.titleSmall! : Theme.of(context).textTheme.bodyLarge!),
+            ),
+          ],
+        ),
+      ),
+    );
   }
 
-  @override
-  bool shouldRepaint(covariant CustomPainter oldDelegate) {
-    return true;
+  /// [color] at full strength when nothing is selected or this is it, washed
+  /// out otherwise.
+  Color _shade(Color color, int index) =>
+      _selected == null || _selected == index ? color : color.withValues(alpha: 0.3);
+
+  Widget _donut(List<StudyProgress> progress) {
+    final total = progress.fold(0, (sum, state) => sum + state.value);
+    // An empty study would render nothing at all - show the ring as untouched.
+    if (total == 0) {
+      return PieChart(
+        PieChartData(
+          centerSpaceRadius: 28,
+          sections: [
+            PieChartSectionData(
+              color: const Color(0xff848484).withValues(alpha: 0.2),
+              value: 1,
+              showTitle: false,
+              radius: 22,
+            ),
+          ],
+        ),
+      );
+    }
+
+    // Zero-value states get no slice, so the slice order is not the state
+    // order - keep the state index on each slice to map a tap back.
+    final slices = [
+      for (final (index, state) in progress.indexed)
+        if (state.value > 0) (index, state),
+    ];
+
+    return PieChart(
+      PieChartData(
+        centerSpaceRadius: 28,
+        sectionsSpace: 2,
+        startDegreeOffset: 270,
+        pieTouchData: PieTouchData(
+          touchCallback: (event, response) {
+            if (event is! FlTapUpEvent) return;
+            final slice = response?.touchedSection?.touchedSectionIndex;
+            final selected = slice == null || slice < 0 ? null : slices[slice].$1;
+            setState(() => _selected = selected == _selected ? null : selected);
+          },
+        ),
+        sections: [
+          for (final (index, state) in slices)
+            PieChartSectionData(
+              color: _shade(widget.colors[index], index),
+              value: state.value.toDouble(),
+              showTitle: false,
+              // The selected slice also stands a little proud of the others.
+              radius: _selected == index ? 26 : 22,
+            ),
+        ],
+      ),
+    );
   }
 }

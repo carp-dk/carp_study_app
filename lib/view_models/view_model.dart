@@ -15,6 +15,14 @@ abstract class ViewModel extends ChangeNotifier {
     _controller = ctrl;
   }
 
+  /// Handle errors emitted on a measurement stream.
+  ///
+  /// Stream errors are not measurements and should not be handled in the data
+  /// path. View models should log and ignore them so sensing can continue.
+  void onMeasurementStreamError(Object error, [StackTrace? stackTrace]) {
+    warning('$runtimeType - measurement stream error: $error');
+  }
+
   /// Clear this view model, i.e. delete all data incl. cached data.
   @mustCallSuper
   void clear() {}
@@ -185,11 +193,14 @@ class HourlyMeasure {
   String toString() => '$hour:$minute';
 }
 
-/// The view model for the entire app.
+/// The root view model, owning one instance of every page view model.
+///
+/// State: none of its own - it holds the others and forwards [init], [clear],
+/// and [dispose] to them, so the pages always read the same instances.
 class AppViewModel extends ViewModel {
   final HomePageViewModel _homePageViewModel = HomePageViewModel();
   final LoginViewModel _loginViewModel = LoginViewModel();
-  final DataVisualizationPageViewModel _dataVisualizationPageViewModel = DataVisualizationPageViewModel();
+  final StatisticsViewModel _statisticsViewModel = StatisticsViewModel();
   final StudyPageViewModel _studyPageViewModel = StudyPageViewModel();
   final TaskListPageViewModel _taskListPageViewModel = TaskListPageViewModel();
   final ProfilePageViewModel _profilePageViewModel = ProfilePageViewModel();
@@ -202,7 +213,7 @@ class AppViewModel extends ViewModel {
 
   HomePageViewModel get homePageViewModel => _homePageViewModel;
   LoginViewModel get loginViewModel => _loginViewModel;
-  DataVisualizationPageViewModel get dataVisualizationPageViewModel => _dataVisualizationPageViewModel;
+  StatisticsViewModel get statisticsViewModel => _statisticsViewModel;
   StudyPageViewModel get studyPageViewModel => _studyPageViewModel;
   TaskListPageViewModel get taskListPageViewModel => _taskListPageViewModel;
   ProfilePageViewModel get profilePageViewModel => _profilePageViewModel;
@@ -217,7 +228,7 @@ class AppViewModel extends ViewModel {
     _homePageViewModel.init(ctrl);
     _taskListPageViewModel.init(ctrl);
     _studyPageViewModel.init(ctrl);
-    _dataVisualizationPageViewModel.init(ctrl);
+    _statisticsViewModel.init(ctrl);
     _devicesPageViewModel.init(ctrl);
 
     _profilePageViewModel.init(ctrl);
@@ -231,11 +242,10 @@ class AppViewModel extends ViewModel {
     _homePageViewModel.clear();
     _taskListPageViewModel.clear();
     _studyPageViewModel.clear();
-    _dataVisualizationPageViewModel.clear();
+    _statisticsViewModel.clear();
     _devicesPageViewModel.clear();
 
     _profilePageViewModel.clear();
-    _invitationsListViewModel.clear();
     _informedConsentViewModel.clear();
 
     super.clear();
@@ -246,7 +256,7 @@ class AppViewModel extends ViewModel {
     _homePageViewModel.dispose();
     _taskListPageViewModel.dispose();
     _studyPageViewModel.dispose();
-    _dataVisualizationPageViewModel.dispose();
+    _statisticsViewModel.dispose();
     _devicesPageViewModel.dispose();
 
     _profilePageViewModel.dispose();

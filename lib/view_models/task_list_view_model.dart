@@ -1,6 +1,11 @@
 part of carp_study_app;
 
-/// A view model for the [TaskListPage].
+/// View model for [TaskListPage].
+///
+/// State: the user tasks to show, whether the participant-data card is due, and
+/// the task that just auto-completed.
+///
+/// Starts tasks and auto-completes background ones once they have run.
 class TaskListPageViewModel extends ViewModel {
   TaskListPageViewModel({StudyService? studyService}) : _studyService = studyService;
 
@@ -95,18 +100,14 @@ class TaskListPageViewModel extends ViewModel {
     return tasks;
   }
 
+  /// The tasks the user can still act on, soonest to expire first.
+  List<UserTask> get pendingTasks => tasks.where((task) => task.availableForUser).toList();
+
+  /// The tasks that are done or expired, most recently finished first.
+  List<UserTask> get completedTasks =>
+      tasks.where((task) => task.state == UserTaskState.done || task.state == UserTaskState.expired).toList()
+        ..sort((t1, t2) => (t2.doneTime ?? DateTime(0)).compareTo(t1.doneTime ?? DateTime(0)));
+
   /// A stream of [UserTask]s as they are generated.
   Stream<UserTask> get userTaskEvents => AppTaskController().userTaskEvents;
-
-  /// The number of days the user has been part of this study.
-  ///
-  /// This is calculated from the study deployment status creation date from the
-  /// [StudyDeploymentStatus].
-  /// Returns 0 if the study deployment status is not available.
-  int get daysInStudy => (bloc.study.cachedDeploymentStatus != null)
-      ? DateTime.now().difference(bloc.study.cachedDeploymentStatus!.createdOn).inDays
-      : 0;
-
-  /// The number of tasks completed so far.
-  int get taskCompleted => AppTaskController().userTaskQueue.where((task) => task.state == UserTaskState.done).length;
 }

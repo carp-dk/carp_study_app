@@ -1,6 +1,16 @@
 part of carp_study_app;
 
-/// The view model for the [DeviceListPage].
+// Status icon colors for the const device/service icon maps below; kept as
+// consts because the maps are const lookups consumed without a BuildContext.
+const Color _statusSuccess = Color(0xff67CE67);
+const Color _statusError = Color(0xffEB4B62);
+
+/// View model for [DeviceListPage].
+///
+/// State: the devices and online services of the deployment, as
+/// [DeviceViewModel]s.
+///
+/// Connecting and disconnecting is owned by each [DeviceViewModel].
 class DeviceListPageViewModel extends ViewModel {
   DeviceListPageViewModel({StudyService? studyService}) : _studyService = studyService;
 
@@ -27,13 +37,42 @@ class DeviceListPageViewModel extends ViewModel {
       onlineServices.where((device) => device.type == HealthService.DEVICE_TYPE).firstOrNull;
 }
 
-/// The view model for each device - [DeviceManager].
+/// View model for one device row on [DeviceListPage].
 ///
-/// Note that the [deviceManager] can represent both a hardware device and
-/// an online service.
+/// State: the name, icon, and live connection status of its [DeviceManager],
+/// which can be either a hardware device or an online service.
+///
+/// Connects and disconnects that device.
 class DeviceViewModel extends ViewModel {
   DeviceManager deviceManager;
   DeviceViewModel(this.deviceManager) : super();
+
+  StreamSubscription<DeviceStatus>? _statusSub;
+
+  // Bridge the device manager's status stream into ChangeNotifier
+  // notifications, so widgets listening to this view model rebuild when the
+  // device connects or disconnects. Subscribed on first listener and cancelled
+  // on the last, so the ephemeral instances from `deploymentDevices` don't leak.
+  @override
+  void addListener(VoidCallback listener) {
+    _statusSub ??= deviceManager.statusEvents.listen((_) => notifyListeners());
+    super.addListener(listener);
+  }
+
+  @override
+  void removeListener(VoidCallback listener) {
+    super.removeListener(listener);
+    if (!hasListeners) {
+      _statusSub?.cancel();
+      _statusSub = null;
+    }
+  }
+
+  @override
+  void dispose() {
+    _statusSub?.cancel();
+    super.dispose();
+  }
 
   /// The type of this device.
   String? get type => deviceManager.deviceType;
@@ -170,35 +209,37 @@ const Map<String, String> _deviceTypeDescription = {
 };
 
 const Map<String, Icon> _deviceTypeIcon = {
-  Smartphone.DEVICE_TYPE: Icon(Icons.phone_android, size: 30, color: CACHET.GREEN_1),
-  WeatherService.DEVICE_TYPE: Icon(Icons.wb_cloudy, color: CACHET.BLUE_1),
-  AirQualityService.DEVICE_TYPE: Icon(Icons.air, color: CACHET.LIGHT_BLUE),
-  LocationService.DEVICE_TYPE: Icon(Icons.location_on, color: CACHET.GREEN),
-  PolarDevice.DEVICE_TYPE: Icon(Icons.monitor_heart, size: 30, color: CACHET.RED),
-  MovesenseDevice.DEVICE_TYPE: Icon(Icons.circle, size: 30, color: CACHET.GREY_1),
-  HealthService.DEVICE_TYPE: Icon(Icons.favorite_rounded, size: 30, color: CACHET.RED_1),
+  Smartphone.DEVICE_TYPE: Icon(Icons.phone_android, size: 30, color: _statusSuccess),
+  WeatherService.DEVICE_TYPE: Icon(Icons.wb_cloudy, color: Color(0xff2192C9)),
+  AirQualityService.DEVICE_TYPE: Icon(Icons.air, color: Color(0xff81CFFA)),
+  LocationService.DEVICE_TYPE: Icon(Icons.location_on, color: _statusSuccess),
+  PolarDevice.DEVICE_TYPE: Icon(Icons.monitor_heart, size: 30, color: _statusError),
+  MovesenseDevice.DEVICE_TYPE: Icon(Icons.circle, size: 30, color: Color(0xff646363)),
+  HealthService.DEVICE_TYPE: Icon(Icons.favorite_rounded, size: 30, color: _statusError),
 };
+
+const Color _statusConnecting = Color(0xff3260A4);
 
 const Map<DeviceStatus, dynamic> _deviceStatusIcon = {
   DeviceStatus.configured: "pages.devices.status.action.connect",
-  DeviceStatus.connecting: Icon(Icons.bluetooth_searching_rounded, color: CACHET.DARK_BLUE, size: 30),
-  DeviceStatus.reconnected: Icon(Icons.bluetooth_searching_rounded, color: CACHET.DARK_BLUE, size: 30),
-  DeviceStatus.connected: Icon(Icons.bluetooth_rounded, color: CACHET.GREEN_1, size: 30),
-  DeviceStatus.disconnecting: Icon(Icons.bluetooth_searching_rounded, color: CACHET.DARK_BLUE, size: 30),
+  DeviceStatus.connecting: Icon(Icons.bluetooth_searching_rounded, color: _statusConnecting, size: 30),
+  DeviceStatus.reconnected: Icon(Icons.bluetooth_searching_rounded, color: _statusConnecting, size: 30),
+  DeviceStatus.connected: Icon(Icons.bluetooth_rounded, color: _statusSuccess, size: 30),
+  DeviceStatus.disconnecting: Icon(Icons.bluetooth_searching_rounded, color: _statusConnecting, size: 30),
   DeviceStatus.disconnected: "pages.devices.status.action.connect",
   DeviceStatus.paired: "pages.devices.status.action.connect",
-  DeviceStatus.unknown: Icon(Icons.error_outline, color: CACHET.RED_1, size: 30),
+  DeviceStatus.unknown: Icon(Icons.error_outline, color: _statusError, size: 30),
 };
 
 const Map<DeviceStatus, dynamic> _serviceStatusIcon = {
   DeviceStatus.configured: "pages.devices.status.action.connect",
-  DeviceStatus.connecting: Icon(Icons.sensors_off_rounded, color: CACHET.GREEN_1, size: 30),
-  DeviceStatus.reconnected: Icon(Icons.sensors_off_rounded, color: CACHET.GREEN_1, size: 30),
-  DeviceStatus.connected: Icon(Icons.sensors_rounded, color: CACHET.GREEN_1, size: 30),
-  DeviceStatus.disconnecting: Icon(Icons.sensors_off_rounded, color: CACHET.GREEN_1, size: 30),
+  DeviceStatus.connecting: Icon(Icons.sensors_off_rounded, color: _statusSuccess, size: 30),
+  DeviceStatus.reconnected: Icon(Icons.sensors_off_rounded, color: _statusSuccess, size: 30),
+  DeviceStatus.connected: Icon(Icons.sensors_rounded, color: _statusSuccess, size: 30),
+  DeviceStatus.disconnecting: Icon(Icons.sensors_off_rounded, color: _statusSuccess, size: 30),
   DeviceStatus.disconnected: "pages.devices.status.action.connect",
   DeviceStatus.paired: "pages.devices.status.action.connect",
-  DeviceStatus.unknown: Icon(Icons.error_outline, color: CACHET.RED_1, size: 30),
+  DeviceStatus.unknown: Icon(Icons.error_outline, color: _statusError, size: 30),
 };
 
 const Map<DeviceStatus, String> _deviceStatusText = {

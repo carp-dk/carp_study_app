@@ -5,9 +5,9 @@
 // ignore_for_file: no_leading_underscores_for_library_prefixes
 import 'dart:async' as _i7;
 
-import 'package:carp_core/carp_core.dart' as _i6;
+import 'package:carp_core/carp_core.dart' as _i5;
 import 'package:carp_mobile_sensing/carp_mobile_sensing.dart' as _i4;
-import 'package:carp_study_app/main.dart' as _i5;
+import 'package:carp_study_app/main.dart' as _i6;
 import 'package:carp_webservices/carp_auth/carp_auth.dart' as _i3;
 import 'package:carp_webservices/carp_services/carp_services.dart' as _i2;
 import 'package:mockito/mockito.dart' as _i1;
@@ -62,10 +62,14 @@ class _FakeBackgroundTaskExecutor_7 extends _i1.SmartFake implements _i4.Backgro
   _FakeBackgroundTaskExecutor_7(Object parent, Invocation parentInvocation) : super(parent, parentInvocation);
 }
 
+class _FakeDeploymentService_8 extends _i1.SmartFake implements _i5.DeploymentService {
+  _FakeDeploymentService_8(Object parent, Invocation parentInvocation) : super(parent, parentInvocation);
+}
+
 /// A class which mocks [CarpBackend].
 ///
 /// See the documentation for Mockito's code generation for more information.
-class MockCarpBackend extends _i1.Mock implements _i5.CarpBackend {
+class MockCarpBackend extends _i1.Mock implements _i6.CarpBackend {
   @override
   Uri get uri =>
       (super.noSuchMethod(
@@ -108,19 +112,19 @@ class MockCarpBackend extends _i1.Mock implements _i5.CarpBackend {
           as bool);
 
   @override
-  List<_i6.ActiveParticipationInvitation> get invitations =>
+  List<_i5.ActiveParticipationInvitation> get invitations =>
       (super.noSuchMethod(
             Invocation.getter(#invitations),
-            returnValue: <_i6.ActiveParticipationInvitation>[],
-            returnValueForMissingStub: <_i6.ActiveParticipationInvitation>[],
+            returnValue: <_i5.ActiveParticipationInvitation>[],
+            returnValueForMissingStub: <_i5.ActiveParticipationInvitation>[],
           )
-          as List<_i6.ActiveParticipationInvitation>);
+          as List<_i5.ActiveParticipationInvitation>);
 
   @override
   set user(_i3.CarpUser? user) => super.noSuchMethod(Invocation.setter(#user, user), returnValueForMissingStub: null);
 
   @override
-  set invitations(List<_i6.ActiveParticipationInvitation>? value) =>
+  set invitations(List<_i5.ActiveParticipationInvitation>? value) =>
       super.noSuchMethod(Invocation.setter(#invitations, value), returnValueForMissingStub: null);
 
   @override
@@ -175,43 +179,48 @@ class MockCarpBackend extends _i1.Mock implements _i5.CarpBackend {
           as _i7.Future<void>);
 
   @override
-  _i7.Future<List<_i6.ActiveParticipationInvitation>> getInvitations() =>
+  _i7.Future<List<_i5.ActiveParticipationInvitation>> getInvitations() =>
       (super.noSuchMethod(
             Invocation.method(#getInvitations, []),
-            returnValue: _i7.Future<List<_i6.ActiveParticipationInvitation>>.value(
-              <_i6.ActiveParticipationInvitation>[],
+            returnValue: _i7.Future<List<_i5.ActiveParticipationInvitation>>.value(
+              <_i5.ActiveParticipationInvitation>[],
             ),
-            returnValueForMissingStub: _i7.Future<List<_i6.ActiveParticipationInvitation>>.value(
-              <_i6.ActiveParticipationInvitation>[],
+            returnValueForMissingStub: _i7.Future<List<_i5.ActiveParticipationInvitation>>.value(
+              <_i5.ActiveParticipationInvitation>[],
             ),
           )
-          as _i7.Future<List<_i6.ActiveParticipationInvitation>>);
+          as _i7.Future<List<_i5.ActiveParticipationInvitation>>);
 
   @override
-  _i7.Future<_i6.InformedConsentInput?> uploadInformedConsent(_i8.RPTaskResult? consent) =>
+  _i7.Future<_i5.InformedConsentInput?> uploadInformedConsent(_i8.RPTaskResult? consent) =>
       (super.noSuchMethod(
             Invocation.method(#uploadInformedConsent, [consent]),
-            returnValue: _i7.Future<_i6.InformedConsentInput?>.value(),
-            returnValueForMissingStub: _i7.Future<_i6.InformedConsentInput?>.value(),
+            returnValue: _i7.Future<_i5.InformedConsentInput?>.value(),
+            returnValueForMissingStub: _i7.Future<_i5.InformedConsentInput?>.value(),
           )
-          as _i7.Future<_i6.InformedConsentInput?>);
+          as _i7.Future<_i5.InformedConsentInput?>);
 
   @override
-  _i7.Future<_i6.InformedConsentInput?>? getInformedConsentByRole(String? studyDeploymentId, String? role) =>
+  _i7.Future<_i5.InformedConsentInput?>? getInformedConsentByRole(String? studyDeploymentId, String? role) =>
       (super.noSuchMethod(
             Invocation.method(#getInformedConsentByRole, [studyDeploymentId, role]),
             returnValueForMissingStub: null,
           )
-          as _i7.Future<_i6.InformedConsentInput?>?);
+          as _i7.Future<_i5.InformedConsentInput?>?);
 }
 
 /// A class which mocks [AuthService].
 ///
 /// See the documentation for Mockito's code generation for more information.
-class MockAuthService extends _i1.Mock implements _i5.AuthService {
+class MockAuthService extends _i1.Mock implements _i6.AuthService {
   @override
   bool get isAuthenticated =>
       (super.noSuchMethod(Invocation.getter(#isAuthenticated), returnValue: false, returnValueForMissingStub: false)
+          as bool);
+
+  @override
+  bool get isAnonymous =>
+      (super.noSuchMethod(Invocation.getter(#isAnonymous), returnValue: false, returnValueForMissingStub: false)
           as bool);
 
   @override
@@ -242,13 +251,13 @@ class MockAuthService extends _i1.Mock implements _i5.AuthService {
           as Uri);
 
   @override
-  List<_i6.ActiveParticipationInvitation> get invitations =>
+  List<_i5.ActiveParticipationInvitation> get invitations =>
       (super.noSuchMethod(
             Invocation.getter(#invitations),
-            returnValue: <_i6.ActiveParticipationInvitation>[],
-            returnValueForMissingStub: <_i6.ActiveParticipationInvitation>[],
+            returnValue: <_i5.ActiveParticipationInvitation>[],
+            returnValueForMissingStub: <_i5.ActiveParticipationInvitation>[],
           )
-          as List<_i6.ActiveParticipationInvitation>);
+          as List<_i5.ActiveParticipationInvitation>);
 
   @override
   _i7.Future<void> initialize() =>
@@ -260,17 +269,17 @@ class MockAuthService extends _i1.Mock implements _i5.AuthService {
           as _i7.Future<void>);
 
   @override
-  _i7.Future<List<_i6.ActiveParticipationInvitation>> getInvitations() =>
+  _i7.Future<List<_i5.ActiveParticipationInvitation>> getInvitations() =>
       (super.noSuchMethod(
             Invocation.method(#getInvitations, []),
-            returnValue: _i7.Future<List<_i6.ActiveParticipationInvitation>>.value(
-              <_i6.ActiveParticipationInvitation>[],
+            returnValue: _i7.Future<List<_i5.ActiveParticipationInvitation>>.value(
+              <_i5.ActiveParticipationInvitation>[],
             ),
-            returnValueForMissingStub: _i7.Future<List<_i6.ActiveParticipationInvitation>>.value(
-              <_i6.ActiveParticipationInvitation>[],
+            returnValueForMissingStub: _i7.Future<List<_i5.ActiveParticipationInvitation>>.value(
+              <_i5.ActiveParticipationInvitation>[],
             ),
           )
-          as _i7.Future<List<_i6.ActiveParticipationInvitation>>);
+          as _i7.Future<List<_i5.ActiveParticipationInvitation>>);
 
   @override
   _i7.Future<void> authenticate() =>
@@ -303,7 +312,7 @@ class MockAuthService extends _i1.Mock implements _i5.AuthService {
 /// A class which mocks [SystemInfoService].
 ///
 /// See the documentation for Mockito's code generation for more information.
-class MockSystemInfoService extends _i1.Mock implements _i5.SystemInfoService {
+class MockSystemInfoService extends _i1.Mock implements _i6.SystemInfoService {
   @override
   _i7.Future<bool> checkConnectivity() =>
       (super.noSuchMethod(
@@ -330,6 +339,15 @@ class MockSystemInfoService extends _i1.Mock implements _i5.SystemInfoService {
             returnValueForMissingStub: _i7.Future<bool?>.value(),
           )
           as _i7.Future<bool?>);
+
+  @override
+  _i7.Future<void> openAppStore() =>
+      (super.noSuchMethod(
+            Invocation.method(#openAppStore, []),
+            returnValue: _i7.Future<void>.value(),
+            returnValueForMissingStub: _i7.Future<void>.value(),
+          )
+          as _i7.Future<void>);
 }
 
 /// A class which mocks [UserTask].
@@ -504,7 +522,7 @@ class MockUserTask extends _i1.Mock implements _i4.UserTask {
       super.noSuchMethod(Invocation.setter(#backgroundTaskExecutor, value), returnValueForMissingStub: null);
 
   @override
-  set result(_i6.Data? value) => super.noSuchMethod(Invocation.setter(#result, value), returnValueForMissingStub: null);
+  set result(_i5.Data? value) => super.noSuchMethod(Invocation.setter(#result, value), returnValueForMissingStub: null);
 
   @override
   void onStart() => super.noSuchMethod(Invocation.method(#onStart, []), returnValueForMissingStub: null);
@@ -517,7 +535,7 @@ class MockUserTask extends _i1.Mock implements _i4.UserTask {
   void onExpired() => super.noSuchMethod(Invocation.method(#onExpired, []), returnValueForMissingStub: null);
 
   @override
-  void onDone({bool? dequeue = false, _i6.Data? result}) => super.noSuchMethod(
+  void onDone({bool? dequeue = false, _i5.Data? result}) => super.noSuchMethod(
     Invocation.method(#onDone, [], {#dequeue: dequeue, #result: result}),
     returnValueForMissingStub: null,
   );
@@ -529,7 +547,16 @@ class MockUserTask extends _i1.Mock implements _i4.UserTask {
 /// A class which mocks [StudyService].
 ///
 /// See the documentation for Mockito's code generation for more information.
-class MockStudyService extends _i1.Mock implements _i5.StudyService {
+class MockStudyService extends _i1.Mock implements _i6.StudyService {
+  @override
+  _i5.DeploymentService get deploymentService =>
+      (super.noSuchMethod(
+            Invocation.getter(#deploymentService),
+            returnValue: _FakeDeploymentService_8(this, Invocation.getter(#deploymentService)),
+            returnValueForMissingStub: _FakeDeploymentService_8(this, Invocation.getter(#deploymentService)),
+          )
+          as _i5.DeploymentService);
+
   @override
   bool get hasStudy =>
       (super.noSuchMethod(Invocation.getter(#hasStudy), returnValue: false, returnValueForMissingStub: false) as bool);
@@ -540,39 +567,39 @@ class MockStudyService extends _i1.Mock implements _i5.StudyService {
           as bool);
 
   @override
-  Set<_i6.ExpectedParticipantData?> get expectedParticipantData =>
+  Set<_i5.ExpectedParticipantData?> get expectedParticipantData =>
       (super.noSuchMethod(
             Invocation.getter(#expectedParticipantData),
-            returnValue: <_i6.ExpectedParticipantData?>{},
-            returnValueForMissingStub: <_i6.ExpectedParticipantData?>{},
+            returnValue: <_i5.ExpectedParticipantData?>{},
+            returnValueForMissingStub: <_i5.ExpectedParticipantData?>{},
           )
-          as Set<_i6.ExpectedParticipantData?>);
+          as Set<_i5.ExpectedParticipantData?>);
 
   @override
   bool get isRunning =>
       (super.noSuchMethod(Invocation.getter(#isRunning), returnValue: false, returnValueForMissingStub: false) as bool);
 
   @override
-  Iterable<_i5.DeviceViewModel> get deploymentDevices =>
+  Iterable<_i6.DeviceViewModel> get deploymentDevices =>
       (super.noSuchMethod(
             Invocation.getter(#deploymentDevices),
-            returnValue: <_i5.DeviceViewModel>[],
-            returnValueForMissingStub: <_i5.DeviceViewModel>[],
+            returnValue: <_i6.DeviceViewModel>[],
+            returnValueForMissingStub: <_i6.DeviceViewModel>[],
           )
-          as Iterable<_i5.DeviceViewModel>);
+          as Iterable<_i6.DeviceViewModel>);
 
   @override
   set study(_i4.SmartphoneStudy? study) =>
       super.noSuchMethod(Invocation.setter(#study, study), returnValueForMissingStub: null);
 
   @override
-  _i7.Future<_i6.StudyDeploymentStatus?> refreshDeploymentStatus() =>
+  _i7.Future<_i5.StudyDeploymentStatus?> refreshDeploymentStatus() =>
       (super.noSuchMethod(
             Invocation.method(#refreshDeploymentStatus, []),
-            returnValue: _i7.Future<_i6.StudyDeploymentStatus?>.value(),
-            returnValueForMissingStub: _i7.Future<_i6.StudyDeploymentStatus?>.value(),
+            returnValue: _i7.Future<_i5.StudyDeploymentStatus?>.value(),
+            returnValueForMissingStub: _i7.Future<_i5.StudyDeploymentStatus?>.value(),
           )
-          as _i7.Future<_i6.StudyDeploymentStatus?>);
+          as _i7.Future<_i5.StudyDeploymentStatus?>);
 
   @override
   _i7.Future<void> configure() =>
@@ -584,13 +611,22 @@ class MockStudyService extends _i1.Mock implements _i5.StudyService {
           as _i7.Future<void>);
 
   @override
-  _i7.Future<_i6.StudyStatus?> tryDeployment() =>
+  _i7.Future<_i5.StudyStatus?> addStudy(_i4.SmartphoneStudy? study) =>
+      (super.noSuchMethod(
+            Invocation.method(#addStudy, [study]),
+            returnValue: _i7.Future<_i5.StudyStatus?>.value(),
+            returnValueForMissingStub: _i7.Future<_i5.StudyStatus?>.value(),
+          )
+          as _i7.Future<_i5.StudyStatus?>);
+
+  @override
+  _i7.Future<_i5.StudyStatus?> tryDeployment() =>
       (super.noSuchMethod(
             Invocation.method(#tryDeployment, []),
-            returnValue: _i7.Future<_i6.StudyStatus?>.value(),
-            returnValueForMissingStub: _i7.Future<_i6.StudyStatus?>.value(),
+            returnValue: _i7.Future<_i5.StudyStatus?>.value(),
+            returnValueForMissingStub: _i7.Future<_i5.StudyStatus?>.value(),
           )
-          as _i7.Future<_i6.StudyStatus?>);
+          as _i7.Future<_i5.StudyStatus?>);
 
   @override
   _i7.Future<void> start() =>
@@ -602,7 +638,7 @@ class MockStudyService extends _i1.Mock implements _i5.StudyService {
           as _i7.Future<void>);
 
   @override
-  void addMeasurement(_i6.Measurement? measurement) =>
+  void addMeasurement(_i5.Measurement? measurement) =>
       super.noSuchMethod(Invocation.method(#addMeasurement, [measurement]), returnValueForMissingStub: null);
 
   @override
@@ -621,16 +657,20 @@ class MockStudyService extends _i1.Mock implements _i5.StudyService {
           as bool);
 
   @override
-  _i7.Future<List<_i6.ParticipantData>> getParticipantDataListFromDeployment() =>
-      (super.noSuchMethod(
-            Invocation.method(#getParticipantDataListFromDeployment, []),
-            returnValue: _i7.Future<List<_i6.ParticipantData>>.value(<_i6.ParticipantData>[]),
-            returnValueForMissingStub: _i7.Future<List<_i6.ParticipantData>>.value(<_i6.ParticipantData>[]),
-          )
-          as _i7.Future<List<_i6.ParticipantData>>);
+  void translateProtocol([_i8.RPLocalizations? localization]) =>
+      super.noSuchMethod(Invocation.method(#translateProtocol, [localization]), returnValueForMissingStub: null);
 
   @override
-  void setParticipantData(Map<String, _i6.Data>? data) =>
+  _i7.Future<List<_i5.ParticipantData>> getParticipantDataListFromDeployment() =>
+      (super.noSuchMethod(
+            Invocation.method(#getParticipantDataListFromDeployment, []),
+            returnValue: _i7.Future<List<_i5.ParticipantData>>.value(<_i5.ParticipantData>[]),
+            returnValueForMissingStub: _i7.Future<List<_i5.ParticipantData>>.value(<_i5.ParticipantData>[]),
+          )
+          as _i7.Future<List<_i5.ParticipantData>>);
+
+  @override
+  void setParticipantData(Map<String, _i5.Data>? data) =>
       super.noSuchMethod(Invocation.method(#setParticipantData, [data]), returnValueForMissingStub: null);
 
   @override

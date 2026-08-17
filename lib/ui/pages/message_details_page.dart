@@ -1,5 +1,8 @@
 part of carp_study_app;
 
+/// The details screen for a [Message] (announcement / news / article).
+///
+/// Pushed full-screen on the root navigator, in the design 2.0 card style.
 class MessageDetailsPage extends StatelessWidget {
   static const String route = '/message';
   final String messageId;
@@ -8,105 +11,116 @@ class MessageDetailsPage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    RPLocalizations locale = RPLocalizations.of(context)!;
-
-    Message message = bloc.appViewModel.studyPageViewModel.messageById(messageId);
+    final locale = RPLocalizations.of(context)!;
+    final message = bloc.appViewModel.studyPageViewModel.messageById(messageId);
+    final subTitle = message.subTitle ?? '';
+    final body = message.message ?? '';
+    final hasImage = message.image != null && message.image!.isNotEmpty;
 
     return Scaffold(
       body: SafeArea(
-        child: Container(
-          color: Theme.of(context).colorScheme.secondary,
-          child: Column(
-            children: [
-              Padding(
-                padding: const EdgeInsets.symmetric(vertical: 8.0, horizontal: 18),
-                child: const CarpAppBar(hasProfileIcon: true),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Padding(
+              padding: const EdgeInsets.fromLTRB(8, 8, 16, 8),
+              child: TextButton.icon(
+                onPressed: () => context.canPop() ? context.pop() : context.go(CarpAppState.homeRoute),
+                icon: Icon(Icons.arrow_back_ios, size: 18, color: Theme.of(context).colorScheme.primary),
+                label: Text(
+                  locale.translate('app_home.nav_bar_item.home'),
+                  style: Theme.of(context).textTheme.labelLarge!.copyWith(color: Theme.of(context).colorScheme.primary),
+                ),
               ),
-              Row(
+            ),
+            Flexible(
+              child: ListView(
+                padding: const EdgeInsets.only(top: 8, bottom: 24),
                 children: [
-                  IconButton(
-                    padding: const EdgeInsets.only(left: 26, right: 10, top: 16, bottom: 16),
-                    icon: Icon(Icons.arrow_back_ios, color: Theme.of(context).extension<CarpColors>()!.grey600),
-                    onPressed: () {
-                      if (context.canPop()) {
-                        context.pop();
-                      } else {
-                        context.go(CarpAppState.homeRoute);
-                      }
-                    },
-                  ),
-                  Padding(
-                    padding: const EdgeInsets.symmetric(vertical: 10.0),
-                    child: Text(
-                      locale.translate(message.title!),
-                      style: fs20fw700.copyWith(color: Theme.of(context).extension<CarpColors>()!.grey900),
-                    ),
-                  ),
-                  Spacer(),
-                  Padding(
-                    padding: const EdgeInsets.only(right: 24),
-                    child: Material(
-                      color: Theme.of(context).extension<CarpColors>()!.primary,
-                      borderRadius: BorderRadius.circular(100.0),
-                      child: Padding(
-                        padding: const EdgeInsets.symmetric(horizontal: 12.0, vertical: 6.0),
-                        child: Text(
-                          locale.translate(message.type.toString().split('.').last.toLowerCase()),
-                          style: fs16fw600.copyWith(color: Colors.white),
+                  StudiesMaterial(
+                    backgroundColor: Colors.grey.shade50,
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        if (hasImage)
+                          SizedBox(
+                            width: double.infinity,
+                            height: 180,
+                            child: FittedBox(
+                              fit: BoxFit.cover,
+                              clipBehavior: Clip.hardEdge,
+                              child: bloc.appViewModel.studyPageViewModel.getMessageImage(message.image),
+                            ),
+                          ),
+                        Padding(
+                          padding: const EdgeInsets.all(16),
+                          child: Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              _typeChip(context, message.type),
+                              const SizedBox(height: 12),
+                              Text(
+                                locale.translate(message.title ?? ''),
+                                style: Theme.of(context).textTheme.titleLarge!.copyWith(fontSize: 20),
+                              ),
+                              if (subTitle.isNotEmpty) ...[
+                                const SizedBox(height: 8),
+                                Text(
+                                  locale.translate(subTitle),
+                                  style: Theme.of(context).textTheme.labelMedium!.copyWith(color: Colors.grey.shade600),
+                                ),
+                              ],
+                              if (body.isNotEmpty) ...[
+                                // The divider only earns its place when it has a
+                                // subtitle to separate the body from.
+                                if (subTitle.isNotEmpty) ...[
+                                  const SizedBox(height: 16),
+                                  Divider(height: 1, color: Colors.grey.shade200),
+                                ],
+                                const SizedBox(height: 12),
+                                Text(
+                                  locale.translate(body),
+                                  style: Theme.of(
+                                    context,
+                                  ).textTheme.bodyLarge!.copyWith(color: Colors.grey.shade900, height: 1.5),
+                                ),
+                              ],
+                            ],
+                          ),
                         ),
-                      ),
+                      ],
                     ),
                   ),
                 ],
               ),
-              Flexible(
-                child: ListView(
-                  padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 16),
-                  children: [
-                    message.subTitle != null
-                        ? Padding(
-                            padding: const EdgeInsets.symmetric(horizontal: 10.0, vertical: 6.0),
-                            child: Text(
-                              locale.translate(message.subTitle!),
-                              style: fs16fw400.copyWith(color: Theme.of(context).extension<CarpColors>()!.grey700),
-                            ),
-                          )
-                        : const SizedBox.shrink(),
-                    if (message.image != null && message.image!.isNotEmpty)
-                      LayoutBuilder(
-                        builder: (context, constraints) {
-                          final screenHeight = MediaQuery.of(context).size.height;
-                          final screenWidth = MediaQuery.of(context).size.height;
-                          return ConstrainedBox(
-                            constraints: BoxConstraints(maxWidth: screenHeight, maxHeight: screenWidth),
-                            child: FittedBox(
-                              fit: BoxFit.contain,
-                              child: bloc.appViewModel.studyPageViewModel.getMessageImage(message.image),
-                            ),
-                          );
-                        },
-                      ),
-                    // DetailsBanner(message.title ?? '', message.image),
-                    Padding(
-                      padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 16),
-                      child: Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          if (message.message != null)
-                            Text(
-                              locale.translate(message.message!),
-                              style: fs16fw400.copyWith(color: Theme.of(context).extension<CarpColors>()!.grey900),
-                              textAlign: TextAlign.justify,
-                            ),
-                        ],
-                      ),
-                    ),
-                  ],
-                ),
-              ),
-            ],
-          ),
+            ),
+          ],
         ),
+      ),
+    );
+  }
+
+  /// A pill with the message type's icon and label, in the accent colour.
+  Widget _typeChip(BuildContext context, MessageType type) {
+    final locale = RPLocalizations.of(context)!;
+    return Container(
+      padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 6),
+      decoration: BoxDecoration(
+        color: Theme.of(context).colorScheme.primary.withValues(alpha: 0.1),
+        borderRadius: BorderRadius.circular(100),
+      ),
+      child: Row(
+        mainAxisSize: MainAxisSize.min,
+        children: [
+          Icon(type.icon, size: 14, color: Theme.of(context).colorScheme.primary),
+          const SizedBox(width: 6),
+          Flexible(
+            child: Text(
+              locale.translate(type.name.toLowerCase()),
+              style: Theme.of(context).textTheme.labelSmall!.copyWith(color: Theme.of(context).colorScheme.primary),
+            ),
+          ),
+        ],
       ),
     );
   }

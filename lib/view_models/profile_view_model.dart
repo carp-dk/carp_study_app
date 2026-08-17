@@ -1,5 +1,11 @@
 part of carp_study_app;
 
+/// View model for [ProfilePage].
+///
+/// State: the signed-in user's name and id, and the active study's ids, roles
+/// and server.
+///
+/// Handles leaving the study and signing out.
 class ProfilePageViewModel extends ViewModel {
   ProfilePageViewModel({AuthService? authService, StudyService? studyService, SystemInfoService? systemInfoService})
     : _authService = authService,
@@ -33,17 +39,13 @@ class ProfilePageViewModel extends ViewModel {
   String get fullName => '$firstName $lastName';
   String get email => _auth.user?.email ?? '';
 
-  String get studyId => _study.deployment?.studyId ?? '';
+  String get studyId => _study.study?.studyId ?? '';
   String get studyDeploymentId => _study.deployment?.studyDeploymentId ?? '';
   String get studyDeploymentTitle => _study.deployment?.studyDescription?.title ?? '';
   String get participantId => _study.study?.participantId ?? '';
   String get participantRole => _study.study?.participantRoleName ?? '';
   String get deviceRole => _study.deployment?.deviceRoleName ?? '';
 
-  String get responsibleEmail => _study.deployment?.studyDescription?.responsible?.email ?? 'study@carp.dk';
-  String get privacyPolicyUrl =>
-      _study.deployment?.studyDescription?.privacyPolicyUrl ?? 'https://carp.dk/privacy-policy-app/';
-  String get studyDescriptionUrl => _study.deployment?.studyDescription?.studyDescriptionUrl ?? '';
   String get deviceID => DeviceInfoService().deviceID ?? '';
   String get currentServer => _auth.serverUri.toString();
 }

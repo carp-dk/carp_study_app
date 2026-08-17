@@ -30,7 +30,7 @@ class AudioTaskPageState extends State<AudioTaskPage> {
                       ),
                       Spacer(),
                       IconButton(
-                        color: Theme.of(context).extension<CarpColors>()!.grey900!,
+                        color: Colors.grey.shade900,
                         onPressed: () {
                           _showCancelConfirmationDialog();
                         },
@@ -44,14 +44,17 @@ class AudioTaskPageState extends State<AudioTaskPage> {
                   ),
                   Padding(
                     padding: const EdgeInsets.symmetric(vertical: 12),
-                    child: Text(locale.translate(widget.audioUserTask!.title), style: fs22fw700),
+                    child: Text(
+                      locale.translate(widget.audioUserTask!.title),
+                      style: Theme.of(context).textTheme.titleLarge!,
+                    ),
                   ),
                   Padding(
                     padding: const EdgeInsets.symmetric(vertical: 12, horizontal: 20),
                     child: Text(
                       '${locale.translate(widget.audioUserTask!.description)}\n\n'
                       '${locale.translate('pages.audio_task.play')}',
-                      style: fs16fw600,
+                      style: Theme.of(context).textTheme.labelLarge!,
                     ),
                   ),
                   Padding(
@@ -59,25 +62,21 @@ class AudioTaskPageState extends State<AudioTaskPage> {
                     child: Row(
                       mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                       children: [
-                        OutlinedButton(
+                        TextButton(
                           onPressed: () {
                             widget.audioUserTask!.onCancel();
                             Navigator.pop(context);
                           },
                           child: Text(locale.translate("Cancel")),
                         ),
-                        ElevatedButton(
+                        FilledButton(
                           onPressed: () => Navigator.push(
                             context,
                             MaterialPageRoute<void>(
                               builder: (context) => AudioPage(audioUserTask: widget.audioUserTask),
                             ),
                           ),
-                          style: ElevatedButton.styleFrom(
-                            backgroundColor: Theme.of(context).extension<CarpColors>()!.primary,
-                            padding: const EdgeInsets.symmetric(horizontal: 30, vertical: 12),
-                          ),
-                          child: Text(locale.translate("next"), style: TextStyle(color: Colors.white)),
+                          child: Text(locale.translate("next")),
                         ),
                       ],
                     ),

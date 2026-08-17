@@ -12,7 +12,7 @@ class InstallHealthConnectDialog extends StatelessWidget {
       title: const DialogTitle(title: "pages.about.install_health_connect.title"),
       content: Text(
         locale.translate('pages.about.install_health_connect.description'),
-        style: fs16fw400,
+        style: Theme.of(context).textTheme.bodyLarge!,
         textAlign: TextAlign.justify,
       ),
       actions: [

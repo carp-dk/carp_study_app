@@ -39,6 +39,20 @@ class _FakeMessageManager extends MessageManager {
   Future<void> deleteAllMessages() async {}
 }
 
+/// Records the notifications a service asks for, instead of hitting the platform.
+class _FakeNotificationManager implements NotificationManager {
+  final List<String> titles = [];
+
+  @override
+  Future<int> createNotification({int? id, required String title, String? body}) async {
+    titles.add(title);
+    return id ?? titles.length;
+  }
+
+  @override
+  noSuchMethod(Invocation invocation) => super.noSuchMethod(invocation);
+}
+
 class _FakeConsentManager extends InformedConsentManager {
   RPOrderedTask? document;
   bool? lastRefresh;
@@ -139,6 +153,22 @@ void main() {
       });
     });
 
+    test('notifies only about messages that arrive after the first refresh', () async {
+      final manager = _FakeMessageManager()..toReturn = [message('a', DateTime(2024, 1, 1))];
+      final notifications = _FakeNotificationManager();
+      final service = MessageService(manager, notificationManager: notifications);
+
+      await service.refresh();
+      expect(notifications.titles, isEmpty, reason: 'the backlog must not be replayed on the first refresh');
+
+      manager.toReturn = [message('a', DateTime(2024, 1, 1)), message('b', DateTime(2025, 1, 1))];
+      await service.refresh();
+      expect(notifications.titles, ['message-b']);
+
+      await service.refresh();
+      expect(notifications.titles, ['message-b'], reason: 'an already seen message must not notify again');
+    });
+
     test('dispose closes the stream and refresh is still safe', () async {
       final service = MessageService(_FakeMessageManager());
       service.dispose();
@@ -198,6 +228,22 @@ void main() {
       expect(invitations, [forPhone, unassigned]);
       expect(auth.invitations, [forPhone, unassigned]);
     });
+
+    test('getInvitations sorts by study name, then deployment id', () async {
+      ActiveParticipationInvitation invitation(String name, String deploymentId) => ActiveParticipationInvitation(
+        Participation(deploymentId, 'participant-1', AssignedTo()),
+        StudyInvitation(name),
+      );
+
+      // CAWS returns these in no particular order; two deployments of one study
+      // must still come back in a stable order on every refresh.
+      final beta = invitation('Beta', 'dep-1');
+      final alphaB = invitation('Alpha', 'dep-b');
+      final alphaA = invitation('Alpha', 'dep-a');
+      when(backend.getInvitations()).thenAnswer((_) async => [beta, alphaB, alphaA]);
+
+      expect(await auth.getInvitations(), [alphaA, alphaB, beta]);
+    });
   });
 
   group('ConsentService', () {
@@ -216,53 +262,25 @@ void main() {
       expect(manager.lastRefresh, isTrue);
     });
 
-    test('local mode falls back to the locally stored participant flag', () async {
-      LocalSettings().participant = Participant(studyDeploymentId: 'dep-1');
-      expect(await consent.hasBeenAccepted(null), isFalse);
-
-      await consent.accept();
-      expect(await consent.hasBeenAccepted(null), isTrue);
+    test('hasSignedConsent is false without a study, without asking the backend', () async {
+      expect(await consent.hasSignedConsent(null), isFalse);
+      verifyNever(backend.getInformedConsentByRole(any, any));
     });
 
-    test('caches the consent status for synchronous reads', () async {
-      LocalSettings().participant = Participant(studyDeploymentId: 'dep-cache');
-
-      expect(consent.isAccepted, isNull);
-      expect(await consent.refreshStatus(null), isFalse);
-      expect(consent.isAccepted, isFalse);
-
-      await consent.accept();
-      expect(consent.isAccepted, isTrue);
-
-      consent.reset();
-      expect(consent.isAccepted, isNull);
-    });
-
-    test('accept notifies listeners', () async {
-      LocalSettings().participant = Participant(studyDeploymentId: 'dep-1');
-      var notified = false;
-      consent.addListener(() => notified = true);
-
-      await consent.accept();
-      expect(notified, isTrue);
-    });
-
-    test('non-local mode asks the backend and is false when it fails', () async {
-      AppConfig.deploymentMode = DeploymentMode.test;
+    test('hasSignedConsent is false when the backend cannot be reached', () async {
       final study = SmartphoneStudy(studyDeploymentId: 'dep-1', deviceRoleName: 'phone');
       when(backend.getInformedConsentByRole('dep-1', null)).thenAnswer((_) async => throw Exception('offline'));
 
-      expect(await consent.hasBeenAccepted(study), isFalse);
+      expect(await consent.hasSignedConsent(study), isFalse);
     });
 
-    test('non-local mode is true when the backend has a consent document', () async {
-      AppConfig.deploymentMode = DeploymentMode.test;
+    test('hasSignedConsent is true when the backend has a signed consent', () async {
       final study = SmartphoneStudy(studyDeploymentId: 'dep-1', deviceRoleName: 'phone');
       when(
         backend.getInformedConsentByRole('dep-1', null),
       ).thenAnswer((_) async => InformedConsentInput(userId: '42', name: 'jdoe', consent: '{}', signatureImage: ''));
 
-      expect(await consent.hasBeenAccepted(study), isTrue);
+      expect(await consent.hasSignedConsent(study), isTrue);
     });
   });
 

@@ -1,7 +1,11 @@
 part of carp_study_app;
 
-/// The view model for the [StudyPage]. Mainly holds the list of messages like
-/// news articles to be shown as part of the study.
+/// View model for [StudyPage] and [StudyAboutPage].
+///
+/// State: the study description and responsible party, the deployment status,
+/// and the messages (announcements, news) published for the study.
+///
+/// Also handles pull-to-refresh: re-fetch messages and re-try the deployment.
 class StudyPageViewModel extends ViewModel {
   StudyPageViewModel({
     StudyService? studyService,
@@ -84,6 +88,21 @@ class StudyPageViewModel extends ViewModel {
   String get studyDescriptionUrl => _study.deployment?.studyDescription?.studyDescriptionUrl ?? '';
   String get privacyPolicyUrl =>
       _study.deployment?.studyDescription?.privacyPolicyUrl ?? 'https://carp.dk/privacy-policy-app/';
+  String get username => _auth.username;
+
+  /// Fetch the signed informed consent from the backend and save it as a JSON
+  /// file. Returns null when no signed consent exists (e.g. local deployments).
+  Future<File?> downloadInformedConsent() async {
+    try {
+      final consent = await CarpBackend().getInformedConsentByRole(studyDeploymentId, participantRole);
+      if (consent == null) return null;
+      final dir = await getApplicationDocumentsDirectory();
+      return File('${dir.path}/informed_consent.json').writeAsString(toJsonString(consent.toJson()));
+    } catch (e) {
+      warning('$runtimeType - could not download informed consent - $e');
+      return null;
+    }
+  }
 
   String get piTitle => _study.deployment?.responsible?.title ?? '';
   String get piName => _study.deployment?.responsible?.name ?? '';

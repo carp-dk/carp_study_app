@@ -5,8 +5,28 @@ class ActivityCardViewModel extends SerializableViewModel<WeeklyActivities> {
 
   @override
   WeeklyActivities createModel() => WeeklyActivities();
+
   Map<ActivityType, Map<int, int>> get activities => model.activities;
-  List<DailyActivity> activitiesByType(ActivityType type) => model.activitiesByType(type);
+
+  List<DailyActivity> activitiesByType(ActivityType type) =>
+      (activities[type] ?? const {}).entries.map((entry) => DailyActivity(entry.key, entry.value)).toList();
+
+  /// Fold [measurement] into [into] and return it as the new previous reading.
+  ///
+  /// The probe reports the activity it currently sees, so a duration is the gap
+  /// until a *different* activity is reported.
+  static Measurement? _addActivity(WeeklyActivities into, Measurement measurement, Measurement? previous) {
+    if (previous == null) return measurement;
+    if ((measurement.data as Activity).type == (previous.data as Activity).type) return previous;
+
+    final start = previous.dateTime;
+    into.increaseActivityDuration(
+      (previous.data as Activity).type,
+      start.weekday,
+      measurement.dateTime.difference(start).inMinutes,
+    );
+    return measurement;
+  }
 
   /// Stream of activity measurements.
   Stream<Measurement>? get activityEvents =>
@@ -33,22 +53,8 @@ class ActivityCardViewModel extends SerializableViewModel<WeeklyActivities> {
 
     // listen for activity events and count the minutes
     activityEvents?.listen((measurement) {
-      var lastActivity = _lastActivity;
-
-      if ((measurement.data as Activity).type != (lastActivity.data as Activity).type) {
-        // if we have a new type of activity
-        // add the minutes to the last known activity type
-        DateTime start = DateTime.fromMicrosecondsSinceEpoch(lastActivity.sensorStartTime);
-        DateTime end = DateTime.fromMicrosecondsSinceEpoch(measurement.sensorStartTime);
-        model.increaseActivityDuration(
-          (lastActivity.data as Activity).type,
-          start.weekday,
-          end.difference(start).inMinutes,
-        );
-        // and then save the new activity
-        _lastActivity = measurement;
-      }
-    });
+      _lastActivity = _addActivity(model, measurement, _lastActivity) ?? measurement;
+    }, onError: onMeasurementStreamError);
   }
 }
 

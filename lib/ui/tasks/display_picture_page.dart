@@ -53,7 +53,7 @@ class DisplayPicturePageState extends State<DisplayPicturePage> {
                 ),
                 Spacer(),
                 IconButton(
-                  color: Theme.of(context).extension<CarpColors>()!.grey900!,
+                  color: Colors.grey.shade900,
                   onPressed: () {
                     _showCancelConfirmationDialog();
                   },
@@ -86,12 +86,18 @@ class DisplayPicturePageState extends State<DisplayPicturePage> {
                 children: [
                   Padding(
                     padding: const EdgeInsets.symmetric(horizontal: 10),
-                    child: Text(locale.translate('pages.audio_task.done'), style: fs22fw700),
+                    child: Text(
+                      locale.translate('pages.audio_task.done'),
+                      style: Theme.of(context).textTheme.titleLarge!,
+                    ),
                   ),
                   const SizedBox(height: 40),
                   Padding(
                     padding: const EdgeInsets.symmetric(horizontal: 10),
-                    child: Text(locale.translate('pages.audio_task.recording_completed'), style: fs16fw600),
+                    child: Text(
+                      locale.translate('pages.audio_task.recording_completed'),
+                      style: Theme.of(context).textTheme.labelLarge!,
+                    ),
                   ),
                   const SizedBox(height: 20),
                   Align(
@@ -105,12 +111,12 @@ class DisplayPicturePageState extends State<DisplayPicturePage> {
                           IconButton(
                             onPressed: () => Navigator.of(context).pop(),
                             padding: const EdgeInsets.all(0),
-                            icon: const Icon(Icons.replay, size: 25, color: CACHET.GREY_5),
+                            icon: const Icon(Icons.replay, size: 25, color: Color(0xff707070)),
                           ),
                           const SizedBox(width: 20),
                           CircleAvatar(
                             radius: 30,
-                            backgroundColor: CACHET.GREEN_1,
+                            backgroundColor: const Color(0xff67CE67),
                             child: IconButton(
                               onPressed: () {
                                 widget.videoUserTask.onSave();

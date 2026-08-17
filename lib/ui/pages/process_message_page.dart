@@ -70,9 +70,9 @@ class ProcessMessagePage extends StatelessWidget {
             const SizedBox(height: 40),
             messageImage(),
             const SizedBox(height: 20),
-            Center(child: Text(locale.translate(title), style: fs22fw700)),
+            Center(child: Text(locale.translate(title), style: Theme.of(context).textTheme.titleLarge!)),
             const SizedBox(height: 10),
-            Text(locale.translate(description), style: fs16fw600),
+            Text(locale.translate(description), style: Theme.of(context).textTheme.labelLarge!),
           ],
         ),
       ),
@@ -84,14 +84,11 @@ class ProcessMessagePage extends StatelessWidget {
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: [
                     const SizedBox(width: 15),
-                    OutlinedButton(
+                    TextButton(
                       onPressed: () {
                         Navigator.of(context).pop();
                       },
-                      child: Text(
-                        locale.translate('cancel').toUpperCase(),
-                        style: TextStyle(color: Theme.of(context).primaryColor),
-                      ),
+                      child: Text(locale.translate('cancel')),
                     ),
                     const SizedBox(width: 10),
                   ],
@@ -100,12 +97,11 @@ class ProcessMessagePage extends StatelessWidget {
           Row(
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
-              ElevatedButton(
-                style: ElevatedButton.styleFrom(backgroundColor: Theme.of(context).primaryColor),
+              FilledButton(
                 onPressed: () {
                   actionFunction();
                 },
-                child: Text(locale.translate(actionText).toUpperCase()),
+                child: Text(locale.translate(actionText)),
               ),
               const SizedBox(width: 15),
             ],

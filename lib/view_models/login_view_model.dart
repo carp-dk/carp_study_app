@@ -3,8 +3,11 @@ part of carp_study_app;
 /// The outcome of a sign-in attempt.
 enum SignInResult { success, offline, failed }
 
-/// The view model for the [LoginPage] and [QRViewExample] - owns the
-/// authentication flow.
+/// View model for [LoginPage] and [QRViewExample].
+///
+/// State: whether the user is authenticated.
+///
+/// Runs the sign-in flow - CAWS web view, magic link, and sign-out.
 class LoginViewModel extends ViewModel {
   LoginViewModel({AuthService? authService, SystemInfoService? systemInfoService})
     : _authService = authService,
@@ -20,7 +23,6 @@ class LoginViewModel extends ViewModel {
 
   /// Sign in via the CAWS web view.
   Future<SignInResult> signIn() async {
-    logAppState('LoginViewModel.signIn() START');
     if (!await _system.checkConnectivity()) return SignInResult.offline;
 
     await _auth.initialize();
@@ -28,7 +30,6 @@ class LoginViewModel extends ViewModel {
 
     notifyListeners();
     final result = _auth.isAuthenticated ? SignInResult.success : SignInResult.failed;
-    logAppState('LoginViewModel.signIn() DONE - result=${result.name}');
     return result;
   }
 

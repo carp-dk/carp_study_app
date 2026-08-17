@@ -34,14 +34,14 @@ class EnableInternetConnectionDialog extends StatelessWidget {
               children: [
                 Text(
                   locale.translate("pages.login.internet_connection.enable_internet_connections.general_message"),
-                  style: fs16fw400,
+                  style: Theme.of(context).textTheme.bodyLarge!,
                   textAlign: TextAlign.justify,
                 ),
                 Padding(
                   padding: EdgeInsets.symmetric(vertical: 16.0),
                   child: Text(
                     locale.translate("pages.login.internet_connection.enable_internet_connections.wifi_message"),
-                    style: fs16fw400,
+                    style: Theme.of(context).textTheme.bodyLarge!,
                     textAlign: TextAlign.justify,
                   ),
                 ),
@@ -57,7 +57,7 @@ class EnableInternetConnectionDialog extends StatelessWidget {
                   padding: EdgeInsets.symmetric(vertical: 16.0),
                   child: Text(
                     locale.translate("pages.login.internet_connection.enable_internet_connections.mobile_data_message"),
-                    style: fs16fw400,
+                    style: Theme.of(context).textTheme.bodyLarge!,
                     textAlign: TextAlign.justify,
                   ),
                 ),
@@ -108,14 +108,14 @@ class EnableInternetConnectionDialog extends StatelessWidget {
               children: [
                 Text(
                   locale.translate("pages.login.internet_connection.enable_internet_connections.general_message"),
-                  style: fs16fw400,
+                  style: Theme.of(context).textTheme.bodyLarge!,
                   textAlign: TextAlign.justify,
                 ),
                 Padding(
                   padding: EdgeInsets.symmetric(vertical: 16.0),
                   child: Text(
                     locale.translate("pages.login.internet_connection.enable_internet_connections.wifi_message"),
-                    style: fs16fw400,
+                    style: Theme.of(context).textTheme.bodyLarge!,
                     textAlign: TextAlign.justify,
                   ),
                 ),
@@ -135,7 +135,7 @@ class EnableInternetConnectionDialog extends StatelessWidget {
                         locale.translate(
                           "pages.login.internet_connection.enable_internet_connections.mobile_data_message",
                         ),
-                        style: fs16fw400,
+                        style: Theme.of(context).textTheme.bodyLarge!,
                         textAlign: TextAlign.justify,
                       ),
                     ],

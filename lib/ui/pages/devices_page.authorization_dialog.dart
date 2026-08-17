@@ -29,7 +29,7 @@ class AuthorizationDialog extends StatelessWidget {
               children: [
                 Text(
                   locale.translate("pages.devices.connection.bluetooth_authorization.message"),
-                  style: fs16fw400,
+                  style: Theme.of(context).textTheme.bodyLarge!,
                   textAlign: TextAlign.justify,
                 ),
                 Image(

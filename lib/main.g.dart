@@ -84,12 +84,16 @@ HourlyHeartRate _$HourlyHeartRateFromJson(Map<String, dynamic> json) => HourlyHe
   ..hourlyHeartRate = (json['hourlyHeartRate'] as Map<String, dynamic>).map(
     (k, e) => MapEntry(int.parse(k), HeartRateMinMaxPrHour.fromJson(e as Map<String, dynamic>)),
   )
+  ..dailyHeartRate = (json['dailyHeartRate'] as Map<String, dynamic>).map(
+    (k, e) => MapEntry(int.parse(k), HeartRateMinMaxPrHour.fromJson(e as Map<String, dynamic>)),
+  )
   ..lastUpdated = DateTime.parse(json['lastUpdated'] as String)
   ..maxHeartRate = (json['maxHeartRate'] as num?)?.toDouble()
   ..minHeartRate = (json['minHeartRate'] as num?)?.toDouble();
 
 Map<String, dynamic> _$HourlyHeartRateToJson(HourlyHeartRate instance) => <String, dynamic>{
   'hourlyHeartRate': instance.hourlyHeartRate.map((k, e) => MapEntry(k.toString(), e)),
+  'dailyHeartRate': instance.dailyHeartRate.map((k, e) => MapEntry(k.toString(), e)),
   'lastUpdated': instance.lastUpdated.toIso8601String(),
   'maxHeartRate': ?instance.maxHeartRate,
   'minHeartRate': ?instance.minHeartRate,

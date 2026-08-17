@@ -50,49 +50,64 @@ class _BluetoothConnectionPageState extends State<BluetoothConnectionPage> {
       // the system back gesture does not skip past the confirmation.
       canPop: currentStep != CurrentStep.done,
       child: Scaffold(
-        backgroundColor: Theme.of(context).extension<CarpColors>()!.backgroundGray,
         body: SafeArea(
           child: Stack(
             children: [
-              Container(
-                child: Column(
-                  children: [
-                    Padding(
-                      padding: const EdgeInsets.symmetric(vertical: 8.0, horizontal: 16),
-                      child: const CarpAppBar(hasProfileIcon: true),
+              Column(
+                children: [
+                  Align(
+                    alignment: Alignment.centerRight,
+                    child: Padding(
+                      padding: const EdgeInsets.only(top: 8, right: 8),
+                      child: IconButton(
+                        icon: const Icon(Icons.close),
+                        color: Colors.grey.shade700,
+                        onPressed: () => context.pop(true),
+                      ),
                     ),
-                    Expanded(
-                      child: Padding(
-                        padding: const EdgeInsets.symmetric(horizontal: 20.0),
-                        child: Column(
-                          children: [
-                            _buildDialogTitle(locale),
-                            Expanded(
-                              child: Padding(
-                                padding: const EdgeInsets.all(8.0),
-                                child: SizedBox(child: _buildStepContent(locale)),
-                              ),
-                            ),
-                            Padding(
-                              padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 16),
-                              child: Row(
-                                mainAxisAlignment: currentStep == CurrentStep.done
-                                    ? MainAxisAlignment.end
-                                    : MainAxisAlignment.spaceBetween,
-                                children: _buildActionButtons(locale),
-                              ),
+                  ),
+                  Expanded(
+                    child: Padding(
+                      padding: const EdgeInsets.symmetric(horizontal: 20.0),
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          _buildDialogTitle(locale),
+                          Expanded(child: _buildStepContent()),
+                        ],
+                      ),
+                    ),
+                  ),
+                  Padding(
+                    padding: const EdgeInsets.fromLTRB(20, 8, 20, 16),
+                    child: Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      children: _buildActionButtons(locale),
+                    ),
+                  ),
+                ],
+              ),
+              if (isConnecting)
+                Positioned.fill(
+                  child: AbsorbPointer(
+                    child: Center(
+                      child: Container(
+                        padding: const EdgeInsets.all(24),
+                        decoration: BoxDecoration(
+                          color: Colors.white,
+                          borderRadius: BorderRadius.circular(16),
+                          boxShadow: [
+                            BoxShadow(
+                              color: Colors.black.withValues(alpha: 0.12),
+                              blurRadius: 16,
+                              offset: const Offset(0, 4),
                             ),
                           ],
                         ),
+                        child: const CircularProgressIndicator(),
                       ),
                     ),
-                  ],
-                ),
-              ),
-              if (isConnecting)
-                Container(
-                  color: Colors.black26,
-                  child: const Center(child: CircularProgressIndicator()),
+                  ),
                 ),
             ],
           ),
@@ -102,117 +117,62 @@ class _BluetoothConnectionPageState extends State<BluetoothConnectionPage> {
   }
 
   Widget _buildDialogTitle(RPLocalizations locale) {
+    final deviceTypeName = locale.translate(widget.device.typeName);
     final stepTitleMap = {
-      CurrentStep.scan: locale.translate("pages.devices.connection.step.start.title"),
+      CurrentStep.scan: "${locale.translate("pages.devices.connection.step.start.title")} $deviceTypeName",
       CurrentStep.instructions: locale.translate("pages.devices.connection.step.how_to.title"),
       CurrentStep.done:
-          locale.translate("pages.devices.connection.step.confirm.title") + (" ${selectedDevice?.platformName} "),
+          "${locale.translate("pages.devices.connection.step.confirm.title")} ${selectedDevice?.platformName ?? ''}",
     };
     return Padding(
       padding: const EdgeInsets.only(bottom: 16),
-      child: Container(
-        alignment: Alignment.centerLeft,
-        child: Row(
-          mainAxisAlignment: MainAxisAlignment.start,
-          children: [
-            Flexible(
-              child: Text(
-                stepTitleMap[currentStep] ?? '',
-                style: fs22fw700.copyWith(color: Theme.of(context).primaryColor),
-                textAlign: TextAlign.center,
-              ),
-            ),
-          ],
-        ),
+      child: Text(
+        stepTitleMap[currentStep] ?? '',
+        style: Theme.of(context).textTheme.titleMedium!.copyWith(color: Colors.grey.shade900),
       ),
     );
   }
 
-  Widget _buildStepContent(RPLocalizations locale) {
-    final stepContentMap = {
-      CurrentStep.scan: stepContent(currentStep, widget.device),
-      CurrentStep.instructions: connectionInstructions(widget.device, context),
-      CurrentStep.done: confirmDevice(selectedDevice, context),
-    };
-
-    return stepContentMap[currentStep] ?? Container();
+  Widget _buildStepContent() {
+    switch (currentStep) {
+      case CurrentStep.scan:
+        return scanWidget(context);
+      case CurrentStep.instructions:
+        return connectionInstructions(widget.device, context);
+      case CurrentStep.done:
+        return confirmDevice(selectedDevice, context);
+    }
   }
 
   List<Widget> _buildActionButtons(RPLocalizations locale) {
-    Widget buildTranslatedButton(
-      String key,
-      VoidCallback onPressed,
-      bool enabled,
-      ButtonStyle? buttonStyle,
-      TextStyle? buttonTextStyle,
-    ) {
-      return ElevatedButton(
-        onPressed: enabled ? onPressed : null,
-        child: Text(locale.translate(key).toUpperCase(), style: buttonTextStyle),
-        style: buttonStyle,
-      );
-    }
+    final hasSelection = selectedDevice != null;
 
     final stepButtonConfigs = {
       CurrentStep.scan: [
-        buildTranslatedButton(
-          "cancel",
-          () {
-            context.pop(true);
-          },
-          true,
-          null,
-          null,
-        ),
-        buildTranslatedButton(
-          "next",
-          _connectDevice(),
-          selectedDevice != null,
-          ElevatedButton.styleFrom(
-            backgroundColor: Theme.of(context).extension<CarpColors>()!.primary,
-            padding: const EdgeInsets.symmetric(horizontal: 30, vertical: 12),
-          ),
-          TextStyle(color: Colors.white),
-        ),
+        TextButton(onPressed: () => context.pop(true), child: Text(locale.translate("cancel"))),
+        FilledButton(onPressed: hasSelection ? _connectDevice() : null, child: Text(locale.translate("next"))),
       ],
       CurrentStep.instructions: [
-        buildTranslatedButton(
-          "settings",
-          () {
-            Platform.isAndroid ? OpenSettingsPlusAndroid().bluetooth() : OpenSettingsPlusIOS().bluetooth();
-          },
-          true,
-          null,
-          null,
+        TextButton(
+          onPressed: () =>
+              Platform.isAndroid ? OpenSettingsPlusAndroid().bluetooth() : OpenSettingsPlusIOS().bluetooth(),
+          child: Text(locale.translate("settings")),
         ),
-        buildTranslatedButton(
-          "ok",
-          () {
-            setState(() => currentStep = CurrentStep.scan);
-          },
-          true,
-          ElevatedButton.styleFrom(
-            backgroundColor: Theme.of(context).extension<CarpColors>()!.primary,
-            padding: const EdgeInsets.symmetric(horizontal: 30, vertical: 12),
-          ),
-          TextStyle(color: Colors.white),
+        FilledButton(
+          onPressed: () => setState(() => currentStep = CurrentStep.scan),
+          child: Text(locale.translate("ok")),
         ),
       ],
       // The device is connected at this point, so there is nothing to go back
       // to - only 'done' is offered.
       CurrentStep.done: [
-        buildTranslatedButton(
-          "done",
-          () {
+        const Spacer(),
+        FilledButton(
+          onPressed: () {
             FlutterBluePlus.stopScan();
             context.pop(true);
           },
-          true,
-          ElevatedButton.styleFrom(
-            backgroundColor: Theme.of(context).extension<CarpColors>()!.primary,
-            padding: const EdgeInsets.symmetric(horizontal: 30, vertical: 12),
-          ),
-          TextStyle(color: Colors.white),
+          child: Text(locale.translate("done")),
         ),
       ],
     };
@@ -292,128 +252,121 @@ class _BluetoothConnectionPageState extends State<BluetoothConnectionPage> {
     }
   });
 
-  Widget stepContent(CurrentStep currentStep, DeviceViewModel device) {
-    if (currentStep == CurrentStep.scan) {
-      return scanWidget(device, context);
-    } else if (currentStep == CurrentStep.instructions) {
-      return connectionInstructions(device, context);
-    } else {
-      return confirmDevice(selectedDevice, context);
-    }
-  }
-
-  Widget scanWidget(DeviceViewModel device, BuildContext context) {
+  Widget scanWidget(BuildContext context) {
     RPLocalizations locale = RPLocalizations.of(context)!;
+    // Only show devices whose name contains this type's prefix, so the wrong
+    // device can't be picked. "Show all" is the escape hatch.
+    final prefix = widget.device.bleNamePrefix?.toLowerCase();
 
-    return Padding(
-      padding: const EdgeInsets.only(bottom: 16),
-      child: Column(
-        children: [
-          Text(
-            "${locale.translate("pages.devices.connection.step.scan.1")} "
-            "${locale.translate(device.typeName)} "
-            "${locale.translate("pages.devices.connection.step.scan.2")}",
-            style: fs22fw700,
-            textAlign: TextAlign.justify,
-          ),
-          if (device.bleNamePrefix != null)
-            Align(
-              alignment: Alignment.centerRight,
-              child: TextButton(
-                onPressed: () => setState(() => showAllDevices = !showAllDevices),
-                child: Text(
-                  locale.translate(
-                    showAllDevices
-                        ? "pages.devices.connection.step.scan.filtered"
-                        : "pages.devices.connection.step.scan.show_all",
-                  ),
-                  style: fs16fw400.copyWith(fontSize: 14),
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.stretch,
+      children: [
+        if (prefix != null)
+          Align(
+            alignment: Alignment.centerRight,
+            child: TextButton(
+              onPressed: () => setState(() => showAllDevices = !showAllDevices),
+              child: Text(
+                locale.translate(
+                  showAllDevices
+                      ? "pages.devices.connection.step.scan.filtered"
+                      : "pages.devices.connection.step.scan.show_all",
                 ),
               ),
             ),
-          Expanded(
-            child: StreamBuilder<List<ScanResult>>(
-              stream: FlutterBluePlus.scanResults,
-              initialData: const [],
-              builder: (context, snapshot) {
-                // Only show devices whose name contains this type's prefix, so
-                // the wrong device can't be picked. "Show all" is the escape hatch.
-                final prefix = device.bleNamePrefix?.toLowerCase();
-                final results = snapshot.data!.where((r) {
-                  // Skip nameless devices - they can't be identified or paired.
-                  final name = r.device.platformName;
-                  if (name.isEmpty) return false;
-                  if (showAllDevices || prefix == null) return true;
-                  return name.toLowerCase().contains(prefix);
-                }).toList();
-
-                if (results.isEmpty) {
-                  return Center(
-                    child: Text(
-                      locale.translate("pages.devices.connection.step.scan.searching"),
-                      style: fs16fw400.copyWith(color: Theme.of(context).extension<CarpColors>()!.grey700),
-                      textAlign: TextAlign.center,
-                    ),
-                  );
-                }
-
-                return Scrollbar(
-                  thumbVisibility: true,
-                  child: SingleChildScrollView(
-                    padding: const EdgeInsets.only(top: 16),
-                    child: Column(
-                      children: results
-                          .map(
-                            (r) => StudiesMaterial(
-                              // hasBorder: true,
-                              backgroundColor: Theme.of(context).extension<CarpColors>()!.grey50!,
-                              child: InkWell(
-                                child: ListTile(
-                                  selected: r.device.remoteId == selectedDevice?.remoteId,
-                                  title: Text(r.device.platformName, style: fs22fw700.copyWith(fontSize: 20)),
-                                  selectedTileColor: Theme.of(context).primaryColor.withValues(alpha: 0.2),
-                                ),
-                                onTap: () {
-                                  setState(() {
-                                    selectedDevice = r.device;
-                                  });
-                                },
-                              ),
-                            ),
-                          )
-                          .toList(),
-                    ),
-                  ),
-                );
-              },
-            ),
           ),
-          Padding(
-            padding: const EdgeInsets.only(top: 16),
-            child: Text.rich(
-              TextSpan(
+        Expanded(
+          child: StreamBuilder<List<ScanResult>>(
+            stream: FlutterBluePlus.scanResults,
+            initialData: const [],
+            builder: (context, snapshot) {
+              final results = snapshot.data!.where((r) {
+                // Skip nameless devices - they can't be identified or paired.
+                final name = r.device.platformName;
+                if (name.isEmpty) return false;
+                if (showAllDevices || prefix == null) return true;
+                return name.toLowerCase().contains(prefix);
+              }).toList();
+              return ListView(
+                padding: const EdgeInsets.symmetric(vertical: 8),
                 children: [
-                  TextSpan(text: locale.translate("pages.devices.connection.step.start.1")),
-                  TextSpan(
-                    text: locale.translate("pages.devices.connection.instructions"),
-                    style: TextStyle(
-                      color: Theme.of(context).extension<CarpColors>()!.primary,
-                      decoration: TextDecoration.underline,
-                      fontWeight: FontWeight.bold,
+                  for (final r in results)
+                    _deviceTile(
+                      icon: Icons.monitor_heart,
+                      name: r.device.platformName,
+                      selected: selectedDevice?.remoteId == r.device.remoteId,
+                      onTap: () => setState(() => selectedDevice = r.device),
                     ),
-                    recognizer: TapGestureRecognizer()
-                      ..onTap = () {
-                        setState(() => currentStep = CurrentStep.instructions);
-                      },
-                  ),
-                  TextSpan(text: locale.translate("pages.devices.connection.step.start.2")),
                 ],
-              ),
-              style: fs22fw700.copyWith(color: Theme.of(context).extension<CarpColors>()!.grey900),
-              textAlign: TextAlign.center,
+              );
+            },
+          ),
+        ),
+        Padding(
+          padding: const EdgeInsets.symmetric(vertical: 12),
+          child: Text.rich(
+            TextSpan(
+              children: [
+                TextSpan(text: locale.translate("pages.devices.connection.step.start.1")),
+                TextSpan(
+                  text: locale.translate("pages.devices.connection.instructions"),
+                  style: TextStyle(
+                    color: Theme.of(context).colorScheme.primary,
+                    decoration: TextDecoration.underline,
+                    fontWeight: FontWeight.bold,
+                  ),
+                  recognizer: TapGestureRecognizer()
+                    ..onTap = () => setState(() => currentStep = CurrentStep.instructions),
+                ),
+                TextSpan(text: locale.translate("pages.devices.connection.step.start.2")),
+              ],
+            ),
+            style: Theme.of(context).textTheme.labelLarge!.copyWith(color: Colors.grey.shade800),
+          ),
+        ),
+      ],
+    );
+  }
+
+  /// A selectable device card: icon + name, with a primary-coloured border and
+  /// tint when [selected].
+  Widget _deviceTile({
+    required IconData icon,
+    required String name,
+    required bool selected,
+    required VoidCallback onTap,
+  }) {
+    final primary = Theme.of(context).colorScheme.primary;
+    return Padding(
+      padding: const EdgeInsets.symmetric(vertical: 6),
+      child: Material(
+        color: selected ? primary.withValues(alpha: 0.06) : Colors.white,
+        borderRadius: BorderRadius.circular(12),
+        child: InkWell(
+          borderRadius: BorderRadius.circular(12),
+          onTap: onTap,
+          child: Container(
+            padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 16),
+            decoration: BoxDecoration(
+              borderRadius: BorderRadius.circular(12),
+              border: Border.all(color: selected ? primary : Colors.grey.shade300, width: selected ? 1.5 : 1),
+            ),
+            child: Row(
+              children: [
+                Icon(icon, color: primary, size: 22),
+                const SizedBox(width: 12),
+                Expanded(
+                  child: Text(
+                    name,
+                    style: Theme.of(
+                      context,
+                    ).textTheme.bodyLarge!.copyWith(fontWeight: selected ? FontWeight.w700 : FontWeight.w400),
+                  ),
+                ),
+              ],
             ),
           ),
-        ],
+        ),
       ),
     );
   }
@@ -452,6 +405,14 @@ class _BluetoothConnectionPageState extends State<BluetoothConnectionPage> {
       width: MediaQuery.of(context).size.height * 0.3,
       height: MediaQuery.of(context).size.height * 0.3,
     );
+    // Split the instruction paragraph into one bullet per sentence.
+    final steps = locale
+        .translate(device.connectionInstructions!)
+        .split(RegExp(r'(?<=[.!?])\s+'))
+        .map((s) => s.trim())
+        .where((s) => s.isNotEmpty)
+        .toList();
+
     return Column(
       children: [
         Expanded(
@@ -459,16 +420,11 @@ class _BluetoothConnectionPageState extends State<BluetoothConnectionPage> {
             child: Padding(
               padding: const EdgeInsets.only(bottom: 20.0),
               child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  connectionImage,
-                  Padding(
-                    padding: const EdgeInsets.only(bottom: 20.0),
-                    child: Text(
-                      locale.translate(device.connectionInstructions!),
-                      style: fs16fw400,
-                      textAlign: TextAlign.justify,
-                    ),
-                  ),
+                  Center(child: connectionImage),
+                  const SizedBox(height: 8),
+                  for (final step in steps) _bullet(step),
                 ],
               ),
             ),
@@ -478,34 +434,114 @@ class _BluetoothConnectionPageState extends State<BluetoothConnectionPage> {
     );
   }
 
+  /// A single bulleted instruction line.
+  Widget _bullet(String text) => Padding(
+    padding: const EdgeInsets.only(bottom: 12),
+    child: Row(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        Padding(
+          padding: const EdgeInsets.only(top: 8, right: 10),
+          child: Container(
+            width: 5,
+            height: 5,
+            decoration: BoxDecoration(color: Colors.grey.shade700, shape: BoxShape.circle),
+          ),
+        ),
+        Expanded(child: Text(text, style: Theme.of(context).textTheme.bodyLarge!.copyWith(height: 1.3))),
+      ],
+    ),
+  );
+
   Widget confirmDevice(BluetoothDevice? device, BuildContext context) {
     RPLocalizations locale = RPLocalizations.of(context)!;
-    return Column(
+    final deviceName = device?.platformName ?? '';
+    return ListView(
+      padding: const EdgeInsets.symmetric(vertical: 16),
       children: [
-        Expanded(
-          child: Padding(
-            padding: const EdgeInsets.all(20),
-            child: Column(
+        _connectedDevicesMock(locale),
+        const SizedBox(height: 32),
+        Text.rich(
+          TextSpan(
+            children: [
+              TextSpan(text: "${locale.translate("pages.devices.connection.step.confirm.1")} "),
+              TextSpan(
+                text: deviceName,
+                style: const TextStyle(fontWeight: FontWeight.w700),
+              ),
+              TextSpan(text: " ${locale.translate("pages.devices.connection.step.confirm.2")}"),
+            ],
+          ),
+          style: Theme.of(context).textTheme.bodyLarge!.copyWith(height: 1.4),
+        ),
+      ],
+    );
+  }
+
+  /// A small phone-frame preview showing the connected device in the app's
+  /// Devices list, mirroring where it will appear after connecting.
+  Widget _connectedDevicesMock(RPLocalizations locale) {
+    final primary = Theme.of(context).colorScheme.primary;
+    return Center(
+      child: Container(
+        width: 300,
+        padding: const EdgeInsets.fromLTRB(16, 16, 16, 0),
+        decoration: BoxDecoration(
+          border: Border.all(color: Colors.grey.shade400, width: 1.5),
+          borderRadius: const BorderRadius.vertical(top: Radius.circular(28)),
+        ),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Row(
               children: [
-                Image(
-                  image: const AssetImage('assets/icons/connection_done.png'),
-                  width: MediaQuery.of(context).size.height * 0.2,
-                  height: MediaQuery.of(context).size.height * 0.2,
-                ),
-                Padding(
-                  padding: const EdgeInsets.only(top: 32),
-                  child: Text(
-                    ("${locale.translate("pages.devices.connection.step.confirm.1")} '${device?.platformName}' ${locale.translate("pages.devices.connection.step.confirm.2")}")
-                        .trim(),
-                    style: fs16fw400,
-                    textAlign: TextAlign.justify,
-                  ),
+                Icon(Icons.devices_other, color: Colors.grey.shade900, size: 22),
+                const SizedBox(width: 8),
+                Text(
+                  locale.translate("app_home.nav_bar_item.connections"),
+                  style: Theme.of(context).textTheme.titleMedium!.copyWith(color: Colors.grey.shade900),
                 ),
               ],
             ),
-          ),
+            const SizedBox(height: 8),
+            Divider(color: Colors.grey.shade300, height: 1),
+            const SizedBox(height: 16),
+            Container(
+              padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 12),
+              decoration: BoxDecoration(
+                color: Colors.white,
+                borderRadius: BorderRadius.circular(12),
+                boxShadow: [
+                  BoxShadow(color: Colors.black.withValues(alpha: 0.06), blurRadius: 6, offset: const Offset(0, 2)),
+                ],
+              ),
+              child: Row(
+                children: [
+                  Container(
+                    width: 32,
+                    height: 32,
+                    alignment: Alignment.center,
+                    decoration: BoxDecoration(
+                      color: const Color(0xffEB4B62).withValues(alpha: 0.12),
+                      borderRadius: BorderRadius.circular(8),
+                    ),
+                    child: const Icon(Icons.monitor_heart, color: Color(0xffEB4B62), size: 18),
+                  ),
+                  const SizedBox(width: 10),
+                  Expanded(
+                    child: Text(
+                      locale.translate(widget.device.typeName),
+                      style: Theme.of(context).textTheme.labelLarge!,
+                    ),
+                  ),
+                  Icon(Icons.bluetooth_rounded, color: primary, size: 20),
+                ],
+              ),
+            ),
+            const SizedBox(height: 20),
+          ],
         ),
-      ],
+      ),
     );
   }
 }

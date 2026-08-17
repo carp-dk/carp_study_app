@@ -38,62 +38,25 @@ class DeviceListPageState extends State<DeviceListPage> {
 
   @override
   Widget build(BuildContext context) {
-    RPLocalizations locale = RPLocalizations.of(context)!;
+    final locale = RPLocalizations.of(context)!;
     return Scaffold(
-      backgroundColor: Theme.of(context).extension<CarpColors>()!.backgroundGray,
       body: SafeArea(
         child: Column(
-          crossAxisAlignment: CrossAxisAlignment.center,
-          mainAxisAlignment: MainAxisAlignment.center,
+          crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             Padding(
               padding: const EdgeInsets.symmetric(vertical: 8.0, horizontal: 10),
               child: const CarpAppBar(hasProfileIcon: true),
             ),
-            Container(
-              color: Colors.transparent,
-              child: Padding(
-                padding: const EdgeInsets.symmetric(horizontal: 15),
-                child: Align(
-                  alignment: Alignment.centerLeft,
-                  child: Column(
-                    mainAxisAlignment: MainAxisAlignment.start,
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      Text(
-                        locale.translate('pages.devices.title'),
-                        style: fs24fw700.copyWith(
-                          color: Theme.of(context).extension<CarpColors>()!.grey900,
-                          fontWeight: FontWeight.bold,
-                        ),
-                      ),
-                    ],
-                  ),
-                ),
-              ),
-            ),
-            Container(
-              color: Colors.transparent,
-              child: Padding(
-                padding: const EdgeInsets.symmetric(horizontal: 20),
-                child: Align(
-                  alignment: Alignment.centerLeft,
-                  child: Column(
-                    mainAxisAlignment: MainAxisAlignment.start,
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      Text(
-                        locale.translate("pages.devices.message"),
-                        style: fs16fw600.copyWith(color: Theme.of(context).extension<CarpColors>()!.grey600),
-                      ),
-                      const SizedBox(height: 15),
-                    ],
-                  ),
-                ),
+            CarpPageTitle(locale.translate('app_home.nav_bar_item.connections')),
+            Padding(
+              padding: const EdgeInsets.fromLTRB(16, 0, 16, 16),
+              child: Text(
+                locale.translate("pages.devices.message"),
+                style: Theme.of(context).textTheme.labelMedium!.copyWith(color: Colors.grey.shade600, height: 1.4),
               ),
             ),
             Expanded(
-              flex: 4,
               child: RefreshIndicator(
                 onRefresh: _refreshStatuses,
                 child: CustomScrollView(
@@ -102,6 +65,7 @@ class DeviceListPageState extends State<DeviceListPage> {
                     ..._smartphoneDeviceList(locale),
                     if (_hardwareDevices.isNotEmpty) ..._hardwareDevicesList(locale),
                     if (_onlineServices.isNotEmpty) ..._onlineServicesList(locale),
+                    const SliverToBoxAdapter(child: SizedBox(height: 16)),
                   ],
                 ),
               ),
@@ -132,7 +96,7 @@ class DeviceListPageState extends State<DeviceListPage> {
           listenable: _smartphoneDevice[index],
           builder: (BuildContext context, Widget? widget) => Center(
             child: StudiesMaterial(
-              backgroundColor: Theme.of(context).extension<CarpColors>()!.grey50!,
+              backgroundColor: Colors.grey.shade50,
               child: _cardListBuilder(
                 leading: _smartphoneDevice[index].icon!,
                 title: (
@@ -161,6 +125,7 @@ class DeviceListPageState extends State<DeviceListPage> {
           () => _cardListBuilder(
             enableFeedback: true,
             leading: device.icon!,
+            leadingImage: device.type == MovesenseDevice.DEVICE_TYPE ? 'assets/icons/movesense_logo.png' : null,
             title: (locale.translate(device.typeName), device.batteryLevel ?? 0),
             subtitle: device.name,
             // A connected device is managed by the study and cannot be
@@ -170,17 +135,7 @@ class DeviceListPageState extends State<DeviceListPage> {
                 : () async => await _hardwareDeviceClicked(device),
             trailing: device.getDeviceStatusIcon is Icon
                 ? device.getDeviceStatusIcon as Icon
-                : Container(
-                    padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
-                    decoration: BoxDecoration(
-                      color: CACHET.DEPLOYMENT_DEPLOYING,
-                      borderRadius: BorderRadius.circular(100),
-                    ),
-                    child: Text(
-                      locale.translate(device.getDeviceStatusIcon as String? ?? "pages.devices.status.action.connect"),
-                      style: fs20fw700.copyWith(color: Colors.white),
-                    ),
-                  ),
+                : _connectPill(locale.translate(device.getDeviceStatusIcon as String)),
           ),
         );
       }),
@@ -202,17 +157,7 @@ class DeviceListPageState extends State<DeviceListPage> {
             subtitle: null,
             onTap: () async => await _onlineServiceClicked(service),
             trailing: service.getServiceStatusIcon is String
-                ? Container(
-                    padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
-                    decoration: BoxDecoration(
-                      color: CACHET.DEPLOYMENT_DEPLOYING,
-                      borderRadius: BorderRadius.circular(100),
-                    ),
-                    child: Text(
-                      locale.translate(service.getServiceStatusIcon as String),
-                      style: fs20fw700.copyWith(color: Colors.white),
-                    ),
-                  )
+                ? _connectPill(locale.translate(service.getServiceStatusIcon as String))
                 : service.getServiceStatusIcon as Icon,
           ),
         );
@@ -220,61 +165,79 @@ class DeviceListPageState extends State<DeviceListPage> {
     ),
   ];
 
+  /// The visual "Connect" pill shown as a card's trailing widget. The whole
+  /// tile is tappable, so this is a label styled like the themed FilledButton,
+  /// not an interactive button.
+  Widget _connectPill(String label) => Container(
+    padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 8),
+    decoration: BoxDecoration(color: Theme.of(context).colorScheme.primary, borderRadius: BorderRadius.circular(100)),
+    child: Text(
+      label,
+      style: Theme.of(context).textTheme.labelLarge!.copyWith(color: Theme.of(context).colorScheme.onPrimary),
+    ),
+  );
+
   Widget _cardListBuilder({
     bool enableFeedback = false,
     Icon? leading,
+    String? leadingImage,
     (String, int?)? title,
     String? subtitle,
     void Function()? onTap,
     Widget? trailing,
-  }) => ListTile(
-    contentPadding: const EdgeInsets.symmetric(vertical: 8, horizontal: 16),
-    enableFeedback: enableFeedback,
-    leading: Column(
-      mainAxisAlignment: MainAxisAlignment.center,
-      crossAxisAlignment: CrossAxisAlignment.center,
-      children: [leading!],
-    ),
-    title: FittedBox(
-      fit: BoxFit.scaleDown,
-      alignment: Alignment.centerLeft,
-      child: Row(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        mainAxisAlignment: MainAxisAlignment.start,
+  }) {
+    return ListTile(
+      contentPadding: const EdgeInsets.symmetric(vertical: 12, horizontal: 16),
+      minVerticalPadding: 0,
+      enableFeedback: enableFeedback,
+      // The tinted rounded-square badge shared with the task and feed cards.
+      leading: Container(
+        width: 40,
+        height: 40,
+        alignment: Alignment.center,
+        decoration: BoxDecoration(
+          color: (leading?.color ?? Theme.of(context).colorScheme.primary).withValues(alpha: 0.12),
+          borderRadius: BorderRadius.circular(12),
+        ),
+        child: leadingImage != null
+            ? Image.asset(leadingImage, width: 24, height: 24)
+            : Icon(leading!.icon, color: leading.color ?? Theme.of(context).colorScheme.primary, size: 20),
+      ),
+      title: Row(
         children: [
-          Text(title!.$1, style: fs16fw700.copyWith(color: Theme.of(context).extension<CarpColors>()!.grey900)),
-          SizedBox(width: 6),
-          if (title.$2 != null && title.$2! > 0) BatteryPercentage(batteryLevel: title.$2 ?? 0),
+          Flexible(
+            child: Text(
+              title!.$1,
+              maxLines: 2,
+              overflow: TextOverflow.ellipsis,
+              style: Theme.of(context).textTheme.labelLarge!,
+            ),
+          ),
+          if (title.$2 != null && title.$2! > 0) ...[
+            const SizedBox(width: 6),
+            BatteryPercentage(batteryLevel: title.$2!),
+          ],
         ],
       ),
-    ),
-    subtitle: subtitle != null && subtitle.isNotEmpty
-        ? Column(
-            mainAxisAlignment: MainAxisAlignment.start,
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              FittedBox(
-                fit: BoxFit.scaleDown,
-                alignment: Alignment.centerLeft,
-                child: Text(
-                  subtitle,
-                  style: fs12fw700.copyWith(color: Theme.of(context).extension<CarpColors>()!.grey700),
-                ),
+      subtitle: subtitle != null && subtitle.isNotEmpty
+          ? Padding(
+              padding: const EdgeInsets.only(top: 2),
+              child: Text(
+                subtitle,
+                maxLines: 2,
+                overflow: TextOverflow.ellipsis,
+                style: Theme.of(context).textTheme.labelSmall!.copyWith(color: Colors.grey.shade600),
               ),
-            ],
-          )
-        : null,
-    trailing: Column(
-      mainAxisAlignment: MainAxisAlignment.center,
-      crossAxisAlignment: CrossAxisAlignment.center,
-      children: [?trailing],
-    ),
-    onTap: onTap,
-  );
+            )
+          : null,
+      trailing: trailing,
+      onTap: onTap,
+    );
+  }
 
   Widget _devicesPageCardStream<T>(Stream<T> stream, T? initialData, Widget Function() childBuilder) => Center(
     child: StudiesMaterial(
-      backgroundColor: Theme.of(context).extension<CarpColors>()!.grey50!,
+      backgroundColor: Colors.grey.shade50,
       child: StreamBuilder<T>(
         stream: stream,
         initialData: initialData,
@@ -290,7 +253,19 @@ class DeviceListPageState extends State<DeviceListPage> {
 
     if (!(await service.deviceManager.hasPermissions())) {
       if (service.type == HealthService.DEVICE_TYPE) {
-        Navigator.push(context, MaterialPageRoute<void>(builder: (context) => HealthServiceConnectPage()));
+        Navigator.of(
+          context,
+          rootNavigator: true,
+        ).push(MaterialPageRoute<void>(builder: (context) => HealthServiceConnectPage()));
+      } else if (service.type == LocationService.DEVICE_TYPE) {
+        final status = await Permission.locationWhenInUse.request();
+        // Permanently denied/restricted: the OS won't prompt again, so send the
+        // user to Settings instead of silently doing nothing.
+        if (status.isPermanentlyDenied || status.isRestricted) {
+          await openAppSettings();
+          return;
+        }
+        if (!status.isGranted) return;
       } else {
         await service.deviceManager.requestPermissions();
       }
@@ -328,8 +303,7 @@ class DeviceListPageState extends State<DeviceListPage> {
         }
 
         final hasSeenInstructions = LocalSettings().hasSeenBluetoothConnectionInstructions;
-        Navigator.push(
-          context,
+        Navigator.of(context, rootNavigator: true).push(
           MaterialPageRoute<void>(
             builder: (context) => BluetoothConnectionPage(
               hasSeenInstructions ? CurrentStep.scan : CurrentStep.instructions,
@@ -357,7 +331,7 @@ class DeviceListPageState extends State<DeviceListPage> {
       actions: [
         TextButton(child: Text(locale.translate("cancel")), onPressed: () => Navigator.pop(context)),
         ElevatedButton(
-          style: ElevatedButton.styleFrom(backgroundColor: Theme.of(context).extension<CarpColors>()!.primary),
+          style: ElevatedButton.styleFrom(backgroundColor: Theme.of(context).colorScheme.primary),
           child: Text(locale.translate("settings"), style: const TextStyle(color: Colors.white)),
           onPressed: () {
             Platform.isAndroid ? OpenSettingsPlusAndroid().applicationDetails() : OpenSettingsPlusIOS().appSettings();
