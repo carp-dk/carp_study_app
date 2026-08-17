@@ -37,7 +37,9 @@ class StudyDetailsPage extends StatelessWidget {
                     padding: const EdgeInsets.symmetric(vertical: 10.0),
                     child: Text(
                       locale.translate(model.title),
-                      style: Theme.of(context).textTheme.titleLarge!.copyWith(fontSize: 20).copyWith(color: Theme.of(context).colorScheme.primary),
+                      style: Theme.of(context).textTheme.titleLarge!
+                          .copyWith(fontSize: 20)
+                          .copyWith(color: Theme.of(context).colorScheme.primary),
                     ),
                   ),
                 ],
@@ -117,7 +119,9 @@ class StudyDetailsPage extends StatelessWidget {
                             padding: const EdgeInsets.only(top: 4.0, bottom: 8),
                             child: Text(
                               locale.translate(model.responsibleName),
-                              style: Theme.of(context).textTheme.labelSmall!.copyWith(fontWeight: FontWeight.w700).copyWith(color: Colors.grey.shade700),
+                              style: Theme.of(context).textTheme.labelSmall!
+                                  .copyWith(fontWeight: FontWeight.w700)
+                                  .copyWith(color: Colors.grey.shade700),
                             ),
                           ),
                           Text(
@@ -128,7 +132,9 @@ class StudyDetailsPage extends StatelessWidget {
                             padding: const EdgeInsets.only(top: 4.0, bottom: 8),
                             child: Text(
                               locale.translate(model.participantRole),
-                              style: Theme.of(context).textTheme.labelSmall!.copyWith(fontWeight: FontWeight.w700).copyWith(color: Colors.grey.shade700),
+                              style: Theme.of(context).textTheme.labelSmall!
+                                  .copyWith(fontWeight: FontWeight.w700)
+                                  .copyWith(color: Colors.grey.shade700),
                             ),
                           ),
                           Text(
@@ -139,7 +145,9 @@ class StudyDetailsPage extends StatelessWidget {
                             padding: const EdgeInsets.only(top: 4.0, bottom: 8),
                             child: Text(
                               locale.translate(model.deviceRole),
-                              style: Theme.of(context).textTheme.labelSmall!.copyWith(fontWeight: FontWeight.w700).copyWith(color: Colors.grey.shade700),
+                              style: Theme.of(context).textTheme.labelSmall!
+                                  .copyWith(fontWeight: FontWeight.w700)
+                                  .copyWith(color: Colors.grey.shade700),
                             ),
                           ),
                         ],
@@ -160,7 +168,9 @@ class StudyDetailsPage extends StatelessWidget {
                             padding: const EdgeInsets.only(top: 4.0, bottom: 8),
                             child: Text(
                               locale.translate(model.description),
-                              style: Theme.of(context).textTheme.labelSmall!.copyWith(fontWeight: FontWeight.w700).copyWith(color: Colors.grey.shade700),
+                              style: Theme.of(context).textTheme.labelSmall!
+                                  .copyWith(fontWeight: FontWeight.w700)
+                                  .copyWith(color: Colors.grey.shade700),
                             ),
                           ),
                           Text(
@@ -171,7 +181,9 @@ class StudyDetailsPage extends StatelessWidget {
                             padding: const EdgeInsets.only(top: 4.0, bottom: 8),
                             child: Text(
                               locale.translate(model.purpose),
-                              style: Theme.of(context).textTheme.labelSmall!.copyWith(fontWeight: FontWeight.w700).copyWith(color: Colors.grey.shade700),
+                              style: Theme.of(context).textTheme.labelSmall!
+                                  .copyWith(fontWeight: FontWeight.w700)
+                                  .copyWith(color: Colors.grey.shade700),
                             ),
                           ),
                         ],
@@ -195,11 +207,7 @@ class StudyDetailsPage extends StatelessWidget {
       child: Padding(
         padding: const EdgeInsets.all(8.0),
         child: Column(
-          children: ListTile.divideTiles(
-            context: context,
-            tiles: children,
-            color: Colors.grey.shade300,
-          ).toList(),
+          children: ListTile.divideTiles(context: context, tiles: children, color: Colors.grey.shade300).toList(),
         ),
       ),
     );

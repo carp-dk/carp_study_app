@@ -38,12 +38,17 @@ class _DistanceCardState extends State<DistanceCard> {
           children: [
             Row(
               children: [
-                Text(_distance, style: Theme.of(context).textTheme.headlineMedium!.copyWith(color: Colors.grey.shade900)),
+                Text(
+                  _distance,
+                  style: Theme.of(context).textTheme.headlineMedium!.copyWith(color: Colors.grey.shade900),
+                ),
                 Padding(
                   padding: const EdgeInsets.only(left: 4.0),
                   child: Text(
                     'km ${_getDayName(touchedIndex)}',
-                    style: Theme.of(context).textTheme.labelSmall!.copyWith(fontWeight: FontWeight.w700).copyWith(color: Colors.grey.shade600),
+                    style: Theme.of(
+                      context,
+                    ).textTheme.labelSmall!.copyWith(fontWeight: FontWeight.w700).copyWith(color: Colors.grey.shade600),
                   ),
                 ),
               ],
@@ -52,7 +57,9 @@ class _DistanceCardState extends State<DistanceCard> {
               children: [
                 Text(
                   "${widget.model.currentMonth} ${widget.model.startOfWeek} - ${int.parse(widget.model.endOfWeek) < int.parse(widget.model.startOfWeek) ? widget.model.nextMonth : widget.model.currentMonth} ${widget.model.endOfWeek}, ${widget.model.currentYear}",
-                  style: Theme.of(context).textTheme.labelSmall!.copyWith(fontWeight: FontWeight.w700).copyWith(color: Colors.grey.shade600),
+                  style: Theme.of(
+                    context,
+                  ).textTheme.labelSmall!.copyWith(fontWeight: FontWeight.w700).copyWith(color: Colors.grey.shade600),
                 ),
                 Spacer(),
               ],

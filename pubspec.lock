@@ -309,10 +309,10 @@ packages:
     dependency: "direct main"
     description:
       name: carp_core
-      sha256: "9429688264e98c94222781f39f745a348bc123905d81007b6d377d0efc3c7b29"
+      sha256: "94047027ad4ccf78c1c598083bf09c0a2183b4ab9f12d751ba1078913a8ad7f8"
       url: "https://pub.dev"
     source: hosted
-    version: "2.2.0"
+    version: "2.2.1"
   carp_health_package:
     dependency: "direct main"
     description:
@@ -325,10 +325,10 @@ packages:
     dependency: "direct main"
     description:
       name: carp_mobile_sensing
-      sha256: "7b01242be58f770f6c3ce6e753a674772589ad76193ff2b61643917746b69de7"
+      sha256: "5a1f38d4068e7bc2e1120e8551344f1d3098030875c72cd6eabf32d823a7d79b"
       url: "https://pub.dev"
     source: hosted
-    version: "2.3.0"
+    version: "2.3.1"
   carp_movesense_flutter:
     dependency: transitive
     description:
@@ -1268,14 +1268,6 @@ packages:
       url: "https://pub.dev"
     source: hosted
     version: "0.13.0"
-  mdsflutter:
-    dependency: "direct main"
-    description:
-      name: mdsflutter
-      sha256: "0f10fe21de537f06a5678bcb194d2ac7d9b38766f1a357756ba97161e8770a9d"
-      url: "https://pub.dev"
-    source: hosted
-    version: "2.4.0-alpha1"
   meta:
     dependency: transitive
     description:

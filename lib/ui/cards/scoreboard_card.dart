@@ -48,22 +48,32 @@ class ScoreboardPersistentHeaderDelegate extends SliverPersistentHeaderDelegate 
     List<Widget> childrenDays = [
       Text(
         model.daysInStudy.toString(),
-        style: Theme.of(context).textTheme.displaySmall!.copyWith(fontSize: 36).copyWith(
-          fontSize: calculateScrollAwareSizing(shrinkOffset, Theme.of(context).textTheme.displaySmall!.copyWith(fontSize: 20).fontSize!, Theme.of(context).textTheme.displaySmall!.copyWith(fontSize: 36).fontSize!),
-          color: Colors.grey.shade900,
-        ),
+        style: Theme.of(context).textTheme.displaySmall!
+            .copyWith(fontSize: 36)
+            .copyWith(
+              fontSize: calculateScrollAwareSizing(
+                shrinkOffset,
+                Theme.of(context).textTheme.displaySmall!.copyWith(fontSize: 20).fontSize!,
+                Theme.of(context).textTheme.displaySmall!.copyWith(fontSize: 36).fontSize!,
+              ),
+              color: Colors.grey.shade900,
+            ),
       ),
       if (shrinkOffset < offsetForShrink)
         Text(
           locale.translate('cards.scoreboard.days'),
-          style: Theme.of(context).textTheme.labelSmall!.copyWith(fontWeight: FontWeight.w700).copyWith(color: Colors.grey.shade900),
+          style: Theme.of(
+            context,
+          ).textTheme.labelSmall!.copyWith(fontWeight: FontWeight.w700).copyWith(color: Colors.grey.shade900),
         ),
       if (shrinkOffset > offsetForShrink)
         Padding(
           padding: const EdgeInsets.only(left: 8.0),
           child: Text(
             locale.translate('cards.scoreboard.days-short'),
-            style: Theme.of(context).textTheme.labelSmall!.copyWith(fontWeight: FontWeight.w700).copyWith(color: Colors.grey.shade900),
+            style: Theme.of(
+              context,
+            ).textTheme.labelSmall!.copyWith(fontWeight: FontWeight.w700).copyWith(color: Colors.grey.shade900),
           ),
         ),
     ];
@@ -71,15 +81,23 @@ class ScoreboardPersistentHeaderDelegate extends SliverPersistentHeaderDelegate 
     List<Widget> childrenTasks = [
       Text(
         model.taskCompleted.toString(),
-        style: Theme.of(context).textTheme.displaySmall!.copyWith(fontSize: 36).copyWith(
-          fontSize: calculateScrollAwareSizing(shrinkOffset, Theme.of(context).textTheme.displaySmall!.copyWith(fontSize: 20).fontSize!, Theme.of(context).textTheme.displaySmall!.copyWith(fontSize: 36).fontSize!),
-          color: Theme.of(context).colorScheme.primary,
-        ),
+        style: Theme.of(context).textTheme.displaySmall!
+            .copyWith(fontSize: 36)
+            .copyWith(
+              fontSize: calculateScrollAwareSizing(
+                shrinkOffset,
+                Theme.of(context).textTheme.displaySmall!.copyWith(fontSize: 20).fontSize!,
+                Theme.of(context).textTheme.displaySmall!.copyWith(fontSize: 36).fontSize!,
+              ),
+              color: Theme.of(context).colorScheme.primary,
+            ),
       ),
       if (shrinkOffset < offsetForShrink)
         Text(
           locale.translate('cards.scoreboard.tasks'),
-          style: Theme.of(context).textTheme.labelSmall!.copyWith(fontWeight: FontWeight.w700).copyWith(color: Theme.of(context).colorScheme.primary),
+          style: Theme.of(context).textTheme.labelSmall!
+              .copyWith(fontWeight: FontWeight.w700)
+              .copyWith(color: Theme.of(context).colorScheme.primary),
         ),
       if (shrinkOffset > offsetForShrink)
         Expanded(
@@ -88,7 +106,9 @@ class ScoreboardPersistentHeaderDelegate extends SliverPersistentHeaderDelegate 
             padding: const EdgeInsets.only(left: 8.0),
             child: Text(
               locale.translate('cards.scoreboard.tasks-short'),
-              style: Theme.of(context).textTheme.labelSmall!.copyWith(fontWeight: FontWeight.w700).copyWith(color: Theme.of(context).colorScheme.primary),
+              style: Theme.of(context).textTheme.labelSmall!
+                  .copyWith(fontWeight: FontWeight.w700)
+                  .copyWith(color: Theme.of(context).colorScheme.primary),
             ),
           ),
         ),

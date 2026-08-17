@@ -43,7 +43,9 @@ class ProfilePageState extends State<ProfilePage> {
                   icon: Icon(Icons.account_circle, color: Theme.of(context).primaryColor, size: 30),
                   label: Text(
                     locale.translate("pages.profile.title"),
-                    style: Theme.of(context).textTheme.titleLarge!.copyWith(fontSize: 20).copyWith(color: Theme.of(context).primaryColor),
+                    style: Theme.of(
+                      context,
+                    ).textTheme.titleLarge!.copyWith(fontSize: 20).copyWith(color: Theme.of(context).primaryColor),
                   ),
                 ),
                 IconButton(
@@ -171,11 +173,7 @@ class ProfilePageState extends State<ProfilePage> {
       child: Padding(
         padding: const EdgeInsets.all(8.0),
         child: Column(
-          children: ListTile.divideTiles(
-            context: context,
-            tiles: children,
-            color: Colors.grey.shade400,
-          ).toList(),
+          children: ListTile.divideTiles(context: context, tiles: children, color: Colors.grey.shade400).toList(),
         ),
       ),
     );

@@ -33,7 +33,12 @@ class StudyProgressCardWidgetState extends State<StudyProgressCardWidget> {
                   padding: const EdgeInsets.only(left: 8),
                   child: Row(
                     mainAxisAlignment: MainAxisAlignment.start,
-                    children: <Widget>[Text(locale.translate('cards.study_progress.title'), style: Theme.of(context).textTheme.bodyLarge!.copyWith(letterSpacing: 1))],
+                    children: <Widget>[
+                      Text(
+                        locale.translate('cards.study_progress.title'),
+                        style: Theme.of(context).textTheme.bodyLarge!.copyWith(letterSpacing: 1),
+                      ),
+                    ],
                   ),
                 ),
                 SizedBox(

@@ -26,10 +26,7 @@ class _SliverAppBarDelegate extends SliverPersistentHeaderDelegate {
     return Container(
       width: double.infinity,
       padding: const EdgeInsets.symmetric(vertical: 4),
-      decoration: BoxDecoration(
-        borderRadius: BorderRadius.circular(8),
-        color: Colors.grey.shade200,
-      ),
+      decoration: BoxDecoration(borderRadius: BorderRadius.circular(8), color: Colors.grey.shade200),
       child: _tabBar,
     );
   }
@@ -521,7 +518,11 @@ class TaskListPageState extends State<TaskListPage> with TickerProviderStateMixi
         ),
         Padding(
           padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 5),
-          child: Text(locale.translate("pages.task_list.no_tasks"), style: Theme.of(context).textTheme.labelLarge!, textAlign: TextAlign.center),
+          child: Text(
+            locale.translate("pages.task_list.no_tasks"),
+            style: Theme.of(context).textTheme.labelLarge!,
+            textAlign: TextAlign.center,
+          ),
         ),
       ],
     );

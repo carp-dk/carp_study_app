@@ -37,10 +37,9 @@ class _DataVisualizationPageState extends State<DataVisualizationPage> {
                     children: [
                       Text(
                         locale.translate('pages.data_viz.title'),
-                        style: Theme.of(context).textTheme.headlineSmall!.copyWith(
-                          color: Colors.grey.shade900,
-                          fontWeight: FontWeight.bold,
-                        ),
+                        style: Theme.of(
+                          context,
+                        ).textTheme.headlineSmall!.copyWith(color: Colors.grey.shade900, fontWeight: FontWeight.bold),
                       ),
                     ],
                   ),

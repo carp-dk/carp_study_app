@@ -69,13 +69,18 @@ class HeartRateCardWidgetState extends State<HeartRateCardWidget> with SingleTic
       children: [
         Container(
           margin: const EdgeInsets.only(left: 8, right: 4, bottom: 4),
-          child: Text(min == null || max == null ? '-' : '${(min.toInt())} - ${(max.toInt())}', style: Theme.of(context).textTheme.headlineMedium!),
+          child: Text(
+            min == null || max == null ? '-' : '${(min.toInt())} - ${(max.toInt())}',
+            style: Theme.of(context).textTheme.headlineMedium!,
+          ),
         ),
         Padding(
           padding: const EdgeInsets.only(bottom: 10),
           child: Text(
             min == null || max == null ? '' : locale.translate('cards.heartrate.bpm'),
-            style: Theme.of(context).textTheme.labelSmall!.copyWith(fontSize: 10, fontWeight: FontWeight.w700).copyWith(fontSize: 12, color: Colors.grey.shade600),
+            style: Theme.of(context).textTheme.labelSmall!
+                .copyWith(fontSize: 10, fontWeight: FontWeight.w700)
+                .copyWith(fontSize: 12, color: Colors.grey.shade600),
           ),
         ),
       ],
@@ -114,7 +119,9 @@ class HeartRateCardWidgetState extends State<HeartRateCardWidget> with SingleTic
                     ),
                     Text(
                       locale.translate('cards.heartrate.bpm'),
-                      style: Theme.of(context).textTheme.labelSmall!.copyWith(fontSize: 10, fontWeight: FontWeight.w700).copyWith(color: Colors.grey.shade600),
+                      style: Theme.of(context).textTheme.labelSmall!
+                          .copyWith(fontSize: 10, fontWeight: FontWeight.w700)
+                          .copyWith(color: Colors.grey.shade600),
                     ),
                   ],
                 ),

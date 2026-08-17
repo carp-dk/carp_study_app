@@ -87,7 +87,10 @@ class AudioPageState extends State<AudioPage> {
                                       ),
                                       Padding(
                                         padding: const EdgeInsets.only(top: 8, bottom: 40),
-                                        child: Text(locale.translate("pages.audio_task.play"), style: Theme.of(context).textTheme.labelLarge!),
+                                        child: Text(
+                                          locale.translate("pages.audio_task.play"),
+                                          style: Theme.of(context).textTheme.labelLarge!,
+                                        ),
                                       ),
                                     ],
                                   ),
@@ -137,7 +140,10 @@ class AudioPageState extends State<AudioPage> {
                                       ),
                                       Padding(
                                         padding: const EdgeInsets.only(top: 8, bottom: 40),
-                                        child: Text(locale.translate("pages.audio_task.recording"), style: Theme.of(context).textTheme.titleLarge!),
+                                        child: Text(
+                                          locale.translate("pages.audio_task.recording"),
+                                          style: Theme.of(context).textTheme.titleLarge!,
+                                        ),
                                       ),
                                     ],
                                   ),
@@ -172,11 +178,7 @@ class AudioPageState extends State<AudioPage> {
                                               flex: 1,
                                               child: IconButton(
                                                 onPressed: () => widget.audioUserTask!.onRecordReset(),
-                                                icon: Icon(
-                                                  Icons.replay,
-                                                  color: Colors.grey.shade700,
-                                                  size: 30,
-                                                ),
+                                                icon: Icon(Icons.replay, color: Colors.grey.shade700, size: 30),
                                               ),
                                             ),
                                             Expanded(

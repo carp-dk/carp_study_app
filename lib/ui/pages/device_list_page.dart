@@ -62,10 +62,9 @@ class DeviceListPageState extends State<DeviceListPage> {
                     children: [
                       Text(
                         locale.translate('pages.devices.title'),
-                        style: Theme.of(context).textTheme.headlineSmall!.copyWith(
-                          color: Colors.grey.shade900,
-                          fontWeight: FontWeight.bold,
-                        ),
+                        style: Theme.of(
+                          context,
+                        ).textTheme.headlineSmall!.copyWith(color: Colors.grey.shade900, fontWeight: FontWeight.bold),
                       ),
                     ],
                   ),
@@ -178,7 +177,9 @@ class DeviceListPageState extends State<DeviceListPage> {
                     ),
                     child: Text(
                       locale.translate(device.getDeviceStatusIcon as String? ?? "pages.devices.status.action.connect"),
-                      style: Theme.of(context).textTheme.titleLarge!.copyWith(fontSize: 20).copyWith(color: Colors.white),
+                      style: Theme.of(
+                        context,
+                      ).textTheme.titleLarge!.copyWith(fontSize: 20).copyWith(color: Colors.white),
                     ),
                   ),
           ),
@@ -210,7 +211,9 @@ class DeviceListPageState extends State<DeviceListPage> {
                     ),
                     child: Text(
                       locale.translate(service.getServiceStatusIcon as String),
-                      style: Theme.of(context).textTheme.titleLarge!.copyWith(fontSize: 20).copyWith(color: Colors.white),
+                      style: Theme.of(
+                        context,
+                      ).textTheme.titleLarge!.copyWith(fontSize: 20).copyWith(color: Colors.white),
                     ),
                   )
                 : service.getServiceStatusIcon as Icon,
@@ -258,7 +261,9 @@ class DeviceListPageState extends State<DeviceListPage> {
                 alignment: Alignment.centerLeft,
                 child: Text(
                   subtitle,
-                  style: Theme.of(context).textTheme.labelSmall!.copyWith(fontWeight: FontWeight.w700).copyWith(color: Colors.grey.shade700),
+                  style: Theme.of(
+                    context,
+                  ).textTheme.labelSmall!.copyWith(fontWeight: FontWeight.w700).copyWith(color: Colors.grey.shade700),
                 ),
               ),
             ],

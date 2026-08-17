@@ -158,7 +158,9 @@ class StudyPageState extends State<StudyPage> {
                 padding: const EdgeInsets.symmetric(vertical: 8.0),
                 child: Text(
                   locale.translate(message.title!),
-                  style: Theme.of(context).textTheme.headlineSmall!.copyWith(color: Theme.of(context).colorScheme.primary),
+                  style: Theme.of(
+                    context,
+                  ).textTheme.headlineSmall!.copyWith(color: Theme.of(context).colorScheme.primary),
                 ),
               ),
               if (message.subTitle != null && message.subTitle!.isNotEmpty)
@@ -247,7 +249,9 @@ class StudyPageState extends State<StudyPage> {
                                     ? locale.translate('pages.about.status.deploying_devices')
                                     : deploymentStatus.toString().split('.').last,
                                 maxLines: 2,
-                                style: Theme.of(context).textTheme.labelLarge!.copyWith(color: studyStatusColors[deploymentStatus]),
+                                style: Theme.of(
+                                  context,
+                                ).textTheme.labelLarge!.copyWith(color: studyStatusColors[deploymentStatus]),
                               ),
                             ),
                           ],
@@ -257,10 +261,9 @@ class StudyPageState extends State<StudyPage> {
                             padding: const EdgeInsets.only(left: 16.0),
                             child: Text(
                               getStatusText(locale, deploymentStatus, snapshot),
-                              style: Theme.of(context).textTheme.labelLarge!.copyWith(
-                                color: Colors.grey.shade900,
-                                fontSize: 14,
-                              ),
+                              style: Theme.of(
+                                context,
+                              ).textTheme.labelLarge!.copyWith(color: Colors.grey.shade900, fontSize: 14),
                             ),
                           ),
                         ),
@@ -290,10 +293,9 @@ class StudyPageState extends State<StudyPage> {
             children: [
               Text(
                 locale.translate('Announcements'),
-                style: Theme.of(context).textTheme.headlineSmall!.copyWith(
-                  color: Colors.grey.shade900,
-                  fontWeight: FontWeight.bold,
-                ),
+                style: Theme.of(
+                  context,
+                ).textTheme.headlineSmall!.copyWith(color: Colors.grey.shade900, fontWeight: FontWeight.bold),
               ),
             ],
           ),
@@ -334,7 +336,9 @@ class StudyPageState extends State<StudyPage> {
                         child: Text(
                           locale.translate(message.title!),
                           overflow: TextOverflow.ellipsis,
-                          style: Theme.of(context).textTheme.titleLarge!.copyWith(fontSize: 20).copyWith(color: Colors.grey.shade900),
+                          style: Theme.of(
+                            context,
+                          ).textTheme.titleLarge!.copyWith(fontSize: 20).copyWith(color: Colors.grey.shade900),
                         ),
                       ),
                     ),
@@ -362,7 +366,9 @@ class StudyPageState extends State<StudyPage> {
                       Spacer(),
                       Text(
                         timeago.format(message.timestamp.toLocal()),
-                        style: Theme.of(context).textTheme.labelSmall!.copyWith(fontSize: 10).copyWith(color: Colors.grey.shade600),
+                        style: Theme.of(
+                          context,
+                        ).textTheme.labelSmall!.copyWith(fontSize: 10).copyWith(color: Colors.grey.shade600),
                       ),
                     ],
                   ),

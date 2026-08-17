@@ -124,24 +124,24 @@ class InvitationMaterial extends StatelessWidget {
               Text(
                 invitation.invitation.name,
                 maxLines: 1,
-                style: Theme.of(context).textTheme.headlineSmall!.copyWith(fontWeight: FontWeight.w600).copyWith(color: CACHET.TASK_COMPLETED_BLUE, overflow: TextOverflow.ellipsis),
+                style: Theme.of(context).textTheme.headlineSmall!
+                    .copyWith(fontWeight: FontWeight.w600)
+                    .copyWith(color: CACHET.TASK_COMPLETED_BLUE, overflow: TextOverflow.ellipsis),
               ),
               Text.rich(
                 TextSpan(
                   children: [
                     TextSpan(
                       text: locale.translate('invitation_list.roles_in_the_study.description'),
-                      style: Theme.of(context).textTheme.titleSmall!.copyWith(
-                        color: Colors.grey.shade600,
-                        fontSize: 12,
-                      ),
+                      style: Theme.of(
+                        context,
+                      ).textTheme.titleSmall!.copyWith(color: Colors.grey.shade600, fontSize: 12),
                     ),
                     TextSpan(
                       text: invitation.participantRoleName,
-                      style: Theme.of(context).textTheme.titleSmall!.copyWith(
-                        color: Colors.grey.shade600,
-                        fontSize: 12,
-                      ),
+                      style: Theme.of(
+                        context,
+                      ).textTheme.titleSmall!.copyWith(color: Colors.grey.shade600, fontSize: 12),
                     ),
                   ],
                 ),
@@ -149,10 +149,9 @@ class InvitationMaterial extends StatelessWidget {
               Text(
                 invitation.invitation.description ?? '',
                 maxLines: 2,
-                style: Theme.of(context).textTheme.titleSmall!.copyWith(
-                  color: Colors.grey.shade900,
-                  overflow: TextOverflow.ellipsis,
-                ),
+                style: Theme.of(
+                  context,
+                ).textTheme.titleSmall!.copyWith(color: Colors.grey.shade900, overflow: TextOverflow.ellipsis),
               ),
             ],
           ),

@@ -35,12 +35,17 @@ class _MobilityCardState extends State<MobilityCard> {
           children: [
             Row(
               children: [
-                Text('$_homestay%', style: Theme.of(context).textTheme.headlineMedium!.copyWith(color: widget.colors[0])),
+                Text(
+                  '$_homestay%',
+                  style: Theme.of(context).textTheme.headlineMedium!.copyWith(color: widget.colors[0]),
+                ),
                 Padding(
                   padding: const EdgeInsets.only(left: 4.0),
                   child: Text(
                     "${locale.translate('cards.mobility.homestay')} ${_getDayName(touchedIndex)}",
-                    style: Theme.of(context).textTheme.labelSmall!.copyWith(fontWeight: FontWeight.w700).copyWith(color: Colors.grey.shade900),
+                    style: Theme.of(
+                      context,
+                    ).textTheme.labelSmall!.copyWith(fontWeight: FontWeight.w700).copyWith(color: Colors.grey.shade900),
                   ),
                 ),
               ],
@@ -49,7 +54,9 @@ class _MobilityCardState extends State<MobilityCard> {
               children: [
                 Text(
                   "${widget.model.currentMonth} ${widget.model.startOfWeek} - ${int.parse(widget.model.endOfWeek) < int.parse(widget.model.startOfWeek) ? widget.model.nextMonth : widget.model.currentMonth} ${widget.model.endOfWeek}, ${widget.model.currentYear}",
-                  style: Theme.of(context).textTheme.labelSmall!.copyWith(fontWeight: FontWeight.w700).copyWith(color: Colors.grey.shade600),
+                  style: Theme.of(
+                    context,
+                  ).textTheme.labelSmall!.copyWith(fontWeight: FontWeight.w700).copyWith(color: Colors.grey.shade600),
                 ),
                 Spacer(),
               ],
@@ -73,7 +80,9 @@ class _MobilityCardState extends State<MobilityCard> {
                       padding: const EdgeInsets.all(4.0),
                       child: Text(
                         locale.translate('cards.mobility.places'),
-                        style: Theme.of(context).textTheme.labelSmall!.copyWith(fontWeight: FontWeight.w700).copyWith(color: Colors.grey.shade800),
+                        style: Theme.of(context).textTheme.labelSmall!
+                            .copyWith(fontWeight: FontWeight.w700)
+                            .copyWith(color: Colors.grey.shade800),
                       ),
                     ),
                   ],

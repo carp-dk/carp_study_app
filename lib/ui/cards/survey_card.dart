@@ -29,7 +29,10 @@ class _SurveyCardState extends State<SurveyCard> {
           children: [
             Padding(
               padding: const EdgeInsets.only(left: 10.0),
-              child: Text(locale.translate('cards.survey.title').toUpperCase(), style: Theme.of(context).textTheme.bodyLarge!.copyWith(letterSpacing: 1)),
+              child: Text(
+                locale.translate('cards.survey.title').toUpperCase(),
+                style: Theme.of(context).textTheme.bodyLarge!.copyWith(letterSpacing: 1),
+              ),
             ),
             SizedBox(
               height: 160,

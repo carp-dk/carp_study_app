@@ -39,7 +39,9 @@ class MessageDetailsPage extends StatelessWidget {
                     padding: const EdgeInsets.symmetric(vertical: 10.0),
                     child: Text(
                       locale.translate(message.title!),
-                      style: Theme.of(context).textTheme.titleLarge!.copyWith(fontSize: 20).copyWith(color: Colors.grey.shade900),
+                      style: Theme.of(
+                        context,
+                      ).textTheme.titleLarge!.copyWith(fontSize: 20).copyWith(color: Colors.grey.shade900),
                     ),
                   ),
                   Spacer(),

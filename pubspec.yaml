@@ -1,7 +1,9 @@
 name: carp_study_app
 description: The generic CARP study app.
 publish_to: "none"
-version: 4.4.0+1
+# Bump only the version name for a release; the `+N` build number is ignored by CI
+# (Fastlane auto-increments the Play versionCode; iOS uses the Xcode Cloud build number).
+version: 4.4.1+1
 
 environment:
   sdk: ">=3.8.0 <4.0.0"
@@ -12,8 +14,8 @@ dependencies:
     sdk: flutter
 
   carp_serializable: ^3.0.0
-  carp_core: ^2.2.0
-  carp_mobile_sensing: ^2.3.0
+  carp_core: ^2.2.1
+  carp_mobile_sensing: ^2.3.1
   carp_context_package: ^2.1.0
   carp_connectivity_package: ^2.2.0
   carp_survey_package: ^2.1.1
@@ -52,7 +54,6 @@ dependencies:
   appcheck: ^1.5.2
   flutter_plugin_android_lifecycle: ^2.0.24
   camera_android_camerax: ^0.6.10+1
-  mdsflutter: ^2.3.0
   app_version_update: ^7.0.0
   country_code_picker: ^3.3.0
   intl_phone_number_input: ^0.7.4

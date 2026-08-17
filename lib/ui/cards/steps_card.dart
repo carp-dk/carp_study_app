@@ -42,7 +42,9 @@ class StepsCardWidgetState extends State<StepsCardWidget> {
                   padding: const EdgeInsets.only(left: 4.0),
                   child: Text(
                     '${locale.translate('cards.steps.steps')} ${_getDayName(touchedIndex)}',
-                    style: Theme.of(context).textTheme.labelSmall!.copyWith(fontWeight: FontWeight.w700).copyWith(color: Colors.grey.shade600),
+                    style: Theme.of(
+                      context,
+                    ).textTheme.labelSmall!.copyWith(fontWeight: FontWeight.w700).copyWith(color: Colors.grey.shade600),
                   ),
                 ),
               ],
@@ -51,7 +53,9 @@ class StepsCardWidgetState extends State<StepsCardWidget> {
               children: [
                 Text(
                   "${widget.model.currentMonth} ${widget.model.startOfWeek} - ${int.parse(widget.model.endOfWeek) < int.parse(widget.model.startOfWeek) ? widget.model.nextMonth : widget.model.currentMonth} ${widget.model.endOfWeek}, ${widget.model.currentYear}",
-                  style: Theme.of(context).textTheme.labelSmall!.copyWith(fontWeight: FontWeight.w700).copyWith(color: Colors.grey.shade600),
+                  style: Theme.of(
+                    context,
+                  ).textTheme.labelSmall!.copyWith(fontWeight: FontWeight.w700).copyWith(color: Colors.grey.shade600),
                 ),
                 Spacer(),
               ],

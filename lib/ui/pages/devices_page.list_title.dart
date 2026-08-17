@@ -15,10 +15,9 @@ class DevicesPageListTitle extends StatelessWidget {
         padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 6),
         child: Text(
           locale.translate("pages.devices.${type.name}.title").toUpperCase(),
-          style: Theme.of(context).textTheme.bodyLarge!.copyWith(letterSpacing: 1).copyWith(
-            color: Colors.grey.shade900,
-            fontWeight: FontWeight.bold,
-          ),
+          style: Theme.of(context).textTheme.bodyLarge!
+              .copyWith(letterSpacing: 1)
+              .copyWith(color: Colors.grey.shade900, fontWeight: FontWeight.bold),
         ),
       ),
     );

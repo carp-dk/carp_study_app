@@ -370,7 +370,10 @@ class _BluetoothConnectionPageState extends State<BluetoothConnectionPage> {
                               child: InkWell(
                                 child: ListTile(
                                   selected: r.device.remoteId == selectedDevice?.remoteId,
-                                  title: Text(r.device.platformName, style: Theme.of(context).textTheme.titleLarge!.copyWith(fontSize: 20)),
+                                  title: Text(
+                                    r.device.platformName,
+                                    style: Theme.of(context).textTheme.titleLarge!.copyWith(fontSize: 20),
+                                  ),
                                   selectedTileColor: Theme.of(context).primaryColor.withValues(alpha: 0.2),
                                 ),
                                 onTap: () {

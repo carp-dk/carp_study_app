@@ -150,7 +150,11 @@ class MyAssetsBar extends StatelessWidget {
                   mainAxisAlignment: MainAxisAlignment.start,
                   children: [
                     Icon(Icons.circle, color: entry.value.color, size: 12.0),
-                    Text(' ${entry.value.name!} ${entry.value.size}', style: Theme.of(context).textTheme.bodySmall!, textAlign: TextAlign.right),
+                    Text(
+                      ' ${entry.value.name!} ${entry.value.size}',
+                      style: Theme.of(context).textTheme.bodySmall!,
+                      textAlign: TextAlign.right,
+                    ),
                   ],
                 ),
               ),
@@ -178,7 +182,11 @@ class MyAssetsBar extends StatelessWidget {
                   mainAxisAlignment: MainAxisAlignment.start,
                   children: [
                     Icon(Icons.circle, color: entry.value.color, size: 12.0),
-                    Text(' ${entry.value.size}', style: Theme.of(context).textTheme.bodySmall!, textAlign: TextAlign.left),
+                    Text(
+                      ' ${entry.value.size}',
+                      style: Theme.of(context).textTheme.bodySmall!,
+                      textAlign: TextAlign.left,
+                    ),
                     Expanded(
                       child: Text(
                         ' ${entry.value.name!}',
