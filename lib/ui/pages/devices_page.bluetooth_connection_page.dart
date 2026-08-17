@@ -50,7 +50,7 @@ class _BluetoothConnectionPageState extends State<BluetoothConnectionPage> {
       // the system back gesture does not skip past the confirmation.
       canPop: currentStep != CurrentStep.done,
       child: Scaffold(
-        backgroundColor: Theme.of(context).extension<CarpColors>()!.backgroundGray,
+        backgroundColor: Theme.of(context).scaffoldBackgroundColor,
         body: SafeArea(
           child: Stack(
             children: [
@@ -118,7 +118,7 @@ class _BluetoothConnectionPageState extends State<BluetoothConnectionPage> {
             Flexible(
               child: Text(
                 stepTitleMap[currentStep] ?? '',
-                style: fs22fw700.copyWith(color: Theme.of(context).primaryColor),
+                style: Theme.of(context).textTheme.titleLarge!.copyWith(color: Theme.of(context).primaryColor),
                 textAlign: TextAlign.center,
               ),
             ),
@@ -169,7 +169,7 @@ class _BluetoothConnectionPageState extends State<BluetoothConnectionPage> {
           _connectDevice(),
           selectedDevice != null,
           ElevatedButton.styleFrom(
-            backgroundColor: Theme.of(context).extension<CarpColors>()!.primary,
+            backgroundColor: Theme.of(context).colorScheme.primary,
             padding: const EdgeInsets.symmetric(horizontal: 30, vertical: 12),
           ),
           TextStyle(color: Colors.white),
@@ -192,7 +192,7 @@ class _BluetoothConnectionPageState extends State<BluetoothConnectionPage> {
           },
           true,
           ElevatedButton.styleFrom(
-            backgroundColor: Theme.of(context).extension<CarpColors>()!.primary,
+            backgroundColor: Theme.of(context).colorScheme.primary,
             padding: const EdgeInsets.symmetric(horizontal: 30, vertical: 12),
           ),
           TextStyle(color: Colors.white),
@@ -209,7 +209,7 @@ class _BluetoothConnectionPageState extends State<BluetoothConnectionPage> {
           },
           true,
           ElevatedButton.styleFrom(
-            backgroundColor: Theme.of(context).extension<CarpColors>()!.primary,
+            backgroundColor: Theme.of(context).colorScheme.primary,
             padding: const EdgeInsets.symmetric(horizontal: 30, vertical: 12),
           ),
           TextStyle(color: Colors.white),
@@ -313,7 +313,7 @@ class _BluetoothConnectionPageState extends State<BluetoothConnectionPage> {
             "${locale.translate("pages.devices.connection.step.scan.1")} "
             "${locale.translate(device.typeName)} "
             "${locale.translate("pages.devices.connection.step.scan.2")}",
-            style: fs22fw700,
+            style: Theme.of(context).textTheme.titleLarge!,
             textAlign: TextAlign.justify,
           ),
           if (device.bleNamePrefix != null)
@@ -327,7 +327,7 @@ class _BluetoothConnectionPageState extends State<BluetoothConnectionPage> {
                         ? "pages.devices.connection.step.scan.filtered"
                         : "pages.devices.connection.step.scan.show_all",
                   ),
-                  style: fs16fw400.copyWith(fontSize: 14),
+                  style: Theme.of(context).textTheme.bodyLarge!.copyWith(fontSize: 14),
                 ),
               ),
             ),
@@ -351,7 +351,7 @@ class _BluetoothConnectionPageState extends State<BluetoothConnectionPage> {
                   return Center(
                     child: Text(
                       locale.translate("pages.devices.connection.step.scan.searching"),
-                      style: fs16fw400.copyWith(color: Theme.of(context).extension<CarpColors>()!.grey700),
+                      style: Theme.of(context).textTheme.bodyLarge!.copyWith(color: Colors.grey.shade700),
                       textAlign: TextAlign.center,
                     ),
                   );
@@ -366,11 +366,11 @@ class _BluetoothConnectionPageState extends State<BluetoothConnectionPage> {
                           .map(
                             (r) => StudiesMaterial(
                               // hasBorder: true,
-                              backgroundColor: Theme.of(context).extension<CarpColors>()!.grey50!,
+                              backgroundColor: Colors.grey.shade50,
                               child: InkWell(
                                 child: ListTile(
                                   selected: r.device.remoteId == selectedDevice?.remoteId,
-                                  title: Text(r.device.platformName, style: fs22fw700.copyWith(fontSize: 20)),
+                                  title: Text(r.device.platformName, style: Theme.of(context).textTheme.titleLarge!.copyWith(fontSize: 20)),
                                   selectedTileColor: Theme.of(context).primaryColor.withValues(alpha: 0.2),
                                 ),
                                 onTap: () {
@@ -397,7 +397,7 @@ class _BluetoothConnectionPageState extends State<BluetoothConnectionPage> {
                   TextSpan(
                     text: locale.translate("pages.devices.connection.instructions"),
                     style: TextStyle(
-                      color: Theme.of(context).extension<CarpColors>()!.primary,
+                      color: Theme.of(context).colorScheme.primary,
                       decoration: TextDecoration.underline,
                       fontWeight: FontWeight.bold,
                     ),
@@ -409,7 +409,7 @@ class _BluetoothConnectionPageState extends State<BluetoothConnectionPage> {
                   TextSpan(text: locale.translate("pages.devices.connection.step.start.2")),
                 ],
               ),
-              style: fs22fw700.copyWith(color: Theme.of(context).extension<CarpColors>()!.grey900),
+              style: Theme.of(context).textTheme.titleLarge!.copyWith(color: Colors.grey.shade900),
               textAlign: TextAlign.center,
             ),
           ),
@@ -465,7 +465,7 @@ class _BluetoothConnectionPageState extends State<BluetoothConnectionPage> {
                     padding: const EdgeInsets.only(bottom: 20.0),
                     child: Text(
                       locale.translate(device.connectionInstructions!),
-                      style: fs16fw400,
+                      style: Theme.of(context).textTheme.bodyLarge!,
                       textAlign: TextAlign.justify,
                     ),
                   ),
@@ -497,7 +497,7 @@ class _BluetoothConnectionPageState extends State<BluetoothConnectionPage> {
                   child: Text(
                     ("${locale.translate("pages.devices.connection.step.confirm.1")} '${device?.platformName}' ${locale.translate("pages.devices.connection.step.confirm.2")}")
                         .trim(),
-                    style: fs16fw400,
+                    style: Theme.of(context).textTheme.bodyLarge!,
                     textAlign: TextAlign.justify,
                   ),
                 ),

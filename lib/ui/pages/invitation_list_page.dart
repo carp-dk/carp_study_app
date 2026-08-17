@@ -20,7 +20,7 @@ class _InvitationListPageState extends State<InvitationListPage> {
   Widget build(BuildContext context) {
     RPLocalizations locale = RPLocalizations.of(context)!;
     return Scaffold(
-      backgroundColor: Theme.of(context).extension<CarpColors>()!.backgroundGray,
+      backgroundColor: Theme.of(context).scaffoldBackgroundColor,
       body: RefreshIndicator(
         onRefresh: widget.model.loadInvitations,
         child: ListenableBuilder(
@@ -45,7 +45,7 @@ class _InvitationListPageState extends State<InvitationListPage> {
               physics: const AlwaysScrollableScrollPhysics(),
               slivers: [
                 SliverAppBar(
-                  backgroundColor: Theme.of(context).extension<CarpColors>()!.backgroundGray,
+                  backgroundColor: Theme.of(context).scaffoldBackgroundColor,
                   title: const CarpAppBar(),
                   centerTitle: true,
                   pinned: true,
@@ -110,7 +110,7 @@ class InvitationMaterial extends StatelessWidget {
   Widget build(BuildContext context) {
     RPLocalizations locale = RPLocalizations.of(context)!;
     return StudiesMaterial(
-      backgroundColor: Theme.of(context).extension<CarpColors>()!.white!,
+      backgroundColor: Colors.white,
       shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12.0)),
       child: InkWell(
         onTap: () {
@@ -124,22 +124,22 @@ class InvitationMaterial extends StatelessWidget {
               Text(
                 invitation.invitation.name,
                 maxLines: 1,
-                style: fs24fw600.copyWith(color: CACHET.TASK_COMPLETED_BLUE, overflow: TextOverflow.ellipsis),
+                style: Theme.of(context).textTheme.headlineSmall!.copyWith(fontWeight: FontWeight.w600).copyWith(color: CACHET.TASK_COMPLETED_BLUE, overflow: TextOverflow.ellipsis),
               ),
               Text.rich(
                 TextSpan(
                   children: [
                     TextSpan(
                       text: locale.translate('invitation_list.roles_in_the_study.description'),
-                      style: fs16fw700.copyWith(
-                        color: Theme.of(context).extension<CarpColors>()!.grey600,
+                      style: Theme.of(context).textTheme.titleSmall!.copyWith(
+                        color: Colors.grey.shade600,
                         fontSize: 12,
                       ),
                     ),
                     TextSpan(
                       text: invitation.participantRoleName,
-                      style: fs16fw700.copyWith(
-                        color: Theme.of(context).extension<CarpColors>()!.grey600,
+                      style: Theme.of(context).textTheme.titleSmall!.copyWith(
+                        color: Colors.grey.shade600,
                         fontSize: 12,
                       ),
                     ),
@@ -149,8 +149,8 @@ class InvitationMaterial extends StatelessWidget {
               Text(
                 invitation.invitation.description ?? '',
                 maxLines: 2,
-                style: fs16fw700.copyWith(
-                  color: Theme.of(context).extension<CarpColors>()!.grey900,
+                style: Theme.of(context).textTheme.titleSmall!.copyWith(
+                  color: Colors.grey.shade900,
                   overflow: TextOverflow.ellipsis,
                 ),
               ),

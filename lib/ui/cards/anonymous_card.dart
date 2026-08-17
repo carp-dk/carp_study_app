@@ -8,7 +8,7 @@ class AnonymousCard extends StatelessWidget {
     RPLocalizations locale = RPLocalizations.of(context)!;
 
     return Card(
-      color: Theme.of(context).extension<CarpColors>()!.grey50,
+      color: Colors.grey.shade50,
       elevation: 0,
       margin: const EdgeInsets.all(16.0),
       shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(8)),
@@ -36,7 +36,7 @@ class AnonymousCard extends StatelessWidget {
                           child: Text(
                             locale.translate('pages.about.anonymous.anonymous'),
                             maxLines: 2,
-                            style: fs16fw600.copyWith(color: CACHET.ANONYMOUS),
+                            style: Theme.of(context).textTheme.labelLarge!.copyWith(color: CACHET.ANONYMOUS),
                           ),
                         ),
                       ],
@@ -46,8 +46,8 @@ class AnonymousCard extends StatelessWidget {
                         padding: const EdgeInsets.only(left: 16.0),
                         child: Text(
                           locale.translate('pages.about.anonymous.message'),
-                          style: fs16fw600.copyWith(
-                            color: Theme.of(context).extension<CarpColors>()!.grey900,
+                          style: Theme.of(context).textTheme.labelLarge!.copyWith(
+                            color: Colors.grey.shade900,
                             fontSize: 14,
                           ),
                         ),

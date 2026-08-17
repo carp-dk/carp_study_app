@@ -48,22 +48,22 @@ class ScoreboardPersistentHeaderDelegate extends SliverPersistentHeaderDelegate 
     List<Widget> childrenDays = [
       Text(
         model.daysInStudy.toString(),
-        style: fs36fw800.copyWith(
-          fontSize: calculateScrollAwareSizing(shrinkOffset, fs20fw800.fontSize!, fs36fw800.fontSize!),
-          color: Theme.of(context).extension<CarpColors>()!.grey900,
+        style: Theme.of(context).textTheme.displaySmall!.copyWith(fontSize: 36).copyWith(
+          fontSize: calculateScrollAwareSizing(shrinkOffset, Theme.of(context).textTheme.displaySmall!.copyWith(fontSize: 20).fontSize!, Theme.of(context).textTheme.displaySmall!.copyWith(fontSize: 36).fontSize!),
+          color: Colors.grey.shade900,
         ),
       ),
       if (shrinkOffset < offsetForShrink)
         Text(
           locale.translate('cards.scoreboard.days'),
-          style: fs12fw700.copyWith(color: Theme.of(context).extension<CarpColors>()!.grey900),
+          style: Theme.of(context).textTheme.labelSmall!.copyWith(fontWeight: FontWeight.w700).copyWith(color: Colors.grey.shade900),
         ),
       if (shrinkOffset > offsetForShrink)
         Padding(
           padding: const EdgeInsets.only(left: 8.0),
           child: Text(
             locale.translate('cards.scoreboard.days-short'),
-            style: fs12fw700.copyWith(color: Theme.of(context).extension<CarpColors>()!.grey900),
+            style: Theme.of(context).textTheme.labelSmall!.copyWith(fontWeight: FontWeight.w700).copyWith(color: Colors.grey.shade900),
           ),
         ),
     ];
@@ -71,15 +71,15 @@ class ScoreboardPersistentHeaderDelegate extends SliverPersistentHeaderDelegate 
     List<Widget> childrenTasks = [
       Text(
         model.taskCompleted.toString(),
-        style: fs36fw800.copyWith(
-          fontSize: calculateScrollAwareSizing(shrinkOffset, fs20fw800.fontSize!, fs36fw800.fontSize!),
-          color: Theme.of(context).extension<CarpColors>()!.primary,
+        style: Theme.of(context).textTheme.displaySmall!.copyWith(fontSize: 36).copyWith(
+          fontSize: calculateScrollAwareSizing(shrinkOffset, Theme.of(context).textTheme.displaySmall!.copyWith(fontSize: 20).fontSize!, Theme.of(context).textTheme.displaySmall!.copyWith(fontSize: 36).fontSize!),
+          color: Theme.of(context).colorScheme.primary,
         ),
       ),
       if (shrinkOffset < offsetForShrink)
         Text(
           locale.translate('cards.scoreboard.tasks'),
-          style: fs12fw700.copyWith(color: Theme.of(context).extension<CarpColors>()!.primary),
+          style: Theme.of(context).textTheme.labelSmall!.copyWith(fontWeight: FontWeight.w700).copyWith(color: Theme.of(context).colorScheme.primary),
         ),
       if (shrinkOffset > offsetForShrink)
         Expanded(
@@ -88,7 +88,7 @@ class ScoreboardPersistentHeaderDelegate extends SliverPersistentHeaderDelegate 
             padding: const EdgeInsets.only(left: 8.0),
             child: Text(
               locale.translate('cards.scoreboard.tasks-short'),
-              style: fs12fw700.copyWith(color: Theme.of(context).extension<CarpColors>()!.primary),
+              style: Theme.of(context).textTheme.labelSmall!.copyWith(fontWeight: FontWeight.w700).copyWith(color: Theme.of(context).colorScheme.primary),
             ),
           ),
         ),
@@ -97,7 +97,7 @@ class ScoreboardPersistentHeaderDelegate extends SliverPersistentHeaderDelegate 
     return Container(
       height: height,
       decoration: BoxDecoration(
-        color: Theme.of(context).extension<CarpColors>()!.white,
+        color: Colors.white,
         borderRadius: BorderRadius.circular(8), // Rounded corners
       ),
       child: StreamBuilder<UserTask>(

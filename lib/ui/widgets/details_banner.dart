@@ -23,7 +23,7 @@ class DetailsBanner extends StatelessWidget {
                 children: [
                   Text(
                     locale.translate(title),
-                    style: fs30fw800.copyWith(fontSize: 30, color: Theme.of(context).primaryColor),
+                    style: Theme.of(context).textTheme.displaySmall!.copyWith(fontSize: 30, color: Theme.of(context).primaryColor),
                   ),
                 ],
               ),

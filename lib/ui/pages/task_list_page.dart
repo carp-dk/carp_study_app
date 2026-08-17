@@ -28,7 +28,7 @@ class _SliverAppBarDelegate extends SliverPersistentHeaderDelegate {
       padding: const EdgeInsets.symmetric(vertical: 4),
       decoration: BoxDecoration(
         borderRadius: BorderRadius.circular(8),
-        color: Theme.of(context).extension<CarpColors>()!.grey200,
+        color: Colors.grey.shade200,
       ),
       child: _tabBar,
     );
@@ -70,7 +70,7 @@ class TaskListPageState extends State<TaskListPage> with TickerProviderStateMixi
       widget.model.autoCompletedTaskShown();
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(
-          backgroundColor: Theme.of(context).extension<CarpColors>()!.grey700,
+          backgroundColor: Colors.grey.shade700,
           content: Text(RPLocalizations.of(context)!.translate('Done!')),
           shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(4)),
           duration: const Duration(seconds: 1),
@@ -87,7 +87,7 @@ class TaskListPageState extends State<TaskListPage> with TickerProviderStateMixi
     return DefaultTabController(
       length: 2,
       child: Scaffold(
-        backgroundColor: Theme.of(context).extension<CarpColors>()!.backgroundGray,
+        backgroundColor: Theme.of(context).scaffoldBackgroundColor,
         body: SafeArea(
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.center,
@@ -113,8 +113,8 @@ class TaskListPageState extends State<TaskListPage> with TickerProviderStateMixi
                                 alignment: Alignment.centerLeft,
                                 child: Text(
                                   locale.translate('pages.task_list.title'),
-                                  style: fs24fw700.copyWith(
-                                    color: Theme.of(context).extension<CarpColors>()!.grey900,
+                                  style: Theme.of(context).textTheme.headlineSmall!.copyWith(
+                                    color: Colors.grey.shade900,
                                     fontWeight: FontWeight.bold,
                                   ),
                                 ),
@@ -135,12 +135,12 @@ class TaskListPageState extends State<TaskListPage> with TickerProviderStateMixi
                                 TabBar(
                                   controller: _tabController,
                                   labelPadding: const EdgeInsets.only(top: 4, bottom: 4, left: 4, right: 4),
-                                  labelColor: Theme.of(context).extension<CarpColors>()!.grey900,
-                                  unselectedLabelColor: Theme.of(context).extension<CarpColors>()!.grey900,
+                                  labelColor: Colors.grey.shade900,
+                                  unselectedLabelColor: Colors.grey.shade900,
                                   dividerColor: Colors.transparent,
                                   indicator: ShapeDecoration(
                                     shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(8)),
-                                    color: Theme.of(context).extension<CarpColors>()!.white,
+                                    color: Colors.white,
                                   ),
                                   tabs: [
                                     Container(
@@ -194,7 +194,7 @@ class TaskListPageState extends State<TaskListPage> with TickerProviderStateMixi
         shape: RoundedRectangleBorder(
           borderRadius: BorderRadius.horizontal(left: Radius.circular(2.0), right: Radius.circular(8.0)),
         ),
-        backgroundColor: Theme.of(context).extension<CarpColors>()!.grey50!,
+        backgroundColor: Colors.grey.shade50,
         child: Padding(
           padding: const EdgeInsets.symmetric(vertical: 16),
           child: IntrinsicHeight(
@@ -282,7 +282,7 @@ class TaskListPageState extends State<TaskListPage> with TickerProviderStateMixi
             ),
             backgroundColor: userTask.expiresIn != null && userTask.expiresIn!.inHours < 24
                 ? CACHET.TASK_TO_EXPIRE_BACKGROUND
-                : Theme.of(context).extension<CarpColors>()!.grey50!,
+                : Colors.grey.shade50,
             child: Padding(
               padding: const EdgeInsets.symmetric(vertical: 16),
               child: IntrinsicHeight(
@@ -311,7 +311,7 @@ class TaskListPageState extends State<TaskListPage> with TickerProviderStateMixi
                                 Icon(
                                   Icons.alarm,
                                   color: userTask.expiresIn != null && userTask.expiresIn!.inHours < 24
-                                      ? Theme.of(context).extension<CarpColors>()!.warningColor
+                                      ? Colors.orange.shade500
                                       : Colors.grey,
                                 ),
                               const SizedBox(width: 4.0),
@@ -321,7 +321,7 @@ class TaskListPageState extends State<TaskListPage> with TickerProviderStateMixi
                                   _timeRemainingSubtitle(userTask),
                                   style: TextStyle(
                                     color: userTask.expiresIn != null && userTask.expiresIn!.inHours < 24
-                                        ? Theme.of(context).extension<CarpColors>()!.warningColor
+                                        ? Colors.orange.shade500
                                         : Colors.grey,
                                     fontSize: 12.0,
                                   ),
@@ -394,7 +394,7 @@ class TaskListPageState extends State<TaskListPage> with TickerProviderStateMixi
         } else if (taskTypeIcons[userTask.type] != null && userTask.state == UserTaskState.done) {
           return Icon(originalIcon.icon, color: CACHET.TASK_COMPLETED_BLUE);
         } else {
-          return Icon(originalIcon.icon, color: Theme.of(context).extension<CarpColors>()!.grey600);
+          return Icon(originalIcon.icon, color: Colors.grey.shade600);
         }
       },
     );
@@ -434,7 +434,7 @@ class TaskListPageState extends State<TaskListPage> with TickerProviderStateMixi
     return Center(
       child: GestureDetector(
         child: StudiesMaterial(
-          backgroundColor: Theme.of(context).extension<CarpColors>()!.grey50!,
+          backgroundColor: Colors.grey.shade50,
           hasBorder: true,
           shape: RoundedRectangleBorder(
             borderRadius: BorderRadius.horizontal(left: Radius.circular(2.0), right: Radius.circular(8.0)),
@@ -474,7 +474,7 @@ class TaskListPageState extends State<TaskListPage> with TickerProviderStateMixi
                                   : 'Done time null',
                               style: TextStyle(
                                 color: userTask.expiresIn != null && userTask.expiresIn!.inHours < 24
-                                    ? Theme.of(context).extension<CarpColors>()!.warningColor
+                                    ? Colors.orange.shade500
                                     : Colors.grey,
                                 fontSize: 12.0,
                               ),
@@ -521,7 +521,7 @@ class TaskListPageState extends State<TaskListPage> with TickerProviderStateMixi
         ),
         Padding(
           padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 5),
-          child: Text(locale.translate("pages.task_list.no_tasks"), style: fs16fw600, textAlign: TextAlign.center),
+          child: Text(locale.translate("pages.task_list.no_tasks"), style: Theme.of(context).textTheme.labelLarge!, textAlign: TextAlign.center),
         ),
       ],
     );

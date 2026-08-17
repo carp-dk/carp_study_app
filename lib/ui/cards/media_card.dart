@@ -18,7 +18,7 @@ class MediaCardWidgetState extends State<MediaCardWidget> {
     }
 
     return StudiesMaterial(
-      backgroundColor: Theme.of(context).extension<CarpColors>()!.white!,
+      backgroundColor: Colors.white,
       child: Padding(
         padding: const EdgeInsets.all(8.0),
         child: Column(
@@ -33,7 +33,7 @@ class MediaCardWidgetState extends State<MediaCardWidget> {
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: <Widget>[
                           const SizedBox(height: 5),
-                          Text('$total MEDIA', style: fs16fw400ls1),
+                          Text('$total MEDIA', style: Theme.of(context).textTheme.bodyLarge!.copyWith(letterSpacing: 1)),
                           Column(
                             children: widget.modelsList
                                 .asMap()
@@ -45,7 +45,7 @@ class MediaCardWidgetState extends State<MediaCardWidget> {
                                       const SizedBox(height: 15),
                                       Text(
                                         '${entry.value.tasksDone} ${locale.translate('cards.${entry.value.taskType}.title')}',
-                                        style: fs16fw400ls1.copyWith(fontSize: 14),
+                                        style: Theme.of(context).textTheme.bodyLarge!.copyWith(letterSpacing: 1).copyWith(fontSize: 14),
                                       ),
                                       LayoutBuilder(
                                         builder: (BuildContext context, BoxConstraints constraints) {

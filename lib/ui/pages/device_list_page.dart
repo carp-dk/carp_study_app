@@ -40,7 +40,7 @@ class DeviceListPageState extends State<DeviceListPage> {
   Widget build(BuildContext context) {
     RPLocalizations locale = RPLocalizations.of(context)!;
     return Scaffold(
-      backgroundColor: Theme.of(context).extension<CarpColors>()!.backgroundGray,
+      backgroundColor: Theme.of(context).scaffoldBackgroundColor,
       body: SafeArea(
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.center,
@@ -62,8 +62,8 @@ class DeviceListPageState extends State<DeviceListPage> {
                     children: [
                       Text(
                         locale.translate('pages.devices.title'),
-                        style: fs24fw700.copyWith(
-                          color: Theme.of(context).extension<CarpColors>()!.grey900,
+                        style: Theme.of(context).textTheme.headlineSmall!.copyWith(
+                          color: Colors.grey.shade900,
                           fontWeight: FontWeight.bold,
                         ),
                       ),
@@ -84,7 +84,7 @@ class DeviceListPageState extends State<DeviceListPage> {
                     children: [
                       Text(
                         locale.translate("pages.devices.message"),
-                        style: fs16fw600.copyWith(color: Theme.of(context).extension<CarpColors>()!.grey600),
+                        style: Theme.of(context).textTheme.labelLarge!.copyWith(color: Colors.grey.shade600),
                       ),
                       const SizedBox(height: 15),
                     ],
@@ -132,7 +132,7 @@ class DeviceListPageState extends State<DeviceListPage> {
           listenable: _smartphoneDevice[index],
           builder: (BuildContext context, Widget? widget) => Center(
             child: StudiesMaterial(
-              backgroundColor: Theme.of(context).extension<CarpColors>()!.grey50!,
+              backgroundColor: Colors.grey.shade50,
               child: _cardListBuilder(
                 leading: _smartphoneDevice[index].icon!,
                 title: (
@@ -178,7 +178,7 @@ class DeviceListPageState extends State<DeviceListPage> {
                     ),
                     child: Text(
                       locale.translate(device.getDeviceStatusIcon as String? ?? "pages.devices.status.action.connect"),
-                      style: fs20fw700.copyWith(color: Colors.white),
+                      style: Theme.of(context).textTheme.titleLarge!.copyWith(fontSize: 20).copyWith(color: Colors.white),
                     ),
                   ),
           ),
@@ -210,7 +210,7 @@ class DeviceListPageState extends State<DeviceListPage> {
                     ),
                     child: Text(
                       locale.translate(service.getServiceStatusIcon as String),
-                      style: fs20fw700.copyWith(color: Colors.white),
+                      style: Theme.of(context).textTheme.titleLarge!.copyWith(fontSize: 20).copyWith(color: Colors.white),
                     ),
                   )
                 : service.getServiceStatusIcon as Icon,
@@ -242,7 +242,7 @@ class DeviceListPageState extends State<DeviceListPage> {
         crossAxisAlignment: CrossAxisAlignment.start,
         mainAxisAlignment: MainAxisAlignment.start,
         children: [
-          Text(title!.$1, style: fs16fw700.copyWith(color: Theme.of(context).extension<CarpColors>()!.grey900)),
+          Text(title!.$1, style: Theme.of(context).textTheme.titleSmall!.copyWith(color: Colors.grey.shade900)),
           SizedBox(width: 6),
           if (title.$2 != null && title.$2! > 0) BatteryPercentage(batteryLevel: title.$2 ?? 0),
         ],
@@ -258,7 +258,7 @@ class DeviceListPageState extends State<DeviceListPage> {
                 alignment: Alignment.centerLeft,
                 child: Text(
                   subtitle,
-                  style: fs12fw700.copyWith(color: Theme.of(context).extension<CarpColors>()!.grey700),
+                  style: Theme.of(context).textTheme.labelSmall!.copyWith(fontWeight: FontWeight.w700).copyWith(color: Colors.grey.shade700),
                 ),
               ),
             ],
@@ -274,7 +274,7 @@ class DeviceListPageState extends State<DeviceListPage> {
 
   Widget _devicesPageCardStream<T>(Stream<T> stream, T? initialData, Widget Function() childBuilder) => Center(
     child: StudiesMaterial(
-      backgroundColor: Theme.of(context).extension<CarpColors>()!.grey50!,
+      backgroundColor: Colors.grey.shade50,
       child: StreamBuilder<T>(
         stream: stream,
         initialData: initialData,
@@ -357,7 +357,7 @@ class DeviceListPageState extends State<DeviceListPage> {
       actions: [
         TextButton(child: Text(locale.translate("cancel")), onPressed: () => Navigator.pop(context)),
         ElevatedButton(
-          style: ElevatedButton.styleFrom(backgroundColor: Theme.of(context).extension<CarpColors>()!.primary),
+          style: ElevatedButton.styleFrom(backgroundColor: Theme.of(context).colorScheme.primary),
           child: Text(locale.translate("settings"), style: const TextStyle(color: Colors.white)),
           onPressed: () {
             Platform.isAndroid ? OpenSettingsPlusAndroid().applicationDetails() : OpenSettingsPlusIOS().appSettings();

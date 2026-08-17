@@ -206,8 +206,6 @@ class CarpAppState extends State<CarpStudyApp> {
 
   @override
   Widget build(BuildContext context) {
-    final studyAppColors = Theme.of(context).extension<StudyAppColors>();
-
     // Apply system overlay style after frame so Theme.of(context) is ready
     WidgetsBinding.instance.addPostFrameCallback((_) {
       SystemChrome.setSystemUIOverlayStyle(SystemUiOverlayStyle(statusBarColor: Colors.transparent));
@@ -235,10 +233,7 @@ class CarpAppState extends State<CarpStudyApp> {
         return supportedLocales.first; // default to EN
       },
       locale: AppConfig.localization?.locale,
-      theme: carpTheme.copyWith(
-        extensions: [carpTheme.extension<CarpColors>()!.copyWith(primary: studyAppColors?.primary)],
-      ),
-      darkTheme: carpDarkTheme,
+      theme: carpTheme,
       debugShowCheckedModeBanner: true,
       routerConfig: _router,
     );

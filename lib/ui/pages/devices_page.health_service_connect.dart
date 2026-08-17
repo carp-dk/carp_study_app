@@ -10,7 +10,7 @@ class HealthServiceConnectPage extends StatelessWidget {
     DeviceViewModel healthService = bloc.appViewModel.devicesPageViewModel.healthService!;
 
     return Scaffold(
-      backgroundColor: Theme.of(context).extension<CarpColors>()!.grey100,
+      backgroundColor: Colors.grey.shade100,
       body: SafeArea(
         child: Container(
           child: Column(
@@ -41,30 +41,30 @@ class HealthServiceConnectPage extends StatelessWidget {
                           children: [
                             TextSpan(
                               text: "${locale.translate("pages.devices.type.health.instructions.page2.part1")} ",
-                              style: fs22fw700.copyWith(color: Theme.of(context).extension<CarpColors>()!.grey900),
+                              style: Theme.of(context).textTheme.titleLarge!.copyWith(color: Colors.grey.shade900),
                             ),
                             TextSpan(
                               text:
                                   "${Platform.isAndroid ? locale.translate("pages.devices.type.health.instructions.page2.android.allow_all") : locale.translate("pages.devices.type.health.instructions.page2.ios.turn_on_all")} ",
-                              style: fs22fw700.copyWith(
-                                color: Theme.of(context).extension<CarpColors>()!.primary, // Change to desired color
+                              style: Theme.of(context).textTheme.titleLarge!.copyWith(
+                                color: Theme.of(context).colorScheme.primary, // Change to desired color
                               ),
                             ),
                             TextSpan(
                               text: "${locale.translate("pages.devices.type.health.instructions.page2.part2")} ",
-                              style: fs22fw700.copyWith(color: Theme.of(context).extension<CarpColors>()!.grey900),
+                              style: Theme.of(context).textTheme.titleLarge!.copyWith(color: Colors.grey.shade900),
                             ),
                             TextSpan(
                               text: "${locale.translate("pages.devices.type.health.instructions.page2.allow")} ",
-                              style: fs22fw700.copyWith(
-                                color: Theme.of(context).extension<CarpColors>()!.primary, // Change to desired color
+                              style: Theme.of(context).textTheme.titleLarge!.copyWith(
+                                color: Theme.of(context).colorScheme.primary, // Change to desired color
                               ),
                             ),
                             TextSpan(
                               text: Platform.isAndroid
                                   ? locale.translate("pages.devices.type.health.instructions.page2.part3.android")
                                   : locale.translate("pages.devices.type.health.instructions.page2.part3.ios"),
-                              style: fs22fw700.copyWith(color: Theme.of(context).extension<CarpColors>()!.grey900),
+                              style: Theme.of(context).textTheme.titleLarge!.copyWith(color: Colors.grey.shade900),
                             ),
                           ],
                         ),
@@ -93,7 +93,7 @@ class HealthServiceConnectPage extends StatelessWidget {
             ElevatedButton(
               child: const Text("Next", style: TextStyle(color: Colors.white)),
               style: ElevatedButton.styleFrom(
-                backgroundColor: Theme.of(context).extension<CarpColors>()!.primary,
+                backgroundColor: Theme.of(context).colorScheme.primary,
                 padding: const EdgeInsets.symmetric(horizontal: 30, vertical: 12),
               ),
               onPressed: () async {
@@ -135,7 +135,7 @@ class HealthServiceConnectPage extends StatelessWidget {
     actions: [
       TextButton(child: Text(locale.translate("cancel")), onPressed: () => Navigator.pop(context)),
       ElevatedButton(
-        style: ElevatedButton.styleFrom(backgroundColor: Theme.of(context).extension<CarpColors>()!.primary),
+        style: ElevatedButton.styleFrom(backgroundColor: Theme.of(context).colorScheme.primary),
         child: Text(locale.translate("settings"), style: const TextStyle(color: Colors.white)),
         onPressed: () {
           Platform.isAndroid ? OpenSettingsPlusAndroid().applicationDetails() : OpenSettingsPlusIOS().appSettings();
@@ -146,20 +146,19 @@ class HealthServiceConnectPage extends StatelessWidget {
   );
 
   Widget _dataDisclosure(BuildContext context, RPLocalizations locale) {
-    final colors = Theme.of(context).extension<CarpColors>()!;
     return Container(
       width: double.infinity,
       padding: const EdgeInsets.all(16),
-      decoration: BoxDecoration(color: colors.grey200, borderRadius: BorderRadius.circular(12)),
+      decoration: BoxDecoration(color: Colors.grey.shade200, borderRadius: BorderRadius.circular(12)),
       child: Row(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          Icon(Icons.favorite_outline, color: colors.primary, size: 24),
+          Icon(Icons.favorite_outline, color: Theme.of(context).colorScheme.primary, size: 24),
           const SizedBox(width: 12),
           Expanded(
             child: Text(
               locale.translate("pages.devices.type.health.instructions.data.title"),
-              style: fs16fw600.copyWith(color: colors.grey900),
+              style: Theme.of(context).textTheme.labelLarge!.copyWith(color: Colors.grey.shade900),
             ),
           ),
         ],
