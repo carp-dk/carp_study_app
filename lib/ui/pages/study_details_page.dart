@@ -10,10 +10,10 @@ class StudyDetailsPage extends StatelessWidget {
     RPLocalizations locale = RPLocalizations.of(context)!;
 
     return Scaffold(
-      backgroundColor: Theme.of(context).extension<CarpColors>()!.backgroundGray,
+      backgroundColor: Theme.of(context).scaffoldBackgroundColor,
       body: SafeArea(
         child: Container(
-          color: Theme.of(context).extension<CarpColors>()!.backgroundGray,
+          color: Theme.of(context).scaffoldBackgroundColor,
           child: Column(
             children: [
               Padding(
@@ -24,7 +24,7 @@ class StudyDetailsPage extends StatelessWidget {
                 children: [
                   IconButton(
                     padding: const EdgeInsets.only(left: 26, right: 10, top: 16, bottom: 16),
-                    icon: Icon(Icons.arrow_back_ios, color: Theme.of(context).extension<CarpColors>()!.grey600),
+                    icon: Icon(Icons.arrow_back_ios, color: Colors.grey.shade600),
                     onPressed: () {
                       if (context.canPop()) {
                         context.pop();
@@ -37,7 +37,9 @@ class StudyDetailsPage extends StatelessWidget {
                     padding: const EdgeInsets.symmetric(vertical: 10.0),
                     child: Text(
                       locale.translate(model.title),
-                      style: fs20fw700.copyWith(color: Theme.of(context).extension<CarpColors>()!.primary),
+                      style: Theme.of(context).textTheme.titleLarge!
+                          .copyWith(fontSize: 20)
+                          .copyWith(color: Theme.of(context).colorScheme.primary),
                     ),
                   ),
                 ],
@@ -62,7 +64,7 @@ class StudyDetailsPage extends StatelessWidget {
                     _buildSectionCard(context, [
                       _buildActionListTile(
                         context: context,
-                        leading: Icon(Icons.mail, color: Theme.of(context).extension<CarpColors>()!.primary),
+                        leading: Icon(Icons.mail, color: Theme.of(context).colorScheme.primary),
                         trailing: const Icon(Icons.arrow_forward_ios, color: CACHET.GREY_6),
                         title: locale.translate('pages.profile.contact'),
                         onTap: () async {
@@ -74,7 +76,7 @@ class StudyDetailsPage extends StatelessWidget {
                       ),
                       _buildActionListTile(
                         context: context,
-                        leading: Icon(Icons.policy, color: Theme.of(context).extension<CarpColors>()!.primary),
+                        leading: Icon(Icons.policy, color: Theme.of(context).colorScheme.primary),
                         trailing: const Icon(Icons.arrow_forward_ios, color: CACHET.GREY_6),
                         title: locale.translate('pages.about.study.privacy'),
                         onTap: () async {
@@ -89,7 +91,7 @@ class StudyDetailsPage extends StatelessWidget {
                       ),
                       _buildActionListTile(
                         context: context,
-                        leading: Icon(Icons.public, color: Theme.of(context).extension<CarpColors>()!.primary),
+                        leading: Icon(Icons.public, color: Theme.of(context).colorScheme.primary),
                         trailing: const Icon(Icons.arrow_forward_ios, color: CACHET.GREY_6),
                         title: locale.translate('pages.about.study.website'),
                         onTap: () async {
@@ -111,41 +113,47 @@ class StudyDetailsPage extends StatelessWidget {
                         children: [
                           Text(
                             locale.translate('widgets.study_card.responsible'),
-                            style: fs16fw700.copyWith(color: Theme.of(context).extension<CarpColors>()!.grey900),
+                            style: Theme.of(context).textTheme.titleSmall!.copyWith(color: Colors.grey.shade900),
                           ),
                           Padding(
                             padding: const EdgeInsets.only(top: 4.0, bottom: 8),
                             child: Text(
                               locale.translate(model.responsibleName),
-                              style: fs12fw700.copyWith(color: Theme.of(context).extension<CarpColors>()!.grey700),
+                              style: Theme.of(context).textTheme.labelSmall!
+                                  .copyWith(fontWeight: FontWeight.w700)
+                                  .copyWith(color: Colors.grey.shade700),
                             ),
                           ),
                           Text(
                             locale.translate('widgets.study_card.participant_role'),
-                            style: fs16fw700.copyWith(color: Theme.of(context).extension<CarpColors>()!.grey900),
+                            style: Theme.of(context).textTheme.titleSmall!.copyWith(color: Colors.grey.shade900),
                           ),
                           Padding(
                             padding: const EdgeInsets.only(top: 4.0, bottom: 8),
                             child: Text(
                               locale.translate(model.participantRole),
-                              style: fs12fw700.copyWith(color: Theme.of(context).extension<CarpColors>()!.grey700),
+                              style: Theme.of(context).textTheme.labelSmall!
+                                  .copyWith(fontWeight: FontWeight.w700)
+                                  .copyWith(color: Colors.grey.shade700),
                             ),
                           ),
                           Text(
                             locale.translate('widgets.study_card.device_role'),
-                            style: fs16fw700.copyWith(color: Theme.of(context).extension<CarpColors>()!.grey900),
+                            style: Theme.of(context).textTheme.titleSmall!.copyWith(color: Colors.grey.shade900),
                           ),
                           Padding(
                             padding: const EdgeInsets.only(top: 4.0, bottom: 8),
                             child: Text(
                               locale.translate(model.deviceRole),
-                              style: fs12fw700.copyWith(color: Theme.of(context).extension<CarpColors>()!.grey700),
+                              style: Theme.of(context).textTheme.labelSmall!
+                                  .copyWith(fontWeight: FontWeight.w700)
+                                  .copyWith(color: Colors.grey.shade700),
                             ),
                           ),
                         ],
                       ),
                     ),
-                    Divider(color: Theme.of(context).extension<CarpColors>()!.grey300),
+                    Divider(color: Colors.grey.shade300),
                     Padding(
                       padding: const EdgeInsets.only(top: 16.0),
                       child: Column(
@@ -154,24 +162,28 @@ class StudyDetailsPage extends StatelessWidget {
                         children: [
                           Text(
                             locale.translate('widgets.study_card.study_description'),
-                            style: fs16fw700.copyWith(color: Theme.of(context).extension<CarpColors>()!.grey900),
+                            style: Theme.of(context).textTheme.titleSmall!.copyWith(color: Colors.grey.shade900),
                           ),
                           Padding(
                             padding: const EdgeInsets.only(top: 4.0, bottom: 8),
                             child: Text(
                               locale.translate(model.description),
-                              style: fs12fw700.copyWith(color: Theme.of(context).extension<CarpColors>()!.grey700),
+                              style: Theme.of(context).textTheme.labelSmall!
+                                  .copyWith(fontWeight: FontWeight.w700)
+                                  .copyWith(color: Colors.grey.shade700),
                             ),
                           ),
                           Text(
                             locale.translate('widgets.study_card.study_purpose'),
-                            style: fs16fw700.copyWith(color: Theme.of(context).extension<CarpColors>()!.grey900),
+                            style: Theme.of(context).textTheme.titleSmall!.copyWith(color: Colors.grey.shade900),
                           ),
                           Padding(
                             padding: const EdgeInsets.only(top: 4.0, bottom: 8),
                             child: Text(
                               locale.translate(model.purpose),
-                              style: fs12fw700.copyWith(color: Theme.of(context).extension<CarpColors>()!.grey700),
+                              style: Theme.of(context).textTheme.labelSmall!
+                                  .copyWith(fontWeight: FontWeight.w700)
+                                  .copyWith(color: Colors.grey.shade700),
                             ),
                           ),
                         ],
@@ -190,16 +202,12 @@ class StudyDetailsPage extends StatelessWidget {
   Widget _buildSectionCard(BuildContext context, List<Widget> children) {
     return Card(
       margin: EdgeInsets.zero,
-      color: Theme.of(context).extension<CarpColors>()!.white,
+      color: Colors.white,
       shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(8.0)),
       child: Padding(
         padding: const EdgeInsets.all(8.0),
         child: Column(
-          children: ListTile.divideTiles(
-            context: context,
-            tiles: children,
-            color: Theme.of(context).extension<CarpColors>()!.grey300,
-          ).toList(),
+          children: ListTile.divideTiles(context: context, tiles: children, color: Colors.grey.shade300).toList(),
         ),
       ),
     );
@@ -215,7 +223,7 @@ class StudyDetailsPage extends StatelessWidget {
   }) {
     return ListTile(
       leading: leading,
-      title: Text(title, style: fs16fw600.copyWith(color: Theme.of(context).extension<CarpColors>()!.grey900)),
+      title: Text(title, style: Theme.of(context).textTheme.labelLarge!.copyWith(color: Colors.grey.shade900)),
       trailing: trailing,
       onTap: onTap,
       contentPadding: EdgeInsets.symmetric(vertical: 4, horizontal: 16),

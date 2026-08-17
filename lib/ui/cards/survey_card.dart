@@ -21,7 +21,7 @@ class _SurveyCardState extends State<SurveyCard> {
     }
 
     return StudiesMaterial(
-      backgroundColor: Theme.of(context).extension<CarpColors>()!.white!,
+      backgroundColor: Colors.white,
       child: Padding(
         padding: const EdgeInsets.all(8.0),
         child: Column(
@@ -29,7 +29,10 @@ class _SurveyCardState extends State<SurveyCard> {
           children: [
             Padding(
               padding: const EdgeInsets.only(left: 10.0),
-              child: Text(locale.translate('cards.survey.title').toUpperCase(), style: fs16fw400ls1),
+              child: Text(
+                locale.translate('cards.survey.title').toUpperCase(),
+                style: Theme.of(context).textTheme.bodyLarge!.copyWith(letterSpacing: 1),
+              ),
             ),
             SizedBox(
               height: 160,
@@ -54,7 +57,7 @@ class _SurveyCardState extends State<SurveyCard> {
                           );
                           Widget text = Text(
                             '${entry.value} ${locale.translate(entry.key).truncateTo(12)}',
-                            style: fs12fw400,
+                            style: Theme.of(context).textTheme.bodySmall!,
                           );
                           return Row(children: [dot, const SizedBox(width: 8), text]);
                         }).toList(),
@@ -70,7 +73,7 @@ class _SurveyCardState extends State<SurveyCard> {
                         PieChart(PieChartData(sections: pieChartSections, startDegreeOffset: 270)),
                         Text(
                           '$totalSurveys',
-                          style: fs24fw700.copyWith(color: Theme.of(context).extension<CarpColors>()!.grey800),
+                          style: Theme.of(context).textTheme.headlineSmall!.copyWith(color: Colors.grey.shade800),
                         ),
                       ],
                     ),

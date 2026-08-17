@@ -129,5 +129,10 @@
     "pages.devices.connection.step.confirm.title": "está conectado!",
     "pages.devices.connection.step.confirm.1": "El",
     "pages.devices.connection.step.confirm.2": " ha sido connectado satisfactoriamente al estudio y está listo para empezar a detectar.",
-    "pages.home.setup_failed": "No se pudo configurar el estudio. Comprueba tu conexión a internet e inténtalo de nuevo."
+    "pages.home.setup_failed": "No se pudo configurar el estudio. Comprueba tu conexión a internet e inténtalo de nuevo.",
+    "pages.devices.location_permission.title": "Permisos necesarios",
+    "pages.devices.location_permission.message": "Conectarse a dispositivos Bluetooth cercanos requiere los permisos de Dispositivos cercanos y Ubicación. Para permitirlos, ve a: Ajustes → Apps → CARP Studies → Permisos, concede los permisos que falten e intenta conectarte de nuevo.",
+    "pages.devices.connection.step.scan.searching": "Buscando dispositivos cercanos…\nAsegúrate de que tu dispositivo esté encendido y dentro del alcance.",
+    "pages.devices.connection.step.scan.show_all": "¿No ves tu dispositivo? Mostrar todos",
+    "pages.devices.connection.step.scan.filtered": "Mostrar solo dispositivos coincidentes"
 }

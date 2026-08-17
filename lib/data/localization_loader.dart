@@ -9,8 +9,11 @@ class ResourceLocalizationLoader implements LocalizationLoader {
   @override
   Future<Map<String, String>> load(Locale locale) async {
     Map<String, String> translations = {};
-    // if using the CARP resource manager, the initial call to load will
-    // fail since the user is not authenticated - but will be available on re-load
+
+    // Study-specific translations only exist once a study is selected -
+    // the CARP resource manager needs the study deployment id to look them up.
+    if (!bloc.study.hasStudy) return translations;
+
     try {
       translations = await localizationManager.getLocalizations(locale) ?? {};
       info("$runtimeType - translations for ´$locale' loaded.");

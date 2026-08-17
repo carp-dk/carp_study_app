@@ -35,7 +35,7 @@ class HeartRateCardWidgetState extends State<HeartRateCardWidget> with SingleTic
   @override
   Widget build(BuildContext context) {
     return StudiesMaterial(
-      backgroundColor: Theme.of(context).extension<CarpColors>()!.white!,
+      backgroundColor: Colors.white,
       child: Padding(
         padding: const EdgeInsets.all(8.0),
         child: Column(
@@ -69,13 +69,18 @@ class HeartRateCardWidgetState extends State<HeartRateCardWidget> with SingleTic
       children: [
         Container(
           margin: const EdgeInsets.only(left: 8, right: 4, bottom: 4),
-          child: Text(min == null || max == null ? '-' : '${(min.toInt())} - ${(max.toInt())}', style: fs28fw700),
+          child: Text(
+            min == null || max == null ? '-' : '${(min.toInt())} - ${(max.toInt())}',
+            style: Theme.of(context).textTheme.headlineMedium!,
+          ),
         ),
         Padding(
           padding: const EdgeInsets.only(bottom: 10),
           child: Text(
             min == null || max == null ? '' : locale.translate('cards.heartrate.bpm'),
-            style: fs10fw700.copyWith(fontSize: 12, color: Theme.of(context).extension<CarpColors>()!.grey600),
+            style: Theme.of(context).textTheme.labelSmall!
+                .copyWith(fontSize: 10, fontWeight: FontWeight.w700)
+                .copyWith(fontSize: 12, color: Colors.grey.shade600),
           ),
         ),
       ],
@@ -97,8 +102,8 @@ class HeartRateCardWidgetState extends State<HeartRateCardWidget> with SingleTic
               Container(
                 margin: const EdgeInsets.only(left: 8, bottom: 8, right: 4),
                 child: currentHeartRate != null
-                    ? Text(currentHeartRate.toStringAsFixed(0), style: fs28fw700)
-                    : Text('-', style: fs28fw700),
+                    ? Text(currentHeartRate.toStringAsFixed(0), style: Theme.of(context).textTheme.headlineMedium!)
+                    : Text('-', style: Theme.of(context).textTheme.headlineMedium!),
               ),
               Padding(
                 padding: const EdgeInsets.only(bottom: 14),
@@ -114,7 +119,9 @@ class HeartRateCardWidgetState extends State<HeartRateCardWidget> with SingleTic
                     ),
                     Text(
                       locale.translate('cards.heartrate.bpm'),
-                      style: fs10fw700.copyWith(color: Theme.of(context).extension<CarpColors>()!.grey600),
+                      style: Theme.of(context).textTheme.labelSmall!
+                          .copyWith(fontSize: 10, fontWeight: FontWeight.w700)
+                          .copyWith(color: Colors.grey.shade600),
                     ),
                   ],
                 ),
@@ -170,7 +177,7 @@ class HeartRateCardWidgetState extends State<HeartRateCardWidget> with SingleTic
                     ),
                   ),
                 ],
-                fs28fw700,
+                Theme.of(context).textTheme.headlineMedium!,
               );
             },
           ),
@@ -239,7 +246,7 @@ class HeartRateCardWidgetState extends State<HeartRateCardWidget> with SingleTic
       space: 6,
       child: Text(
         value.toInt() % meta.appliedInterval == 0 ? value.toInt().toString() : '',
-        style: fs14ls1.copyWith(color: Theme.of(context).extension<CarpColors>()!.grey600),
+        style: Theme.of(context).textTheme.bodyMedium!.copyWith(letterSpacing: 1, color: Colors.grey.shade600),
         maxLines: 1,
       ),
     );

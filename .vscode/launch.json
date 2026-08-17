@@ -67,6 +67,19 @@
       "flutterMode": "release"
     },
     {
+      // debug mode using the TEST CAWS instance
+      "name": "TEST - carp-studies-app (debug)",
+      "request": "launch",
+      "type": "dart",
+      "toolArgs": [
+        "--dart-define",
+        "deployment-mode=test",
+        "--dart-define",
+        "debug-level=debug"
+      ],
+      "flutterMode": "debug"
+    },
+    {
       // debug mode using COMPUTEROME CAWS instance
       "name": "PROD - carp-studies-app",
       "request": "launch",

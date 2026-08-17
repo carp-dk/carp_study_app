@@ -26,7 +26,7 @@ class ProfilePageState extends State<ProfilePage> {
     RPLocalizations locale = RPLocalizations.of(context)!;
 
     return Scaffold(
-      backgroundColor: Theme.of(context).extension<CarpColors>()!.grey100,
+      backgroundColor: Colors.grey.shade100,
       body: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         mainAxisAlignment: MainAxisAlignment.start,
@@ -43,7 +43,9 @@ class ProfilePageState extends State<ProfilePage> {
                   icon: Icon(Icons.account_circle, color: Theme.of(context).primaryColor, size: 30),
                   label: Text(
                     locale.translate("pages.profile.title"),
-                    style: fs20fw700.copyWith(color: Theme.of(context).primaryColor),
+                    style: Theme.of(
+                      context,
+                    ).textTheme.titleLarge!.copyWith(fontSize: 20).copyWith(color: Theme.of(context).primaryColor),
                   ),
                 ),
                 IconButton(
@@ -166,16 +168,12 @@ class ProfilePageState extends State<ProfilePage> {
 
   Widget _buildSectionCard(BuildContext context, List<Widget> children) {
     return Card(
-      color: Theme.of(context).extension<CarpColors>()!.grey50,
+      color: Colors.grey.shade50,
       shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(8.0)),
       child: Padding(
         padding: const EdgeInsets.all(8.0),
         child: Column(
-          children: ListTile.divideTiles(
-            context: context,
-            tiles: children,
-            color: Theme.of(context).extension<CarpColors>()!.grey400,
-          ).toList(),
+          children: ListTile.divideTiles(context: context, tiles: children, color: Colors.grey.shade400).toList(),
         ),
       ),
     );
@@ -183,11 +181,11 @@ class ProfilePageState extends State<ProfilePage> {
 
   Widget _buildListTile(String title, String subtitle) {
     return ListTile(
-      title: Text(title, style: fs12fw600.copyWith(color: CACHET.GREY_6)),
+      title: Text(title, style: Theme.of(context).textTheme.labelSmall!.copyWith(color: CACHET.GREY_6)),
       subtitle: FittedBox(
         fit: BoxFit.scaleDown,
         alignment: Alignment.centerLeft,
-        child: Text(subtitle, style: fs14fw600, maxLines: 1),
+        child: Text(subtitle, style: Theme.of(context).textTheme.labelMedium!, maxLines: 1),
       ),
     );
   }
@@ -201,7 +199,7 @@ class ProfilePageState extends State<ProfilePage> {
   }) {
     return ListTile(
       leading: leading,
-      title: Text(title, style: fs16fw600.copyWith(color: Theme.of(context).extension<CarpColors>()!.grey900)),
+      title: Text(title, style: Theme.of(context).textTheme.labelLarge!.copyWith(color: Colors.grey.shade900)),
       trailing: trailing,
       onTap: onTap,
       contentPadding: EdgeInsets.symmetric(vertical: 4, horizontal: 16),

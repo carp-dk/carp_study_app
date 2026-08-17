@@ -9,7 +9,6 @@ import 'dart:io';
 
 import 'package:app_version_update/data/models/app_version_result.dart';
 import 'package:async/async.dart';
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/gestures.dart';
 
 import 'package:flutter/material.dart';
@@ -28,7 +27,6 @@ import 'package:video_player/video_player.dart';
 import 'package:go_router/go_router.dart';
 import 'package:intl/intl.dart';
 import 'package:flutter_blue_plus/flutter_blue_plus.dart';
-import 'package:permission_handler/permission_handler.dart';
 import 'package:connectivity_plus/connectivity_plus.dart';
 import 'package:open_settings_plus/open_settings_plus.dart';
 import 'package:open_settings_plus/core/open_settings_plus.dart';
@@ -103,7 +101,6 @@ part 'carp_study_app.dart';
 part 'ui/pages/informed_consent_page.dart';
 part 'ui/pages/home_page.dart';
 part 'ui/pages/home_page.install_health_connect_dialog.dart';
-part 'ui/carp_study_style.dart';
 part 'ui/colors.dart';
 part 'ui/helpers.dart';
 part 'ui/pages/data_visualization_page.dart';
@@ -118,7 +115,6 @@ part 'ui/pages/device_list_page.dart';
 part 'ui/pages/devices_page.authorization_dialog.dart';
 part 'ui/pages/devices_page.enable_bluetooth_dialog.dart';
 part 'ui/pages/devices_page.bluetooth_connection_page.dart';
-part 'ui/pages/devices_page.disconnection_dialog.dart';
 part 'ui/pages/devices_page.list_title.dart';
 part 'ui/pages/devices_page.health_service_connect.dart';
 
@@ -142,7 +138,6 @@ part 'ui/widgets/studies_material.dart';
 part 'ui/widgets/battery_icon.dart';
 part 'ui/widgets/logout_message.dart';
 part 'ui/widgets/dialog_title.dart';
-part 'ui/widgets/location_usage_dialog.dart';
 
 part 'ui/cards/activity_card.dart';
 part 'ui/cards/anonymous_card.dart';

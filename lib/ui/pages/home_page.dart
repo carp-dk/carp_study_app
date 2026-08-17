@@ -43,12 +43,12 @@ class HomePageState extends State<HomePage> {
     RPLocalizations locale = RPLocalizations.of(context)!;
 
     return Scaffold(
-      backgroundColor: Theme.of(context).extension<CarpColors>()!.backgroundGray,
+      backgroundColor: Theme.of(context).scaffoldBackgroundColor,
       body: SafeArea(child: widget.child),
       bottomNavigationBar: BottomNavigationBar(
-        backgroundColor: Theme.of(context).extension<CarpColors>()!.white,
+        backgroundColor: Colors.white,
         type: BottomNavigationBarType.fixed,
-        selectedItemColor: Theme.of(context).extension<CarpColors>()!.primary,
+        selectedItemColor: Theme.of(context).colorScheme.primary,
         items: <BottomNavigationBarItem>[
           BottomNavigationBarItem(
             icon: const Icon(Icons.announcement),

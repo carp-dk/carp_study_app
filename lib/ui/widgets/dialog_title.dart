@@ -38,7 +38,7 @@ class DialogTitle extends StatelessWidget {
                     locale.translate(title) +
                         (deviceName != null ? " ${locale.translate(deviceName!)} " : "") +
                         (titleEnd != null ? ' ${locale.translate(titleEnd!)}' : ""),
-                    style: fs18fw700.copyWith(color: Theme.of(context).primaryColor),
+                    style: Theme.of(context).textTheme.titleMedium!.copyWith(color: Theme.of(context).primaryColor),
                     textAlign: TextAlign.center,
                   ),
                 ),

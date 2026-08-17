@@ -13,7 +13,7 @@ class StudyPageState extends State<StudyPage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: Theme.of(context).extension<CarpColors>()!.backgroundGray,
+      backgroundColor: Theme.of(context).scaffoldBackgroundColor,
       body: SafeArea(
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.center,
@@ -89,7 +89,7 @@ class StudyPageState extends State<StudyPage> {
   Widget _hasUpdateCard() {
     RPLocalizations locale = RPLocalizations.of(context)!;
     return StudiesMaterial(
-      backgroundColor: Theme.of(context).extension<CarpColors>()!.grey50!,
+      backgroundColor: Colors.grey.shade50,
       elevation: 8,
       child: Padding(
         padding: const EdgeInsets.only(left: 16.0),
@@ -100,7 +100,7 @@ class StudyPageState extends State<StudyPage> {
                 padding: const EdgeInsets.all(8.0),
                 child: Text(
                   locale.translate('pages.about.app_update'),
-                  style: fs16fw600.copyWith(color: Theme.of(context).extension<CarpColors>()!.grey900),
+                  style: Theme.of(context).textTheme.labelLarge!.copyWith(color: Colors.grey.shade900),
                 ),
               ),
             ),
@@ -131,7 +131,7 @@ class StudyPageState extends State<StudyPage> {
     timeago.setLocaleMessages('es', timeago.EsMessages());
 
     return StudiesMaterial(
-      backgroundColor: Theme.of(context).extension<CarpColors>()!.grey50!,
+      backgroundColor: Colors.grey.shade50,
       child: InkWell(
         onTap: () {
           if (onTap != null) {
@@ -158,7 +158,9 @@ class StudyPageState extends State<StudyPage> {
                 padding: const EdgeInsets.symmetric(vertical: 8.0),
                 child: Text(
                   locale.translate(message.title!),
-                  style: fs24fw700.copyWith(color: Theme.of(context).extension<CarpColors>()!.primary),
+                  style: Theme.of(
+                    context,
+                  ).textTheme.headlineSmall!.copyWith(color: Theme.of(context).colorScheme.primary),
                 ),
               ),
               if (message.subTitle != null && message.subTitle!.isNotEmpty)
@@ -167,7 +169,7 @@ class StudyPageState extends State<StudyPage> {
                     Expanded(
                       child: Text(
                         locale.translate(message.subTitle!),
-                        style: fs16fw400.copyWith(color: Theme.of(context).extension<CarpColors>()!.grey700),
+                        style: Theme.of(context).textTheme.bodyLarge!.copyWith(color: Colors.grey.shade700),
                       ),
                     ),
                   ],
@@ -178,7 +180,7 @@ class StudyPageState extends State<StudyPage> {
                     Expanded(
                       child: Text(
                         "${locale.translate(message.message!).substring(0, (message.message!.length > 150) ? 150 : null)}...",
-                        style: fs16fw400.copyWith(color: Theme.of(context).extension<CarpColors>()!.grey900),
+                        style: Theme.of(context).textTheme.bodyLarge!.copyWith(color: Colors.grey.shade900),
                         textAlign: TextAlign.start,
                       ),
                     ),
@@ -223,7 +225,7 @@ class StudyPageState extends State<StudyPage> {
 
         return StudiesMaterial(
           margin: const EdgeInsets.all(16.0),
-          backgroundColor: Theme.of(context).extension<CarpColors>()!.grey50!,
+          backgroundColor: Colors.grey.shade50,
           shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(8)),
           child: Container(
             decoration: BoxDecoration(borderRadius: BorderRadius.circular(16.0)),
@@ -247,7 +249,9 @@ class StudyPageState extends State<StudyPage> {
                                     ? locale.translate('pages.about.status.deploying_devices')
                                     : deploymentStatus.toString().split('.').last,
                                 maxLines: 2,
-                                style: fs16fw600.copyWith(color: studyStatusColors[deploymentStatus]),
+                                style: Theme.of(
+                                  context,
+                                ).textTheme.labelLarge!.copyWith(color: studyStatusColors[deploymentStatus]),
                               ),
                             ),
                           ],
@@ -257,10 +261,9 @@ class StudyPageState extends State<StudyPage> {
                             padding: const EdgeInsets.only(left: 16.0),
                             child: Text(
                               getStatusText(locale, deploymentStatus, snapshot),
-                              style: fs16fw600.copyWith(
-                                color: Theme.of(context).extension<CarpColors>()!.grey900,
-                                fontSize: 14,
-                              ),
+                              style: Theme.of(
+                                context,
+                              ).textTheme.labelLarge!.copyWith(color: Colors.grey.shade900, fontSize: 14),
                             ),
                           ),
                         ),
@@ -290,10 +293,9 @@ class StudyPageState extends State<StudyPage> {
             children: [
               Text(
                 locale.translate('Announcements'),
-                style: fs24fw700.copyWith(
-                  color: Theme.of(context).extension<CarpColors>()!.grey900,
-                  fontWeight: FontWeight.bold,
-                ),
+                style: Theme.of(
+                  context,
+                ).textTheme.headlineSmall!.copyWith(color: Colors.grey.shade900, fontWeight: FontWeight.bold),
               ),
             ],
           ),
@@ -311,7 +313,7 @@ class StudyPageState extends State<StudyPage> {
 
     return Container(
       child: StudiesMaterial(
-        backgroundColor: Theme.of(context).extension<CarpColors>()!.grey50!,
+        backgroundColor: Colors.grey.shade50,
         child: InkWell(
           onTap: () {
             if (onTap != null) {
@@ -334,7 +336,9 @@ class StudyPageState extends State<StudyPage> {
                         child: Text(
                           locale.translate(message.title!),
                           overflow: TextOverflow.ellipsis,
-                          style: fs20fw700.copyWith(color: Theme.of(context).extension<CarpColors>()!.grey900),
+                          style: Theme.of(
+                            context,
+                          ).textTheme.titleLarge!.copyWith(fontSize: 20).copyWith(color: Colors.grey.shade900),
                         ),
                       ),
                     ),
@@ -356,13 +360,15 @@ class StudyPageState extends State<StudyPage> {
                         Expanded(
                           child: Text(
                             locale.translate(message.subTitle!),
-                            style: fs16fw400.copyWith(color: Theme.of(context).extension<CarpColors>()!.grey700),
+                            style: Theme.of(context).textTheme.bodyLarge!.copyWith(color: Colors.grey.shade700),
                           ),
                         ),
                       Spacer(),
                       Text(
                         timeago.format(message.timestamp.toLocal()),
-                        style: fs10fw600.copyWith(color: Theme.of(context).extension<CarpColors>()!.grey600),
+                        style: Theme.of(
+                          context,
+                        ).textTheme.labelSmall!.copyWith(fontSize: 10).copyWith(color: Colors.grey.shade600),
                       ),
                     ],
                   ),
@@ -375,7 +381,7 @@ class StudyPageState extends State<StudyPage> {
                           locale.translate(message.message!).length > 150
                               ? '${locale.translate(message.message!).substring(0, 150)}...'
                               : locale.translate(message.message!),
-                          style: fs16fw400,
+                          style: Theme.of(context).textTheme.bodyLarge!,
                           textAlign: TextAlign.start,
                         ),
                       ),

@@ -1,7 +1,9 @@
 name: carp_study_app
 description: The generic CARP study app.
 publish_to: "none"
-version: 4.4.0+1
+# Bump only the version name for a release; the `+N` build number is ignored by CI
+# (Fastlane auto-increments the Play versionCode; iOS uses the Xcode Cloud build number).
+version: 4.4.1+1
 
 environment:
   sdk: ">=3.8.0 <4.0.0"
@@ -11,23 +13,23 @@ dependencies:
   flutter:
     sdk: flutter
 
-  carp_serializable: ^2.0.1
-  carp_core: ^2.1.2
-  carp_mobile_sensing: ^2.1.6
-  carp_context_package: ^2.0.2
-  carp_connectivity_package: ^2.0.0
-  carp_survey_package: ^2.0.0
-  carp_audio_package: ^2.0.0
-  carp_polar_package: ^2.0.0
-  carp_health_package: ^4.0.2
-  carp_movesense_package: ^2.0.0
-  carp_themes_package: ^0.0.5
+  carp_serializable: ^3.0.0
+  carp_core: ^2.2.1
+  carp_mobile_sensing: ^2.3.1
+  carp_context_package: ^2.1.0
+  carp_connectivity_package: ^2.2.0
+  carp_survey_package: ^2.1.1
+  carp_audio_package: ^2.1.0
+  carp_polar_package: ^2.1.0
+  carp_health_package: ^4.1.0
+  carp_movesense_package: ^3.1.0
+  carp_themes_package: ^0.2.0
 
-  carp_webservices: ^4.0.0
-  carp_backend: ^2.0.0
+  carp_webservices: ^4.2.0
+  carp_backend: ^2.1.1
 
-  research_package: ^2.2.0
-  cognition_package: ^1.7.0
+  research_package: ^3.0.0
+  cognition_package: ^1.9.0
 
   url_launcher: ^6.1.5
   timeago: ^3.1.0
@@ -52,13 +54,17 @@ dependencies:
   appcheck: ^1.5.2
   flutter_plugin_android_lifecycle: ^2.0.24
   camera_android_camerax: ^0.6.10+1
-  mdsflutter: ^2.3.0
-  app_version_update: ^6.1.3
+  app_version_update: ^7.0.0
   country_code_picker: ^3.3.0
   intl_phone_number_input: ^0.7.4
   qr_code_scanner_plus: ^2.0.10+1
+  share_plus: ^13.3.0
+  shimmer: ^3.0.0
 
 dependency_overrides:
+  # carp_themes_package:
+  #   path: ../carp_themes_package
+
   # polar: 7.5.1
 
   # camera_android_camerax: 0.6.10+1
@@ -66,33 +72,25 @@ dependency_overrides:
 
   # Overriding carp libraries to use the local copy, if needed
   # carp_serializable:
-  #   path: ../carp/carp.sensing-flutter/carp_serializable/
+  #   path: ../carp.sensing-flutter/carp_serializable/
   # carp_core:
-  #   path: ../carp/carp.sensing-flutter/carp_core/
+  #   path: ../carp.sensing-flutter/carp_core/
   # carp_mobile_sensing:
   #   path: ../carp.sensing-flutter/carp_mobile_sensing/
   # carp_context_package:
   #   path: ../carp.sensing-flutter/packages/carp_context_package/
-  # carp_esense_package:
-  #   path: ../carp.sensing-flutter/packages/carp_esense_package/
   # carp_health_package:
   #   path: ../carp.sensing-flutter/packages/carp_health_package/
   # carp_polar_package:
   #   path: ../carp.sensing-flutter/packages/carp_polar_package/
-  # carp_movisens_package:
-  #   path: ../carp.sensing-flutter/packages/carp_movisens_package/
   # carp_movesense_package:
   #   path: ../carp.sensing-flutter/packages/carp_movesense_package/
   # carp_connectivity_package:
   #   path: ../carp.sensing-flutter/packages/carp_connectivity_package/
   # carp_survey_package:
   #   path: ../carp.sensing-flutter/packages/carp_survey_package/
-  # carp_communication_package:
-  #   path: ../carp.sensing-flutter/packages/carp_communication_package/
   # carp_audio_package:
   #   path: ../carp.sensing-flutter/packages/carp_audio_package/
-  # carp_apps_package:
-  #   path: ../carp.sensing-flutter/packages/carp_apps_package/
   # carp_webservices:
   #   path: ../carp.sensing-flutter/backends/carp_webservices/
   # carp_backend:

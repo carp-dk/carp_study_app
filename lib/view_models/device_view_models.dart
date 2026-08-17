@@ -51,9 +51,23 @@ class DeviceViewModel extends ViewModel {
   /// The device id
   String get id => deviceManager.displayName ?? '';
 
+  /// The BLE name prefix used to filter scan results to devices of this type
+  /// (e.g. "Polar", "Movesense"). Null for non-BLE devices.
+  String? get bleNamePrefix {
+    final config = deviceManager.configuration;
+    if (config is! BLEDevice) return null;
+    final configured = config.namePrefix?.trim();
+    return (configured != null && configured.isNotEmpty) ? configured : null;
+  }
+
   /// A printer-friendly name for this device.
+  ///
+  /// The BLE name of a disconnected device is only a remembered pairing, so it
+  /// is not shown - otherwise the device looks connected while offering a
+  /// 'connect' action.
   String get name {
     if (deviceManager is BLEDeviceManager) {
+      if (status == DeviceStatus.disconnected || status == DeviceStatus.configured) return '';
       return (deviceManager as BLEDeviceManager).bleName ?? '';
     } else if (deviceManager is PolarDeviceManager) {
       return (deviceManager as PolarDeviceManager).displayName ?? '';
@@ -123,26 +137,15 @@ class DeviceViewModel extends ViewModel {
   /// Map a selected device to the device in the protocol and connect to it.
   void connectToDevice(BluetoothDevice selectedDevice) {
     if (deviceManager is BLEDeviceManager) {
-      (deviceManager as BLEDeviceManager).bleAddress = selectedDevice.remoteId.str;
-      (deviceManager as BLEDeviceManager).bleName = selectedDevice.platformName;
+      // Use pair() so device-specific onPaired() runs (e.g. Polar derives its
+      // identifier from the BLE name), not just setting the fields directly.
+      (deviceManager as BLEDeviceManager).pair(
+        bleAddress: selectedDevice.remoteId.str,
+        bleName: selectedDevice.platformName,
+      );
     }
 
     deviceManager.connect();
-  }
-
-  /// Disconnect from the currently connected device
-  Future<void> disconnectFromDevice() async {
-    try {
-      await deviceManager.disconnect();
-
-      // Erase BLE information so the user can connect to another device, if needed.
-      if (deviceManager is BLEDeviceManager) {
-        (deviceManager as BLEDeviceManager).bleAddress = '';
-        (deviceManager as BLEDeviceManager).bleName = '';
-      }
-    } catch (error) {
-      warning("$runtimeType - Error disconnecting to device '${deviceManager.displayName}' - $error.");
-    }
   }
 }
 
@@ -179,7 +182,9 @@ const Map<String, Icon> _deviceTypeIcon = {
 const Map<DeviceStatus, dynamic> _deviceStatusIcon = {
   DeviceStatus.configured: "pages.devices.status.action.connect",
   DeviceStatus.connecting: Icon(Icons.bluetooth_searching_rounded, color: CACHET.DARK_BLUE, size: 30),
+  DeviceStatus.reconnected: Icon(Icons.bluetooth_searching_rounded, color: CACHET.DARK_BLUE, size: 30),
   DeviceStatus.connected: Icon(Icons.bluetooth_rounded, color: CACHET.GREEN_1, size: 30),
+  DeviceStatus.disconnecting: Icon(Icons.bluetooth_searching_rounded, color: CACHET.DARK_BLUE, size: 30),
   DeviceStatus.disconnected: "pages.devices.status.action.connect",
   DeviceStatus.paired: "pages.devices.status.action.connect",
   DeviceStatus.unknown: Icon(Icons.error_outline, color: CACHET.RED_1, size: 30),
@@ -188,7 +193,9 @@ const Map<DeviceStatus, dynamic> _deviceStatusIcon = {
 const Map<DeviceStatus, dynamic> _serviceStatusIcon = {
   DeviceStatus.configured: "pages.devices.status.action.connect",
   DeviceStatus.connecting: Icon(Icons.sensors_off_rounded, color: CACHET.GREEN_1, size: 30),
+  DeviceStatus.reconnected: Icon(Icons.sensors_off_rounded, color: CACHET.GREEN_1, size: 30),
   DeviceStatus.connected: Icon(Icons.sensors_rounded, color: CACHET.GREEN_1, size: 30),
+  DeviceStatus.disconnecting: Icon(Icons.sensors_off_rounded, color: CACHET.GREEN_1, size: 30),
   DeviceStatus.disconnected: "pages.devices.status.action.connect",
   DeviceStatus.paired: "pages.devices.status.action.connect",
   DeviceStatus.unknown: Icon(Icons.error_outline, color: CACHET.RED_1, size: 30),
