@@ -33,7 +33,7 @@ class LocalSettings {
   /// authentication information and access tokens.
   CarpUser? get user {
     if (_user == null) {
-      String? userString = Settings().preferences!.getString(userKey);
+      String? userString = Settings().preferences?.getString(userKey);
 
       _user = (userString != null) ? CarpUser.fromJson(jsonDecode(userString) as Map<String, dynamic>) : null;
     }
@@ -59,7 +59,7 @@ class LocalSettings {
   /// [AppBloc.setStudyInvitation] method.
   Participant? get participant {
     if (_participant == null) {
-      String? userString = Settings().preferences!.getString(participantKey);
+      String? userString = Settings().preferences?.getString(participantKey);
       _participant = (userString != null) ? Participant.fromJson(jsonDecode(userString) as Map<String, dynamic>) : null;
     }
     return _participant;
@@ -102,7 +102,7 @@ class LocalSettings {
     Settings().preferences?.setBool('hasSeenBluetoothConnectionInstructions', seen);
   }
 
-  bool get isAnonymous => Settings().preferences!.getBool('isAnonymous') ?? false;
+  bool get isAnonymous => Settings().preferences?.getBool('isAnonymous') ?? false;
   set isAnonymous(bool value) => Settings().preferences!.setBool('isAnonymous', value);
 
   /// The study deployment id for the currently running deployment.

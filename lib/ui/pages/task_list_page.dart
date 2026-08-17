@@ -260,108 +260,117 @@ class TaskListPageState extends State<TaskListPage> with TickerProviderStateMixi
     RPLocalizations locale = RPLocalizations.of(context)!;
 
     return Center(
-      child: GestureDetector(
-        child: StudiesMaterial(
-          hasBorder: true,
-          borderColor: taskTypeColors[userTask.type]!,
-          shape: RoundedRectangleBorder(
-            borderRadius: BorderRadius.horizontal(left: Radius.circular(2.0), right: Radius.circular(8.0)),
-          ),
-          backgroundColor: userTask.expiresIn != null && userTask.expiresIn!.inHours < 24
-              ? CACHET.TASK_TO_EXPIRE_BACKGROUND
-              : Theme.of(context).extension<CarpColors>()!.grey50!,
-          child: Padding(
-            padding: const EdgeInsets.symmetric(vertical: 16),
-            child: IntrinsicHeight(
-              child: Row(
-                crossAxisAlignment: CrossAxisAlignment.stretch,
-                children: [
-                  const SizedBox(width: 12.0), // Space between line and content
-                  Expanded(
-                    // Allows the content to take remaining space
-                    child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        Row(
-                          children: [
-                            if (userTask.state == UserTaskState.started) CircularProgressIndicator(),
-                            if (userTask.state != UserTaskState.started) _taskTypeIcon(userTask),
-                            Padding(
-                              padding: const EdgeInsets.only(left: 4.0),
-                              child: Text(
-                                userTask.type[0].toUpperCase() + userTask.type.substring(1),
-                                style: TextStyle(color: taskTypeColors[userTask.type], fontWeight: FontWeight.bold),
+      child: StreamBuilder(
+        stream: userTask.stateEvents,
+        initialData: userTask.state,
+        builder: (context, snapshot) => GestureDetector(
+          // Ignore taps while the task is running - starting it again is a
+          // no-op, but a tap on a task with its own page would push that page
+          // a second time.
+          onTap: userTask.state == UserTaskState.started
+              ? null
+              : () {
+                  if (widget.model.startUserTask(userTask)) {
+                    context.push('/task/${userTask.id}');
+                  }
+                },
+          child: StudiesMaterial(
+            hasBorder: true,
+            borderColor: taskTypeColors[userTask.type]!,
+            shape: RoundedRectangleBorder(
+              borderRadius: BorderRadius.horizontal(left: Radius.circular(2.0), right: Radius.circular(8.0)),
+            ),
+            backgroundColor: userTask.expiresIn != null && userTask.expiresIn!.inHours < 24
+                ? CACHET.TASK_TO_EXPIRE_BACKGROUND
+                : Theme.of(context).extension<CarpColors>()!.grey50!,
+            child: Padding(
+              padding: const EdgeInsets.symmetric(vertical: 16),
+              child: IntrinsicHeight(
+                child: Row(
+                  crossAxisAlignment: CrossAxisAlignment.stretch,
+                  children: [
+                    const SizedBox(width: 12.0), // Space between line and content
+                    Expanded(
+                      // Allows the content to take remaining space
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          Row(
+                            children: [
+                              if (userTask.state == UserTaskState.started) CircularProgressIndicator(),
+                              if (userTask.state != UserTaskState.started) _taskTypeIcon(userTask),
+                              Padding(
+                                padding: const EdgeInsets.only(left: 4.0),
+                                child: Text(
+                                  userTask.type[0].toUpperCase() + userTask.type.substring(1),
+                                  style: TextStyle(color: taskTypeColors[userTask.type], fontWeight: FontWeight.bold),
+                                ),
                               ),
-                            ),
-                            Spacer(),
-                            if (_timeRemainingSubtitle(userTask).isNotEmpty)
-                              Icon(
-                                Icons.alarm,
-                                color: userTask.expiresIn != null && userTask.expiresIn!.inHours < 24
-                                    ? Theme.of(context).extension<CarpColors>()!.warningColor
-                                    : Colors.grey,
-                              ),
-                            const SizedBox(width: 4.0),
-                            Padding(
-                              padding: const EdgeInsets.only(right: 20),
-                              child: Text(
-                                _timeRemainingSubtitle(userTask),
-                                style: TextStyle(
+                              Spacer(),
+                              if (_timeRemainingSubtitle(userTask).isNotEmpty)
+                                Icon(
+                                  Icons.alarm,
                                   color: userTask.expiresIn != null && userTask.expiresIn!.inHours < 24
                                       ? Theme.of(context).extension<CarpColors>()!.warningColor
                                       : Colors.grey,
-                                  fontSize: 12.0,
                                 ),
-                              ),
-                            ),
-                          ],
-                        ),
-                        const SizedBox(height: 8.0),
-                        Padding(
-                          padding: const EdgeInsets.all(4.0),
-                          child: Column(
-                            crossAxisAlignment: CrossAxisAlignment.start,
-                            children: [
-                              Text(
-                                locale.translate(userTask.title),
-                                style: const TextStyle(fontWeight: FontWeight.bold, fontSize: 16.0),
-                              ),
-                              const SizedBox(height: 4.0),
+                              const SizedBox(width: 4.0),
                               Padding(
                                 padding: const EdgeInsets.only(right: 20),
-                                child: Text(locale.translate(userTask.description)),
-                              ),
-                              Padding(
-                                padding: const EdgeInsets.only(top: 8.0),
-                                child: Row(
-                                  mainAxisAlignment: MainAxisAlignment.end,
-                                  children: [
-                                    Padding(
-                                      padding: const EdgeInsets.only(right: 20),
-                                      child: Text(
-                                        _estimatedTimeSubtitle(userTask),
-                                        style: TextStyle(color: Colors.grey, fontSize: 12.0),
-                                      ),
-                                    ),
-                                  ],
+                                child: Text(
+                                  _timeRemainingSubtitle(userTask),
+                                  style: TextStyle(
+                                    color: userTask.expiresIn != null && userTask.expiresIn!.inHours < 24
+                                        ? Theme.of(context).extension<CarpColors>()!.warningColor
+                                        : Colors.grey,
+                                    fontSize: 12.0,
+                                  ),
                                 ),
                               ),
                             ],
                           ),
-                        ),
-                      ],
+                          const SizedBox(height: 8.0),
+                          Padding(
+                            padding: const EdgeInsets.all(4.0),
+                            child: Column(
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              children: [
+                                Text(
+                                  locale.translate(userTask.title),
+                                  style: const TextStyle(fontWeight: FontWeight.bold, fontSize: 16.0),
+                                ),
+                                const SizedBox(height: 4.0),
+                                Padding(
+                                  padding: const EdgeInsets.only(right: 20),
+                                  child: Text(locale.translate(userTask.description)),
+                                ),
+                                Padding(
+                                  padding: const EdgeInsets.only(top: 8.0),
+                                  child: Row(
+                                    mainAxisAlignment: MainAxisAlignment.end,
+                                    children: [
+                                      Padding(
+                                        padding: const EdgeInsets.only(right: 20),
+                                        child: Text(
+                                          _estimatedTimeSubtitle(userTask),
+                                          style: TextStyle(color: Colors.grey, fontSize: 12.0),
+                                        ),
+                                      ),
+                                    ],
+                                  ),
+                                ),
+                              ],
+                            ),
+                          ),
+                        ],
+                      ),
                     ),
-                  ),
-                ],
+                  ],
+                ),
               ),
             ),
           ),
         ),
-        onTap: () {
-          if (widget.model.startUserTask(userTask)) {
-            context.push('/task/${userTask.id}');
-          }
-        },
       ),
     );
   }
