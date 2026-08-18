@@ -237,12 +237,7 @@ class _BluetoothConnectionPageState extends State<BluetoothConnectionPage> {
           return AlertDialog(
             title: Text(locale.translate("pages.devices.connection.connection_failed.title")),
             content: Text(locale.translate("pages.devices.connection.connection_failed.message")),
-            actions: [
-              TextButton(
-                onPressed: () => Navigator.of(context).pop(),
-                child: Text(locale.translate("ok")),
-              ),
-            ],
+            actions: [TextButton(onPressed: () => Navigator.of(context).pop(), child: Text(locale.translate("ok")))],
           );
         },
       );
