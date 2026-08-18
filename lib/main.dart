@@ -118,7 +118,6 @@ part 'ui/pages/device_list_page.dart';
 part 'ui/pages/devices_page.authorization_dialog.dart';
 part 'ui/pages/devices_page.enable_bluetooth_dialog.dart';
 part 'ui/pages/devices_page.bluetooth_connection_page.dart';
-part 'ui/pages/devices_page.disconnection_dialog.dart';
 part 'ui/pages/devices_page.list_title.dart';
 part 'ui/pages/devices_page.health_service_connect.dart';
 
@@ -142,7 +141,6 @@ part 'ui/widgets/studies_material.dart';
 part 'ui/widgets/battery_icon.dart';
 part 'ui/widgets/logout_message.dart';
 part 'ui/widgets/dialog_title.dart';
-part 'ui/widgets/location_usage_dialog.dart';
 
 part 'ui/cards/activity_card.dart';
 part 'ui/cards/anonymous_card.dart';

@@ -219,9 +219,14 @@ class TaskListPageState extends State<TaskListPage> with TickerProviderStateMixi
                   minimumSize: const Size(0, 0),
                   tapTargetSize: MaterialTapTargetSize.shrinkWrap,
                 ),
-                onPressed: () {
-                  if (widget.model.startUserTask(userTask)) context.push('/task/${userTask.id}');
-                },
+                // Disabled while the task is running - starting it again is a
+                // no-op, but a tap on a task with its own page would push that
+                // page a second time.
+                onPressed: userTask.state == UserTaskState.started
+                    ? null
+                    : () {
+                        if (widget.model.startUserTask(userTask)) context.push('/task/${userTask.id}');
+                      },
                 child: Text(locale.translate('pages.task_list.start')),
               ),
             ],
