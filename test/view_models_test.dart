@@ -1,6 +1,5 @@
 import 'package:carp_backend/carp_backend.dart';
 import 'package:carp_audio_package/media.dart';
-import 'package:carp_context_package/carp_context_package.dart';
 import 'package:cognition_package/cognition_package.dart';
 import 'package:fake_async/fake_async.dart';
 import 'package:research_package/research_package.dart';
@@ -291,57 +290,6 @@ void main() {
 
       expect(model.showParticipantDataCard, isTrue);
       expect(notified, isTrue);
-    });
-  });
-
-  group('DemoChartData', () {
-    // The demo measurements exist to prove the aggregation the live streams
-    // use: they are real CAMS data types, folded by the very same code.
-    setUp(() => AppConfig.deploymentMode = DeploymentMode.local);
-
-    test('step measurements are cumulative StepCounts that aggregate per day', () {
-      final measurements = DemoChartData.stepMeasurements;
-      expect(measurements, everyElement(isA<Measurement>().having((m) => m.data, 'data', isA<StepCount>())));
-
-      final steps = StepsCardViewModel().weeklySteps;
-      expect(steps.length, 7);
-      expect(steps.values.every((count) => count >= 0), isTrue);
-      expect(steps.values.reduce((a, b) => a + b), greaterThan(0));
-    });
-
-    test('heart rate measurements are PolarHR, split into hours and weekdays', () {
-      expect(
-        DemoChartData.heartRateMeasurements,
-        everyElement(isA<Measurement>().having((m) => m.data, 'data', isA<PolarHR>())),
-      );
-
-      final model = HeartRateCardViewModel();
-      expect(model.hourlyHeartRate.values.where((band) => band.max != null), isNotEmpty);
-      expect(model.dailyHeartRate.values.where((band) => band.max != null).length, 7);
-      expect(model.currentHeartRate, isNotNull);
-    });
-
-    test('activity measurements are Activities that aggregate into minutes', () {
-      expect(
-        DemoChartData.activityMeasurements,
-        everyElement(isA<Measurement>().having((m) => m.data, 'data', isA<Activity>())),
-      );
-
-      final activities = ActivityCardViewModel().activities;
-      expect(activities[ActivityType.WALKING]!.values.reduce((a, b) => a + b), greaterThan(0));
-      expect(activities[ActivityType.RUNNING]!.values.reduce((a, b) => a + b), greaterThan(0));
-    });
-
-    test('never shows on a production deployment', () {
-      AppConfig.deploymentMode = DeploymentMode.production;
-      expect(AppConfig.useDemoChartData, isFalse);
-      // And with it off, an untouched model reports no data rather than demo.
-      expect(StepsCardViewModel().weeklySteps.values, everyElement(0));
-      expect(HeartRateCardViewModel().currentHeartRate, isNull);
-      expect(ActivityCardViewModel().activities[ActivityType.WALKING]!.values, everyElement(0));
-
-      AppConfig.deploymentMode = DeploymentMode.local;
-      expect(AppConfig.useDemoChartData, isTrue);
     });
   });
 

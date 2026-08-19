@@ -11,9 +11,11 @@ The deployment mode needs to be aligned with the deployment of the protocol, els
 
 In this file the localization the study deployment is configured. Contains the app class.
 
-### `carp_study_style.dart`
+### Theming
 
-Ideally all the styles used in the app should be defined here.
+App-wide styling (colors, typography, component themes) comes from
+`package:carp_themes_package`'s `carpTheme`. Use `Theme.of(context).colorScheme`
+and `Theme.of(context).textTheme` in widgets rather than hard-coding styles.
 
 ### UI
 

@@ -142,6 +142,8 @@
   "pages.devices.type.health.instructions.data.title": "Dette studie indsamler sundhedsrelaterede data fra din enhed. For at deltage skal du tillade alle de anmodede tilladelser på næste skærm.",
   "pages.devices.type.health.access_denied.title": "Adgang ikke givet",
   "pages.devices.type.health.access_denied.message": "Der blev ikke givet adgang. For at tillade det skal du gå til: Indstillinger → Apps → CARP Studies → Tilladelser → Sundhed, fitness og wellness → Tillad alle. Træk derefter ned på enhedsskærmen for at opdatere.",
+  "pages.devices.location_permission.title": "Tilladelser påkrævet",
+  "pages.devices.location_permission.message": "Tilslutning til Bluetooth-enheder i nærheden kræver tilladelserne Enheder i nærheden og Placering. For at tillade dem: gå til Indstillinger → Apps → CARP Studies → Tilladelser, giv de manglende tilladelser, og prøv at forbinde igen.",
   "pages.devices.type.health.instructions.data.steps": "Skridttælling",
   "pages.devices.type.health.instructions.data.heart_rate": "Puls",
   "pages.devices.type.health.instructions.data.exercise": "Træningssessioner",
@@ -192,9 +194,6 @@
   "pages.devices.connection.enable_bluetooth.message1": "Bluetooth skal være slået til. Åbn Bluetooth-indstillinger ved at klikke på knappen i slutningen og slå Bluetooth til.",
   "pages.devices.connection.enable_bluetooth.message2": "Hvis Bluetooth allerede er slået til, skal du sørge for, at du tillader nye forbindelser ved at klikke på indstillingen afbildet på billedet nedenfor i indstillinger.",
   "pages.devices.connection.enable_bluetooth.message3": "Klik på 'Indstillinger' for at åbne Bluetooth-indstillingerne.",
-  "pages.devices.connection.disconnect_bluetooth.title": "Frakobl Bluetooth",
-  "pages.devices.connection.disconnect_bluetooth.message": "Er du sikker på, at du vil frakoble",
-  "pages.devices.connection.disconnect_bluetooth.disconnect": "Frakobl",
   "pages.devices.connection.step.how_to.title": "Sådan forbindes",
   "pages.devices.connection.step.start.title": "Forbind til",
   "pages.devices.connection.step.start.1": "Vælg den",
@@ -238,5 +237,8 @@
   "tasks.participant_data.phone_number.country": "Landekode",
   "tasks.participant_data.phone_number.phone_number": "Telefonnummer",
   "tasks.participant_data.review.title": "Gennemse",
-  "pages.home.setup_failed": "Studiet kunne ikke konfigureres. Tjek din internetforbindelse og prøv igen."
+  "pages.home.setup_failed": "Studiet kunne ikke konfigureres. Tjek din internetforbindelse og prøv igen.",
+  "pages.devices.connection.step.scan.searching": "Søger efter enheder i nærheden…\nSørg for, at din enhed er tændt og inden for rækkevidde.",
+  "pages.devices.connection.step.scan.show_all": "Kan du ikke se din enhed? Vis alle",
+  "pages.devices.connection.step.scan.filtered": "Vis kun matchende enheder"
 }
