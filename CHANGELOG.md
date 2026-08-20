@@ -1,3 +1,8 @@
+## 4.4.2
+
+* removed unused Health Connect permissions to comply with the Google Play
+  Health Connect Permissions policy (data minimization)
+
 ## 4.2.0
 
 * moving to carp_themes_package instead of research package themes
