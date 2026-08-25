@@ -1,3 +1,7 @@
+## 4.4.3
+
+* raised the minimum iOS version to 16.0
+
 ## 4.4.2
 
 * removed unused Health Connect permissions to comply with the Google Play
