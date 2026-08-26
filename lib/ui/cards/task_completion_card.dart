@@ -97,7 +97,7 @@ class _TaskCompletionCardState extends State<TaskCompletionCard> {
           enabled: true,
           // The header above the chart reports the selection - a tooltip on top
           // of it would say the same thing twice.
-          touchTooltipData: BarTouchTooltipData(getTooltipColor: (_) => Colors.transparent),
+          touchTooltipData: noBarTooltip,
           touchCallback: (event, response) {
             if (event is! FlTapUpEvent) return;
             // Tapping the selected bar - or the empty space around them - clears

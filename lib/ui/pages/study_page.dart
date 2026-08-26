@@ -23,17 +23,24 @@ class StudyPageState extends State<StudyPage> {
               child: const CarpAppBar(hasProfileIcon: true),
             ),
             Flexible(
-              // Re-render when configureStudy completes; until then show a
-              // loader, with pull-to-refresh as the retry affordance.
+              // Configuration progress is app state, so listen to the bloc
+              // for it; the view model is for the study content itself.
               child: ListenableBuilder(
-                listenable: widget.model,
+                listenable: Listenable.merge([bloc, widget.model]),
                 builder: (context, _) {
-                  if (!widget.model.isConfigured) {
+                  if (!bloc.isConfigured) {
                     return RefreshIndicator(
-                      onRefresh: widget.model.retryConfiguration,
-                      child: const CustomScrollView(
-                        physics: AlwaysScrollableScrollPhysics(),
-                        slivers: [SliverFillRemaining(hasScrollBody: false, child: _ConfiguringStudyLoader())],
+                      onRefresh: bloc.tryConfigureStudy,
+                      child: CustomScrollView(
+                        physics: const AlwaysScrollableScrollPhysics(),
+                        slivers: [
+                          SliverFillRemaining(
+                            hasScrollBody: false,
+                            child: bloc.configurationFailed
+                                ? _ConfigurationFailed(onRetry: bloc.tryConfigureStudy)
+                                : const _ConfiguringStudyLoader(),
+                          ),
+                        ],
                       ),
                     );
                   }
@@ -457,6 +464,34 @@ extension CopyWithAdditional on DateTime {
       second + seconds,
       millisecond + milliseconds,
       microsecond + microseconds,
+    );
+  }
+}
+
+/// Shown when configuration failed - names the problem and offers a retry,
+/// instead of an endless spinner.
+class _ConfigurationFailed extends StatelessWidget {
+  const _ConfigurationFailed({required this.onRetry});
+  final Future<void> Function() onRetry;
+
+  @override
+  Widget build(BuildContext context) {
+    final locale = RPLocalizations.of(context);
+    return Center(
+      child: Column(
+        mainAxisAlignment: MainAxisAlignment.center,
+        children: [
+          const Icon(Icons.error_outline, size: 48),
+          const SizedBox(height: 16),
+          Text(
+            locale?.translate('pages.home.setup_failed') ?? 'Could not set up the study.',
+            textAlign: TextAlign.center,
+            style: const TextStyle(fontSize: 16, fontWeight: FontWeight.w500),
+          ),
+          const SizedBox(height: 16),
+          OutlinedButton(onPressed: onRetry, child: Text(locale?.translate('pages.home.retry') ?? 'Retry')),
+        ],
+      ),
     );
   }
 }

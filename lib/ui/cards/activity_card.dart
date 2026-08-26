@@ -16,29 +16,32 @@ class ActivityCard extends StatefulWidget {
 class ActivityCardState extends State<ActivityCard> {
   final betweenSpace = 2.4;
 
-  /// The weekday whose bar is selected, or null for the week as a whole.
-  int? _selectedDay;
+  /// The index (into [_days]) of the bar selected, or null for the week as a whole.
+  int? _selectedIndex;
+
+  /// The 7 days ending today, oldest first - today is always the last bar.
+  List<DateTime> get _days => widget.model.days;
 
   /// The three activity types this card charts, bottom of the bar upwards.
-  static const List<ActivityType> _types = [ActivityType.WALKING, ActivityType.RUNNING, ActivityType.ON_BICYCLE];
+  static const List<ActivityType> _types = ActivityCardViewModel.chartedTypes;
 
-  /// Minutes of [type] on [weekday].
-  num _minutesOn(ActivityType type, int weekday) => widget.model.activities[type]?[weekday] ?? 0;
+  /// Translation keys for [_types], in the same order.
+  static const List<String> _legendKeys = ['walking', 'running', 'cycling'];
 
-  /// Minutes of [type] on the selected day, or across the week when none is.
-  num _minutes(ActivityType type) => _selectedDay != null
-      ? _minutesOn(type, _selectedDay!)
-      : (widget.model.activities[type]?.values.fold<num>(0, (sum, minutes) => sum + minutes) ?? 0);
+  /// Minutes of [type] on the day at [index] of [_days].
+  num _minutesOn(ActivityType type, int index) => widget.model.minutesOn(type, _days[index]);
 
-  num get _walk => _minutes(ActivityType.WALKING);
-  num get _run => _minutes(ActivityType.RUNNING);
-  num get _cycle => _minutes(ActivityType.ON_BICYCLE);
+  /// Minutes of [type] on the selected day, or across the window when none is.
+  num _minutes(ActivityType type) => _selectedIndex != null
+      ? _minutesOn(type, _selectedIndex!)
+      : List.generate(7, (index) => _minutesOn(type, index)).fold<num>(0, (sum, minutes) => sum + minutes);
+
+  /// Minutes across all charted activities, for the selected day or the week.
+  num get _total => _types.fold<num>(0, (sum, type) => sum + _minutes(type));
 
   /// The tallest stacked bar, so the axis has somewhere to end.
-  num get _maxValue => List.generate(
-    7,
-    (index) => _types.fold<num>(0, (sum, type) => sum + _minutesOn(type, index + 1)),
-  ).fold<num>(0, max);
+  num get _maxValue =>
+      List.generate(7, (index) => _types.fold<num>(0, (sum, type) => sum + _minutesOn(type, index))).fold<num>(0, max);
 
   @override
   Widget build(BuildContext context) {
@@ -48,18 +51,18 @@ class ActivityCardState extends State<ActivityCard> {
       backgroundColor: Colors.white,
       // Tapping anywhere else on the card drops the selection.
       child: GestureDetector(
-        onTap: () => setState(() => _selectedDay = null),
+        onTap: () => setState(() => _selectedIndex = null),
         child: Padding(
           padding: const EdgeInsets.all(8.0),
           child: Column(
             children: [
               Row(
                 children: [
-                  Text('${_walk + _run + _cycle}', style: Theme.of(context).textTheme.headlineMedium!),
+                  Text('$_total', style: Theme.of(context).textTheme.headlineMedium!),
                   Padding(
                     padding: const EdgeInsets.only(left: 4.0),
                     child: Text(
-                      '${locale.translate('cards.activity.total.min')} ${_selectedDay != null ? _getDayName(_selectedDay!) : ''}',
+                      '${locale.translate('cards.activity.total.min')} ${_selectedIndex != null ? weekdayName(context, _days[_selectedIndex!].weekday) : ''}',
                       style: Theme.of(context).textTheme.labelSmall!
                           .copyWith(fontWeight: FontWeight.w700)
                           .copyWith(color: Colors.grey.shade600),
@@ -88,69 +91,32 @@ class ActivityCardState extends State<ActivityCard> {
                   },
                 ),
               ),
-              Column(
+              const SizedBox(height: 16),
+              // Wraps to as many lines as it needs, so the legend keeps its
+              // spacing instead of the entries closing up on a narrow screen.
+              Wrap(
+                spacing: 24,
+                runSpacing: 8,
                 children: [
-                  Row(
-                    children: [
-                      Expanded(
-                        child: Row(
-                          children: [
-                            Text(
-                              '$_walk',
-                              style: Theme.of(context).textTheme.titleLarge!.copyWith(color: widget.colors[0]),
-                            ),
-                            Padding(
-                              padding: const EdgeInsets.all(4.0),
-                              child: Text(
-                                locale.translate('cards.activity.walking'),
-                                style: Theme.of(context).textTheme.labelSmall!
-                                    .copyWith(fontWeight: FontWeight.w700)
-                                    .copyWith(color: Colors.grey.shade900),
-                              ),
-                            ),
-                          ],
+                  for (final (index, type) in _types.indexed)
+                    Row(
+                      mainAxisSize: MainAxisSize.min,
+                      crossAxisAlignment: CrossAxisAlignment.baseline,
+                      textBaseline: TextBaseline.alphabetic,
+                      children: [
+                        Text(
+                          '${_minutes(type)}',
+                          style: Theme.of(context).textTheme.titleLarge!.copyWith(color: widget.colors[index]),
                         ),
-                      ),
-                      Expanded(
-                        child: Row(
-                          children: [
-                            Padding(
-                              padding: const EdgeInsets.only(left: 8.0),
-                              child: Text(
-                                '$_run',
-                                style: Theme.of(context).textTheme.labelSmall!
-                                    .copyWith(fontWeight: FontWeight.w700)
-                                    .copyWith(color: widget.colors[1]),
-                              ),
-                            ),
-                            Padding(
-                              padding: const EdgeInsets.all(4.0),
-                              child: Text(
-                                locale.translate('cards.activity.running'),
-                                style: Theme.of(context).textTheme.labelSmall!
-                                    .copyWith(fontWeight: FontWeight.w700)
-                                    .copyWith(color: Colors.grey.shade900),
-                              ),
-                            ),
-                          ],
+                        const SizedBox(width: 4),
+                        Text(
+                          locale.translate('cards.activity.${_legendKeys[index]}'),
+                          style: Theme.of(
+                            context,
+                          ).textTheme.labelSmall!.copyWith(fontWeight: FontWeight.w700, color: Colors.grey.shade900),
                         ),
-                      ),
-                    ],
-                  ),
-                  Row(
-                    children: [
-                      Text('$_cycle', style: Theme.of(context).textTheme.titleLarge!.copyWith(color: widget.colors[2])),
-                      Padding(
-                        padding: const EdgeInsets.only(left: 4.0),
-                        child: Text(
-                          locale.translate('cards.activity.cycling'),
-                          style: Theme.of(context).textTheme.labelSmall!
-                              .copyWith(fontWeight: FontWeight.w700)
-                              .copyWith(color: Colors.grey.shade900),
-                        ),
-                      ),
-                    ],
-                  ),
+                      ],
+                    ),
                 ],
               ),
             ],
@@ -166,7 +132,7 @@ class ActivityCardState extends State<ActivityCard> {
         alignment: BarChartAlignment.spaceAround,
         titlesData: FlTitlesData(
           bottomTitles: AxisTitles(
-            sideTitles: SideTitles(showTitles: true, getTitlesWidget: bottomTitles, reservedSize: 20),
+            sideTitles: SideTitles(showTitles: true, getTitlesWidget: bottomTitles, reservedSize: 24),
           ),
           leftTitles: const AxisTitles(),
           rightTitles: AxisTitles(
@@ -177,24 +143,18 @@ class ActivityCardState extends State<ActivityCard> {
         barTouchData: BarTouchData(
           enabled: true,
           // The totals above and below the chart already name the selected day.
-          touchTooltipData: BarTouchTooltipData(getTooltipColor: (_) => Colors.transparent),
+          touchTooltipData: noBarTooltip,
           touchCallback: (event, response) {
             // Only settle on tap-up, so the selection is not dragged around -
             // and a tap on empty chart space clears it.
             if (event is! FlTapUpEvent) return;
-            final index = response?.spot?.touchedBarGroupIndex;
-            setState(() => _selectedDay = index == null ? null : index + 1);
+            setState(() => _selectedIndex = response?.spot?.touchedBarGroupIndex);
           },
         ),
         groupsSpace: 4,
         barGroups: [
-          for (int weekday = 1; weekday <= 7; weekday++)
-            generateGroupData(
-              weekday,
-              _minutesOn(ActivityType.WALKING, weekday),
-              _minutesOn(ActivityType.RUNNING, weekday),
-              _minutesOn(ActivityType.ON_BICYCLE, weekday),
-            ),
+          for (int index = 0; index < 7; index++)
+            generateGroupData(index, [for (final type in _types) _minutesOn(type, index)]),
         ],
         maxY: _maxValue * 1.2,
         gridData: FlGridData(
@@ -210,43 +170,33 @@ class ActivityCardState extends State<ActivityCard> {
     );
   }
 
-  BarChartGroupData generateGroupData(int x, num walking, num running, num cycling) {
-    double roundness = 2;
+  BarChartGroupData generateGroupData(int x, List<num> minutes) {
+    const roundness = Radius.circular(2);
     // Nothing selected means the week as a whole - every bar reads the same.
-    bool isTouched = _selectedDay == null || _selectedDay == x;
+    bool isTouched = _selectedIndex == null || _selectedIndex == x;
     // Solid for the selected day, washed out for the rest.
     Color shade(Color color) => isTouched ? color : color.withValues(alpha: 0.3);
+
+    final segments = stackSegments(minutes, betweenSpace);
 
     return BarChartGroupData(
       x: x,
       groupVertically: true,
       barRods: [
-        BarChartRodData(
-          fromY: 0,
-          toY: walking + 0,
-          color: shade(widget.colors[0]),
-          width: 32,
-          borderRadius: BorderRadius.all(Radius.circular(roundness)),
-        ),
-        BarChartRodData(
-          fromY: walking + betweenSpace,
-          toY: walking + betweenSpace + running,
-          color: shade(widget.colors[1]),
-          width: 32,
-          borderRadius: BorderRadius.all(Radius.circular(roundness)),
-        ),
-        BarChartRodData(
-          fromY: walking + betweenSpace + running + betweenSpace,
-          toY: walking + betweenSpace + running + betweenSpace + cycling,
-          color: shade(widget.colors[2]),
-          width: 32,
-          borderRadius: BorderRadius.only(
-            topLeft: const Radius.circular(4),
-            topRight: const Radius.circular(4),
-            bottomLeft: Radius.circular(roundness),
-            bottomRight: Radius.circular(roundness),
+        // A day with nothing to show still needs a full-width rod, or the
+        // group collapses and spaceAround bunches up its weekday label.
+        if (segments.isEmpty) BarChartRodData(toY: 0, width: 32),
+        for (final (position, (index, from, to)) in segments.indexed)
+          BarChartRodData(
+            fromY: from,
+            toY: to,
+            color: shade(widget.colors[index]),
+            width: 32,
+            // Only the topmost segment gets the rounded cap.
+            borderRadius: position == segments.length - 1
+                ? const BorderRadius.vertical(top: Radius.circular(4), bottom: roundness)
+                : const BorderRadius.all(roundness),
           ),
-        ),
       ],
     );
   }
@@ -263,32 +213,12 @@ class ActivityCardState extends State<ActivityCard> {
   }
 
   Widget bottomTitles(double value, TitleMeta meta) {
-    const style = TextStyle(fontSize: 10);
+    final index = value.toInt();
+    if (index < 0 || index >= _days.length) return const SizedBox.shrink();
     return SideTitleWidget(
       meta: meta,
-      child: Text(_getDayName(value.toInt()), style: style),
+      space: 6,
+      child: Text(weekdayName(context, _days[index].weekday), style: const TextStyle(fontSize: 10)),
     );
-  }
-
-  String _getDayName(int dayIndex) {
-    RPLocalizations locale = RPLocalizations.of(context)!;
-    switch (dayIndex) {
-      case 1:
-        return locale.translate("pages.data_viz.mon");
-      case 2:
-        return locale.translate("pages.data_viz.tue");
-      case 3:
-        return locale.translate("pages.data_viz.wed");
-      case 4:
-        return locale.translate("pages.data_viz.thu");
-      case 5:
-        return locale.translate("pages.data_viz.fri");
-      case 6:
-        return locale.translate("pages.data_viz.sat");
-      case 7:
-        return locale.translate("pages.data_viz.sun");
-      default:
-        return '';
-    }
   }
 }

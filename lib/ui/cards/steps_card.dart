@@ -17,13 +17,14 @@ class StepsCardWidget extends StatefulWidget {
 class StepsCardWidgetState extends State<StepsCardWidget> {
   num maxValue = 0;
 
-  /// The weekday whose bar is selected, or null for the week as a whole.
-  int? _selectedDay;
+  /// Steps for the trailing 7 days, oldest first - today is always last.
+  List<DailySteps> get _days => widget.model.steps;
+
+  /// The index (into [_days]) of the bar selected, or null for the week as a whole.
+  int? _selectedIndex;
 
   /// The headline figure: the selected day, or the whole week when nothing is.
-  num get _step => _selectedDay != null
-      ? widget.model.weeklySteps[_selectedDay] ?? 0
-      : widget.model.weeklySteps.values.fold(0, (sum, steps) => sum + steps);
+  num get _step => _selectedIndex != null ? _days[_selectedIndex!].steps : _days.fold(0, (sum, day) => sum + day.steps);
 
   @override
   Widget build(BuildContext context) {
@@ -33,7 +34,7 @@ class StepsCardWidgetState extends State<StepsCardWidget> {
       backgroundColor: Colors.white,
       // Tapping anywhere else on the card drops the selection.
       child: GestureDetector(
-        onTap: () => setState(() => _selectedDay = null),
+        onTap: () => setState(() => _selectedIndex = null),
         child: Padding(
           padding: const EdgeInsets.all(8.0),
           child: Column(
@@ -52,8 +53,8 @@ class StepsCardWidgetState extends State<StepsCardWidget> {
                   Padding(
                     padding: const EdgeInsets.only(left: 4.0),
                     child: Text(
-                      _selectedDay != null
-                          ? '${locale.translate('cards.steps.steps')} ${_getDayName(_selectedDay!)}'
+                      _selectedIndex != null
+                          ? '${locale.translate('cards.steps.steps')} ${weekdayName(context, _days[_selectedIndex!].date.weekday)}'
                           : locale.translate('cards.steps.per_week'),
                       style: Theme.of(context).textTheme.labelSmall!
                           .copyWith(fontWeight: FontWeight.w700)
@@ -108,13 +109,12 @@ class StepsCardWidgetState extends State<StepsCardWidget> {
         barTouchData: BarTouchData(
           enabled: true,
           // The count above the chart already names the selected day.
-          touchTooltipData: BarTouchTooltipData(getTooltipColor: (_) => Colors.transparent),
+          touchTooltipData: noBarTooltip,
           touchCallback: (event, response) {
             // Only settle on tap-up, so the selection is not dragged around -
             // and a tap on empty chart space clears it.
             if (event is! FlTapUpEvent) return;
-            final index = response?.spot?.touchedBarGroupIndex;
-            setState(() => _selectedDay = index == null ? null : index + 1);
+            setState(() => _selectedIndex = response?.spot?.touchedBarGroupIndex);
           },
         ),
         groupsSpace: 4,
@@ -134,16 +134,16 @@ class StepsCardWidgetState extends State<StepsCardWidget> {
   }
 
   List<BarChartGroupData> get barChartsGroups {
-    return widget.model.weeklySteps.entries.map((e) => generateGroupData(e.key, e.value)).toList();
+    return _days.indexed.map((e) => generateGroupData(e.$1, e.$2.steps)).toList();
   }
 
-  BarChartGroupData generateGroupData(int x, int step) {
+  BarChartGroupData generateGroupData(int index, int step) {
     // Nothing selected means the week as a whole - every bar reads the same.
-    bool isTouched = _selectedDay == null || _selectedDay == x;
+    bool isTouched = _selectedIndex == null || _selectedIndex == index;
     maxValue = max(maxValue, step);
 
     return BarChartGroupData(
-      x: x,
+      x: index,
       barRods: [
         BarChartRodData(
           toY: step.toDouble(),
@@ -169,31 +169,11 @@ class StepsCardWidgetState extends State<StepsCardWidget> {
 
   Widget bottomTitles(double value, TitleMeta meta) {
     const style = TextStyle(fontSize: 10);
+    final index = value.toInt();
+    if (index < 0 || index >= _days.length) return const SizedBox.shrink();
     return SideTitleWidget(
       meta: meta,
-      child: Text(_getDayName(value.toInt()), style: style),
+      child: Text(weekdayName(context, _days[index].date.weekday), style: style),
     );
-  }
-
-  String _getDayName(int dayIndex) {
-    RPLocalizations locale = RPLocalizations.of(context)!;
-    switch (dayIndex) {
-      case 1:
-        return locale.translate("pages.data_viz.mon");
-      case 2:
-        return locale.translate("pages.data_viz.tue");
-      case 3:
-        return locale.translate("pages.data_viz.wed");
-      case 4:
-        return locale.translate("pages.data_viz.thu");
-      case 5:
-        return locale.translate("pages.data_viz.fri");
-      case 6:
-        return locale.translate("pages.data_viz.sat");
-      case 7:
-        return locale.translate("pages.data_viz.sun");
-      default:
-        return '';
-    }
   }
 }

@@ -8,7 +8,7 @@ import 'dart:ui' as ui;
 import 'dart:io';
 
 import 'package:app_version_update/data/models/app_version_result.dart';
-import 'package:async/async.dart';
+
 import 'package:flutter/gestures.dart';
 
 import 'package:flutter/material.dart';
@@ -73,6 +73,7 @@ part 'services/auth_service.dart';
 part 'services/study_service.dart';
 part 'services/message_service.dart';
 part 'services/consent_service.dart';
+part 'services/data_stream_query_service.dart';
 
 part 'data/local_settings.dart';
 part 'data/localization_loader.dart';
@@ -93,6 +94,7 @@ part 'view_models/invitations_view_model.dart';
 part 'view_models/participant_data_view_model.dart';
 part 'view_models/cards/activity_data_model.dart';
 part 'view_models/cards/mobility_data_model.dart';
+part 'view_models/cards/sleep_data_model.dart';
 part 'view_models/cards/steps_data_model.dart';
 part 'view_models/cards/heart_rate_data_model.dart';
 part 'view_models/cards/measurements_data_model.dart';
@@ -149,6 +151,7 @@ part 'ui/cards/distance_card.dart';
 part 'ui/cards/heart_rate_card.dart';
 part 'ui/cards/media_card.dart';
 part 'ui/cards/mobility_card.dart';
+part 'ui/cards/sleep_card.dart';
 part 'ui/cards/steps_card.dart';
 part 'ui/cards/study_progress_card.dart';
 part 'ui/cards/survey_card.dart';

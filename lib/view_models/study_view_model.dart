@@ -21,28 +21,12 @@ class StudyPageViewModel extends ViewModel {
   final MessageService? _messageService;
   final SystemInfoService? _systemInfoService;
   final AuthService? _authService;
-  bool _attachedToApp = false;
   bool _appUpdateAvailable = false;
 
   StudyService get _study => _studyService ?? bloc.study;
   MessageService get _messages => _messageService ?? bloc.messages;
   SystemInfoService get _system => _systemInfoService ?? bloc.system;
   AuthService get _auth => _authService ?? bloc.auth;
-
-  // Relay app-state changes (e.g. configuration completing) to the page, so
-  // it only needs to listen to this view model. Attached lazily since the
-  // global bloc is not available while this view model is constructed.
-  @override
-  void addListener(VoidCallback listener) {
-    if (!_attachedToApp) {
-      _attachedToApp = true;
-      bloc.addListener(notifyListeners);
-    }
-    super.addListener(listener);
-  }
-
-  /// Is the app fully configured with the study?
-  bool get isConfigured => bloc.isConfigured;
 
   /// Is the user signed in anonymously?
   bool get isAnonymousUser => _auth.isAnonymous;
@@ -74,9 +58,6 @@ class StudyPageViewModel extends ViewModel {
     await _study.refreshDeploymentStatus();
   }
 
-  /// Retry study configuration after a failure.
-  Future<void> retryConfiguration() => bloc.tryConfigureStudy();
-
   String get title => _study.deployment?.studyDescription?.title ?? 'Unnamed';
   String get description => _study.deployment?.studyDescription?.description ?? '';
   String get purpose => _study.deployment?.studyDescription?.purpose ?? '';
@@ -86,8 +67,9 @@ class StudyPageViewModel extends ViewModel {
   String get responsibleName => _study.deployment?.studyDescription?.responsible?.name ?? '';
   String get responsibleEmail => _study.deployment?.studyDescription?.responsible?.email ?? '';
   String get studyDescriptionUrl => _study.deployment?.studyDescription?.studyDescriptionUrl ?? '';
-  String get privacyPolicyUrl =>
-      _study.deployment?.studyDescription?.privacyPolicyUrl ?? 'https://carp.dk/privacy-policy-app/';
+
+  /// The study's own privacy policy, falling back to the general CARP one.
+  String get privacyPolicyUrl => _study.deployment?.studyDescription?.privacyPolicyUrl ?? CarpBackend.carpPrivacyUrl;
   String get username => _auth.username;
 
   /// Fetch the signed informed consent from the backend and save it as a JSON

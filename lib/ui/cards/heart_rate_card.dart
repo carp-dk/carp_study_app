@@ -18,9 +18,13 @@ class HeartRateCardWidgetState extends State<HeartRateCardWidget> {
   /// or the user taps away from the bars.
   int? _touched;
 
-  /// The bands drawn as bars: one per hour of today, or one per day this week.
-  Map<int, HeartRateMinMaxPrHour> get _bands =>
-      _range == HeartRateRange.day ? widget.model.hourlyHeartRate : widget.model.dailyHeartRate;
+  /// The bands drawn as bars, oldest first: one per hour of the last 24h, or
+  /// one per day of the last 7d. A bar's index is always its real distance
+  /// from now, so position and time agree - no separate "which hours are
+  /// measured" bookkeeping needed.
+  List<(DateTime, HeartRateMinMaxPrHour)> get _bands => _range == HeartRateRange.day
+      ? widget.model.hourlyHeartRate.map((b) => (b.hour, b.value)).toList()
+      : widget.model.dailyHeartRate.map((b) => (b.date, b.value)).toList();
 
   @override
   Widget build(BuildContext context) {
@@ -51,27 +55,24 @@ class HeartRateCardWidgetState extends State<HeartRateCardWidget> {
     );
   }
 
-  /// The buckets that actually hold a reading - what the bars are drawn from,
-  /// so a selection index means the same thing here as in the chart.
-  List<MapEntry<int, HeartRateMinMaxPrHour>> get _measuredBands =>
-      _bands.entries.where((entry) => entry.value.max != null).toList();
-
   /// The selected bar's band, or the range over everything on screen.
   Widget _rangeSummary() {
     final locale = RPLocalizations.of(context)!;
-    final measuredBands = _measuredBands;
-    final selected = _touched != null && _touched! < measuredBands.length ? measuredBands[_touched!] : null;
+    final bands = _bands;
+    final selected = _touched != null && _touched! < bands.length ? bands[_touched!] : null;
 
     final range =
-        selected?.value ??
-        (_range == HeartRateRange.day ? widget.model.dayMinMax : HeartRateCardViewModel.rangeOf(_bands.values));
+        selected?.$2 ??
+        (_range == HeartRateRange.day
+            ? widget.model.dayMinMax
+            : HeartRateCardViewModel.rangeOf(bands.map((b) => b.$2)));
     final measured = range.min != null && range.max != null;
 
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         Text(
-          selected != null ? _label(selected.key) : locale.translate('cards.heartrate.range'),
+          selected != null ? _label(selected.$1) : locale.translate('cards.heartrate.range'),
           style: Theme.of(context).textTheme.labelSmall!.copyWith(color: Colors.grey.shade600),
         ),
         const SizedBox(height: 2),
@@ -133,7 +134,7 @@ class HeartRateCardWidgetState extends State<HeartRateCardWidget> {
   /// bare number.
   Widget _averageHeartRate() {
     final locale = RPLocalizations.of(context)!;
-    final average = HeartRateCardViewModel.averageOf(_bands.values);
+    final average = HeartRateCardViewModel.averageOf(_bands.map((b) => b.$2));
 
     return Row(
       crossAxisAlignment: CrossAxisAlignment.center,
@@ -161,7 +162,7 @@ class HeartRateCardWidgetState extends State<HeartRateCardWidget> {
   /// Rounded out to whole tens with a little headroom, and always at least
   /// 40 BPM tall so a steady day does not get magnified into noise.
   (double, double, double) get _axis {
-    final range = HeartRateCardViewModel.rangeOf(_bands.values);
+    final range = HeartRateCardViewModel.rangeOf(_bands.map((b) => b.$2));
     if (range.min == null || range.max == null) return (0, 200, 50);
 
     var low = max(0.0, ((range.min! - 10) / 10).floor() * 10.0);
@@ -181,10 +182,12 @@ class HeartRateCardWidgetState extends State<HeartRateCardWidget> {
         alignment: BarChartAlignment.spaceEvenly,
         minY: minY,
         maxY: maxY,
-        groupsSpace: 4,
+        groupsSpace: 8,
         barTouchData: BarTouchData(
           enabled: true,
-          touchTooltipData: _tooltip(),
+          // No tooltip - the range summary above the chart already shows the
+          // selected bar's label and min-max bpm.
+          touchTooltipData: noBarTooltip,
           touchCallback: (event, response) {
             // Only settle on tap-up, so the selection is not dragged around -
             // and a tap on empty chart space clears it.
@@ -193,17 +196,20 @@ class HeartRateCardWidgetState extends State<HeartRateCardWidget> {
           },
         ),
         barGroups: [
-          // Only measured buckets get a bar - a zero-height rod at y=0 would
-          // sit outside the axis now that it no longer starts there.
-          for (final (index, band) in _measuredBands.indexed)
+          // One group per hour/day in the window, in position order, so a
+          // bar's index is its real distance from now - an unmeasured slot
+          // simply has no rod, but still holds its place and its label.
+          for (final (index, band) in _bands.indexed)
             BarChartGroupData(
-              x: band.key,
+              x: index,
               barRods: [
                 BarChartRodData(
-                  fromY: band.value.min,
-                  toY: band.value.max!,
-                  // Dim the other bars while one is held, so the tooltip is
-                  // clearly about this bar.
+                  // An unmeasured slot still needs a full-width rod, or the
+                  // group collapses and spaceEvenly bunches up its label.
+                  fromY: band.$2.min ?? minY,
+                  toY: band.$2.max ?? minY,
+                  // Dim the other bars while one is selected, so the range
+                  // summary is clearly about this bar.
                   color: _touched == null || _touched == index
                       ? const Color(0xffEB4B62)
                       : const Color(0xffEB4B62).withValues(alpha: 0.25),
@@ -217,7 +223,14 @@ class HeartRateCardWidgetState extends State<HeartRateCardWidget> {
           topTitles: const AxisTitles(),
           leftTitles: const AxisTitles(),
           bottomTitles: AxisTitles(
-            sideTitles: SideTitles(showTitles: true, reservedSize: 24, getTitlesWidget: _bottomTitle),
+            sideTitles: SideTitles(
+              showTitles: true,
+              reservedSize: 24,
+              // BarChart ignores SideTitles.interval - it always places one
+              // title per bar group - so thinning has to happen in
+              // getTitlesWidget itself, see _bottomTitle.
+              getTitlesWidget: _bottomTitle,
+            ),
           ),
           rightTitles: AxisTitles(
             sideTitles: SideTitles(
@@ -239,49 +252,25 @@ class HeartRateCardWidgetState extends State<HeartRateCardWidget> {
     );
   }
 
-  BarTouchTooltipData _tooltip() {
-    final locale = RPLocalizations.of(context)!;
+  /// What one bar covers: an hour, or a weekday - "Mon" fits where "19/08"
+  /// does not, with seven of them side by side.
+  String _label(DateTime x) =>
+      _range == HeartRateRange.day ? '${x.hour.toString().padLeft(2, '0')}:00' : weekdayName(context, x.weekday);
 
-    return BarTouchTooltipData(
-      fitInsideHorizontally: true,
-      fitInsideVertically: true,
-      tooltipPadding: const EdgeInsets.symmetric(horizontal: 10, vertical: 6),
-      tooltipMargin: 4,
-      getTooltipColor: (_) => Colors.grey.shade900,
-      getTooltipItem: (group, groupIndex, rod, rodIndex) => BarTooltipItem(
-        '${_label(group.x)}\n',
-        Theme.of(context).textTheme.labelSmall!.copyWith(color: Colors.grey.shade300),
-        textAlign: TextAlign.left,
-        children: [
-          TextSpan(
-            text: '${rod.fromY.toInt()}-${rod.toY.toInt()} ${locale.translate('cards.heartrate.bpm')}',
-            style: Theme.of(context).textTheme.labelMedium!.copyWith(color: Colors.white),
-          ),
-        ],
-      ),
-    );
-  }
-
-  /// What one bar covers: an hour of today, or a date this week.
-  String _label(int x) =>
-      _range == HeartRateRange.day ? '${x.toString().padLeft(2, '0')}:00' : DateFormat('dd/MM').format(_dateOf(x));
-
-  /// The date of [weekday] in the current week.
-  DateTime _dateOf(int weekday) {
-    final today = DateTime.now();
-    return today.subtract(Duration(days: today.weekday - weekday));
-  }
+  /// One label per bar in week view (7 bars, all fit); every 4th hour in
+  /// day view (24 bars is too many for one label each).
+  int get _labelStep => _range == HeartRateRange.day ? 4 : 1;
 
   Widget _bottomTitle(double value, TitleMeta meta) {
-    final hour = value.toInt();
-    // A label under every bar only fits for a week; a day gets one every 6h.
-    if (_range == HeartRateRange.day && hour % 6 != 0) return const SizedBox.shrink();
+    final index = value.toInt();
+    if (index < 0 || index >= _bands.length) return const SizedBox.shrink();
+    if (index % _labelStep != 0) return const SizedBox.shrink();
 
     return SideTitleWidget(
       meta: meta,
       space: 6,
       child: Text(
-        _range == HeartRateRange.day ? hour.toString().padLeft(2, '0') : DateFormat('dd/MM').format(_dateOf(hour)),
+        _label(_bands[index].$1),
         style: Theme.of(context).textTheme.labelSmall!.copyWith(color: Colors.grey.shade600),
       ),
     );

@@ -1,12 +1,19 @@
 part of carp_study_app;
 
 /// The state of the [AppBloc].
+///
+/// Ordered by progress - the `is...` getters compare by index, so a state
+/// implies everything before it.
 enum AppState {
   /// The BLoC is created but not ready for use.
   created,
 
   /// The BLoC is initialized via the [initialized] method.
   initialized,
+
+  /// The last study configuration attempt failed. Recover by calling
+  /// [AppBloc.tryConfigureStudy] again.
+  configurationFailed,
 
   /// The BLoC is in the process of being configured with a study.
   configuring,
@@ -88,6 +95,10 @@ class AppBloc extends ChangeNotifier {
     }
   }
 
+  /// Did the last configuration attempt fail? The study page swaps its
+  /// loader for an error + retry affordance when true.
+  bool get configurationFailed => _state == AppState.configurationFailed;
+
   /// Initialize this BLOC. Called before being used for anything.
   Future<void> initialize() async {
     if (isInitialized) return;
@@ -151,13 +162,14 @@ class AppBloc extends ChangeNotifier {
       return;
     }
 
-    final previousState = _state;
     _state = AppState.configuring;
+    notifyListeners();
 
     try {
       await study.configure();
     } catch (error) {
-      _state = previousState;
+      _state = AppState.configurationFailed;
+      notifyListeners();
       warning('$runtimeType - Study configuration failed - $error');
       rethrow;
     }

@@ -25,7 +25,7 @@ dependencies:
   carp_movesense_package: ^3.1.0
   carp_themes_package: ^0.2.0
 
-  carp_webservices: ^4.2.0
+  carp_webservices: ^4.3.0
   carp_backend: ^2.1.1
 
   research_package: ^3.0.0
@@ -91,8 +91,10 @@ dependency_overrides:
   #   path: ../carp.sensing-flutter/packages/carp_survey_package/
   # carp_audio_package:
   #   path: ../carp.sensing-flutter/packages/carp_audio_package/
-  # carp_webservices:
-  #   path: ../carp.sensing-flutter/backends/carp_webservices/
+  # TODO: remove once carp_webservices 4.3.0 (getByTime/dataStream, PR #611)
+  # is published to pub.dev.
+  carp_webservices:
+    path: ../carp.sensing-flutter/backends/carp_webservices/
   # carp_backend:
   #   path: ../carp.sensing-flutter/backends/carp_backend/
   # research_package:

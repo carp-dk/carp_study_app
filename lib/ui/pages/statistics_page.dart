@@ -11,20 +11,43 @@ class StatisticsPage extends StatefulWidget {
 
 class _StatisticsPageState extends State<StatisticsPage> {
   @override
+  void initState() {
+    super.initState();
+    widget.model.refresh();
+  }
+
+  @override
   Widget build(BuildContext context) {
     RPLocalizations locale = RPLocalizations.of(context)!;
     return Scaffold(
       body: SafeArea(
-        child: ListView(
-          padding: const EdgeInsets.only(bottom: 24),
-          children: [
-            const Padding(
-              padding: EdgeInsets.symmetric(vertical: 8.0, horizontal: 10),
-              child: CarpAppBar(hasProfileIcon: true),
+        // Backfill lands in the card view models via addMeasurements(), which
+        // notifies them directly - listen here so the page actually rebuilds
+        // and re-reads the (now backfilled) card data.
+        child: ListenableBuilder(
+          listenable: Listenable.merge([
+            widget.model.stepsCardDataModel,
+            widget.model.activityCardDataModel,
+            widget.model.polarHeartRateCardDataModel,
+            widget.model.movesenseHeartRateCardDataModel,
+            widget.model.mobilityCardDataModel,
+            widget.model.sleepCardDataModel,
+          ]),
+          builder: (context, _) => RefreshIndicator(
+            onRefresh: widget.model.refresh,
+            child: ListView(
+              physics: const AlwaysScrollableScrollPhysics(),
+              padding: const EdgeInsets.only(bottom: 24),
+              children: [
+                const Padding(
+                  padding: EdgeInsets.symmetric(vertical: 8.0, horizontal: 10),
+                  child: CarpAppBar(hasProfileIcon: true),
+                ),
+                CarpPageTitle(locale.translate('pages.data_viz.title')),
+                ..._sections(locale),
+              ],
             ),
-            CarpPageTitle(locale.translate('pages.data_viz.title')),
-            ..._sections(locale),
-          ],
+          ),
         ),
       ),
     );
@@ -47,17 +70,36 @@ class _StatisticsPageState extends State<StatisticsPage> {
         CarpSectionTitle(locale.translate('cards.survey.title')),
         SurveyCard(model.surveysCardDataModel, showTitle: false),
       ],
-      if (model.hasHeartRateMeasure) ...[
-        CarpSectionTitle(locale.translate('cards.heartrate.title')),
-        HeartRateCardWidget(model.heartRateCardDataModel),
+      // Every sensor card also needs data from the last 7 days - some probes
+      // take a day or more to produce their first reading, and an all-empty
+      // chart reads as broken rather than "not yet".
+      if (model.hasPolarHeartRateMeasure && model.polarHeartRateCardDataModel.hasData) ...[
+        CarpSectionTitle(locale.translate('cards.heartrate.polar.title')),
+        HeartRateCardWidget(model.polarHeartRateCardDataModel),
       ],
-      if (model.hasStepsMeasure) ...[
+      if (model.hasMovesenseHeartRateMeasure && model.movesenseHeartRateCardDataModel.hasData) ...[
+        CarpSectionTitle(locale.translate('cards.heartrate.movesense.title')),
+        HeartRateCardWidget(model.movesenseHeartRateCardDataModel),
+      ],
+      if (model.hasStepsMeasure && model.stepsCardDataModel.hasData) ...[
         CarpSectionTitle(locale.translate('cards.steps.title')),
         StepsCardWidget(model.stepsCardDataModel),
       ],
-      if (model.hasActivityMeasure) ...[
+      if (model.hasActivityMeasure && model.activityCardDataModel.hasData) ...[
         CarpSectionTitle(locale.translate('cards.activity.title')),
         ActivityCard(model.activityCardDataModel),
+      ],
+      if (model.hasSleepMeasure && model.sleepCardDataModel.hasData) ...[
+        CarpSectionTitle(locale.translate('cards.sleep.title')),
+        SleepCardWidget(model.sleepCardDataModel),
+      ],
+      if (model.hasMobilityMeasure && model.mobilityCardDataModel.hasData) ...[
+        CarpSectionTitle(locale.translate('cards.mobility.title')),
+        MobilityCard(model.mobilityCardDataModel),
+      ],
+      if (model.hasMobilityMeasure && model.mobilityCardDataModel.hasDistanceData) ...[
+        CarpSectionTitle(locale.translate('cards.distance.title')),
+        DistanceCard(model.mobilityCardDataModel),
       ],
     ];
   }

@@ -13,86 +13,53 @@ void main() {
       final controller = MockSmartphoneStudyController();
       when(controller.measurements).thenAnswer((_) => const Stream<Measurement>.empty());
 
-      final viewModel = HeartRateCardViewModel();
+      final viewModel = HeartRateCardViewModel(PolarSamplingPackage.HR, PolarDevice.DEVICE_TYPE);
       viewModel.init(controller);
 
       expect(viewModel.model, isA<HourlyHeartRate>());
       expect(viewModel.currentHeartRate, isNull);
       // No data yet: every hour bucket is present but empty.
-      expect(viewModel.hourlyHeartRate.values, everyElement(HeartRateMinMaxPrHour(null, null)));
+      expect(viewModel.hourlyHeartRate.map((band) => band.value), everyElement(HeartRateMinMaxPrHour(null, null)));
     });
   });
 
   group('HourlyHeartRate', () {
-    test('resetDataAtMidnight', () {
-      // create an HourlyHeartRate object with some data
+    test('addHeartRate widens the band of both the hour slot and the calendar day', () {
       HourlyHeartRate hr = HourlyHeartRate();
-      hr.hourlyHeartRate[12] = HeartRateMinMaxPrHour(70, 80);
-      hr.hourlyHeartRate[13] = HeartRateMinMaxPrHour(75, 85);
-      hr.maxHeartRate = 85;
-      hr.minHeartRate = 70;
-      hr.lastUpdated = DateTime.now().subtract(const Duration(days: 1)); // yesterday
 
-      // call resetDataAtMidnight
-      hr.resetDataAtMidnight();
+      hr.addHeartRate(75, at: DateTime(2026, 8, 10, 12, 5));
+      hr.addHeartRate(70, at: DateTime(2026, 8, 10, 12, 40));
+      hr.addHeartRate(80, at: DateTime(2026, 8, 10, 12, 55));
+      hr.addHeartRate(75, at: DateTime(2026, 8, 11, 13, 0));
+      hr.addHeartRate(80, at: DateTime(2026, 8, 11, 13, 30));
+      hr.addHeartRate(85, at: DateTime(2026, 8, 11, 13, 59));
 
-      // verify that the data was reset
-      expect(hr.hourlyHeartRate[12], HeartRateMinMaxPrHour(null, null));
-      expect(hr.hourlyHeartRate[13], HeartRateMinMaxPrHour(null, null));
-      expect(hr.maxHeartRate, null);
-      expect(hr.minHeartRate, null);
-      expect(hr.lastUpdated.day, DateTime.now().day);
+      expect(hr.hourlyHeartRate['2026-08-10T12'], HeartRateMinMaxPrHour(70, 80));
+      expect(hr.hourlyHeartRate['2026-08-11T13'], HeartRateMinMaxPrHour(75, 85));
+      expect(hr.dailyHeartRate['2026-08-10'], HeartRateMinMaxPrHour(70, 80));
+      expect(hr.dailyHeartRate['2026-08-11'], HeartRateMinMaxPrHour(75, 85));
     });
 
-    test('addHeartRate widens the band of both the hour and the weekday', () {
+    test('last24Hours has an empty band for every hour with nothing recorded', () {
       HourlyHeartRate hr = HourlyHeartRate();
+      hr.addHeartRate(75, at: DateTime(2026, 8, 11, 9, 0));
 
-      hr.addHeartRate(75, weekday: 1, hour: 12);
-      hr.addHeartRate(70, weekday: 1, hour: 12);
-      hr.addHeartRate(80, weekday: 1, hour: 12);
-      hr.addHeartRate(75, weekday: 2, hour: 13);
-      hr.addHeartRate(80, weekday: 2, hour: 13);
-      hr.addHeartRate(85, weekday: 2, hour: 13);
+      final window = hr.last24Hours(now: DateTime(2026, 8, 11, 9, 30));
 
-      expect(hr.hourlyHeartRate[12], HeartRateMinMaxPrHour(70, 80));
-      expect(hr.hourlyHeartRate[13], HeartRateMinMaxPrHour(75, 85));
-      expect(hr.dailyHeartRate[1], HeartRateMinMaxPrHour(70, 80));
-      expect(hr.dailyHeartRate[2], HeartRateMinMaxPrHour(75, 85));
+      expect(window.length, 24);
+      expect(window.last.value, HeartRateMinMaxPrHour(75, 75));
+      expect(window[22].value, HeartRateMinMaxPrHour(null, null));
     });
 
-    test('addHeartRate without an hour only records the weekday', () {
+    test('last7Days has an empty band for every day with nothing recorded', () {
       HourlyHeartRate hr = HourlyHeartRate();
+      hr.addHeartRate(75, at: DateTime(2026, 8, 11, 9, 0));
 
-      hr.addHeartRate(75, weekday: 3);
+      final window = hr.last7Days(today: DateTime(2026, 8, 11));
 
-      expect(hr.dailyHeartRate[3], HeartRateMinMaxPrHour(75, 75));
-      expect(hr.hourlyHeartRate.values, everyElement(HeartRateMinMaxPrHour(null, null)));
-    });
-
-    test('addHeartRate with invalid input', () {
-      HourlyHeartRate hr = HourlyHeartRate();
-
-      expect(() => hr.addHeartRate(75, weekday: 1, hour: -1), throwsA(isA<AssertionError>()));
-      expect(() => hr.addHeartRate(75, weekday: 1, hour: 24), throwsA(isA<AssertionError>()));
-      expect(() => hr.addHeartRate(75, weekday: 0), throwsA(isA<AssertionError>()));
-      expect(() => hr.addHeartRate(75, weekday: 8), throwsA(isA<AssertionError>()));
-    });
-
-    test('resetDataAtMidnight at other times of day', () {
-      HourlyHeartRate hr = HourlyHeartRate();
-      hr.hourlyHeartRate[12] = HeartRateMinMaxPrHour(70, 80);
-      hr.hourlyHeartRate[13] = HeartRateMinMaxPrHour(75, 85);
-      hr.maxHeartRate = 85;
-      hr.minHeartRate = 70;
-      hr.lastUpdated = DateTime.now();
-
-      hr.resetDataAtMidnight();
-
-      expect(hr.hourlyHeartRate[12], HeartRateMinMaxPrHour(70, 80));
-      expect(hr.hourlyHeartRate[13], HeartRateMinMaxPrHour(75, 85));
-      expect(hr.maxHeartRate, 85);
-      expect(hr.minHeartRate, 70);
-      expect(hr.lastUpdated.day, DateTime.now().day);
+      expect(window.length, 7);
+      expect(window.last.value, HeartRateMinMaxPrHour(75, 75));
+      expect(window.first.value, HeartRateMinMaxPrHour(null, null));
     });
   });
 }

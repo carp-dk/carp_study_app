@@ -1,5 +1,6 @@
 import 'package:carp_backend/carp_backend.dart';
 import 'package:carp_audio_package/media.dart';
+import 'package:carp_health_package/health_package.dart';
 import 'package:cognition_package/cognition_package.dart';
 import 'package:fake_async/fake_async.dart';
 import 'package:research_package/research_package.dart';
@@ -48,7 +49,7 @@ void main() {
 
       expect(model.title, 'Unnamed');
       expect(model.description, '');
-      expect(model.privacyPolicyUrl, 'https://carp.dk/privacy-policy-app/');
+      expect(model.privacyPolicyUrl, CarpBackend.carpPrivacyUrl);
       expect(model.studyDeploymentId, '');
       expect(model.messages, isEmpty);
     });
@@ -320,16 +321,28 @@ void main() {
       when(study.hasUserTasks()).thenReturn(true);
       when(study.hasMeasure(PolarSamplingPackage.HR)).thenReturn(true);
       when(study.hasMeasure(MediaSamplingPackage.AUDIO)).thenReturn(true);
+      when(study.hasMeasure(HealthSamplingPackage.HEALTH)).thenReturn(true);
       final model = StatisticsViewModel(studyService: study);
 
       model.init(MockSmartphoneStudyController());
 
       expect(model.hasUserTasks, isTrue);
-      expect(model.hasHeartRateMeasure, isTrue);
+      expect(model.hasPolarHeartRateMeasure, isTrue);
       expect(model.hasAudioMeasure, isTrue);
       expect(model.hasVideoMeasure, isFalse);
       expect(model.hasStepsMeasure, isFalse);
       expect(model.hasMobilityMeasure, isFalse);
+      expect(model.hasSleepMeasure, isTrue);
+    });
+
+    test('finds steps under either the API 2.0 or the legacy measure type', () {
+      for (final dataType in StepsCardViewModel.dataTypes) {
+        final study = MockStudyService();
+        when(study.hasMeasure(dataType)).thenReturn(true);
+        final model = StatisticsViewModel(studyService: study)..init(MockSmartphoneStudyController());
+
+        expect(model.hasStepsMeasure, isTrue, reason: dataType);
+      }
     });
   });
 
