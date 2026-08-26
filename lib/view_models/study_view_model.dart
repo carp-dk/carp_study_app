@@ -1,11 +1,7 @@
 part of carp_study_app;
 
-/// View model for [StudyPage] and [StudyAboutPage].
-///
-/// State: the study description and responsible party, the deployment status,
-/// and the messages (announcements, news) published for the study.
-///
-/// Also handles pull-to-refresh: re-fetch messages and re-try the deployment.
+/// View model for [StudyPage] and [StudyAboutPage] - study description,
+/// deployment status, and published messages, incl. pull-to-refresh.
 class StudyPageViewModel extends ViewModel {
   StudyPageViewModel({
     StudyService? studyService,

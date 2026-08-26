@@ -9,30 +9,27 @@ class ActivityCardViewModel extends SerializableViewModel<WeeklyActivities> {
   /// The activity types the card charts - STILL is tracked but not shown.
   static const List<ActivityType> chartedTypes = [ActivityType.WALKING, ActivityType.RUNNING, ActivityType.ON_BICYCLE];
 
-  /// Whether any charted activity was recorded in the last 7 days - the page
-  /// hides an all-zero chart.
+  /// Whether any charted activity was recorded in the last 7 days - hides an
+  /// empty card.
   bool get hasData => days.any((day) => chartedTypes.any((type) => minutesOn(type, day) > 0));
 
-  /// The 7 days ending today, oldest first - today is always the last
-  /// (rightmost) entry, matching the Steps card.
+  /// The 7 days ending today, oldest first.
   List<DateTime> get days => model.last7Days();
 
   /// Minutes of [type] on [date].
   int minutesOn(ActivityType type, DateTime date) => model.minutesOn(type, date);
 
-  /// Fold [measurement] into [into] and return it as the new previous reading.
-  ///
-  /// The probe reports the activity it currently sees, so a duration is the gap
-  /// until a *different* activity is reported.
+  /// Fold [measurement] into [into] and return it as the new previous reading -
+  /// a duration is the gap until a *different* activity is reported.
   static Measurement? _addActivity(WeeklyActivities into, Measurement measurement, Measurement? previous) {
     if (previous == null) return measurement;
     if ((measurement.data as Activity).type == (previous.data as Activity).type) return previous;
 
-    final start = previous.dateTime;
+    final start = previous.sensorTime;
     into.increaseActivityDuration(
       (previous.data as Activity).type,
       start,
-      measurement.dateTime.difference(start).inMinutes,
+      measurement.sensorTime.difference(start).inMinutes,
     );
     return measurement;
   }
@@ -63,20 +60,16 @@ class ActivityCardViewModel extends SerializableViewModel<WeeklyActivities> {
     }, onError: onMeasurementStreamError);
   }
 
-  /// Recompute this week's activity minutes from backfilled [measurements],
-  /// replacing whatever this call previously computed - safe to call again on
-  /// every refresh without double-counting.
-  ///
-  /// Same per-day reset as [StepsCardViewModel.addMeasurements] - an activity
-  /// spanning midnight should not accrue its whole duration into one day.
+  /// Recompute this week's minutes from backfilled [measurements] -
+  /// idempotent, with a per-day reset so activities never span midnight.
   void addMeasurements(List<Measurement> measurements) {
     model.activities.clear();
-    final sorted = [...measurements]..sort((a, b) => a.dateTime.compareTo(b.dateTime));
+    final sorted = [...measurements]..sort((a, b) => a.sensorTime.compareTo(b.sensorTime));
     Measurement? previous;
     int? previousDay;
     for (final measurement in sorted) {
-      if (previousDay != null && measurement.dateTime.day != previousDay) previous = null;
-      previousDay = measurement.dateTime.day;
+      if (previousDay != null && measurement.sensorTime.day != previousDay) previous = null;
+      previousDay = measurement.sensorTime.day;
       previous = _addActivity(model, measurement, previous) ?? measurement;
     }
     notifyListeners();
@@ -87,9 +80,7 @@ class ActivityCardViewModel extends SerializableViewModel<WeeklyActivities> {
 @JsonSerializable(includeIfNull: false)
 class WeeklyActivities extends DataModel {
   /// Minutes per activity type per calendar day, keyed by [_dayKey]
-  /// (e.g. "2026-08-21") - an absolute date rather than a weekday, so a
-  /// reading always lands on the day it was actually taken regardless of
-  /// which day of the week is "now".
+  /// (e.g. "2026-08-21").
   Map<ActivityType, Map<String, int>> activities = {};
 
   static String _dayKey(DateTime date) => DateFormat('yyyy-MM-dd').format(date);
@@ -103,8 +94,7 @@ class WeeklyActivities extends DataModel {
   /// Minutes of [type] on [date], zero if nothing was recorded.
   int minutesOn(ActivityType type, DateTime date) => activities[type]?[_dayKey(date)] ?? 0;
 
-  /// The 7 days ending on [today] (defaults to now), oldest first - today is
-  /// always last, so the freshest data is always on the right of the chart.
+  /// The 7 days ending on [today] (defaults to now), oldest first.
   List<DateTime> last7Days({DateTime? today}) {
     final end = today ?? DateTime.now();
     return List.generate(7, (i) => end.subtract(Duration(days: 6 - i)));

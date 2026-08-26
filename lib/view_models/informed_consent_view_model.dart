@@ -9,12 +9,8 @@ enum ConsentStatus {
   needsSigning,
 }
 
-/// View model for [InformedConsentPage], gated by [CarpAppShell].
-///
-/// State: the consent document of the active study, once loaded.
-///
-/// Answers whether the user still has to sign, and records their accept or
-/// reject - locally, and in CAWS when there was a document to sign.
+/// View model for [InformedConsentPage] - the consent document, whether the
+/// user still has to sign, and recording their accept/reject.
 class InformedConsentViewModel extends ViewModel {
   RPOrderedTask? _informedConsent;
 

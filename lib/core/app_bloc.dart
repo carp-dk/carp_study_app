@@ -1,9 +1,7 @@
 part of carp_study_app;
 
-/// The state of the [AppBloc].
-///
-/// Ordered by progress - the `is...` getters compare by index, so a state
-/// implies everything before it.
+/// The state of the [AppBloc], ordered by progress - the `is...` getters
+/// compare by index, so a state implies everything before it.
 enum AppState {
   /// The BLoC is created but not ready for use.
   created,
@@ -22,18 +20,8 @@ enum AppState {
   configured,
 }
 
-/// The coordinator for the entire app.
-///
-/// Works as a singleton and can always be accessed via the global `bloc`
-/// variable.
-///
-/// Holds the app state machine and the focused services doing the actual
-/// work ([config], [auth], [study], [messages], [consent], [system],
-/// [resources]). Orchestration that spans several services - like
-/// [configureStudy] and [leaveStudy] - lives here.
-///
-/// Works as a [ChangeNotifier] and will notify its listeners (incl. the
-/// router) on important changes.
+/// The coordinator for the entire app - the state machine, the focused
+/// services, and orchestration spanning them. Singleton, via the global `bloc`.
 class AppBloc extends ChangeNotifier {
   AppState _state = AppState.created;
   final AppViewModel _appViewModel = AppViewModel();
@@ -80,9 +68,7 @@ class AppBloc extends ChangeNotifier {
     );
   }
 
-  /// Run [configureStudy], surfacing a failure to the user instead of
-  /// throwing. Used by the setup flow and retry affordances, where no
-  /// caller can handle the error.
+  /// Run [configureStudy], surfacing a failure to the user instead of throwing.
   Future<void> tryConfigureStudy() async {
     try {
       await configureStudy();
@@ -95,8 +81,7 @@ class AppBloc extends ChangeNotifier {
     }
   }
 
-  /// Did the last configuration attempt fail? The study page swaps its
-  /// loader for an error + retry affordance when true.
+  /// Did the last configuration attempt fail? Shows the error + retry card.
   bool get configurationFailed => _state == AppState.configurationFailed;
 
   /// Initialize this BLOC. Called before being used for anything.
@@ -145,17 +130,8 @@ class AppBloc extends ChangeNotifier {
     info('Invitation received - study: ${study.study}');
   }
 
-  /// Configure the study deployment and start sensing.
-  ///
-  /// This includes:
-  ///  * initialize sensing and deploy the study
-  ///  * initializing the data visualization pages
-  ///  * setting up messaging
-  ///  * starting sensing (only if the deployment succeeded)
-  ///
-  /// If configuration fails (e.g., no network), the state is reset so this
-  /// method can be called again, and the error is rethrown for the caller
-  /// to surface.
+  /// Deploy the study, set up messaging and pages, and start sensing.
+  /// On failure the state is reset for retry and the error rethrown.
   Future<void> configureStudy() async {
     // early out if already configuring or configured
     if (_state == AppState.configuring || isConfigured) {
@@ -199,17 +175,8 @@ class AppBloc extends ChangeNotifier {
     });
   }
 
-  /// Leave the study deployed on this phone.
-  ///
-  /// This entails
-  ///  * stopping sensing
-  ///  * removing the study info from the phone
-  ///  * resetting the informed consent flow
-  ///  * returning the user to select an invitation for another study
-  ///
-  /// Note that study deployment information and data is removed from the
-  /// phone. If the same deployment is re-deployed on the phone, data from the
-  /// previous deployment will NOT be available.
+  /// Leave the study: stop sensing, wipe study info and consent from the
+  /// phone, and return to invitation selection. Local data is not recoverable.
   Future<void> leaveStudy() async {
     info('Leaving study ${study.study}');
 

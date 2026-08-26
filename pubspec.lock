@@ -380,9 +380,10 @@ packages:
   carp_webservices:
     dependency: "direct main"
     description:
-      path: "../carp.sensing-flutter/backends/carp_webservices"
-      relative: true
-    source: path
+      name: carp_webservices
+      sha256: c9c1ca9d77c56c37a1dc976bc341681d96686402224f9970d4ba3666ddacce33
+      url: "https://pub.dev"
+    source: hosted
     version: "4.3.0"
   characters:
     dependency: transitive

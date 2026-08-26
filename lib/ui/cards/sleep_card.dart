@@ -1,10 +1,7 @@
 part of carp_study_app;
 
-/// Hours asleep per night, stacked by sleep stage, with the per-stage
-/// totals as a legend below.
-///
-/// A night the phone recorded without stages (a bare sleep session) is drawn
-/// as a single "asleep" segment, since that is all the platform knows.
+/// Hours asleep per night, stacked by sleep stage, with per-stage totals as
+/// a legend below. An unstaged night is drawn as a single "asleep" segment.
 class SleepCardWidget extends StatefulWidget {
   final SleepCardViewModel model;
 
@@ -51,8 +48,7 @@ class _SleepCardWidgetState extends State<SleepCardWidget> {
       : List.generate(_nights.length, (i) => _stageHours(i)[stageIndex]).fold<double>(0, (sum, hours) => sum + hours);
 
   /// The headline figure in hours: the selected night, or the average over
-  /// the nights that actually have sleep recorded - averaging in the nights
-  /// the phone recorded nothing would just read as "slept less".
+  /// the nights that actually have sleep recorded.
   double get _hours {
     if (_selectedIndex != null) return _nights[_selectedIndex!].hours;
     final recorded = _nights.where((night) => night.minutes > 0);

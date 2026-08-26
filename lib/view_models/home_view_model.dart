@@ -3,14 +3,8 @@ part of carp_study_app;
 /// The 3-state connection summary shown on the home page.
 enum HomeConnectionState { all, partial, none }
 
-/// View model for [HomePage] and [CarpAppShell].
-///
-/// State: whether the study is loaded, its title and status, connected devices,
-/// task and active-day counts, announcements, and the app update / Health
-/// Connect prompts.
-///
-/// Keeps that data fresh from the services and streams so the pages only read
-/// and rebuild.
+/// View model for [HomePage] and [CarpAppShell] - study status, devices,
+/// task counts, announcements, and the update / Health Connect prompts.
 class HomePageViewModel extends ViewModel {
   HomePageViewModel({SystemInfoService? systemInfoService, StudyService? studyService, MessageService? messageService})
     : _systemInfoService = systemInfoService,

@@ -5,12 +5,8 @@ part of carp_study_app;
 const Color _statusSuccess = Color(0xff67CE67);
 const Color _statusError = Color(0xffEB4B62);
 
-/// View model for [DeviceListPage].
-///
-/// State: the devices and online services of the deployment, as
-/// [DeviceViewModel]s.
-///
-/// Connecting and disconnecting is owned by each [DeviceViewModel].
+/// View model for [DeviceListPage] - the deployment's devices and online
+/// services as [DeviceViewModel]s, which own connect/disconnect.
 class DeviceListPageViewModel extends ViewModel {
   DeviceListPageViewModel({StudyService? studyService}) : _studyService = studyService;
 
@@ -37,12 +33,8 @@ class DeviceListPageViewModel extends ViewModel {
       onlineServices.where((device) => device.type == HealthService.DEVICE_TYPE).firstOrNull;
 }
 
-/// View model for one device row on [DeviceListPage].
-///
-/// State: the name, icon, and live connection status of its [DeviceManager],
-/// which can be either a hardware device or an online service.
-///
-/// Connects and disconnects that device.
+/// View model for one device row on [DeviceListPage] - name, icon, and live
+/// connection status of its [DeviceManager]; connects and disconnects it.
 class DeviceViewModel extends ViewModel {
   DeviceManager deviceManager;
   DeviceViewModel(this.deviceManager) : super();

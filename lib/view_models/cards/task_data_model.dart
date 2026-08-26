@@ -1,8 +1,7 @@
 part of carp_study_app;
 
-/// The data model for the the different task card widgets, like TaskCardWidget]
-/// and [MediaCardWidget].
-/// Keeps track on the number of different tasks done ordered by their task title.
+/// View model for the task card widgets ([TaskCardWidget], [MediaCardWidget]) -
+/// counts tasks done, grouped by task title.
 class TaskCardViewModel extends ViewModel {
   String taskType;
 

@@ -255,8 +255,6 @@ class _AppLocalizationsDelegate extends RPLocalizationsDelegate {
 }
 
 /// Fade between bottom-nav tabs: the incoming page fades and gently scales in.
-/// (On a tab switch the outgoing page is replaced, not popped, so only the
-/// incoming page animates - both tabs share the same gray background.)
 Widget bottomNavigationBarAnimation(
   BuildContext context,
   Animation<double> animation,

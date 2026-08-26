@@ -1,11 +1,9 @@
 part of carp_study_app;
 
 extension MeasurementTime on Measurement {
-  /// When this measurement was taken, as local time.
-  ///
-  /// The bucket a measurement belongs to comes from here, never from
-  /// `DateTime.now()` - otherwise anything replayed lands in the present.
-  DateTime get dateTime => DateTime.fromMicrosecondsSinceEpoch(sensorStartTime);
+  /// When this measurement was taken, as local time - bucket by this,
+  /// never by `DateTime.now()`, or replayed data lands in the present.
+  DateTime get sensorTime => DateTime.fromMicrosecondsSinceEpoch(sensorStartTime);
 }
 
 extension StringExtension on String {

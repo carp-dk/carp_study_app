@@ -1,9 +1,7 @@
 part of carp_study_app;
 
-/// One card per heart rate sensor this app supports, identified by its data
-/// type namespace - the same string backfill fetches by, and what live
-/// measurements are filtered on. Readings from different sensors are never
-/// merged.
+/// One card per heart rate sensor, identified by its data type namespace -
+/// readings from different sensors are never merged.
 class HeartRateCardViewModel extends SerializableViewModel<HourlyHeartRate> {
   HeartRateCardViewModel(this.dataType, this.deviceType);
 
@@ -11,26 +9,20 @@ class HeartRateCardViewModel extends SerializableViewModel<HourlyHeartRate> {
   /// sources from.
   final String dataType;
 
-  /// The [DeviceConfiguration.type] of the hardware device this card sources
-  /// from (e.g. [PolarDevice.DEVICE_TYPE]) - used to look up that device's
-  /// role name in the deployment for backfill, since data streams are keyed
-  /// by role name, not device type, and a study can rename the role.
+  /// The [DeviceConfiguration.type] of the sensor hardware (e.g.
+  /// [PolarDevice.DEVICE_TYPE]), used to look up its role in the deployment.
   final String deviceType;
 
-  /// The role name this card's data streams are keyed by (e.g.
-  /// "Polar HR Sensor"), or null if the deployment isn't loaded yet or
-  /// doesn't include this device type.
+  /// Role this card's data streams are keyed by (e.g. "Polar HR Sensor").
   String? get deviceRoleName => roleOf(deviceType);
 
   @override
   HourlyHeartRate createModel() => HourlyHeartRate();
 
-  /// Whether any heart rate was recorded in the last 7 days - the page hides
-  /// an all-empty chart.
+  /// Whether any heart rate was recorded in the last 7 days - hides an empty card.
   bool get hasData => dailyHeartRate.any((band) => band.value.min != null);
 
-  /// Bands for the last 24 hours, oldest first - the current hour is always
-  /// last, so the freshest reading is always on the right of the chart.
+  /// Bands for the last 24 hours, oldest first.
   List<HourBand> get hourlyHeartRate => model.last24Hours();
 
   /// Bands for the last 7 days, oldest first - today is always last.
@@ -66,7 +58,7 @@ class HeartRateCardViewModel extends SerializableViewModel<HourlyHeartRate> {
   static void _record(HourlyHeartRate into, Measurement measurement) {
     final bpm = bpmOf(measurement);
     if (bpm == null || bpm <= 0) return;
-    into.addHeartRate(bpm, at: measurement.dateTime);
+    into.addHeartRate(bpm, at: measurement.sensorTime);
     if (bpm > (into.maxHeartRate ?? 0)) into.maxHeartRate = bpm;
     if (bpm < (into.minHeartRate ?? double.infinity)) into.minHeartRate = bpm;
   }
@@ -97,10 +89,8 @@ class HeartRateCardViewModel extends SerializableViewModel<HourlyHeartRate> {
     }, onError: onMeasurementStreamError);
   }
 
-  /// Recompute the trailing 24h/7d bands from backfilled [measurements],
-  /// replacing whatever this call previously computed - safe to call again on
-  /// every refresh without stale bands lingering. No ordering/carry
-  /// requirement, [_record] widens bands independently.
+  /// Recompute the trailing 24h/7d bands from backfilled [measurements] -
+  /// idempotent; no ordering requirement, [_record] widens bands independently.
   void addMeasurements(List<Measurement> measurements) {
     model.hourlyHeartRate.clear();
     model.dailyHeartRate.clear();
@@ -130,14 +120,11 @@ class DayBand {
 
 @JsonSerializable(includeIfNull: false)
 class HourlyHeartRate extends DataModel {
-  /// Heart rate bands per hour slot, keyed by [_hourKey] (e.g.
-  /// "2026-08-21T14") - an absolute hour rather than a clock hour, so "now"
-  /// is always the most recent key and readings never wrap around a day.
+  /// Heart rate bands per absolute hour slot, keyed by [_hourKey]
+  /// (e.g. "2026-08-21T14").
   Map<String, HeartRateMinMaxPrHour> hourlyHeartRate = {};
 
-  /// Heart rate bands per calendar day, keyed by [_dayKey] (e.g.
-  /// "2026-08-21") - an absolute date rather than a weekday, so a reading
-  /// always lands on the day it was actually taken.
+  /// Heart rate bands per calendar day, keyed by [_dayKey] (e.g. "2026-08-21").
   Map<String, HeartRateMinMaxPrHour> dailyHeartRate = {};
 
   static String _hourKey(DateTime at) => DateFormat('yyyy-MM-ddTHH').format(at);
@@ -168,9 +155,7 @@ class HourlyHeartRate extends DataModel {
   }
 
   /// Bands for the 24 hours ending on the current hour (defaults to now),
-  /// oldest first - an empty band for any hour with nothing recorded. The
-  /// current hour is always last, so the freshest data is always on the
-  /// right of the chart.
+  /// oldest first - an empty band for any hour with nothing recorded.
   List<HourBand> last24Hours({DateTime? now}) {
     final end = now ?? DateTime.now();
     return List.generate(24, (i) {
@@ -179,8 +164,7 @@ class HourlyHeartRate extends DataModel {
     });
   }
 
-  /// Bands for the 7 days ending on [today] (defaults to now), oldest first -
-  /// an empty band for any day with nothing recorded. Today is always last.
+  /// Bands for the 7 days ending on [today] (defaults to now), oldest first.
   List<DayBand> last7Days({DateTime? today}) {
     final end = today ?? DateTime.now();
     return List.generate(7, (i) {

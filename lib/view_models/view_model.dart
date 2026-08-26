@@ -1,9 +1,7 @@
 part of carp_study_app;
 
-/// An abstract view model used for all view models in the app.
-///
-/// Note that a view model is a [ChangeNotifier] and will notify its listeners
-/// if changed, including any [ListenableBuilder] widgets.
+/// Base view model - a [ChangeNotifier] that notifies its listeners
+/// (incl. [ListenableBuilder] widgets) when changed.
 abstract class ViewModel extends ChangeNotifier {
   SmartphoneStudyController? _controller;
 
@@ -16,17 +14,12 @@ abstract class ViewModel extends ChangeNotifier {
   }
 
   /// The role name of the device of [deviceType] in the current deployment,
-  /// or null if the deployment isn't loaded yet or doesn't include it.
-  /// Data streams are keyed by role name, and data from a connected device
-  /// is recorded under that device's own role, not the phone's.
+  /// or null if not loaded / not included - data streams are keyed by role.
   @protected
   String? roleOf(String deviceType) =>
       controller?.deployment?.devices.where((device) => device.type == deviceType).firstOrNull?.roleName;
 
-  /// Handle errors emitted on a measurement stream.
-  ///
-  /// Stream errors are not measurements and should not be handled in the data
-  /// path. View models should log and ignore them so sensing can continue.
+  /// Log and ignore measurement stream errors so sensing can continue.
   void onMeasurementStreamError(Object error, [StackTrace? stackTrace]) {
     warning('$runtimeType - measurement stream error: $error');
   }
@@ -51,11 +44,8 @@ abstract class DataModel {
   Map<String, dynamic> toJson();
 }
 
-/// A view model holding an aggregated [DataModel] behind a card.
-///
-/// Not persisted: every card is rebuilt from its sources when the statistics
-/// page loads or refreshes - backfill from CAWS and/or the health probe's own
-/// trailing window - so a local snapshot would only ever be stale.
+/// A view model holding an aggregated [DataModel] behind a card. Not
+/// persisted - every card is rebuilt from backfill and/or live probes.
 abstract class SerializableViewModel<D extends DataModel> extends ViewModel {
   /// The current data model, fresh on every [init].
   D get model => _model;
@@ -102,10 +92,8 @@ class HourlyMeasure {
   String toString() => '$hour:$minute';
 }
 
-/// The root view model, owning one instance of every page view model.
-///
-/// State: none of its own - it holds the others and forwards [init], [clear],
-/// and [dispose] to them, so the pages always read the same instances.
+/// The root view model - owns one instance of every page view model and
+/// forwards [init], [clear], and [dispose] to them.
 class AppViewModel extends ViewModel {
   final HomePageViewModel _homePageViewModel = HomePageViewModel();
   final LoginViewModel _loginViewModel = LoginViewModel();

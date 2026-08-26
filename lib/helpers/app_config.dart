@@ -15,24 +15,9 @@ enum DeploymentMode {
   dev,
 }
 
-/// App-wide configuration parsed once from compile-time environment variables.
-///
-/// A static, dependency-free holder so that lower layers ([Sensing],
-/// [CarpBackend]) can read configuration without depending on the global
-/// [bloc] - and without anything needing to instantiate it.
-///
-/// The configuration is set using two environment variables:
-///
-///  * `deployment-mode` sets the [DeploymentMode].
-///  * `debug-level` sets the [DebugLevel].
-///
-/// In Flutter these environment variables are set by specifying the `--dart-define`
-/// option in `flutter run`. For example:
-///
-///  `flutter run --dart-define=deployment-mode=local,debug-level=info`
-///
-/// Note: `String.fromEnvironment` only reads the `--dart-define` value in a
-/// const context, hence the explicit `const` below.
+/// App-wide configuration from `--dart-define` variables `deployment-mode`
+/// and `debug-level`, e.g. `flutter run --dart-define=deployment-mode=local`.
+/// (`String.fromEnvironment` only reads them in a const context.)
 abstract class AppConfig {
   /// What kind of deployment are we running?
   static DeploymentMode deploymentMode = DeploymentMode.values.firstWhere(

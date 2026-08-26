@@ -1,10 +1,7 @@
 part of carp_study_app;
 
-/// The backend side of informed consent: fetching the consent document of the
-/// study, and reading / writing the user's signed consent in CAWS.
-///
-/// Deployment-mode policy and the locally stored flag are not this layer's
-/// concern - see [InformedConsentViewModel].
+/// The backend side of informed consent: the study's consent document and
+/// the user's signed consent in CAWS. Policy lives in [InformedConsentViewModel].
 class ConsentService {
   ConsentService(this._manager, {CarpBackend? backend}) : _backend = backend ?? CarpBackend();
 

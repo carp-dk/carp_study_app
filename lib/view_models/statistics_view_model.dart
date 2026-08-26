@@ -1,12 +1,7 @@
 part of carp_study_app;
 
-/// View model for [StatisticsPage].
-///
-/// State: which measures the deployment collects, so only the cards backed by
-/// real data are shown, plus one view model per card.
-///
-/// Turning raw CAMS measurements into what the charts draw happens here, in
-/// the card view models below - the page only lays the results out.
+/// View model for [StatisticsPage] - which measures the deployment collects,
+/// plus one view model per card. The page only lays the results out.
 class StatisticsViewModel extends ViewModel {
   StatisticsViewModel({StudyService? studyService, DataStreamQueryService? queryService})
     : _studyService = studyService,
@@ -118,14 +113,8 @@ class StatisticsViewModel extends ViewModel {
     _studyProgressCardDataModel.init(ctrl);
   }
 
-  /// Fetch the last 7 days from CAWS and recompute the Steps, Activity and
-  /// Heart Rate cards from it. Best-effort: a failed fetch leaves the
-  /// existing (live-accumulated) card data untouched.
-  ///
-  /// A no-op while already refreshing (e.g. page-open overlapping a
-  /// pull-to-refresh) - each card recomputes from scratch, so a second
-  /// concurrent run would only redo the same work, not corrupt anything, but
-  /// there is no reason to fetch twice.
+  /// Fetch the last 7 days from CAWS and recompute the cards. Best-effort:
+  /// a failed fetch leaves existing card data untouched. No-op while running.
   Future<void> refresh() async {
     if (_isRefreshing) return;
     _isRefreshing = true;
@@ -177,9 +166,8 @@ class StatisticsViewModel extends ViewModel {
     }
   }
 
-  /// Fetch [dataType] and hand it to [into] - unless the fetch failed, in
-  /// which case the card keeps what it already has rather than being
-  /// rebuilt from nothing.
+  /// Fetch [dataType] and hand it to [into] - on failure the card keeps what
+  /// it already has.
   Future<void> _fetchInto(String dataType, void Function(List<Measurement>) into, {String? deviceRoleName}) async {
     final measurements = await _queryService.fetch(dataType, deviceRoleName: deviceRoleName);
     if (measurements != null) into(measurements);

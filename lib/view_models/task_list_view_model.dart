@@ -1,11 +1,7 @@
 part of carp_study_app;
 
-/// View model for [TaskListPage].
-///
-/// State: the user tasks to show, whether the participant-data card is due, and
-/// the task that just auto-completed.
-///
-/// Starts tasks and auto-completes background ones once they have run.
+/// View model for [TaskListPage] - the user tasks to show; starts tasks and
+/// auto-completes background ones once they have run.
 class TaskListPageViewModel extends ViewModel {
   TaskListPageViewModel({StudyService? studyService}) : _studyService = studyService;
 

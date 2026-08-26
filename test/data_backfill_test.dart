@@ -2,10 +2,8 @@ import 'package:carp_context_package/carp_context_package.dart';
 
 import 'exports.dart';
 
-/// Self-check for the day-boundary reset in [StepsCardViewModel.addMeasurements]
-/// and [ActivityCardViewModel.addMeasurements] - the only new aggregation
-/// logic added for backfill; everything else reuses the existing live-stream
-/// fold functions.
+/// Self-check for the day-boundary reset in the Steps and Activity
+/// `addMeasurements` - the only new aggregation logic added for backfill.
 void main() {
   group('StepsCardViewModel.addMeasurements', () {
     test('resets the running baseline at each day boundary', () {

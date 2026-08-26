@@ -91,10 +91,8 @@ dependency_overrides:
   #   path: ../carp.sensing-flutter/packages/carp_survey_package/
   # carp_audio_package:
   #   path: ../carp.sensing-flutter/packages/carp_audio_package/
-  # TODO: remove once carp_webservices 4.3.0 (getByTime/dataStream, PR #611)
-  # is published to pub.dev.
-  carp_webservices:
-    path: ../carp.sensing-flutter/backends/carp_webservices/
+  # carp_webservices:
+  #   path: ../carp.sensing-flutter/backends/carp_webservices/
   # carp_backend:
   #   path: ../carp.sensing-flutter/backends/carp_backend/
   # research_package:

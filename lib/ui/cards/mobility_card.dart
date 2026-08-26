@@ -1,13 +1,7 @@
 part of carp_study_app;
 
-/// Home stay per day as bars, with places visited and distance travelled -
-/// the three features the mobility probe reports - below.
-///
-/// "Home" is not configured by the participant: the probe clusters the
-/// phone's location into places and calls the one where most time is spent
-/// between midnight and 06:00 home, recomputed each day. A day with no
-/// night-time location at all has no home, and its bar is left empty rather
-/// than drawn as 0%.
+/// Home stay per day as bars, with places visited and distance travelled below.
+/// "Home" is where most time is spent 00:00-06:00; a day without one is empty.
 class MobilityCard extends StatefulWidget {
   final MobilityCardViewModel model;
   final List<Color> colors;

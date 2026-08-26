@@ -3,11 +3,8 @@ part of carp_study_app;
 /// The outcome of a sign-in attempt.
 enum SignInResult { success, offline, failed }
 
-/// View model for [LoginPage] and [QRViewExample].
-///
-/// State: whether the user is authenticated.
-///
-/// Runs the sign-in flow - CAWS web view, magic link, and sign-out.
+/// View model for [LoginPage] and [QRViewExample] - runs the sign-in flow
+/// (CAWS web view, magic link) and sign-out.
 class LoginViewModel extends ViewModel {
   LoginViewModel({AuthService? authService, SystemInfoService? systemInfoService})
     : _authService = authService,

@@ -1,11 +1,7 @@
 part of carp_study_app;
 
-/// View model for [InvitationListPage] and [InvitationDetailsPage].
-///
-/// State: the invitations fetched from CAWS, and whether that fetch is pending
-/// or failed.
-///
-/// Accepts an invitation as the app's active study, and signs the user out.
+/// View model for [InvitationListPage] and [InvitationDetailsPage] - the
+/// invitations fetched from CAWS; accepts one as the app's active study.
 class InvitationsViewModel extends ViewModel {
   InvitationsViewModel({AuthService? authService}) : _authService = authService;
 

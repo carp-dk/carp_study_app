@@ -1,11 +1,7 @@
 part of carp_study_app;
 
-/// View model for [ProfilePage].
-///
-/// State: the signed-in user's name and id, and the active study's ids, roles
-/// and server.
-///
-/// Handles leaving the study and signing out.
+/// View model for [ProfilePage] - user and study identity; handles leaving
+/// the study and signing out.
 class ProfilePageViewModel extends ViewModel {
   ProfilePageViewModel({AuthService? authService, StudyService? studyService, SystemInfoService? systemInfoService})
     : _authService = authService,
