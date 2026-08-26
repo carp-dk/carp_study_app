@@ -64,7 +64,7 @@ class StepsCardViewModel extends SerializableViewModel<WeeklySteps> {
     DateTime? previousDate;
     for (final measurement in sorted) {
       final date = measurement.sensorTime;
-      if (previousDate != null && !_isSameDay(date, previousDate)) previous = null;
+      if (!DateUtils.isSameDay(date, previousDate)) previous = null;
       previousDate = date;
       previous = _addStepCount(model, measurement, previous);
     }
@@ -72,8 +72,6 @@ class StepsCardViewModel extends SerializableViewModel<WeeklySteps> {
     if (previous != null) _lastStep = previous;
     notifyListeners();
   }
-
-  static bool _isSameDay(DateTime a, DateTime b) => a.year == b.year && a.month == b.month && a.day == b.day;
 }
 
 /// Steps organized by calendar day.
