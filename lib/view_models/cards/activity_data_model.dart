@@ -38,17 +38,6 @@ class ActivityCardViewModel extends SerializableViewModel<WeeklyActivities> {
   Stream<Measurement>? get activityEvents =>
       controller?.measurements.where((measurement) => measurement.data is Activity);
 
-  DateTime get _startOfWindow => DateTime.now().subtract(const Duration(days: 6));
-
-  String get startOfWeek => DateFormat('dd').format(_startOfWindow);
-
-  String get endOfWeek => DateFormat('dd').format(DateTime.now());
-
-  String get currentMonth => DateFormat('MMM').format(_startOfWindow);
-
-  String get nextMonth => DateFormat('MMM').format(DateTime.now());
-
-  String get currentYear => DateFormat('yyyy').format(DateTime.now());
 
   @override
   void init(SmartphoneStudyController ctrl) {

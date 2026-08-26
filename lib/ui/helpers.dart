@@ -7,6 +7,13 @@ String weekdayName(BuildContext context, int weekday) => weekday < 1 || weekday 
     ? ''
     : RPLocalizations.of(context)!.translate('pages.data_viz.${_weekdayKeys[weekday - 1]}');
 
+/// The 7-day chart window ending today as a label, e.g. "Aug 20 - Aug 26, 2026".
+String weekRangeLabel() {
+  final now = DateTime.now();
+  final start = now.subtract(const Duration(days: 6));
+  return '${DateFormat('MMM dd').format(start)} - ${DateFormat('MMM dd').format(now)}, ${DateFormat('yyyy').format(now)}';
+}
+
 /// No tooltip on bar charts - the card's headline names the selection instead.
 BarTouchTooltipData get noBarTooltip => BarTouchTooltipData(getTooltipItem: (group, groupIndex, rod, rodIndex) => null);
 

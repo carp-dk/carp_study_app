@@ -56,7 +56,7 @@ class _DistanceCardState extends State<DistanceCard> {
               Row(
                 children: [
                   Text(
-                    "${widget.model.currentMonth} ${widget.model.startOfWeek} - ${int.parse(widget.model.endOfWeek) < int.parse(widget.model.startOfWeek) ? widget.model.nextMonth : widget.model.currentMonth} ${widget.model.endOfWeek}, ${widget.model.currentYear}",
+                    weekRangeLabel(),
                     style: Theme.of(
                       context,
                     ).textTheme.labelSmall!.copyWith(fontWeight: FontWeight.w700, color: Colors.grey.shade600),

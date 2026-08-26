@@ -36,17 +36,6 @@ class StepsCardViewModel extends SerializableViewModel<WeeklySteps> {
     _ => null,
   };
 
-  DateTime get _startOfWindow => DateTime.now().subtract(const Duration(days: 6));
-
-  String get startOfWeek => DateFormat('dd').format(_startOfWindow);
-
-  String get endOfWeek => DateFormat('dd').format(DateTime.now());
-
-  String get currentMonth => DateFormat('MMM').format(_startOfWindow);
-
-  String get nextMonth => DateFormat('MMM').format(DateTime.now());
-
-  String get currentYear => DateFormat('yyyy').format(DateTime.now());
 
   /// The pedometer measure types, newest first - a protocol declares one of them.
   static const List<String> dataTypes = [SensorSamplingPackage.STEP_EVENT, CarpDataTypes.STEP_COUNT];
