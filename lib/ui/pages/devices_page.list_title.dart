@@ -9,17 +9,6 @@ class DevicesPageListTitle extends StatelessWidget {
   final DevicesPageTypes type;
 
   @override
-  Widget build(BuildContext context) {
-    return SliverToBoxAdapter(
-      child: Padding(
-        padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 6),
-        child: Text(
-          locale.translate("pages.devices.${type.name}.title").toUpperCase(),
-          style: Theme.of(context).textTheme.bodyLarge!
-              .copyWith(letterSpacing: 1)
-              .copyWith(color: Colors.grey.shade900, fontWeight: FontWeight.bold),
-        ),
-      ),
-    );
-  }
+  Widget build(BuildContext context) =>
+      SliverToBoxAdapter(child: CarpSectionTitle(locale.translate("pages.devices.${type.name}.title")));
 }

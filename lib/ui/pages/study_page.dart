@@ -13,7 +13,6 @@ class StudyPageState extends State<StudyPage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: Theme.of(context).scaffoldBackgroundColor,
       body: SafeArea(
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.center,
@@ -24,17 +23,24 @@ class StudyPageState extends State<StudyPage> {
               child: const CarpAppBar(hasProfileIcon: true),
             ),
             Flexible(
-              // Re-render when configureStudy completes; until then show a
-              // loader, with pull-to-refresh as the retry affordance.
+              // Configuration progress is app state, so listen to the bloc
+              // for it; the view model is for the study content itself.
               child: ListenableBuilder(
-                listenable: widget.model,
+                listenable: Listenable.merge([bloc, widget.model]),
                 builder: (context, _) {
-                  if (!widget.model.isConfigured) {
+                  if (!bloc.isConfigured) {
                     return RefreshIndicator(
-                      onRefresh: widget.model.retryConfiguration,
-                      child: const CustomScrollView(
-                        physics: AlwaysScrollableScrollPhysics(),
-                        slivers: [SliverFillRemaining(hasScrollBody: false, child: _ConfiguringStudyLoader())],
+                      onRefresh: bloc.tryConfigureStudy,
+                      child: CustomScrollView(
+                        physics: const AlwaysScrollableScrollPhysics(),
+                        slivers: [
+                          SliverFillRemaining(
+                            hasScrollBody: false,
+                            child: bloc.configurationFailed
+                                ? _ConfigurationFailed(onRetry: bloc.tryConfigureStudy)
+                                : const _ConfiguringStudyLoader(),
+                          ),
+                        ],
                       ),
                     );
                   }
@@ -65,7 +71,7 @@ class StudyPageState extends State<StudyPage> {
         context,
         widget.model.studyDescriptionMessage,
         onTap: () {
-          context.push(StudyDetailsPage.route);
+          context.push(StudyAboutPage.route);
         },
       ),
     );
@@ -98,10 +104,7 @@ class StudyPageState extends State<StudyPage> {
             Expanded(
               child: Padding(
                 padding: const EdgeInsets.all(8.0),
-                child: Text(
-                  locale.translate('pages.about.app_update'),
-                  style: Theme.of(context).textTheme.labelLarge!.copyWith(color: Colors.grey.shade900),
-                ),
+                child: Text(locale.translate('pages.about.app_update'), style: Theme.of(context).textTheme.labelLarge!),
               ),
             ),
             Padding(
@@ -111,7 +114,7 @@ class StudyPageState extends State<StudyPage> {
                   _redirectToUpdateStore();
                 },
                 style: ElevatedButton.styleFrom(
-                  backgroundColor: CACHET.DEPLOYMENT_DEPLOYING,
+                  backgroundColor: const Color(0xff006398),
                   padding: const EdgeInsets.symmetric(horizontal: 30, vertical: 12),
                 ),
                 child: Text(locale.translate("get"), style: TextStyle(color: Colors.white)),
@@ -169,7 +172,7 @@ class StudyPageState extends State<StudyPage> {
                     Expanded(
                       child: Text(
                         locale.translate(message.subTitle!),
-                        style: Theme.of(context).textTheme.bodyLarge!.copyWith(color: Colors.grey.shade700),
+                        style: Theme.of(context).textTheme.bodyLarge!.copyWith(color: Colors.grey.shade800),
                       ),
                     ),
                   ],
@@ -180,7 +183,7 @@ class StudyPageState extends State<StudyPage> {
                     Expanded(
                       child: Text(
                         "${locale.translate(message.message!).substring(0, (message.message!.length > 150) ? 150 : null)}...",
-                        style: Theme.of(context).textTheme.bodyLarge!.copyWith(color: Colors.grey.shade900),
+                        style: Theme.of(context).textTheme.bodyLarge!,
                         textAlign: TextAlign.start,
                       ),
                     ),
@@ -336,14 +339,12 @@ class StudyPageState extends State<StudyPage> {
                         child: Text(
                           locale.translate(message.title!),
                           overflow: TextOverflow.ellipsis,
-                          style: Theme.of(
-                            context,
-                          ).textTheme.titleLarge!.copyWith(fontSize: 20).copyWith(color: Colors.grey.shade900),
+                          style: Theme.of(context).textTheme.titleLarge!.copyWith(fontSize: 20),
                         ),
                       ),
                     ),
                     Material(
-                      color: CACHET.DEPLOYMENT_DEPLOYING,
+                      color: const Color(0xff006398),
                       borderRadius: BorderRadius.circular(100.0),
                       child: Padding(
                         padding: const EdgeInsets.all(4.0),
@@ -360,7 +361,7 @@ class StudyPageState extends State<StudyPage> {
                         Expanded(
                           child: Text(
                             locale.translate(message.subTitle!),
-                            style: Theme.of(context).textTheme.bodyLarge!.copyWith(color: Colors.grey.shade700),
+                            style: Theme.of(context).textTheme.bodyLarge!.copyWith(color: Colors.grey.shade800),
                           ),
                         ),
                       Spacer(),
@@ -426,11 +427,13 @@ class StudyPageState extends State<StudyPage> {
     }
   }
 
-  static Map<StudyDeploymentStatusTypes, Color> studyStatusColors = {
-    StudyDeploymentStatusTypes.Invited: CACHET.DEPLOYMENT_INVITED,
-    StudyDeploymentStatusTypes.DeployingDevices: CACHET.DEPLOYMENT_DEPLOYING,
-    StudyDeploymentStatusTypes.Running: CACHET.DEPLOYMENT_RUNNING,
-    StudyDeploymentStatusTypes.Stopped: CACHET.DEPLOYMENT_STOPPED,
+  // Deployment status colors; kept static const as this is a context-free
+  // status lookup.
+  static const Map<StudyDeploymentStatusTypes, Color> studyStatusColors = {
+    StudyDeploymentStatusTypes.Invited: Color(0xffDF7801),
+    StudyDeploymentStatusTypes.DeployingDevices: Color(0xff006398),
+    StudyDeploymentStatusTypes.Running: Color(0xff67CE67),
+    StudyDeploymentStatusTypes.Stopped: Color(0xff848484),
   };
 
   static Map<StudyDeploymentStatusTypes, String> studyStatusText = {
@@ -461,6 +464,34 @@ extension CopyWithAdditional on DateTime {
       second + seconds,
       millisecond + milliseconds,
       microsecond + microseconds,
+    );
+  }
+}
+
+/// Shown when configuration failed - names the problem and offers a retry,
+/// instead of an endless spinner.
+class _ConfigurationFailed extends StatelessWidget {
+  const _ConfigurationFailed({required this.onRetry});
+  final Future<void> Function() onRetry;
+
+  @override
+  Widget build(BuildContext context) {
+    final locale = RPLocalizations.of(context);
+    return Center(
+      child: Column(
+        mainAxisAlignment: MainAxisAlignment.center,
+        children: [
+          const Icon(Icons.error_outline, size: 48),
+          const SizedBox(height: 16),
+          Text(
+            locale?.translate('pages.home.setup_failed') ?? 'Could not set up the study.',
+            textAlign: TextAlign.center,
+            style: const TextStyle(fontSize: 16, fontWeight: FontWeight.w500),
+          ),
+          const SizedBox(height: 16),
+          OutlinedButton(onPressed: onRetry, child: Text(locale?.translate('pages.home.retry') ?? 'Retry')),
+        ],
+      ),
     );
   }
 }

@@ -1,5 +1,6 @@
 import 'package:carp_backend/carp_backend.dart';
 import 'package:carp_audio_package/media.dart';
+import 'package:carp_health_package/health_package.dart';
 import 'package:cognition_package/cognition_package.dart';
 import 'package:fake_async/fake_async.dart';
 import 'package:research_package/research_package.dart';
@@ -48,7 +49,7 @@ void main() {
 
       expect(model.title, 'Unnamed');
       expect(model.description, '');
-      expect(model.privacyPolicyUrl, 'https://carp.dk/privacy-policy-app/');
+      expect(model.privacyPolicyUrl, CarpBackend.carpPrivacyUrl);
       expect(model.studyDeploymentId, '');
       expect(model.messages, isEmpty);
     });
@@ -165,7 +166,7 @@ void main() {
 
       expect(model.isLoading, isFalse);
       expect(model.invitations, [invitation]);
-      expect(model.getInvitation('participant-1'), invitation);
+      expect(model.getInvitation('dep-1'), invitation);
       expect(notified, isTrue);
     });
 
@@ -179,14 +180,27 @@ void main() {
       expect(model.invitations, isEmpty);
     });
 
-    ActiveParticipationInvitation invitation(String participantId) =>
-        ActiveParticipationInvitation(Participation('dep-1', participantId, AssignedTo()), StudyInvitation('Study'));
+    ActiveParticipationInvitation invitation(String deploymentId) => ActiveParticipationInvitation(
+      Participation(deploymentId, 'participant-1', AssignedTo()),
+      StudyInvitation('Study'),
+    );
 
     test('landingRoute targets the single invitation detail when there is exactly one', () async {
-      when(auth.getInvitations()).thenAnswer((_) async => [invitation('participant-1')]);
+      when(auth.getInvitations()).thenAnswer((_) async => [invitation('dep-1')]);
       await model.loadInvitations();
 
-      expect(model.landingRoute, '${InvitationDetailsPage.route}/participant-1');
+      expect(model.landingRoute, '${InvitationDetailsPage.route}/dep-1');
+    });
+
+    test('getInvitation tells apart two deployments of one study', () async {
+      // Same participant id on both - only the deployment id is unique.
+      final first = invitation('dep-1');
+      final second = invitation('dep-2');
+      when(auth.getInvitations()).thenAnswer((_) async => [first, second]);
+      await model.loadInvitations();
+
+      expect(model.getInvitation('dep-1'), same(first));
+      expect(model.getInvitation('dep-2'), same(second));
     });
 
     test('landingRoute targets the list for zero or multiple invitations', () async {
@@ -280,22 +294,55 @@ void main() {
     });
   });
 
-  group('DataVisualizationPageViewModel', () {
+  group('StudyProgressCardViewModel', () {
+    test('completionsPerDay buckets the last 14 days, oldest first', () {
+      final today = DateTime(2026, 7, 28, 15, 30);
+
+      final counts = StudyProgressCardViewModel.completionsPerDay([
+        DateTime(2026, 7, 28, 9), // today, twice
+        DateTime(2026, 7, 28, 11),
+        DateTime(2026, 7, 27, 20), // yesterday
+        DateTime(2026, 7, 15, 8), // the oldest day still inside the window
+        DateTime(2026, 7, 14, 8), // one day too old
+        null, // a done task with no timestamp
+      ], today: today);
+
+      expect(counts.length, 14);
+      expect(counts.last, 2, reason: 'today is the newest bucket');
+      expect(counts[12], 1);
+      expect(counts.first, 1, reason: 'the window reaches back 13 days');
+      expect(counts.reduce((a, b) => a + b), 4, reason: 'older and null entries are dropped');
+    });
+  });
+
+  group('StatisticsViewModel', () {
     test('precomputes card availability from the deployment on init', () {
       final study = MockStudyService();
       when(study.hasUserTasks()).thenReturn(true);
       when(study.hasMeasure(PolarSamplingPackage.HR)).thenReturn(true);
       when(study.hasMeasure(MediaSamplingPackage.AUDIO)).thenReturn(true);
-      final model = DataVisualizationPageViewModel(studyService: study);
+      when(study.hasMeasure(HealthSamplingPackage.HEALTH)).thenReturn(true);
+      final model = StatisticsViewModel(studyService: study);
 
       model.init(MockSmartphoneStudyController());
 
       expect(model.hasUserTasks, isTrue);
-      expect(model.hasHeartRateMeasure, isTrue);
+      expect(model.hasPolarHeartRateMeasure, isTrue);
       expect(model.hasAudioMeasure, isTrue);
       expect(model.hasVideoMeasure, isFalse);
       expect(model.hasStepsMeasure, isFalse);
       expect(model.hasMobilityMeasure, isFalse);
+      expect(model.hasSleepMeasure, isTrue);
+    });
+
+    test('finds steps under either the API 2.0 or the legacy measure type', () {
+      for (final dataType in StepsCardViewModel.dataTypes) {
+        final study = MockStudyService();
+        when(study.hasMeasure(dataType)).thenReturn(true);
+        final model = StatisticsViewModel(studyService: study)..init(MockSmartphoneStudyController());
+
+        expect(model.hasStepsMeasure, isTrue, reason: dataType);
+      }
     });
   });
 

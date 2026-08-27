@@ -3,14 +3,24 @@ part of carp_study_app;
 /// Holds the list of messages (news, announcements, articles) shown in the
 /// app and keeps it refreshed, owning the periodic polling timer.
 class MessageService {
-  MessageService(this._manager, {Duration pollingInterval = const Duration(minutes: 30)})
-    : _pollingInterval = pollingInterval;
+  MessageService(
+    this._manager, {
+    Duration pollingInterval = const Duration(minutes: 30),
+    NotificationManager? notificationManager,
+  }) : _pollingInterval = pollingInterval,
+       _notificationManager = notificationManager;
 
   final MessageManager _manager;
   final Duration _pollingInterval;
+  final NotificationManager? _notificationManager;
   final StreamController<int> _streamController = StreamController.broadcast();
   List<Message> _messages = [];
   Timer? _pollingTimer;
+
+  /// The message ids seen by an earlier [refresh], or null before the first one.
+  Set<String>? _knownIds;
+
+  NotificationManager get _notifications => _notificationManager ?? SmartPhoneClientManager().notificationManager;
 
   /// The list of currently available messages, newest first.
   List<Message> get messages => _messages;
@@ -46,7 +56,26 @@ class MessageService {
     } catch (error) {
       warning('Error getting messages - $error');
     }
+    await _notifyAboutNewMessages();
     if (!_streamController.isClosed) _streamController.add(_messages.length);
+  }
+
+  /// Notify the user about messages that were not in the previous [refresh].
+  Future<void> _notifyAboutNewMessages() async {
+    final known = _knownIds;
+    _knownIds = _messages.map((message) => message.id).toSet();
+    if (known == null) return;
+
+    for (final message in _messages.where((message) => !known.contains(message.id))) {
+      try {
+        await _notifications.createNotification(
+          title: message.title ?? 'New announcement',
+          body: message.subTitle ?? message.message,
+        );
+      } catch (error) {
+        warning('Could not create a notification for message ${message.id} - $error');
+      }
+    }
   }
 
   void dispose() {

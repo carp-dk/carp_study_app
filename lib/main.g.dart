@@ -24,19 +24,13 @@ Map<String, dynamic> _$ParticipantToJson(Participant instance) => <String, dynam
   'hasInformedConsentBeenAccepted': instance.hasInformedConsentBeenAccepted,
 };
 
-WeeklyActivities _$WeeklyActivitiesFromJson(Map<String, dynamic> json) =>
-    WeeklyActivities()
-      ..activities = (json['activities'] as Map<String, dynamic>).map(
-        (k, e) => MapEntry(
-          $enumDecode(_$ActivityTypeEnumMap, k),
-          (e as Map<String, dynamic>).map((k, e) => MapEntry(int.parse(k), (e as num).toInt())),
-        ),
-      );
+WeeklyActivities _$WeeklyActivitiesFromJson(Map<String, dynamic> json) => WeeklyActivities()
+  ..activities = (json['activities'] as Map<String, dynamic>).map(
+    (k, e) => MapEntry($enumDecode(_$ActivityTypeEnumMap, k), Map<String, int>.from(e as Map)),
+  );
 
 Map<String, dynamic> _$WeeklyActivitiesToJson(WeeklyActivities instance) => <String, dynamic>{
-  'activities': instance.activities.map(
-    (k, e) => MapEntry(_$ActivityTypeEnumMap[k]!, e.map((k, e) => MapEntry(k.toString(), e))),
-  ),
+  'activities': instance.activities.map((k, e) => MapEntry(_$ActivityTypeEnumMap[k]!, e)),
 };
 
 const _$ActivityTypeEnumMap = {
@@ -49,48 +43,55 @@ const _$ActivityTypeEnumMap = {
 };
 
 WeeklyMobility _$WeeklyMobilityFromJson(Map<String, dynamic> json) => WeeklyMobility()
-  ..weekMobility = (json['weekMobility'] as Map<String, dynamic>).map(
-    (k, e) => MapEntry(int.parse(k), DailyMobility.fromJson(e as Map<String, dynamic>)),
+  ..dailyMobility = (json['dailyMobility'] as Map<String, dynamic>).map(
+    (k, e) => MapEntry(k, DailyMobility.fromJson(e as Map<String, dynamic>)),
   );
 
 Map<String, dynamic> _$WeeklyMobilityToJson(WeeklyMobility instance) => <String, dynamic>{
-  'weekMobility': instance.weekMobility.map((k, e) => MapEntry(k.toString(), e)),
+  'dailyMobility': instance.dailyMobility,
 };
 
 DailyMobility _$DailyMobilityFromJson(Map<String, dynamic> json) => DailyMobility(
-  (json['weekday'] as num).toInt(),
+  DateTime.parse(json['date'] as String),
   (json['places'] as num).toInt(),
-  (json['homeStay'] as num).toInt(),
+  (json['homeStay'] as num?)?.toInt(),
   (json['distance'] as num).toDouble(),
 );
 
 Map<String, dynamic> _$DailyMobilityToJson(DailyMobility instance) => <String, dynamic>{
-  'weekday': instance.weekday,
+  'date': instance.date.toIso8601String(),
   'places': instance.places,
-  'homeStay': instance.homeStay,
+  'homeStay': ?instance.homeStay,
   'distance': instance.distance,
 };
 
-WeeklySteps _$WeeklyStepsFromJson(Map<String, dynamic> json) => WeeklySteps()
-  ..weeklySteps = (json['weeklySteps'] as Map<String, dynamic>).map(
-    (k, e) => MapEntry(int.parse(k), (e as num).toInt()),
+WeeklySleep _$WeeklySleepFromJson(Map<String, dynamic> json) => WeeklySleep()
+  ..nightlyMinutes = (json['nightlyMinutes'] as Map<String, dynamic>).map(
+    (k, e) => MapEntry(k, (e as Map<String, dynamic>).map((k, e) => MapEntry(k, (e as num).toDouble()))),
   );
 
-Map<String, dynamic> _$WeeklyStepsToJson(WeeklySteps instance) => <String, dynamic>{
-  'weeklySteps': instance.weeklySteps.map((k, e) => MapEntry(k.toString(), e)),
+Map<String, dynamic> _$WeeklySleepToJson(WeeklySleep instance) => <String, dynamic>{
+  'nightlyMinutes': instance.nightlyMinutes,
 };
+
+WeeklySteps _$WeeklyStepsFromJson(Map<String, dynamic> json) =>
+    WeeklySteps()..dailySteps = Map<String, int>.from(json['dailySteps'] as Map);
+
+Map<String, dynamic> _$WeeklyStepsToJson(WeeklySteps instance) => <String, dynamic>{'dailySteps': instance.dailySteps};
 
 HourlyHeartRate _$HourlyHeartRateFromJson(Map<String, dynamic> json) => HourlyHeartRate()
   ..hourlyHeartRate = (json['hourlyHeartRate'] as Map<String, dynamic>).map(
-    (k, e) => MapEntry(int.parse(k), HeartRateMinMaxPrHour.fromJson(e as Map<String, dynamic>)),
+    (k, e) => MapEntry(k, HeartRateMinMaxPrHour.fromJson(e as Map<String, dynamic>)),
   )
-  ..lastUpdated = DateTime.parse(json['lastUpdated'] as String)
+  ..dailyHeartRate = (json['dailyHeartRate'] as Map<String, dynamic>).map(
+    (k, e) => MapEntry(k, HeartRateMinMaxPrHour.fromJson(e as Map<String, dynamic>)),
+  )
   ..maxHeartRate = (json['maxHeartRate'] as num?)?.toDouble()
   ..minHeartRate = (json['minHeartRate'] as num?)?.toDouble();
 
 Map<String, dynamic> _$HourlyHeartRateToJson(HourlyHeartRate instance) => <String, dynamic>{
-  'hourlyHeartRate': instance.hourlyHeartRate.map((k, e) => MapEntry(k.toString(), e)),
-  'lastUpdated': instance.lastUpdated.toIso8601String(),
+  'hourlyHeartRate': instance.hourlyHeartRate,
+  'dailyHeartRate': instance.dailyHeartRate,
   'maxHeartRate': ?instance.maxHeartRate,
   'minHeartRate': ?instance.minHeartRate,
 };

@@ -41,7 +41,7 @@ class HealthServiceConnectPage extends StatelessWidget {
                           children: [
                             TextSpan(
                               text: "${locale.translate("pages.devices.type.health.instructions.page2.part1")} ",
-                              style: Theme.of(context).textTheme.titleLarge!.copyWith(color: Colors.grey.shade900),
+                              style: Theme.of(context).textTheme.titleLarge!,
                             ),
                             TextSpan(
                               text:
@@ -52,7 +52,7 @@ class HealthServiceConnectPage extends StatelessWidget {
                             ),
                             TextSpan(
                               text: "${locale.translate("pages.devices.type.health.instructions.page2.part2")} ",
-                              style: Theme.of(context).textTheme.titleLarge!.copyWith(color: Colors.grey.shade900),
+                              style: Theme.of(context).textTheme.titleLarge!,
                             ),
                             TextSpan(
                               text: "${locale.translate("pages.devices.type.health.instructions.page2.allow")} ",
@@ -64,7 +64,7 @@ class HealthServiceConnectPage extends StatelessWidget {
                               text: Platform.isAndroid
                                   ? locale.translate("pages.devices.type.health.instructions.page2.part3.android")
                                   : locale.translate("pages.devices.type.health.instructions.page2.part3.ios"),
-                              style: Theme.of(context).textTheme.titleLarge!.copyWith(color: Colors.grey.shade900),
+                              style: Theme.of(context).textTheme.titleLarge!,
                             ),
                           ],
                         ),
@@ -84,18 +84,14 @@ class HealthServiceConnectPage extends StatelessWidget {
         child: Row(
           mainAxisAlignment: MainAxisAlignment.spaceEvenly,
           children: [
-            OutlinedButton(
+            TextButton(
               child: const Text("Cancel"),
               onPressed: () {
                 Navigator.pop(context);
               },
             ),
-            ElevatedButton(
-              child: const Text("Next", style: TextStyle(color: Colors.white)),
-              style: ElevatedButton.styleFrom(
-                backgroundColor: Theme.of(context).colorScheme.primary,
-                padding: const EdgeInsets.symmetric(horizontal: 30, vertical: 12),
-              ),
+            FilledButton(
+              child: const Text("Next"),
               onPressed: () async {
                 final manager = healthService.deviceManager;
                 await manager.requestPermissions();
@@ -135,8 +131,7 @@ class HealthServiceConnectPage extends StatelessWidget {
     actions: [
       TextButton(child: Text(locale.translate("cancel")), onPressed: () => Navigator.pop(context)),
       ElevatedButton(
-        style: ElevatedButton.styleFrom(backgroundColor: Theme.of(context).colorScheme.primary),
-        child: Text(locale.translate("settings"), style: const TextStyle(color: Colors.white)),
+        child: Text(locale.translate("settings")),
         onPressed: () {
           Platform.isAndroid ? OpenSettingsPlusAndroid().applicationDetails() : OpenSettingsPlusIOS().appSettings();
           Navigator.pop(context);
@@ -158,7 +153,7 @@ class HealthServiceConnectPage extends StatelessWidget {
           Expanded(
             child: Text(
               locale.translate("pages.devices.type.health.instructions.data.title"),
-              style: Theme.of(context).textTheme.labelLarge!.copyWith(color: Colors.grey.shade900),
+              style: Theme.of(context).textTheme.labelLarge!,
             ),
           ),
         ],

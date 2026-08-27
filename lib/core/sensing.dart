@@ -7,15 +7,8 @@
 
 part of carp_study_app;
 
-/// The sensing layer.
-///
-/// Registers the sampling packages, data managers, and task factories used by
-/// the app, and configures the CAMS client manager via [initialize].
-///
-/// This is infrastructure only - it owns no study. The study lifecycle
-/// (deployment, status, translation, runtime) is owned by [StudyService].
-///
-/// Note that this class is a singleton and only one sensing layer is used.
+/// The sensing layer (singleton): registers sampling packages, data managers,
+/// and task factories. Owns no study - the study lifecycle is [StudyService]'s.
 class Sensing {
   static final Sensing _instance = Sensing._();
 

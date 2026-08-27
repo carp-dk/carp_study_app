@@ -111,12 +111,12 @@ class DisplayPicturePageState extends State<DisplayPicturePage> {
                           IconButton(
                             onPressed: () => Navigator.of(context).pop(),
                             padding: const EdgeInsets.all(0),
-                            icon: const Icon(Icons.replay, size: 25, color: CACHET.GREY_5),
+                            icon: const Icon(Icons.replay, size: 25, color: Color(0xff707070)),
                           ),
                           const SizedBox(width: 20),
                           CircleAvatar(
                             radius: 30,
-                            backgroundColor: CACHET.GREEN_1,
+                            backgroundColor: const Color(0xff67CE67),
                             child: IconButton(
                               onPressed: () {
                                 widget.videoUserTask.onSave();

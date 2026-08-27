@@ -1,79 +1,102 @@
 part of carp_study_app;
 
 class StepsCardViewModel extends SerializableViewModel<WeeklySteps> {
-  StepCount? _lastStep;
+  int? _lastStep;
 
   @override
   WeeklySteps createModel() => WeeklySteps();
 
-  /// A map of weekly steps organized by the day of the week.
-  Map<int, int> get weeklySteps => model.weeklySteps;
+  /// Whether any steps were recorded in the last 7 days - hides an empty card.
+  bool get hasData => steps.any((day) => day.steps > 0);
 
-  /// The list of steps.
-  List<DailySteps> get steps => model.steps;
+  /// Steps for the last 7 days ending today, oldest first.
+  List<DailySteps> get steps => model.last7Days();
 
-  final DateTime _startOfWeek = DateTime.now().subtract(Duration(days: DateTime.now().weekday - 1));
-  final DateTime _endOfWeek = DateTime.now()
-      .subtract(Duration(days: DateTime.now().weekday - 1))
-      .add(Duration(days: 6));
+  /// Largest believable growth between two readings (~4 h of fast walking) -
+  /// a reboot resets the pedometer total, making deltas across it bogus.
+  static const int _maxCredibleDelta = 20000;
 
-  String get startOfWeek => DateFormat('dd').format(_startOfWeek);
+  /// Fold [measurement] into [into] and return it as the new previous reading.
+  /// The pedometer reports a running total: a day's steps are the growth since
+  /// [previous]; a lower or implausibly large delta means a reset, not steps.
+  static int? _addStepCount(WeeklySteps into, Measurement measurement, int? previous) {
+    final steps = _stepsOf(measurement.data)!;
+    final delta = previous == null ? null : steps - previous;
+    if (delta != null && delta >= 0 && delta <= _maxCredibleDelta) {
+      into.increaseStepCount(measurement.sensorTime, delta);
+    }
+    return steps;
+  }
 
-  String get endOfWeek => DateFormat('dd').format(_endOfWeek);
+  /// The pedometer's running total in [data], or null if not a pedometer
+  /// reading - [StepCount] (API < 2.0) and [StepEvent] carry the same total.
+  static int? _stepsOf(Data data) => switch (data) {
+    StepCount(:final steps) => steps,
+    StepEvent(:final steps) => steps,
+    _ => null,
+  };
 
-  String get currentMonth => DateFormat('MMM').format(DateTime(_startOfWeek.year, _startOfWeek.month));
-
-  String get nextMonth => DateFormat('MMM').format(DateTime(_startOfWeek.year, _startOfWeek.month + 1, 1));
-
-  String get currentYear => DateFormat('yyyy').format(DateTime(DateTime.now().year));
+  /// The pedometer measure types, newest first - a protocol declares one of them.
+  static const List<String> dataTypes = [SensorSamplingPackage.STEP_EVENT, CarpDataTypes.STEP_COUNT];
 
   /// Stream of pedometer (step) [DataPoint] measures.
   Stream<Measurement>? get pedometerEvents =>
-      controller?.measurements.where((dataPoint) => dataPoint.data is StepCount);
+      controller?.measurements.where((measurement) => _stepsOf(measurement.data) != null);
 
   @override
   void init(SmartphoneStudyController ctrl) {
     super.init(ctrl);
 
     // listen for pedometer events and count them
-    pedometerEvents?.listen((pedometerDataPoint) {
-      StepCount? step = pedometerDataPoint.data as StepCount?;
-      if (_lastStep != null) {
-        model.increaseStepCount(DateTime.now().weekday, step!.steps - _lastStep!.steps);
-      }
+    pedometerEvents?.listen((measurement) {
+      _lastStep = _addStepCount(model, measurement, _lastStep);
+    }, onError: onMeasurementStreamError);
+  }
 
-      _lastStep = step;
-    });
+  /// Recompute the trailing 7 days from backfilled [measurements] -
+  /// idempotent. Baseline resets at each day boundary: the pedometer total
+  /// is not continuous across midnight.
+  void addMeasurements(List<Measurement> measurements) {
+    model.dailySteps.clear();
+    final sorted = [...measurements]..sort((a, b) => a.sensorTime.compareTo(b.sensorTime));
+    int? previous;
+    DateTime? previousDate;
+    for (final measurement in sorted) {
+      final date = measurement.sensorTime;
+      if (!DateUtils.isSameDay(date, previousDate)) previous = null;
+      previousDate = date;
+      previous = _addStepCount(model, measurement, previous);
+    }
+    // Resync the live baseline, or the next live tick re-adds backfilled deltas.
+    if (previous != null) _lastStep = previous;
+    notifyListeners();
   }
 }
 
-/// Weekly steps organized by the day of the week.
+/// Steps organized by calendar day.
 @JsonSerializable(includeIfNull: false)
 class WeeklySteps extends DataModel {
-  /// A map of weekly steps organized by the day of the week.
-  ///
-  ///    (weekday,step_count)
-  ///
-  /// In accordance with Dart [DateTime] a week starts with Monday,
-  /// which has the value 1.
-  Map<int, int> weeklySteps = {};
+  /// Steps per calendar day, keyed by [_dayKey] (e.g. "2026-08-21").
+  Map<String, int> dailySteps = {};
 
-  WeeklySteps() {
-    // initialize the weekly steps table
-    for (int i = 1; i <= 7; i++) {
-      weeklySteps[i] = 0;
-    }
+  static String _dayKey(DateTime date) => DateFormat('yyyy-MM-dd').format(date);
+
+  void increaseStepCount(DateTime date, int steps) =>
+      dailySteps[_dayKey(date)] = (dailySteps[_dayKey(date)] ?? 0) + steps;
+
+  /// Steps for the 7 days ending on [today] (defaults to now), oldest first.
+  List<DailySteps> last7Days({DateTime? today}) {
+    final end = today ?? DateTime.now();
+    return List.generate(7, (i) {
+      final date = end.subtract(Duration(days: 6 - i));
+      return DailySteps(date, dailySteps[_dayKey(date)] ?? 0);
+    });
   }
-
-  /// The list of steps listed pr. weekday.
-  List<DailySteps> get steps => weeklySteps.entries.map((entry) => DailySteps(entry.key, entry.value)).toList();
-
-  void increaseStepCount(int weekday, int steps) => weeklySteps[weekday] = (weeklySteps[weekday] ?? 0) + steps;
 
   @override
   String toString() {
-    String str = ' day | steps\n';
-    weeklySteps.forEach((day, steps) => str += '  $day  | $steps\n');
+    String str = ' date | steps\n';
+    dailySteps.forEach((day, steps) => str += ' $day | $steps\n');
     return str;
   }
 
@@ -83,10 +106,10 @@ class WeeklySteps extends DataModel {
   Map<String, dynamic> toJson() => _$WeeklyStepsToJson(this);
 }
 
-/// Steps per weekday.
-class DailySteps extends DailyMeasure {
-  /// Number of steps for this [weekday].
+/// Steps for one calendar [date].
+class DailySteps {
+  final DateTime date;
   final int steps;
 
-  DailySteps(super.weekday, this.steps);
+  DailySteps(this.date, this.steps);
 }

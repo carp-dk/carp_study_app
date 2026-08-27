@@ -1,11 +1,7 @@
 part of carp_study_app;
 
-/// Manages the study running on this phone: the study descriptor, its
-/// deployment, and the sensing runtime for it.
-///
-/// This service is the single owner of the active study. The persisted copy
-/// in [LocalSettings] and the CAWS service copies are seeded from the [study]
-/// setter - do not set them directly.
+/// Single owner of the study running on this phone: descriptor, deployment,
+/// and sensing runtime. [LocalSettings] and CAWS copies are seeded from [study].
 class StudyService {
   StudyService({ResourceManagerFactory? resources}) : _resources = resources ?? ResourceManagerFactory();
 
@@ -69,11 +65,9 @@ class StudyService {
   /// case it is safe to call this method again (e.g., once back online).
   Future<void> configure() async {
     if (study == null) throw StateError('No study set - cannot configure a study deployment.');
-    logApp('StudyService.configure() - deploymentId=${study!.studyDeploymentId}, deviceRole=${study!.deviceRoleName}');
 
     final status = await addStudy(study!);
 
-    logApp('StudyService.configure() - addStudy returned status=$status, isDeployed=$isDeployed');
     if (!isDeployed) throw StateError('Study deployment did not succeed - status: $status.');
   }
 

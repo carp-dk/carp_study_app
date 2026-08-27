@@ -1,9 +1,7 @@
 part of carp_study_app;
 
-/// A class representing a participant in a study.
-///
-/// This class is populated based on a study invitation and is saved across app
-/// (re)start on the phone.
+/// A participant in a study, populated from a study invitation and saved
+/// across app restart.
 @JsonSerializable(includeIfNull: false)
 class Participant {
   String? studyId;

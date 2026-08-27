@@ -39,11 +39,21 @@ class AuthService {
   /// Get / refresh the list of active invitations for this user from CAWS,
   /// keeping only invitations assigned to a smartphone (and not, e.g., a
   /// web browser).
+  ///
+  /// CAWS returns the invitations in no particular order, so they are sorted
+  /// by study name (deployment id as tie-breaker) to keep the list stable
+  /// across refreshes.
   Future<List<ActiveParticipationInvitation>> getInvitations() async {
     final all = await _backend.getInvitations();
-    return _invitations = all
-        .where((invitation) => invitation.assignedDevices?.any((device) => device.device is! Smartphone) != true)
-        .toList();
+    _invitations =
+        all
+            .where((invitation) => invitation.assignedDevices?.any((device) => device.device is! Smartphone) != true)
+            .toList()
+          ..sort((a, b) {
+            final byName = a.invitation.name.compareTo(b.invitation.name);
+            return byName != 0 ? byName : a.studyDeploymentId.compareTo(b.studyDeploymentId);
+          });
+    return _invitations;
   }
 
   /// Authenticate using a web view.

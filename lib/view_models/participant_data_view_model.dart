@@ -1,5 +1,7 @@
 part of carp_study_app;
 
+/// View model for [ParticipantDataPage] - the participant data the study
+/// expects, written back to the deployment when filled in.
 class ParticipantDataPageViewModel extends ViewModel {
   Set<ExpectedParticipantData?> get expectedData => bloc.study.expectedParticipantData;
 

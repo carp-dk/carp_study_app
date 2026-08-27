@@ -1,5 +1,11 @@
 part of carp_study_app;
 
+extension MeasurementTime on Measurement {
+  /// When this measurement was taken, as local time - bucket by this,
+  /// never by `DateTime.now()`, or replayed data lands in the present.
+  DateTime get sensorTime => DateTime.fromMicrosecondsSinceEpoch(sensorStartTime);
+}
+
 extension StringExtension on String {
   String truncateTo(int maxLength) => (length <= maxLength) ? this : '${substring(0, maxLength)}...';
 }
