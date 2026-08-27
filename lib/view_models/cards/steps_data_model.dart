@@ -36,7 +36,6 @@ class StepsCardViewModel extends SerializableViewModel<WeeklySteps> {
     _ => null,
   };
 
-
   /// The pedometer measure types, newest first - a protocol declares one of them.
   static const List<String> dataTypes = [SensorSamplingPackage.STEP_EVENT, CarpDataTypes.STEP_COUNT];
 

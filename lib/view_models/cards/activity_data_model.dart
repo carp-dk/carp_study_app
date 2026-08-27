@@ -38,7 +38,6 @@ class ActivityCardViewModel extends SerializableViewModel<WeeklyActivities> {
   Stream<Measurement>? get activityEvents =>
       controller?.measurements.where((measurement) => measurement.data is Activity);
 
-
   @override
   void init(SmartphoneStudyController ctrl) {
     super.init(ctrl);

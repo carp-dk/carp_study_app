@@ -44,7 +44,6 @@ class SleepCardViewModel extends SerializableViewModel<WeeklySleep> {
     return end.hour < 12 ? end : end.add(const Duration(days: 1));
   }
 
-
   @override
   void init(SmartphoneStudyController ctrl) {
     super.init(ctrl);
