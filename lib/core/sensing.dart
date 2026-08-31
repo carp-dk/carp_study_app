@@ -16,7 +16,7 @@ class Sensing {
 
   Sensing._() {
     // create and register external sampling packages
-    //SamplingPackageRegistry().register(ConnectivitySamplingPackage());
+    SamplingPackageRegistry().register(ConnectivitySamplingPackage());
     SamplingPackageRegistry().register(ContextSamplingPackage());
     //SamplingPackageRegistry.register(CommunicationSamplingPackage());
     SamplingPackageRegistry().register(MediaSamplingPackage());
@@ -49,7 +49,13 @@ class Sensing {
 
       // Need to ask for permissions all at once on Android.
       askForPermissions: Platform.isAndroid ? true : false,
+
+      // Only resumed - the user connects to it themselves the first time.
+      enableBackgroundMode: false,
     );
+
+    // Resumes background sensing if the user already connected to it.
+    await BackgroundSensingService().refresh();
 
     info('$runtimeType initialized');
   }

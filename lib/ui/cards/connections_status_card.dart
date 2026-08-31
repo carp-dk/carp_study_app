@@ -1,10 +1,6 @@
 part of carp_study_app;
 
-/// Home card summarising the connection state of all data sources (hardware
-/// devices + online services, excluding the phone itself).
-///
-/// The connection data comes from [HomePageViewModel]; this widget only maps it
-/// to visuals and owns the expand/collapse toggle.
+/// Home card summarising the connection state of all data sources.
 // ponytail: labels hardcoded EN to match the rest of the static home page; i18n later.
 class ConnectionsStatusCard extends StatefulWidget {
   final HomePageViewModel model;
@@ -92,28 +88,30 @@ class _ConnectionsStatusCardState extends State<ConnectionsStatusCard> {
     );
   }
 
+  Widget _sourceRow(BuildContext context, String name, bool active) => Padding(
+    padding: const EdgeInsets.fromLTRB(16, 0, 16, 12),
+    child: Row(
+      children: [
+        Icon(Icons.circle, size: 10, color: active ? _green : Colors.grey.shade400),
+        const SizedBox(width: 8),
+        Expanded(child: Text(name, style: Theme.of(context).textTheme.bodyLarge!)),
+        Text(
+          active ? 'ON' : 'OFF',
+          style: Theme.of(context).textTheme.labelMedium!.copyWith(color: active ? _green : Colors.grey.shade500),
+        ),
+      ],
+    ),
+  );
+
   Widget _details(BuildContext context, RPLocalizations locale) {
     final model = widget.model;
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
+        if (model.hasBackgroundSensing)
+          _sourceRow(context, locale.translate('pages.devices.type.background.name'), model.isBackgroundSensingActive),
         for (final d in model.connectionSources)
-          Padding(
-            padding: const EdgeInsets.fromLTRB(16, 0, 16, 12),
-            child: Row(
-              children: [
-                Icon(Icons.circle, size: 10, color: model.isSourceActive(d) ? _green : Colors.grey.shade400),
-                const SizedBox(width: 8),
-                Expanded(child: Text(locale.translate(d.typeName), style: Theme.of(context).textTheme.bodyLarge!)),
-                Text(
-                  model.isSourceActive(d) ? 'ON' : 'OFF',
-                  style: Theme.of(
-                    context,
-                  ).textTheme.labelMedium!.copyWith(color: model.isSourceActive(d) ? _green : Colors.grey.shade500),
-                ),
-              ],
-            ),
-          ),
+          _sourceRow(context, locale.translate(d.typeName), model.isSourceActive(d)),
         Divider(height: 1, color: Colors.grey.shade200),
         InkWell(
           onTap: () => context.go(DeviceListPage.route),

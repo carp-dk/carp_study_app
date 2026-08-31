@@ -24,7 +24,7 @@ class _HomePageState extends State<HomePage> {
     return Scaffold(
       body: SafeArea(
         child: ListenableBuilder(
-          listenable: model,
+          listenable: Listenable.merge([model, BackgroundSensingService()]),
           builder: (context, _) => ListView(
             padding: const EdgeInsets.only(bottom: 24),
             children: [
