@@ -17,26 +17,20 @@ class StubConsentViewModel extends InformedConsentViewModel {
   /// Whether uploading the signed consent to CAWS fails.
   final bool uploadFails;
   final RPOrderedTask _document = _task();
-  var accepted = false;
 
   @override
   RPOrderedTask? get informedConsent => _document;
 
-  @override
-  Future<ConsentStatus> hasBeenAccepted() async => ConsentStatus.needsSigning;
-
   var rejected = false;
-  var acceptCalls = 0;
+  var uploads = 0;
 
+  /// Stands in for the CAWS round trip - the delay is what makes a second
+  /// submit land while the first is still in flight.
   @override
-  Future<void> accept([RPTaskResult? result]) async {
-    acceptCalls++;
-    // Signing uploads to CAWS before the shell swaps consent out - the delay
-    // stands in for that round trip, which is what makes the ordering visible.
+  Future<void> upload(RPTaskResult result) async {
+    uploads++;
     await Future<void>.delayed(const Duration(milliseconds: 50));
     if (uploadFails) throw Exception('no connection');
-    accepted = true;
-    await super.accept();
   }
 
   // The real one leaves the study, which needs a configured bloc.
@@ -44,18 +38,7 @@ class StubConsentViewModel extends InformedConsentViewModel {
   Future<void> reject() async => rejected = true;
 }
 
-/// Just the consent page - no shell, no router, for what the page itself owns.
-Widget consentPage(InformedConsentViewModel model) => MaterialApp(
-  localizationsDelegates: [
-    RPLocalizations.delegate,
-    GlobalCupertinoLocalizations.delegate,
-    GlobalMaterialLocalizations.delegate,
-    GlobalWidgetsLocalizations.delegate,
-  ],
-  home: InformedConsentPage(model: model),
-);
-
-/// The shell under a router wired like the real app.
+/// The consent page under a router with the redirect that gates it.
 ///
 /// [refresh] is the router's [refreshListenable] - the real app passes the
 /// bloc, so a bloc state change refreshes the router. It defaults to a private
@@ -69,18 +52,20 @@ Widget consentApp(InformedConsentViewModel model, {Listenable? refresh}) => Mate
     GlobalWidgetsLocalizations.delegate,
   ],
   routerConfig: GoRouter(
-    initialLocation: HomePage.route,
+    initialLocation: InformedConsentPage.route,
     refreshListenable: refresh ?? ChangeNotifier(),
+    redirect: (context, state) async {
+      // The app's consent gate, in the one form that matters here.
+      if (await model.needsSigning()) return InformedConsentPage.route;
+      if (state.matchedLocation == InformedConsentPage.route) return '/home';
+      return null;
+    },
     routes: [
-      ShellRoute(
-        builder: (context, state, child) =>
-            CarpAppShell(model: bloc.appViewModel.homePageViewModel, consentModel: model, child: child),
-        routes: [
-          // The shell's navigation bar requires one of the tab routes to be the
-          // current location.
-          GoRoute(path: HomePage.route, builder: (context, state) => const Text('home')),
-        ],
+      GoRoute(
+        path: InformedConsentPage.route,
+        builder: (context, state) => InformedConsentPage(model: model),
       ),
+      GoRoute(path: '/home', builder: (context, state) => const Text('home')),
     ],
   ),
 );

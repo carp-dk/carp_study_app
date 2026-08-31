@@ -1,75 +1,59 @@
 part of carp_study_app;
 
-/// Whether the user still has to sign informed consent for the active study.
-enum ConsentStatus {
-  /// Not resolved yet - [InformedConsentViewModel.resolve] is still running.
-  resolving,
-
-  /// Consent is in place - already given, or the study has no document to sign.
-  given,
-
-  /// The user has to be shown the [InformedConsentPage] and sign.
-  needsSigning,
-
-  /// Consent could not be resolved, e.g. the document could not be loaded.
-  failed,
-}
-
-/// View model for [InformedConsentPage] - the document, the status, accept/reject.
+/// View model for [InformedConsentPage] - the document, and accept/reject.
 class InformedConsentViewModel extends ViewModel {
   RPOrderedTask? _informedConsent;
-  ConsentStatus _status = ConsentStatus.resolving;
+  Future<bool>? _needsSigning;
 
   InformedConsentViewModel();
 
   /// The consent document, once loaded by [getInformedConsent].
   RPOrderedTask? get informedConsent => _informedConsent;
 
-  /// Whether consent still has to be signed - what [CarpAppShell] shows on.
-  ConsentStatus get status => _status;
+  /// Does the user still have to sign informed consent?
+  ///
+  /// Resolved once and cached, since the router asks on every navigation. A
+  /// study with no consent document has nothing to sign and is accepted on the
+  /// user's behalf.
+  Future<bool> needsSigning() async => _needsSigning ??= _resolveNeedsSigning();
 
-  /// Resolve [status], loading the consent document if there is one to sign.
-  Future<void> resolve() async {
-    try {
-      _status = await hasBeenAccepted();
-    } catch (error) {
-      warning('$runtimeType - could not resolve informed consent - $error');
-      _status = ConsentStatus.failed;
+  Future<bool> _resolveNeedsSigning() async {
+    if (await _isAccepted) return false;
+
+    if (await getInformedConsent() == null) {
+      await accept();
+      return false;
     }
-    notifyListeners();
+    return true;
   }
 
   @override
   void clear() {
     _informedConsent = null;
-    _status = ConsentStatus.resolving;
+    _needsSigning = null;
     super.clear();
   }
 
   /// The consent document of the active study, or null if it has none.
   Future<RPOrderedTask?> getInformedConsent() async => _informedConsent ??= await bloc.consent.getDocument();
 
-  /// Whether consent still has to be signed - no document means nothing to sign.
-  Future<ConsentStatus> hasBeenAccepted() async {
-    final accepted = await _isAccepted;
-    if (accepted) return ConsentStatus.given;
-
-    if (await getInformedConsent() == null) {
-      await accept();
-      return ConsentStatus.given;
-    }
-    return ConsentStatus.needsSigning;
-  }
-
   /// Record the accept - only given once the upload it is read back from succeeds.
+  ///
+  /// Throws when the upload fails: consent that never reached CAWS would be
+  /// asked for again on the next launch, so it does not count as given.
   Future<void> accept([RPTaskResult? result]) async {
-    if (result != null && !_isLocalDeployment) {
-      await bloc.consent.upload(result);
-    }
+    if (result != null) await upload(result);
+
     info('Informed consent has been accepted by user.');
     _acceptedLocally = true;
-    _status = ConsentStatus.given;
-    notifyListeners();
+    _needsSigning = Future.value(false);
+  }
+
+  /// Upload the signed [result] - a local deployment has no backend to upload to.
+  @protected
+  Future<void> upload(RPTaskResult result) async {
+    if (_isLocalDeployment) return;
+    await bloc.consent.upload(result);
   }
 
   /// Record the decline and leave the study - without consent there is no study.

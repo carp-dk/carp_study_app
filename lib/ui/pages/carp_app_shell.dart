@@ -1,12 +1,11 @@
 part of carp_study_app;
 
-/// The bottom navigation bar and current tab - and the informed consent gate,
-/// since the router only mounts this once signed in and with a study.
+/// The bottom navigation bar and the current tab - the router gates what
+/// reaches it, so by here the user is signed in, has a study, and has consented.
 class CarpAppShell extends StatefulWidget {
   final HomePageViewModel model;
-  final InformedConsentViewModel consentModel;
   final Widget child;
-  const CarpAppShell({required this.model, required this.consentModel, required this.child, super.key});
+  const CarpAppShell({required this.model, required this.child, super.key});
 
   @override
   CarpAppShellState createState() => CarpAppShellState();
@@ -14,24 +13,7 @@ class CarpAppShell extends StatefulWidget {
 
 class CarpAppShellState extends State<CarpAppShell> {
   @override
-  void initState() {
-    super.initState();
-    unawaited(widget.consentModel.resolve());
-  }
-
-  /// The app, the consent document, or a spinner - whichever the status calls for.
-  @override
-  Widget build(BuildContext context) => ListenableBuilder(
-    listenable: widget.consentModel,
-    builder: (context, _) => switch (widget.consentModel.status) {
-      ConsentStatus.resolving => const Scaffold(body: Center(child: CircularProgressIndicator())),
-      ConsentStatus.needsSigning => InformedConsentPage(model: widget.consentModel),
-      ConsentStatus.given => _buildShell(context),
-      ConsentStatus.failed => const ErrorPage(),
-    },
-  );
-
-  Widget _buildShell(BuildContext context) {
+  Widget build(BuildContext context) {
     RPLocalizations locale = RPLocalizations.of(context)!;
 
     return Scaffold(

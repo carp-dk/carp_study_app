@@ -1,8 +1,12 @@
 part of carp_study_app;
 
-/// The consent document, shown inline by [CarpAppShell] - pushed as a route it
-/// would be replayed on top of the app by any router refresh.
+/// The consent document, for the user to read and sign.
+///
+/// [RPUITask] pops its own route when the task is cancelled, and again when it
+/// finishes - so it is given this page's route to pop, and the redirect decides
+/// where that lands.
 class InformedConsentPage extends StatefulWidget {
+  static const String route = '/consent';
   final InformedConsentViewModel model;
 
   const InformedConsentPage({required this.model, super.key});
@@ -12,19 +16,28 @@ class InformedConsentPage extends StatefulWidget {
 }
 
 class _InformedConsentPageState extends State<InformedConsentPage> {
-  /// Recording the signature - a second DONE would start a second upload.
-  bool _accepting = false;
+  /// The accept in flight, so the document is blocked while it uploads and a
+  /// second DONE cannot start a second upload.
+  Future<void>? _accepting;
 
-  Future<void> _accept(RPTaskResult result) async {
-    if (_accepting) return;
-    setState(() => _accepting = true);
+  void _accept(RPTaskResult result) {
+    if (_accepting != null) return;
+    final accepting = _acceptAndRoute(result);
+    setState(() {
+      _accepting = accepting;
+    });
+  }
+
+  Future<void> _acceptAndRoute(RPTaskResult result) async {
     try {
-      // Accepting flips the status, which swaps this page for the app.
       await widget.model.accept(result);
+      // Consent is given, so the redirect now sends this route to the app.
+      if (mounted) context.go(CarpAppState.homeRoute);
     } catch (error) {
       // Never reached CAWS, so the user is not consented - say so and leave.
       warning('$runtimeType - could not record informed consent - $error');
-      if (mounted) setState(() => _accepting = false);
+      // Drop the spinner first - the dialog is awaited inside this future.
+      if (mounted) setState(() => _accepting = null);
       if (mounted) await _showFailure();
       await widget.model.reject();
     }
@@ -44,33 +57,32 @@ class _InformedConsentPageState extends State<InformedConsentPage> {
 
   @override
   Widget build(BuildContext context) {
-    // The shell loads the document before showing this page.
+    // The redirect resolves consent - which loads the document - before routing
+    // here, so a missing one means this page was reached some other way.
     final document = widget.model.informedConsent;
     if (document == null) return const ErrorPage();
 
-    return Navigator(
-      onGenerateRoute: (_) => MaterialPageRoute<void>(
-        builder: (context) => Scaffold(
-          body: Stack(
-            children: [
-              RPUITask(
-                // This page's lifetime is the shell's to end, not the task's.
-                task: document..closeAfterFinished = false,
-                onSubmit: _accept,
-                // Declining leaves the study - the router then shows invitations.
-                onCancel: (_) {
-                  unawaited(widget.model.reject());
-                },
-              ),
-              // Block the document while uploading, so it can't be signed twice.
-              if (_accepting)
-                const ColoredBox(
-                  color: Colors.black26,
-                  child: Center(child: CircularProgressIndicator()),
-                ),
-            ],
+    return Scaffold(
+      body: Stack(
+        children: [
+          RPUITask(
+            // Leaving is the redirect's call, not the task's.
+            task: document..closeAfterFinished = false,
+            onSubmit: _accept,
+            // Declining leaves the study - the redirect then shows invitations.
+            onCancel: (_) => unawaited(widget.model.reject()),
           ),
-        ),
+          // Block the document while uploading, so it cannot be signed twice.
+          FutureBuilder(
+            future: _accepting,
+            builder: (context, snapshot) => snapshot.connectionState == ConnectionState.waiting
+                ? const ColoredBox(
+                    color: Colors.black26,
+                    child: Center(child: CircularProgressIndicator()),
+                  )
+                : const SizedBox.shrink(),
+          ),
+        ],
       ),
     );
   }

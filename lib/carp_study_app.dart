@@ -45,17 +45,20 @@ class CarpAppState extends State<CarpStudyApp> {
         return InvitationListPage.route;
       }
 
+      // 3) Consent not signed → the consent document. A redirect replaces the
+      // location, so - unlike a push - a router refresh cannot replay it.
+      final needsSigning = await bloc.appViewModel.informedConsentViewModel.needsSigning();
+      if (needsSigning) return InformedConsentPage.route;
+      if (loc == InformedConsentPage.route) return homeRoute;
+
       // 4) Fully onboarded.
       return null;
     },
     routes: <RouteBase>[
       ShellRoute(
         navigatorKey: _shellNavigatorKey,
-        builder: (BuildContext context, GoRouterState state, Widget child) => CarpAppShell(
-          model: bloc.appViewModel.homePageViewModel,
-          consentModel: bloc.appViewModel.informedConsentViewModel,
-          child: child,
-        ),
+        builder: (BuildContext context, GoRouterState state, Widget child) =>
+            CarpAppShell(model: bloc.appViewModel.homePageViewModel, child: child),
         routes: [
           // Just a landing slot - the redirect above moves the user on.
           GoRoute(path: homeRoute, parentNavigatorKey: _shellNavigatorKey, redirect: (_, _) => HomePage.route),
@@ -108,6 +111,12 @@ class CarpAppState extends State<CarpStudyApp> {
           child: ProfilePage(bloc.appViewModel.profilePageViewModel),
           transitionsBuilder: slideInFromRightAnimation,
         ),
+      ),
+      // Consent is not a tab - it replaces the whole app until it is signed.
+      GoRoute(
+        path: InformedConsentPage.route,
+        parentNavigatorKey: _rootNavigatorKey,
+        builder: (context, state) => InformedConsentPage(model: bloc.appViewModel.informedConsentViewModel),
       ),
       GoRoute(
         path: StudyAboutPage.route,
