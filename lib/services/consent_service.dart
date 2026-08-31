@@ -1,7 +1,6 @@
 part of carp_study_app;
 
-/// The backend side of informed consent: the study's consent document and
-/// the user's signed consent in CAWS. Policy lives in [InformedConsentViewModel].
+/// The consent document and signed consent in CAWS - policy is the view model's.
 class ConsentService {
   ConsentService(this._manager, {CarpBackend? backend}) : _backend = backend ?? CarpBackend();
 
@@ -11,10 +10,7 @@ class ConsentService {
   /// Get the informed consent document for this study, or null if it has none.
   Future<RPOrderedTask?> getDocument({bool refresh = false}) => _manager.getConsentDocument(refresh: refresh);
 
-  /// Has a signed informed consent been uploaded for [study]?
-  ///
-  /// False if there is no study, or if the backend cannot be reached - the user
-  /// is then asked to sign again rather than being let in on a guess.
+  /// Has a signed consent been uploaded for [study]? False if it can't be checked.
   Future<bool> hasSignedConsent(SmartphoneStudy? study) async {
     if (study == null) return false;
     try {
@@ -27,5 +23,5 @@ class ConsentService {
   }
 
   /// Upload the signed consent [result] to CAWS.
-  Future<void> upload(RPTaskResult result) => _backend.uploadInformedConsent(result);
+  Future<void> upload(RPTaskResult result) => _backend.uploadInformedConsent(result).timeout(Duration(seconds: 20));
 }

@@ -249,5 +249,6 @@
   "pages.home.retry": "Prøv igen",
   "pages.devices.connection.step.scan.searching": "Søger efter enheder i nærheden…\nSørg for, at din enhed er tændt og inden for rækkevidde.",
   "pages.devices.connection.step.scan.show_all": "Kan du ikke se din enhed? Vis alle",
-  "pages.devices.connection.step.scan.filtered": "Vis kun matchende enheder"
+  "pages.devices.connection.step.scan.filtered": "Vis kun matchende enheder",
+  "pages.informed_consent.upload_failed": "Dit samtykke kunne ikke gemmes. Tjek din internetforbindelse, og prøv igen."
 }

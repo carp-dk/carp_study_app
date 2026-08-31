@@ -1,10 +1,23 @@
 part of carp_study_app;
 
-/// The redesigned home page (design 2.0) - the landing tab of the app shell.
-class HomePage extends StatelessWidget {
+/// The landing tab - shown once consent is in place, so it deploys the study.
+class HomePage extends StatefulWidget {
   static const String route = '/home';
   final HomePageViewModel model;
   const HomePage({required this.model, super.key});
+
+  @override
+  State<HomePage> createState() => _HomePageState();
+}
+
+class _HomePageState extends State<HomePage> {
+  @override
+  void initState() {
+    super.initState();
+    unawaited(widget.model.configureStudy());
+  }
+
+  HomePageViewModel get model => widget.model;
 
   @override
   Widget build(BuildContext context) {
@@ -48,8 +61,7 @@ class HomePage extends StatelessWidget {
     );
   }
 
-  /// Shimmer placeholders mirroring the page layout (about card, connections,
-  /// progress tiles, feeds), shown until the study is loaded.
+  /// Shimmer placeholders mirroring the layout, until the study is loaded.
   Widget _skeleton() {
     Widget box(double height, {EdgeInsetsGeometry? margin}) => Container(
       height: height,
@@ -89,8 +101,7 @@ class HomePage extends StatelessWidget {
     );
   }
 
-  /// "Active Days in Study" tile: total active days, a dot per day for the
-  /// last 7 days (filled if at least one task was done), and a stats link.
+  /// Active days tile: the total, a dot per day for the last 7, and a link.
   Widget _activeDaysTile(BuildContext context) {
     return _statTile(
       context,
@@ -153,8 +164,7 @@ class HomePage extends StatelessWidget {
     );
   }
 
-  // Shared stat tile chrome: label + icon badge on top, main content, optional
-  // footer row, and a link at the bottom.
+  // Shared stat tile chrome: label, content, optional footer, and a link.
   Widget _statTile(
     BuildContext context, {
     required IconData icon,
@@ -209,8 +219,7 @@ class HomePage extends StatelessWidget {
     );
   }
 
-  /// A message (announcement / news / article) from the backend, tappable to
-  /// open its details page.
+  /// A message from the backend, tappable to open its details page.
   Widget _feedCard(BuildContext context, Message message) {
     final locale = RPLocalizations.of(context)!;
     final subTitle = message.subTitle ?? '';
@@ -278,8 +287,7 @@ class HomePage extends StatelessWidget {
   }
 }
 
-/// Home banner shown only when a newer app version is available in the store.
-/// A slim text row with a "Get" button that opens the store.
+/// Banner shown only when a newer app version is available in the store.
 class AppUpdateCard extends StatelessWidget {
   final HomePageViewModel model;
   const AppUpdateCard({required this.model, super.key});
@@ -315,8 +323,7 @@ class AppUpdateCard extends StatelessWidget {
   }
 }
 
-/// Gradient home card with the study title, its deployment status as a bubble,
-/// a short description (max 2 lines), and a link to the full about page.
+/// Card with the study title, its status, a short description, and a link.
 class StudyAboutCard extends StatelessWidget {
   final HomePageViewModel model;
   const StudyAboutCard({required this.model, super.key});
@@ -347,9 +354,7 @@ class StudyAboutCard extends StatelessWidget {
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            // The status arrives async after the card is first shown; keep the
-            // bubble slot occupied (invisible placeholder) so the card height
-            // doesn't jump when it lands.
+            // Keep the slot occupied, so the card doesn't jump when it lands.
             Visibility(
               visible: model.deploymentStatus != null,
               maintainSize: true,
