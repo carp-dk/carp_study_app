@@ -228,70 +228,54 @@ class ProfilePageState extends State<ProfilePage> {
     } finally {}
   }
 
-  Future<void> _showLogoutConfirmationDialog() {
-    RPLocalizations locale = RPLocalizations.of(context)!;
+  Future<void> _showLogoutConfirmationDialog() => _confirm(
+    actionKey: 'pages.profile.log_out',
+    contentKey: 'pages.profile.log_out.confirmation',
+    onConfirmed: () async {
+      await widget.model.signOutAndLeaveStudy();
+      if (mounted) context.go(CarpAppState.homeRoute);
+    },
+  );
 
-    return showDialog<bool>(
+  Future<void> _showLeaveStudyConfirmationDialog() => _confirm(
+    actionKey: 'pages.profile.leave_study',
+    contentKey: 'pages.profile.leave_study.confirmation',
+    onConfirmed: () async {
+      await widget.model.leaveStudy();
+      if (mounted) context.go(InvitationListPage.route);
+    },
+  );
+
+  /// A destructive confirmation: the action names both the title and the red
+  /// confirm button, so the buttons say what happens instead of YES/NO. The
+  /// dialog closes before [onConfirmed] runs, so the UI is not frozen mid-work.
+  Future<void> _confirm({
+    required String actionKey,
+    required String contentKey,
+    required Future<void> Function() onConfirmed,
+  }) async {
+    final locale = RPLocalizations.of(context)!;
+
+    final confirmed = await showDialog<bool>(
       context: context,
-      builder: (BuildContext builderContext) {
-        return AlertDialog(
-          title: Text(locale.translate("pages.profile.log_out.confirmation")),
-          actions: <Widget>[
-            TextButton(
-              child: Text(locale.translate("NO")),
-              onPressed: () async {
-                if (builderContext.mounted) {
-                  Navigator.of(builderContext).pop();
-                }
-              },
-            ),
-            TextButton(
-              child: Text(locale.translate("YES")),
-              onPressed: () async {
-                if (builderContext.mounted) {
-                  await widget.model.signOutAndLeaveStudy();
-                  builderContext.pop();
-                  builderContext.go(CarpAppState.homeRoute);
-                }
-              },
-            ),
-          ],
-        );
-      },
+      builder: (context) => AlertDialog(
+        title: Text(locale.translate(actionKey)),
+        content: Text(locale.translate(contentKey)),
+        actions: [
+          TextButton(
+            onPressed: () => Navigator.of(context).pop(false),
+            child: Text(locale.translate('cancel')),
+          ),
+          TextButton(
+            style: TextButton.styleFrom(foregroundColor: Theme.of(context).colorScheme.error),
+            onPressed: () => Navigator.of(context).pop(true),
+            child: Text(locale.translate(actionKey)),
+          ),
+        ],
+      ),
     );
-  }
 
-  Future<void> _showLeaveStudyConfirmationDialog() {
-    RPLocalizations locale = RPLocalizations.of(context)!;
-
-    return showDialog<bool>(
-      context: context,
-      builder: (BuildContext builderContext) {
-        return AlertDialog(
-          title: Text(locale.translate("pages.profile.leave_study.confirmation")),
-          actions: <Widget>[
-            TextButton(
-              child: Text(locale.translate("NO")),
-              onPressed: () {
-                if (builderContext.mounted) {
-                  Navigator.of(builderContext).pop();
-                }
-              },
-            ),
-            TextButton(
-              child: Text(locale.translate("YES")),
-              onPressed: () async {
-                if (builderContext.mounted) {
-                  await widget.model.leaveStudy();
-                  builderContext.pop();
-                  builderContext.go(InvitationListPage.route);
-                }
-              },
-            ),
-          ],
-        );
-      },
-    );
+    if (confirmed ?? false) await onConfirmed();
   }
 
   Future<void> _showEnableInternetConnectionDialog() async {
