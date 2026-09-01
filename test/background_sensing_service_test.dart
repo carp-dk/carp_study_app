@@ -29,7 +29,10 @@ void main() {
   late _FakePermissions permissions;
   late List<String> backgroundCalls;
 
+  late PermissionHandlerPlatform originalPermissions;
+
   setUp(() async {
+    originalPermissions = PermissionHandlerPlatform.instance;
     permissions = _FakePermissions();
     PermissionHandlerPlatform.instance = permissions;
 
@@ -47,6 +50,7 @@ void main() {
   });
 
   tearDown(() {
+    PermissionHandlerPlatform.instance = originalPermissions;
     TestDefaultBinaryMessengerBinding.instance.defaultBinaryMessenger.setMockMethodCallHandler(backgroundChannel, null);
     debugDefaultTargetPlatformOverride = null;
   });
@@ -72,6 +76,17 @@ void main() {
       expect(notifications, 1);
 
       BackgroundSensingService().removeListener(listener);
+    });
+
+    test('a revoked exemption stops the running service', () async {
+      await BackgroundSensingService().connect();
+      expect(BackgroundSensingService().isConnected, isTrue);
+
+      permissions.status = PermissionStatus.denied;
+      await BackgroundSensingService().refresh();
+
+      expect(BackgroundSensingService().isConnected, isFalse);
+      expect(backgroundCalls, contains('disableBackgroundExecution'));
     });
 
     test('is not supported off Android, so it never starts the service', () async {

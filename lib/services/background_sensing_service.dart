@@ -19,6 +19,8 @@ class BackgroundSensingService extends ChangeNotifier {
   Future<void> refresh() async {
     var connected = isSupported && await Permission.ignoreBatteryOptimizations.isGranted;
     if (connected && !BackgroundService().isEnabled) connected = await _start();
+    // Revoked while running - the exemption is gone, so stop the service too.
+    if (!connected && BackgroundService().isEnabled) await BackgroundService().disable();
 
     if (connected != _isConnected) {
       _isConnected = connected;

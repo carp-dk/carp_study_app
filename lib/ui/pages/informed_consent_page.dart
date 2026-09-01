@@ -70,7 +70,7 @@ class _InformedConsentPageState extends State<InformedConsentPage> {
             task: document..closeAfterFinished = false,
             onSubmit: _accept,
             // Declining leaves the study - the redirect then shows invitations.
-            onCancel: (_) => widget.model.reject(),
+            onCancel: (_) => unawaited(widget.model.reject()),
           ),
           // Block the document while uploading, so it cannot be signed twice.
           FutureBuilder(
