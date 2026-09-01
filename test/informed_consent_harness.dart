@@ -21,6 +21,10 @@ class StubConsentViewModel extends InformedConsentViewModel {
   @override
   RPOrderedTask? get informedConsent => _document;
 
+  // The real one loads the document through the global bloc.
+  @override
+  Future<RPOrderedTask?> getInformedConsent() async => _document;
+
   var rejected = false;
   var uploads = 0;
 
