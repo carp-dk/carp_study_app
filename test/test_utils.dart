@@ -39,4 +39,7 @@ class FakePathProviderPlatform extends PathProviderPlatform with MockPlatformInt
 
   @override
   Future<String?> getLibraryPath() async => _tempPath;
+
+  @override
+  Future<String?> getDownloadsPath() async => _tempPath;
 }

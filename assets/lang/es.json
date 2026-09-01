@@ -86,6 +86,8 @@
   "pages.profile.contact": "Contactar investigador",
   "pages.profile.privacy": "Política de privacidad",
   "pages.profile.download_consent": "Descargar consentimiento informado",
+  "pages.profile.download_consent.saved_downloads": "Consentimiento informado guardado en Descargas.",
+  "pages.profile.download_consent.saved_files": "Consentimiento informado guardado en Archivos, en la carpeta de la app.",
   "pages.profile.download_consent.unavailable": "No hay consentimiento firmado disponible.",
   "pages.profile.study_details": "Detalles del estudio",
   "pages.profile.study_website": "Página web del estudio",

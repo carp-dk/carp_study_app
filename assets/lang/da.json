@@ -117,6 +117,8 @@
   "pages.profile.contact": "Kontakt forsker",
   "pages.profile.privacy": "Fortrolighedspolitik",
   "pages.profile.download_consent": "Download informeret samtykke",
+  "pages.profile.download_consent.saved_downloads": "Informeret samtykke gemt i Downloads.",
+  "pages.profile.download_consent.saved_files": "Informeret samtykke gemt i Filer, i appens mappe.",
   "pages.profile.download_consent.unavailable": "Intet underskrevet samtykke tilgængeligt.",
   "pages.profile.study_details": "Studiedetaljer",
   "pages.profile.study_website": "Hjemmeside for studiet",

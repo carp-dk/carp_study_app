@@ -293,8 +293,8 @@ void main() {
 
       final file = await consent.downloadSignedConsent(study);
 
-      // The share sheet is handed this path, so the file has to exist and be
-      // readable - an empty or half-written one would share as a broken file.
+      // The participant is told where this file is, so it has to exist and be
+      // readable - an empty or half-written one is not a download.
       expect(file, isNotNull);
       expect(file!.existsSync(), isTrue);
       final written = json.decode(file.readAsStringSync()) as Map<String, dynamic>;
