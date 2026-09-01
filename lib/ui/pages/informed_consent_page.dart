@@ -67,7 +67,7 @@ class _InformedConsentPageState extends State<InformedConsentPage> {
         children: [
           RPUITask(
             // Leaving is the redirect's call, not the task's.
-            task: document..closeAfterFinished = false,
+            task: document,
             onSubmit: _accept,
             // Declining leaves the study - the redirect then shows invitations.
             onCancel: (_) => unawaited(widget.model.reject()),

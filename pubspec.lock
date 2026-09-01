@@ -373,10 +373,10 @@ packages:
     dependency: "direct main"
     description:
       name: carp_themes_package
-      sha256: "7df591fb8fb4ed2486d4bf4ce1975ba36a3fea40ef87853f5634d2996fde2057"
+      sha256: dccc0fd656d37b422cfd338222da25717a1eb4efdcbe205ab5e60befdcdaa68c
       url: "https://pub.dev"
     source: hosted
-    version: "0.2.0"
+    version: "0.2.1"
   carp_webservices:
     dependency: "direct main"
     description:
@@ -1752,10 +1752,10 @@ packages:
     dependency: "direct main"
     description:
       name: research_package
-      sha256: "69297894f3f845b40b34b03f6e7f6aa64aa8d3a18f3e3c4a1f78522051417792"
+      sha256: c3ec95285e1c007e27cc4e400b725c0b775b7bbe9767ade2b26447bad45befec
       url: "https://pub.dev"
     source: hosted
-    version: "3.1.0"
+    version: "3.2.0"
   retry:
     dependency: transitive
     description:
