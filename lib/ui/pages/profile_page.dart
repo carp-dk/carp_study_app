@@ -262,10 +262,7 @@ class ProfilePageState extends State<ProfilePage> {
         title: Text(locale.translate(actionKey)),
         content: Text(locale.translate(contentKey)),
         actions: [
-          TextButton(
-            onPressed: () => Navigator.of(context).pop(false),
-            child: Text(locale.translate('cancel')),
-          ),
+          TextButton(onPressed: () => Navigator.of(context).pop(false), child: Text(locale.translate('cancel'))),
           TextButton(
             style: TextButton.styleFrom(foregroundColor: Theme.of(context).colorScheme.error),
             onPressed: () => Navigator.of(context).pop(true),
