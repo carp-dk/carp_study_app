@@ -131,7 +131,6 @@
   "pages.profile.privacy": "Privacy policy",
   "pages.profile.study_website": "Study website",
   "pages.profile.download_consent": "Download Informed Consent",
-  "pages.profile.download_consent.success": "Informed consent saved.",
   "pages.profile.download_consent.unavailable": "No signed consent available to download.",
   "pages.profile.study_details": "Study details",
   "pages.profile.leave_study": "Leave study",

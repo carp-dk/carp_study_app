@@ -8,21 +8,25 @@ class StudyPageViewModel extends ViewModel {
     MessageService? messageService,
     SystemInfoService? systemInfoService,
     AuthService? authService,
+    ConsentService? consentService,
   }) : _studyService = studyService,
        _messageService = messageService,
        _systemInfoService = systemInfoService,
-       _authService = authService;
+       _authService = authService,
+       _consentService = consentService;
 
   final StudyService? _studyService;
   final MessageService? _messageService;
   final SystemInfoService? _systemInfoService;
   final AuthService? _authService;
+  final ConsentService? _consentService;
   bool _appUpdateAvailable = false;
 
   StudyService get _study => _studyService ?? bloc.study;
   MessageService get _messages => _messageService ?? bloc.messages;
   SystemInfoService get _system => _systemInfoService ?? bloc.system;
   AuthService get _auth => _authService ?? bloc.auth;
+  ConsentService get _consent => _consentService ?? bloc.consent;
 
   /// Is the user signed in anonymously?
   bool get isAnonymousUser => _auth.isAnonymous;
@@ -68,19 +72,10 @@ class StudyPageViewModel extends ViewModel {
   String get privacyPolicyUrl => _study.deployment?.studyDescription?.privacyPolicyUrl ?? CarpBackend.carpPrivacyUrl;
   String get username => _auth.username;
 
-  /// Fetch the signed informed consent from the backend and save it as a JSON
-  /// file. Returns null when no signed consent exists (e.g. local deployments).
-  Future<File?> downloadInformedConsent() async {
-    try {
-      final consent = await CarpBackend().getInformedConsentByRole(studyDeploymentId, participantRole);
-      if (consent == null) return null;
-      final dir = await getApplicationDocumentsDirectory();
-      return File('${dir.path}/informed_consent.json').writeAsString(toJsonString(consent.toJson()));
-    } catch (e) {
-      warning('$runtimeType - could not download informed consent - $e');
-      return null;
-    }
-  }
+  /// The signed informed consent as a file the participant can keep.
+  ///
+  /// Null when no signed consent exists (e.g. local deployments).
+  Future<File?> downloadInformedConsent() => _consent.downloadSignedConsent(_study.study);
 
   String get piTitle => _study.deployment?.responsible?.title ?? '';
   String get piName => _study.deployment?.responsible?.name ?? '';

@@ -1,3 +1,5 @@
+import 'dart:convert';
+
 import 'package:carp_backend/carp_backend.dart';
 import 'package:carp_context_package/carp_context_package.dart';
 import 'package:carp_core/carp_core.dart' as core;
@@ -281,6 +283,37 @@ void main() {
       ).thenAnswer((_) async => InformedConsentInput(userId: '42', name: 'jdoe', consent: '{}', signatureImage: ''));
 
       expect(await consent.hasSignedConsent(study), isTrue);
+    });
+
+    test('downloadSignedConsent writes a file that holds the signed consent', () async {
+      final study = SmartphoneStudy(studyDeploymentId: 'dep-1', deviceRoleName: 'phone');
+      when(backend.getInformedConsentByRole('dep-1', null)).thenAnswer(
+        (_) async => InformedConsentInput(userId: '42', name: 'jdoe', consent: '{"signed":true}', signatureImage: 'xx'),
+      );
+
+      final file = await consent.downloadSignedConsent(study);
+
+      // The share sheet is handed this path, so the file has to exist and be
+      // readable - an empty or half-written one would share as a broken file.
+      expect(file, isNotNull);
+      expect(file!.existsSync(), isTrue);
+      final written = json.decode(file.readAsStringSync()) as Map<String, dynamic>;
+      expect(written['name'], 'jdoe');
+      expect(written['consent'], '{"signed":true}');
+    });
+
+    test('downloadSignedConsent is null when nothing is signed', () async {
+      final study = SmartphoneStudy(studyDeploymentId: 'dep-1', deviceRoleName: 'phone');
+      when(backend.getInformedConsentByRole('dep-1', null)).thenAnswer((_) async => null);
+
+      expect(await consent.downloadSignedConsent(study), isNull);
+    });
+
+    test('downloadSignedConsent is null when the backend cannot be reached', () async {
+      final study = SmartphoneStudy(studyDeploymentId: 'dep-1', deviceRoleName: 'phone');
+      when(backend.getInformedConsentByRole('dep-1', null)).thenAnswer((_) async => throw Exception('offline'));
+
+      expect(await consent.downloadSignedConsent(study), isNull);
     });
   });
 

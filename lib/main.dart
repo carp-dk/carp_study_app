@@ -33,6 +33,7 @@ import 'package:open_settings_plus/core/open_settings_plus.dart';
 import 'package:appcheck/appcheck.dart';
 import 'package:package_info_plus/package_info_plus.dart';
 import 'package:path_provider/path_provider.dart';
+import 'package:share_plus/share_plus.dart';
 import 'package:shimmer/shimmer.dart';
 import 'package:app_version_update/app_version_update.dart';
 import 'package:qr_code_scanner_plus/qr_code_scanner_plus.dart' as qr;

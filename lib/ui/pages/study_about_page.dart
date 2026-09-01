@@ -164,15 +164,30 @@ class StudyAboutPage extends StatelessWidget {
     await _launch(url);
   }
 
-  /// Fetch the signed consent and save it, informing the user of the outcome.
+  /// Fetch the signed consent and hand it to the system share sheet, which is
+  /// what lets the participant keep it - "Save to Files", mail, Drive.
   Future<void> _downloadInformedConsent(BuildContext context) async {
     final locale = RPLocalizations.of(context)!;
     final file = await model.downloadInformedConsent();
     if (!context.mounted) return;
-    final message = file != null
-        ? locale.translate('pages.profile.download_consent.success')
-        : locale.translate('pages.profile.download_consent.unavailable');
-    ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text(message)));
+
+    if (file == null) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(content: Text(locale.translate('pages.profile.download_consent.unavailable'))),
+      );
+      return;
+    }
+
+    // The share sheet needs an anchor on iPad, or it has nowhere to point at.
+    final box = context.findRenderObject() as RenderBox?;
+    await SharePlus.instance.share(
+      ShareParams(
+        files: [XFile(file.path, mimeType: 'application/json')],
+        fileNameOverrides: ['informed_consent.json'],
+        subject: locale.translate('pages.profile.download_consent'),
+        sharePositionOrigin: box == null ? null : box.localToGlobal(Offset.zero) & box.size,
+      ),
+    );
   }
 
   Widget _actionCard(
