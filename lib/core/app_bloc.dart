@@ -174,7 +174,8 @@ class AppBloc extends ChangeNotifier {
     await _userTaskNotificationSubscription?.cancel();
     _userTaskNotificationSubscription = null;
 
-    // stop sensing and remove all deployment info
+    // stop sensing - including in background - and remove all deployment info
+    await BackgroundSensingService().disconnect();
     await study.remove();
 
     _state = AppState.initialized;

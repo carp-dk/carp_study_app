@@ -36,6 +36,15 @@ class BackgroundSensingService extends ChangeNotifier {
     await refresh();
   }
 
+  /// Stop the foreground service - there is nothing to sense without a study.
+  Future<void> disconnect() async {
+    if (!_isConnected) return;
+
+    await BackgroundService().disable();
+    _isConnected = false;
+    notifyListeners();
+  }
+
   Future<bool> _start() async {
     final localization = AppConfig.localization;
     return await BackgroundService().initialize(

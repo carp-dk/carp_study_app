@@ -89,6 +89,16 @@ void main() {
       expect(backgroundCalls, contains('disableBackgroundExecution'));
     });
 
+    test('disconnect stops the foreground service', () async {
+      await BackgroundSensingService().connect();
+      expect(BackgroundSensingService().isConnected, isTrue);
+
+      await BackgroundSensingService().disconnect();
+
+      expect(BackgroundSensingService().isConnected, isFalse);
+      expect(backgroundCalls, contains('disableBackgroundExecution'));
+    });
+
     test('is not supported off Android, so it never starts the service', () async {
       debugDefaultTargetPlatformOverride = TargetPlatform.iOS;
 
