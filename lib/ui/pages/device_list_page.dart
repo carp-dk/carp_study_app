@@ -1,9 +1,6 @@
 part of carp_study_app;
 
-/// The page showing the list of devices and online services, ordered as:
-///  * The Smartphone device (primary device)
-///  * Any hardware devices (connected devices)
-///  * Any online services (connected services)
+/// The devices and services list: the phone, then hardware, then services.
 class DeviceListPage extends StatefulWidget {
   static const String route = '/devices';
   final DeviceListPageViewModel model;
@@ -19,7 +16,7 @@ class DeviceListPageState extends State<DeviceListPage> {
 
   late final List<DeviceViewModel> _smartphoneDevice = widget.model.smartphoneDevice;
   late final List<DeviceViewModel> _hardwareDevices = widget.model.hardwareDevices;
-  late final List<DeviceViewModel> _onlineServices = widget.model.onlineServices;
+  late final List<DeviceViewModel> _services = widget.model.services;
 
   @override
   void initState() {
@@ -65,7 +62,7 @@ class DeviceListPageState extends State<DeviceListPage> {
                   slivers: [
                     ..._smartphoneDeviceList(locale),
                     if (_hardwareDevices.isNotEmpty) ..._hardwareDevicesList(locale),
-                    if (_onlineServices.isNotEmpty) ..._onlineServicesList(locale),
+                    if (_services.isNotEmpty) ..._servicesList(locale),
                     const SliverToBoxAdapter(child: SizedBox(height: 16)),
                   ],
                 ),
@@ -77,13 +74,12 @@ class DeviceListPageState extends State<DeviceListPage> {
     );
   }
 
-  /// Re-check the current permission/connection state of all services (e.g.
-  /// after the user grants access in system settings). Status changes flow to
-  /// the cards via their [statusEvents] streams.
+  /// Re-check every service's state - the cards follow via [statusEvents].
   Future<void> _refreshStatuses() async {
-    for (final service in _onlineServices) {
+    for (final service in _services) {
       await service.deviceManager.hasPermissions();
     }
+    await BackgroundSensingService().refresh();
     if (mounted) setState(() {});
   }
 
@@ -129,8 +125,7 @@ class DeviceListPageState extends State<DeviceListPage> {
             leadingImage: device.type == MovesenseDevice.DEVICE_TYPE ? 'assets/icons/movesense_logo.png' : null,
             title: (locale.translate(device.typeName), device.batteryLevel ?? 0),
             subtitle: device.name,
-            // A connected device is managed by the study and cannot be
-            // disconnected by the user, so there is nothing to tap.
+            // Study-managed, so the user cannot disconnect it - nothing to tap.
             onTap: device.status == DeviceStatus.connected || device.status == DeviceStatus.connecting
                 ? null
                 : () async => await _hardwareDeviceClicked(device),
@@ -145,12 +140,13 @@ class DeviceListPageState extends State<DeviceListPage> {
     ),
   ];
 
-  /// The list of online services (like a Location service)
-  List<Widget> _onlineServicesList(RPLocalizations locale) => [
+  /// The services, background sensing first - the study depends on it most.
+  List<Widget> _servicesList(RPLocalizations locale) => [
     DevicesPageListTitle(locale: locale, type: DevicesPageTypes.services),
+    if (BackgroundSensingService().isSupported) _backgroundSensingCard(locale),
     SliverList(
-      delegate: SliverChildBuilderDelegate(childCount: _onlineServices.length, (BuildContext context, int index) {
-        DeviceViewModel service = _onlineServices[index];
+      delegate: SliverChildBuilderDelegate(childCount: _services.length, (BuildContext context, int index) {
+        DeviceViewModel service = _services[index];
         return _devicesPageCardStream(
           service.statusEvents,
           DeviceStatus.unknown,
@@ -158,7 +154,7 @@ class DeviceListPageState extends State<DeviceListPage> {
             leading: service.icon!,
             title: (locale.translate(service.typeName), null),
             subtitle: null,
-            onTap: () async => await _onlineServiceClicked(service),
+            onTap: () async => await _serviceClicked(service),
             trailing: service.getServiceStatusIcon is String
                 ? _connectPill(locale.translate(service.getServiceStatusIcon as String))
                 : service.getServiceStatusIcon as Icon,
@@ -168,9 +164,33 @@ class DeviceListPageState extends State<DeviceListPage> {
     ),
   ];
 
-  /// The visual "Connect" pill shown as a card's trailing widget. The whole
-  /// tile is tappable, so this is a label styled like the themed FilledButton,
-  /// not an interactive button.
+  /// Highlighted: without it, data is only collected while the app is open.
+  Widget _backgroundSensingCard(RPLocalizations locale) => SliverToBoxAdapter(
+    child: ListenableBuilder(
+      listenable: BackgroundSensingService(),
+      builder: (context, _) {
+        final connected = BackgroundSensingService().isConnected;
+        return Center(
+          child: StudiesMaterial(
+            backgroundColor: Colors.grey.shade50,
+            hasBorder: true,
+            borderColor: connected ? _statusSuccess : Theme.of(context).colorScheme.primary,
+            child: _cardListBuilder(
+              leading: const Icon(Icons.autorenew_rounded, size: 30, color: Color(0xff3260A4)),
+              title: (locale.translate('pages.devices.type.background.name'), null),
+              subtitle: locale.translate('pages.devices.type.background.description'),
+              onTap: connected ? null : () async => await BackgroundSensingService().connect(),
+              trailing: connected
+                  ? const Icon(Icons.sensors_rounded, color: _statusSuccess, size: 30)
+                  : _connectPill(locale.translate('pages.devices.status.action.connect')),
+            ),
+          ),
+        );
+      },
+    ),
+  );
+
+  /// A label styled like a button - the whole tile is what's tappable.
   Widget _connectPill(String label) => Container(
     padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 8),
     decoration: BoxDecoration(color: Theme.of(context).colorScheme.primary, borderRadius: BorderRadius.circular(100)),
@@ -249,7 +269,7 @@ class DeviceListPageState extends State<DeviceListPage> {
     ),
   );
 
-  Future<void> _onlineServiceClicked(DeviceViewModel service) async {
+  Future<void> _serviceClicked(DeviceViewModel service) async {
     if (service.status == DeviceStatus.connected || service.status == DeviceStatus.connecting) {
       return;
     }
@@ -262,8 +282,7 @@ class DeviceListPageState extends State<DeviceListPage> {
         ).push(MaterialPageRoute<void>(builder: (context) => HealthServiceConnectPage()));
       } else if (service.type == LocationService.DEVICE_TYPE) {
         final status = await Permission.locationWhenInUse.request();
-        // Permanently denied/restricted: the OS won't prompt again, so send the
-        // user to Settings instead of silently doing nothing.
+        // The OS won't prompt again, so send the user to Settings.
         if (status.isPermanentlyDenied || status.isRestricted) {
           await openAppSettings();
           return;
@@ -324,8 +343,7 @@ class DeviceListPageState extends State<DeviceListPage> {
     }
   }
 
-  /// Dialog shown when the BLE permissions are still denied after requesting,
-  /// pointing the user to the app settings.
+  /// Shown when BLE permissions are still denied - points to the app settings.
   Widget _permissionDeniedDialog(BuildContext context) {
     final locale = RPLocalizations.of(context)!;
     return AlertDialog(

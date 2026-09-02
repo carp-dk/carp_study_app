@@ -1,17 +1,11 @@
 part of carp_study_app;
 
-/// The app shell shown once onboarding is done: a [Scaffold] hosting the
-/// bottom navigation bar and the current tab (via the [ShellRoute] child).
-///
-/// This is also the informed consent gate. The router only mounts the shell
-/// once the user is signed in and has a study, so mounting it is exactly the
-/// precondition consent still has to be checked against - no matter whether we
-/// arrived from a cold start or from accepting an invitation.
+/// The bottom navigation bar and the current tab - the router gates what
+/// reaches it, so by here the user is signed in, has a study, and has consented.
 class CarpAppShell extends StatefulWidget {
   final HomePageViewModel model;
-  final InformedConsentViewModel consentModel;
   final Widget child;
-  const CarpAppShell({required this.model, required this.consentModel, required this.child, super.key});
+  const CarpAppShell({required this.model, required this.child, super.key});
 
   @override
   CarpAppShellState createState() => CarpAppShellState();
@@ -19,62 +13,12 @@ class CarpAppShell extends StatefulWidget {
 
 class CarpAppShellState extends State<CarpAppShell> {
   @override
-  void initState() {
-    super.initState();
-    widget.model.addListener(_onModelChanged);
-    WidgetsBinding.instance.addPostFrameCallback((_) {
-      if (mounted) _isInformedConsentAccepted();
-    });
-  }
-
-  /// Show the informed consent if the study still needs it, then let the study
-  /// configure itself. Backing out of consent leaves the study, which sends the
-  /// router back to the invitation list.
-  Future<void> _isInformedConsentAccepted() async {
-    try {
-      final status = await widget.consentModel.hasBeenAccepted();
-      if (!mounted) return;
-
-      if (status == ConsentStatus.needsSigning) {
-        final signed = await context.push<bool>(InformedConsentPage.route);
-        if (signed != true) {
-          // Declining leaves the study, so there is nothing left to configure.
-          await widget.consentModel.reject();
-          return;
-        }
-      }
-      // Deploying the study and starting sensing
-      unawaited(bloc.tryConfigureStudy());
-    } catch (error) {
-      warning('$runtimeType - could not resolve informed consent - $error');
-    }
-  }
-
-  @override
-  void dispose() {
-    widget.model.removeListener(_onModelChanged);
-    super.dispose();
-  }
-
-  void _onModelChanged() {
-    if (widget.model.shouldPromptHealthConnectInstall && mounted) {
-      widget.model.healthConnectPromptShown();
-      showDialog<void>(
-        context: context,
-        barrierDismissible: true,
-        builder: (context) => InstallHealthConnectDialog(context),
-      );
-    }
-  }
-
-  @override
   Widget build(BuildContext context) {
     RPLocalizations locale = RPLocalizations.of(context)!;
 
     return Scaffold(
       body: SafeArea(child: widget.child),
-      // The tabs have nothing to show until the study is loaded - the home page
-      // is still a skeleton at that point - so keep them inert and dimmed.
+      // Nothing to show until the study loads, so keep the tabs inert and dimmed.
       bottomNavigationBar: ListenableBuilder(
         listenable: widget.model,
         builder: (context, navigationBar) => IgnorePointer(

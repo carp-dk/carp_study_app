@@ -3,8 +3,7 @@ part of carp_study_app;
 /// The 3-state connection summary shown on the home page.
 enum HomeConnectionState { all, partial, none }
 
-/// View model for [HomePage] and [CarpAppShell] - study status, devices,
-/// task counts, announcements, and the update / Health Connect prompts.
+/// View model for [HomePage] and [CarpAppShell] - everything the home tab shows.
 class HomePageViewModel extends ViewModel {
   HomePageViewModel({SystemInfoService? systemInfoService, StudyService? studyService, MessageService? messageService})
     : _systemInfoService = systemInfoService,
@@ -29,10 +28,7 @@ class HomePageViewModel extends ViewModel {
   /// The announcements/news shown in the "Feeds" section, newest first.
   List<Message> get messages => _messages.messages;
 
-  /// Is the study (and thus the home page content) loaded? Until then the
-  /// page shows a shimmer skeleton. Waits for both the study description and
-  /// the deployment status, so the about card (incl. its status bubble)
-  /// renders complete in one go instead of growing when the status lands.
+  /// Is the study loaded? Waits for the status too, so the card renders in one go.
   bool get isLoaded =>
       (_study.deployment?.studyDescription?.title ?? '').isNotEmpty && _study.cachedDeploymentStatus != null;
 
@@ -51,8 +47,7 @@ class HomePageViewModel extends ViewModel {
   /// The number of days on which the user completed at least one task.
   int get activeDaysInStudy => _activeDays.length;
 
-  /// Task activity for the last 7 days (oldest first) - true if at least one
-  /// task was completed that day.
+  /// The last 7 days, oldest first - true if a task was completed that day.
   List<bool> get lastWeekActivity {
     final done = _activeDays;
     final today = DateTime.now();
@@ -70,8 +65,7 @@ class HomePageViewModel extends ViewModel {
       ? null
       : _study.cachedDeploymentStatus!.status ?? StudyDeploymentStatusTypes.Invited;
 
-  /// Should the user be prompted to install Health Connect?
-  /// One-shot - the shell calls [healthConnectPromptShown] once shown.
+  /// Prompt to install Health Connect? One-shot, via [healthConnectPromptShown].
   bool get shouldPromptHealthConnectInstall => _healthConnectPromptPending;
 
   void healthConnectPromptShown() => _healthConnectPromptPending = false;
@@ -85,14 +79,22 @@ class HomePageViewModel extends ViewModel {
   /// The connectable data sources of this deployment (everything but the phone).
   List<DeviceViewModel> get connectionSources => _connectionSources;
   bool isSourceActive(DeviceViewModel d) => d.status == DeviceStatus.connected;
-  int get totalSourceCount => _connectionSources.length;
-  int get activeSourceCount => _connectionSources.where(isSourceActive).length;
+
+  /// Background sensing counts too - without it, data only flows in foreground.
+  bool get hasBackgroundSensing => BackgroundSensingService().isSupported;
+  bool get isBackgroundSensingActive => BackgroundSensingService().isConnected;
+
+  int get totalSourceCount => _connectionSources.length + (hasBackgroundSensing ? 1 : 0);
+  int get activeSourceCount => _connectionSources.where(isSourceActive).length + (isBackgroundSensingActive ? 1 : 0);
 
   HomeConnectionState get connectionState {
     final active = activeSourceCount;
     if (active == 0) return HomeConnectionState.none;
     return active >= totalSourceCount ? HomeConnectionState.all : HomeConnectionState.partial;
   }
+
+  /// Deploy the study - this page is the first shown once consent is in place.
+  Future<void> configureStudy() => bloc.tryConfigureStudy();
 
   @override
   void init(SmartphoneStudyController ctrl) {
@@ -106,8 +108,7 @@ class HomePageViewModel extends ViewModel {
     unawaited(_refreshDeploymentStatus());
   }
 
-  // The cached status is only filled by an explicit refresh; without this the
-  // status card stays hidden.
+  // The cached status is only filled by an explicit refresh.
   Future<void> _refreshDeploymentStatus() async {
     try {
       await _study.refreshDeploymentStatus();
@@ -117,9 +118,7 @@ class HomePageViewModel extends ViewModel {
     notifyListeners();
   }
 
-  // Re-read the device list whenever the bloc notifies (e.g. configuration
-  // completing). Device managers register asynchronously, so the initial sync
-  // in init() is usually empty; this is what fills the summary in later.
+  // Device managers register async, so init()'s list is empty - this fills it.
   void _attachToBloc() {
     if (_blocAttached) return;
     _blocAttached = true;
@@ -129,8 +128,7 @@ class HomePageViewModel extends ViewModel {
   void _syncSources() {
     final sources = _study.deploymentDevices.where((d) => d.deviceManager is! SmartphoneDeviceManager).toList();
     _cancelDeviceSubs();
-    // Subscribe to the durable device-manager stream directly, so the ephemeral
-    // DeviceViewModel wrappers from deploymentDevices don't matter.
+    // The durable manager stream, not the per-call DeviceViewModel wrappers.
     for (final s in sources) {
       _deviceSubs.add(s.statusEvents.listen((_) => notifyListeners()));
     }

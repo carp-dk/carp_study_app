@@ -1,7 +1,6 @@
 part of carp_study_app;
 
-/// The state of the [AppBloc], ordered by progress - the `is...` getters
-/// compare by index, so a state implies everything before it.
+/// The [AppBloc] state, ordered by progress - a state implies the ones before it.
 enum AppState {
   /// The BLoC is created but not ready for use.
   created,
@@ -9,8 +8,7 @@ enum AppState {
   /// The BLoC is initialized via the [initialized] method.
   initialized,
 
-  /// The last study configuration attempt failed. Recover by calling
-  /// [AppBloc.tryConfigureStudy] again.
+  /// Configuration failed - recover by calling [AppBloc.tryConfigureStudy] again.
   configurationFailed,
 
   /// The BLoC is in the process of being configured with a study.
@@ -20,8 +18,7 @@ enum AppState {
   configured,
 }
 
-/// The coordinator for the entire app - the state machine, the focused
-/// services, and orchestration spanning them. Singleton, via the global `bloc`.
+/// The app coordinator: state machine, services, and orchestration. See `bloc`.
 class AppBloc extends ChangeNotifier {
   AppState _state = AppState.created;
   final AppViewModel _appViewModel = AppViewModel();
@@ -94,32 +91,24 @@ class AppBloc extends ChangeNotifier {
     CarpResourceManager().initialize();
 
     if (AppConfig.deploymentMode != DeploymentMode.local) {
-      // Configure the CAWS backend if not in local deployment mode. This is
-      // offline-safe (it only configures the CAWS services locally; only
-      // authentication/token refresh hit the network), and must run so the
-      // deployment service is configured before Sensing().initialize uses it.
+      // Offline-safe, and configures the deployment service Sensing() needs.
       await auth.initialize();
     } else {
       // Deploy the local protocol if running in local mode
       await study.deployLocalProtocol();
     }
-    await Sensing().initialize(study.deploymentService);
 
     _state = AppState.initialized;
     notifyListeners();
     debug('$runtimeType initialized - deployment mode: ${AppConfig.deploymentMode.name}');
   }
 
-  /// Set the active study in the app based on an [invitation].
-  ///
-  /// The study translations are re-loaded by the app, which listens for the
-  /// study change.
+  /// Set the active study from an [invitation] - the app re-loads translations.
   void setStudyInvitation(ActiveParticipationInvitation invitation) {
     // create and save the participant info based on this invitation
     LocalSettings().participant = Participant.fromParticipationInvitation(invitation);
 
-    // save the study; this also seeds the CAWS backend services with it
-    // in order to access the correct resources (like translations etc.).
+    // Also seeds the CAWS services, so they resolve the study's resources.
     study.study = SmartphoneStudy.fromInvitation(invitation);
 
     // And then re-initialize the resource manager.
@@ -130,8 +119,7 @@ class AppBloc extends ChangeNotifier {
     info('Invitation received - study: ${study.study}');
   }
 
-  /// Deploy the study, set up messaging and pages, and start sensing.
-  /// On failure the state is reset for retry and the error rethrown.
+  /// Deploy the study and start sensing - on failure, reset for retry and rethrow.
   Future<void> configureStudy() async {
     // early out if already configuring or configured
     if (_state == AppState.configuring || isConfigured) {
@@ -142,6 +130,8 @@ class AppBloc extends ChangeNotifier {
     notifyListeners();
 
     try {
+      // Only once there is a study - this asks for notification permissions.
+      await Sensing().initialize(study.deploymentService);
       await study.configure();
     } catch (error) {
       _state = AppState.configurationFailed;
@@ -164,8 +154,7 @@ class AppBloc extends ChangeNotifier {
     await study.start();
   }
 
-  /// Open the task page when the user taps a user-task notification from
-  /// the OS. The subscription is created once and cancelled in [leaveStudy].
+  /// Open the task page when a task notification is tapped - until [leaveStudy].
   void _listenToUserTaskNotifications() {
     _userTaskNotificationSubscription ??= AppTaskController().userTaskEvents.listen((userTask) {
       if (userTask.state == UserTaskState.notified) {
@@ -175,8 +164,7 @@ class AppBloc extends ChangeNotifier {
     });
   }
 
-  /// Leave the study: stop sensing, wipe study info and consent from the
-  /// phone, and return to invitation selection. Local data is not recoverable.
+  /// Stop sensing and wipe the study from the phone - data is not recoverable.
   Future<void> leaveStudy() async {
     info('Leaving study ${study.study}');
 
@@ -186,18 +174,15 @@ class AppBloc extends ChangeNotifier {
     await _userTaskNotificationSubscription?.cancel();
     _userTaskNotificationSubscription = null;
 
-    // stop sensing and remove all deployment info
+    // stop sensing - including in background - and remove all deployment info
+    await BackgroundSensingService().disconnect();
     await study.remove();
 
     _state = AppState.initialized;
     notifyListeners();
   }
 
-  /// Sign user out and leave the study.
-  ///
-  /// This entails everything from the [leaveStudy] method plus permanently
-  /// deleting all user authentication information from this phone, including
-  /// the authentication and refresh tokens.
+  /// [leaveStudy] plus permanently deleting all authentication from this phone.
   Future<void> signOutAndLeaveStudy() async {
     await auth.signOut();
     await leaveStudy();

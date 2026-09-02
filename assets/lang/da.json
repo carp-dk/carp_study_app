@@ -162,10 +162,10 @@
   "pages.ic.need_accept": "Du skal acceptere denne informerede samtykke for at kunne deltage i dette studie.",
   "pages.ic.go_to_ic": "Tilbage til samtykke",
   "pages.devices.title": "Enheder",
-  "pages.devices.message": "Her kan du forbinde de online tjenester og enheder, som dette studie bruger til at indsamle data.",
+  "pages.devices.message": "Her kan du forbinde de tjenester og enheder, som dette studie bruger til at indsamle data.",
   "pages.devices.phone.title": "Telefon",
   "pages.devices.devices.title": "Enheder",
-  "pages.devices.services.title": "Ydelser",
+  "pages.devices.services.title": "Tjenester",
   "pages.devices.type.unknown.name": "Ukendt enhed",
   "pages.devices.type.smartphone.name": "Mobiltelefon",
   "pages.devices.type.esense.name": "eSense",
@@ -175,6 +175,7 @@
   "pages.devices.type.air_quality.name": "Luftkvalitet",
   "pages.devices.type.location.name": "Lokalisering",
   "pages.devices.type.health.name": "Sundhed",
+  "pages.devices.type.background.name": "Baggrundsindsamling",
   "pages.devices.type.smartphone.description": "Denne telefon",
   "pages.devices.type.esense.description": "eSense ear plug",
   "pages.devices.type.polar.description": "Polar hjertemonitor",
@@ -183,6 +184,7 @@
   "pages.devices.type.air_quality.description": "Luftkvalitetstjeneste",
   "pages.devices.type.location.description": "Lokaliseringstjeneste",
   "pages.devices.type.health.description": "Sundhedstjeneste",
+  "pages.devices.type.background.description": "Fortsætter med at indsamle data, mens appen kører i baggrunden",
   "pages.devices.type.smartphone.instructions": "Denne telefon ",
   "pages.devices.type.esense.instructions": "Du skal forbinde den VENSTRE øreprop til dette studie. Tænd øreprobben ved at trykke knappen ned indtil den blinker rød. Nu skulle du kunne vælge den venstre øreprop i listen.\n\nHvis du vil anvende eSense ørepropperne til lyd og telefoni, skal du forbinde den HØJRE øreprop til telefonen. Dette gøres gennem telefonens Bluetooth INDSTILLINGER. For at parre ørepropperne til telefonen skal du trykke knappen på den HØJRE øreprop ned indtil den begyder at blinke rød og blå. Så er ørepropperne i parringstilstand. Når ørepropperne er forbundet til telefonen, vil de blinke blå.",
   "pages.devices.type.polar.instructions": "Sørg for at din Polar enhed er tændt. Polar H10 pulsmåleren tændes automatisk når du tager den på. Polar Verity Sense armbåndet tændes ved at trykke den blanke knap på siden ind indtil LED dioderne lyser.\n\nFor a parre Polar enheden med telefonen skal du åbne instillingerne på telefonen og trykke på Polar enheden. Hvis du ikke har et armbånd, kan du bære sensoren direkte på underarmen, lige under eller over albuen, med sensoren presset fast mod huden.",
@@ -250,5 +252,6 @@
   "pages.home.retry": "Prøv igen",
   "pages.devices.connection.step.scan.searching": "Søger efter enheder i nærheden…\nSørg for, at din enhed er tændt og inden for rækkevidde.",
   "pages.devices.connection.step.scan.show_all": "Kan du ikke se din enhed? Vis alle",
-  "pages.devices.connection.step.scan.filtered": "Vis kun matchende enheder"
+  "pages.devices.connection.step.scan.filtered": "Vis kun matchende enheder",
+  "pages.informed_consent.upload_failed": "Dit samtykke kunne ikke gemmes. Tjek din internetforbindelse, og prøv igen."
 }

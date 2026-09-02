@@ -110,7 +110,7 @@
   "dialog.location.continue": "Continuar",
   "pages.ic.need_accept": "Necesitas acceptar el consentimiento para participar en el estudio.",
   "pages.ic.go_to_ic": "Volver al consentimiento",
-  "pages.devices.message": "Aquí puedes conectar los servicios en línea y dispositivos que este estudio usa para recopilar datos.",
+  "pages.devices.message": "Aquí puedes conectar los servicios y dispositivos que este estudio usa para recopilar datos.",
   "pages.devices.phone.title": "Teléfono",
   "pages.devices.devices.title": "Dispositivos",
   "pages.devices.services.title": "Servicios",
@@ -122,11 +122,13 @@
   "pages.devices.type.weather.name": "Tiempo",
   "pages.devices.type.air_quality.name": "Calidad del aire",
   "pages.devices.type.location.name": "Ubicación",
+  "pages.devices.type.background.name": "Recogida en segundo plano",
   "pages.devices.type.smartphone.description": "Este teléfono",
   "pages.devices.type.esense.description": "auricular eSense",
   "pages.devices.type.weather.description": "servicio del tiempo",
   "pages.devices.type.air_quality.description": "servicio de la calidad del aire",
   "pages.devices.type.location.description": "servicio de ubicación",
+  "pages.devices.type.background.description": "Sigue recopilando datos mientras la aplicación está en segundo plano",
   "pages.devices.type.smartphone.instructions": "Este teléfono está autimaticamente conectado al estudio.",
   "pages.devices.type.esense.instructions": "Debe conectar el auricular IZQUIERDO a este estudio. Encienda el auricular izquierdo manteniendo presionado el botón pulsador hasta que parpadee en rojo. Ahora debería poder seleccionar el auricular izquierdo en la lista de dispositivos.\n\nSi desea usar los auriculares eSense para la transmisión de audio, debe conectar el auricular RIGT al teléfono usando la CONFIGURACIÓN de Bluetooth del teléfono. Para emparejar un auricular con el teléfono, mantenga presionado el botón hasta que comience a parpadear en azul y rojo. Ahora el auricular está en modo de emparejamiento. Una vez que el auricular esté conectado al teléfono, lo indicará parpadeando en azul.",
   "pages.devices.type.polar.instructions": "Asegúrate de que tu dispositivo Polar esté encendido. La correa pectoral Polar H10 se enciende automáticamente cuando se coloca en el pecho. La correa para el brazo Polar Verity Sense debe encenderse presionando el botón lateral hasta que se enciendan los LED.\n\nPara vincular el dispositivo Polar con el teléfono, abra la configuración de Bluetooth del teléfono y haga clic en el dispositivo Polar.",
@@ -160,5 +162,6 @@
   "pages.devices.location_permission.message": "Conectarse a dispositivos Bluetooth cercanos requiere los permisos de Dispositivos cercanos y Ubicación. Para permitirlos, ve a: Ajustes → Apps → CARP Studies → Permisos, concede los permisos que falten e intenta conectarte de nuevo.",
   "pages.devices.connection.step.scan.searching": "Buscando dispositivos cercanos…\nAsegúrate de que tu dispositivo esté encendido y dentro del alcance.",
   "pages.devices.connection.step.scan.show_all": "¿No ves tu dispositivo? Mostrar todos",
-  "pages.devices.connection.step.scan.filtered": "Mostrar solo dispositivos coincidentes"
+  "pages.devices.connection.step.scan.filtered": "Mostrar solo dispositivos coincidentes",
+  "pages.informed_consent.upload_failed": "No se pudo guardar su consentimiento. Compruebe su conexión a internet e inténtelo de nuevo."
 }

@@ -1,7 +1,6 @@
 part of carp_study_app;
 
-/// The backend side of informed consent: the study's consent document and
-/// the user's signed consent in CAWS. Policy lives in [InformedConsentViewModel].
+/// The consent document and signed consent in CAWS - policy is the view model's.
 class ConsentService {
   ConsentService(this._manager, {CarpBackend? backend}) : _backend = backend ?? CarpBackend();
 
@@ -42,5 +41,5 @@ class ConsentService {
   }
 
   /// Upload the signed consent [result] to CAWS.
-  Future<void> upload(RPTaskResult result) => _backend.uploadInformedConsent(result);
+  Future<void> upload(RPTaskResult result) => _backend.uploadInformedConsent(result).timeout(Duration(seconds: 20));
 }

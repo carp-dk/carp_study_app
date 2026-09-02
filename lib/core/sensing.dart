@@ -7,8 +7,7 @@
 
 part of carp_study_app;
 
-/// The sensing layer (singleton): registers sampling packages, data managers,
-/// and task factories. Owns no study - the study lifecycle is [StudyService]'s.
+/// Registers sampling packages, data managers and task factories. Owns no study.
 class Sensing {
   static final Sensing _instance = Sensing._();
 
@@ -17,7 +16,7 @@ class Sensing {
 
   Sensing._() {
     // create and register external sampling packages
-    //SamplingPackageRegistry().register(ConnectivitySamplingPackage());
+    SamplingPackageRegistry().register(ConnectivitySamplingPackage());
     SamplingPackageRegistry().register(ContextSamplingPackage());
     //SamplingPackageRegistry.register(CommunicationSamplingPackage());
     SamplingPackageRegistry().register(MediaSamplingPackage());
@@ -26,18 +25,18 @@ class Sensing {
     SamplingPackageRegistry().register(PolarSamplingPackage());
     SamplingPackageRegistry().register(MovesenseSamplingPackage());
 
-    // Create and register external data managers.
-    // The CARP data manager is needed in both LOCAL and CARP deployments,
-    // since a local study protocol may still upload to CAWS.
+    // Needed in LOCAL too - a local protocol may still upload to CAWS.
     DataManagerRegistry().register(CarpDataManagerFactory());
 
     // register the special-purpose audio user task factory
     AppTaskController().registerUserTaskFactory(AppUserTaskFactory());
   }
 
-  /// Register the available devices and configure the CAMS client manager
-  /// with the given [deploymentService].
+  /// Register the devices and configure the client manager with [deploymentService].
   Future<void> initialize(DeploymentService deploymentService) async {
+    // The client manager is a singleton and cannot be reconfigured on retry.
+    if (SmartPhoneClientManager().isConfigured) return;
+
     info('Initializing $runtimeType');
 
     // Set up the devices available on this phone
@@ -50,7 +49,13 @@ class Sensing {
 
       // Need to ask for permissions all at once on Android.
       askForPermissions: Platform.isAndroid ? true : false,
+
+      // Only resumed - the user connects to it themselves the first time.
+      enableBackgroundMode: false,
     );
+
+    // Resumes background sensing if the user already connected to it.
+    await BackgroundSensingService().refresh();
 
     info('$runtimeType initialized');
   }
