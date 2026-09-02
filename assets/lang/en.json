@@ -276,5 +276,6 @@
   "tasks.participant_data.phone_number.phone_number": "Phone No.",
   "tasks.participant_data.review.title": "Review",
   "pages.home.setup_failed": "Could not set up the study. Please check your internet connection and try again.",
-  "pages.home.retry": "Retry"
+  "pages.home.retry": "Retry",
+  "pages.informed_consent.upload_failed": "Could not save your consent. Please check your internet connection and try again."
 }

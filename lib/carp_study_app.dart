@@ -23,9 +23,7 @@ class CarpAppState extends State<CarpStudyApp> {
   /// Reload language translations and re-build the entire app.
   void reloadLocale() => setState(() => rpLocalizationsDelegate.reload());
 
-  // State-driven routing. Bloc state
-  // changes notify the router via refreshListenable, which re-evaluates the
-  // redirect at the current location and moves the user automatically.
+  // State-driven routing: a bloc change refreshes the router, which re-redirects.
   final GoRouter _router = GoRouter(
     initialLocation: homeRoute,
     navigatorKey: _rootNavigatorKey,
@@ -39,8 +37,7 @@ class CarpAppState extends State<CarpStudyApp> {
         return LoginPage.route;
       }
 
-      // 2) No study selected → user belongs on the invitation list (or its
-      // details page). Anywhere else gets bounced to the list.
+      // 2) No study → the invitation list (or its details page).
       if (!bloc.study.hasStudy) {
         if (loc == InvitationListPage.route || loc.startsWith('${InvitationDetailsPage.route}/')) {
           return null;
@@ -48,20 +45,22 @@ class CarpAppState extends State<CarpStudyApp> {
         return InvitationListPage.route;
       }
 
+      // 3) Consent not signed → the consent document. A redirect replaces the
+      // location, so - unlike a push - a router refresh cannot replay it.
+      final needsSigning = await bloc.appViewModel.informedConsentViewModel.needsSigning();
+      if (needsSigning) return InformedConsentPage.route;
+      if (loc == InformedConsentPage.route) return homeRoute;
+
       // 4) Fully onboarded.
       return null;
     },
     routes: <RouteBase>[
       ShellRoute(
         navigatorKey: _shellNavigatorKey,
-        builder: (BuildContext context, GoRouterState state, Widget child) => CarpAppShell(
-          model: bloc.appViewModel.homePageViewModel,
-          consentModel: bloc.appViewModel.informedConsentViewModel,
-          child: child,
-        ),
+        builder: (BuildContext context, GoRouterState state, Widget child) =>
+            CarpAppShell(model: bloc.appViewModel.homePageViewModel, child: child),
         routes: [
-          // Home is just a landing slot — the top-level redirect always moves
-          // the user to the right place based on bloc state.
+          // Just a landing slot - the redirect above moves the user on.
           GoRoute(path: homeRoute, parentNavigatorKey: _shellNavigatorKey, redirect: (_, _) => HomePage.route),
           GoRoute(
             path: HomePage.route,
@@ -81,8 +80,7 @@ class CarpAppState extends State<CarpStudyApp> {
               transitionsBuilder: bottomNavigationBarAnimation,
             ),
           ),
-          // HomePage is the new study landing page; keep /study as a redirect
-          // alias so any legacy navigation lands on the Home tab.
+          // /study is a legacy alias for the Home tab.
           GoRoute(path: StudyPage.route, parentNavigatorKey: _shellNavigatorKey, redirect: (_, _) => HomePage.route),
           GoRoute(
             path: StatisticsPage.route,
@@ -104,8 +102,7 @@ class CarpAppState extends State<CarpStudyApp> {
           ),
         ],
       ),
-      // Profile is not a bottom-nav tab - it slides in full-screen over the
-      // shell, so it lives on the root navigator.
+      // Profile slides in full-screen over the shell, so: root navigator.
       GoRoute(
         path: ProfilePage.route,
         parentNavigatorKey: _rootNavigatorKey,
@@ -115,8 +112,7 @@ class CarpAppState extends State<CarpStudyApp> {
           transitionsBuilder: slideInFromRightAnimation,
         ),
       ),
-      // Consent escapes the shell (root navigator) so the bottom nav doesn't
-      // bleed through while the user is completing informed consent.
+      // Consent is not a tab - it replaces the whole app until it is signed.
       GoRoute(
         path: InformedConsentPage.route,
         parentNavigatorKey: _rootNavigatorKey,
@@ -168,8 +164,7 @@ class CarpAppState extends State<CarpStudyApp> {
     debugLogDiagnostics: true,
   );
 
-  /// Research Package translations, incl. both local language assets plus
-  /// translations of informed consent and surveys downloaded from CARP
+  /// RP translations: local language assets plus those downloaded from CARP.
   final RPLocalizationsDelegate rpLocalizationsDelegate = _AppLocalizationsDelegate(
     loaders: [const AssetLocalizationLoader(), bloc.resources.localizationLoader],
   );
@@ -189,8 +184,7 @@ class CarpAppState extends State<CarpStudyApp> {
     super.dispose();
   }
 
-  /// Re-load translations when a (new) study is set or has been configured,
-  /// since both make new study-specific translations available.
+  /// Re-load translations when a study is set or configured - both add new ones.
   void _onAppStateChanged() {
     final configured = bloc.state == AppState.configured;
     final deploymentId = bloc.study.study?.studyDeploymentId;
@@ -241,8 +235,7 @@ class CarpAppState extends State<CarpStudyApp> {
   }
 }
 
-/// Loads the RP translations and captures the loaded localization in
-/// [AppConfig], where non-UI layers (e.g. protocol translation) read it.
+/// Loads the RP translations into [AppConfig], where non-UI layers read them.
 class _AppLocalizationsDelegate extends RPLocalizationsDelegate {
   _AppLocalizationsDelegate({required super.loaders});
 
