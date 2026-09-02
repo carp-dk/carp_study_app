@@ -1,3 +1,7 @@
+import 'dart:convert';
+import 'dart:io';
+import 'dart:typed_data';
+
 import 'package:carp_backend/carp_backend.dart';
 import 'package:carp_context_package/carp_context_package.dart';
 import 'package:carp_core/carp_core.dart' as core;
@@ -9,6 +13,26 @@ import 'package:research_package/research_package.dart';
 import 'exports.dart';
 import 'test_utils.dart';
 import 'services_test.mocks.dart';
+
+/// The visible words of a PDF - its content streams are zlib deflated, and
+/// each word is a separate `(word)Tj` literal.
+String _pdfText(Uint8List pdf) {
+  final buffer = StringBuffer();
+  final raw = String.fromCharCodes(pdf);
+  for (final match in RegExp(r'stream\r?\n').allMatches(raw)) {
+    final end = raw.indexOf('endstream', match.end);
+    if (end < 0) continue;
+    try {
+      final content = utf8.decode(ZLibDecoder().convert(pdf.sublist(match.end, end)), allowMalformed: true);
+      for (final word in RegExp(r'\(((?:[^()\\]|\\.)*)\)').allMatches(content)) {
+        buffer.write('${word[1]} ');
+      }
+    } catch (_) {
+      // not a deflated text stream (e.g. an image) - nothing to read
+    }
+  }
+  return buffer.toString();
+}
 
 class _FakeMessageManager extends MessageManager {
   List<Message> toReturn = [];
@@ -281,6 +305,141 @@ void main() {
       ).thenAnswer((_) async => InformedConsentInput(userId: '42', name: 'jdoe', consent: '{}', signatureImage: ''));
 
       expect(await consent.hasSignedConsent(study), isTrue);
+    });
+
+    test('signedConsentBytes returns the signed consent as a readable PDF', () async {
+      final study = SmartphoneStudy(studyDeploymentId: 'dep-1', deviceRoleName: 'phone');
+      when(backend.getInformedConsentByRole('dep-1', null)).thenAnswer(
+        (_) async => InformedConsentInput(
+          userId: '42',
+          name: 'jdoe',
+          consent: json.encode(
+            RPConsentSignatureResult(
+              identifier: 'consent',
+              consentDocument: RPConsentDocument(
+                title: 'Study Consent',
+                sections: [RPConsentSection(type: RPConsentSectionType.Overview, summary: 'What this study does.')],
+              ),
+              signature: RPSignatureResult(firstName: 'Jane', lastName: 'Doe'),
+            ).toJson(),
+          ),
+          signatureImage: '',
+        ),
+      );
+
+      final bytes = await consent.signedConsentBytes(study);
+
+      // This is the file the save dialog writes, so it has to be a PDF the
+      // participant can open, with the consent they signed inside it.
+      expect(bytes, isNotNull);
+      expect(utf8.decode(bytes!.sublist(0, 4)), '%PDF');
+      final text = _pdfText(bytes);
+      expect(text, contains('Study Consent'));
+      expect(text, contains('What this study does.'));
+      expect(text, contains('Jane Doe'));
+    });
+
+    test('the PDF embeds the signature image stored as Uint8List.toString()', () async {
+      // Research Package stores the signature PNG as `[137, 80, 78, ...]`, not
+      // as base64 - decoding it as base64 silently loses the signature.
+      final png = [
+        ...[137, 80, 78, 71, 13, 10, 26, 10, 0, 0, 0, 13, 73, 72, 68, 82, 0, 0, 0, 1, 0, 0, 0, 1, 8, 6, 0, 0, 0],
+        ...[31, 21, 196, 137, 0, 0, 0, 13, 73, 68, 65, 84, 120, 156, 99, 96, 96, 96, 248, 15, 0, 1, 4, 1, 0, 95],
+        ...[229, 195, 75, 0, 0, 0, 0, 73, 69, 78, 68, 174, 66, 96, 130],
+      ];
+      final study = SmartphoneStudy(studyDeploymentId: 'dep-1', deviceRoleName: 'phone');
+      when(backend.getInformedConsentByRole('dep-1', null)).thenAnswer(
+        (_) async =>
+            InformedConsentInput(userId: '42', name: 'jdoe', consent: 'I agree', signatureImage: png.toString()),
+      );
+
+      final bytes = await consent.signedConsentBytes(study);
+
+      expect(bytes, isNotNull);
+      expect(String.fromCharCodes(bytes!), contains('/Image'));
+    });
+
+    test('a consent signed against a newer RP with unknown section types still renders', () async {
+      // Seen in the field: a consent document using RPConsentSectionType
+      // values (e.g. ActivityRecognition) added after this app's RP version -
+      // the enum decoder throws and the whole document used to be dropped.
+      final study = SmartphoneStudy(studyDeploymentId: 'dep-1', deviceRoleName: 'phone');
+      when(backend.getInformedConsentByRole('dep-1', null)).thenAnswer(
+        (_) async => InformedConsentInput(
+          userId: '42',
+          name: 'jdoe',
+          consent: json.encode({
+            '__type': 'RPConsentSignatureResult',
+            'identifier': 'consent',
+            'consentDocument': {
+              '__type': 'RPConsentDocument',
+              'title': 'Study Consent',
+              'signatures': <Map<String, dynamic>>[],
+              'sections': [
+                {
+                  '__type': 'RPConsentSection',
+                  'type': 'SectionTypeFromTheFuture',
+                  'title': 'Activity Recognition',
+                  'summary': 'We track your movement.',
+                },
+                {
+                  '__type': 'RPConsentSection',
+                  'type': 'Overview',
+                  'title': 'Overview',
+                  'summary': 'What this study does.',
+                },
+              ],
+            },
+            'signature': {'__type': 'RPSignatureResult', 'firstName': 'Jane', 'lastName': 'Doe'},
+          }),
+          signatureImage: '',
+        ),
+      );
+
+      final bytes = await consent.signedConsentBytes(study);
+
+      expect(bytes, isNotNull);
+      final text = _pdfText(bytes!);
+      expect(text, isNot(contains('could not be displayed')));
+      expect(text, contains('Activity Recognition'));
+      expect(text, contains('We track your movement.'));
+      expect(text, contains('What this study does.'));
+      expect(text, contains('Jane Doe'));
+    });
+
+    test('unparseable consent JSON never dumps signature bytes into the PDF', () async {
+      // If the RP JSON cannot be deserialized, falling back to printing it
+      // verbatim would fill the PDF with the raw signature byte list.
+      final study = SmartphoneStudy(studyDeploymentId: 'dep-1', deviceRoleName: 'phone');
+      when(backend.getInformedConsentByRole('dep-1', null)).thenAnswer(
+        (_) async => InformedConsentInput(
+          userId: '42',
+          name: 'jdoe',
+          consent: '{"__type": "unknown", "signature": "[137, 80, 78, 71, 13, 10]"}',
+          signatureImage: '',
+        ),
+      );
+
+      final bytes = await consent.signedConsentBytes(study);
+
+      expect(bytes, isNotNull);
+      final text = _pdfText(bytes!);
+      expect(text, isNot(contains('137')));
+      expect(text, contains('could not be displayed'));
+    });
+
+    test('signedConsentBytes is null when nothing is signed', () async {
+      final study = SmartphoneStudy(studyDeploymentId: 'dep-1', deviceRoleName: 'phone');
+      when(backend.getInformedConsentByRole('dep-1', null)).thenAnswer((_) async => null);
+
+      expect(await consent.signedConsentBytes(study), isNull);
+    });
+
+    test('signedConsentBytes is null when the backend cannot be reached', () async {
+      final study = SmartphoneStudy(studyDeploymentId: 'dep-1', deviceRoleName: 'phone');
+      when(backend.getInformedConsentByRole('dep-1', null)).thenAnswer((_) async => throw Exception('offline'));
+
+      expect(await consent.signedConsentBytes(study), isNull);
     });
   });
 
