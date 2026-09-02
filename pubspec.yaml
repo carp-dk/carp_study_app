@@ -3,7 +3,7 @@ description: The generic CARP study app.
 publish_to: "none"
 # Bump only the version name for a release; the `+N` build number is ignored by CI
 # (Fastlane auto-increments the Play versionCode; iOS uses the Xcode Cloud build number).
-version: 4.4.3+1
+version: 5.0.0+1
 
 environment:
   sdk: ">=3.8.0 <4.0.0"

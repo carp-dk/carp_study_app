@@ -46,7 +46,6 @@
          running while the app is not in the foreground. The service itself is
          declared in the <application> tag below. -->
     <uses-permission android:name="android.permission.REQUEST_IGNORE_BATTERY_OPTIMIZATIONS" />
-    <uses-permission android:name="android.permission.FOREGROUND_SERVICE_SPECIAL_USE" />
 
     <!-- The following permissions are used in the Context Package -->
 
@@ -211,19 +210,16 @@
         <service android:name="dk.cachet.activity_recognition_flutter.activity.ActivityRecognizedService"
         android:exported="true"/> -->
 
-        <!-- The foreground service keeping data sampling alive in the background.
-             The flutter_background plugin does not declare it, so it must be
-             declared here with its foreground service type.
-             Deliberately not "dataSync": that type is capped at 6 hours per day
-             on Android 15+, which would cut off continuous study sampling. -->
+        <!-- The foreground service hosting the study sampling pipeline. The
+             flutter_background plugin does not declare it, so it is declared
+             here with its foreground service type.
+             "location": continuous location updates are what keep sampling
+             alive - the same anchor background sensing uses on iOS - and the
+             type is uncapped, unlike dataSync's 6 hours per day. -->
         <service
             android:name="de.julianassmann.flutter_background.IsolateHolderService"
             android:exported="false"
-            android:foregroundServiceType="specialUse">
-            <property
-                android:name="android.app.PROPERTY_SPECIAL_USE_FGS_SUBTYPE"
-                android:value="Continuous collection of research study data while the app is in the background, for the duration of the study the participant has consented to." />
-        </service>
+            android:foregroundServiceType="location" />
 
         <!-- Don't delete the meta-data below.
              This is used by the Flutter tool to generate GeneratedPluginRegistrant.java -->
