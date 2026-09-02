@@ -1,3 +1,8 @@
+## 4.4.3
+
+* version bump for App Store resubmission; 4.4.1 was already approved and its
+  release train closed
+
 ## 4.4.2
 
 * removed unused Health Connect permissions to comply with the Google Play

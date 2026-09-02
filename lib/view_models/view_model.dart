@@ -1,9 +1,7 @@
 part of carp_study_app;
 
-/// An abstract view model used for all view models in the app.
-///
-/// Note that a view model is a [ChangeNotifier] and will notify its listeners
-/// if changed, including any [ListenableBuilder] widgets.
+/// Base view model - a [ChangeNotifier] that notifies its listeners
+/// (incl. [ListenableBuilder] widgets) when changed.
 abstract class ViewModel extends ChangeNotifier {
   SmartphoneStudyController? _controller;
 
@@ -13,6 +11,17 @@ abstract class ViewModel extends ChangeNotifier {
   @mustCallSuper
   void init(SmartphoneStudyController ctrl) {
     _controller = ctrl;
+  }
+
+  /// The role name of the device of [deviceType] in the current deployment,
+  /// or null if not loaded / not included - data streams are keyed by role.
+  @protected
+  String? roleOf(String deviceType) =>
+      controller?.deployment?.devices.where((device) => device.type == deviceType).firstOrNull?.roleName;
+
+  /// Log and ignore measurement stream errors so sensing can continue.
+  void onMeasurementStreamError(Object error, [StackTrace? stackTrace]) {
+    warning('$runtimeType - measurement stream error: $error');
   }
 
   /// Clear this view model, i.e. delete all data incl. cached data.
@@ -35,15 +44,10 @@ abstract class DataModel {
   Map<String, dynamic> toJson();
 }
 
-/// An abstract view model which can serialize its [DataModel] across app restart.
+/// A view model holding an aggregated [DataModel] behind a card. Not
+/// persisted - every card is rebuilt from backfill and/or live probes.
 abstract class SerializableViewModel<D extends DataModel> extends ViewModel {
-  String? _filename;
-  Timer? _persistenceTimer;
-
-  /// The current data model.
-  ///
-  /// The data model is either created using the [createModel] method or loaded
-  /// from persistent storage.
+  /// The current data model, fresh on every [init].
   D get model => _model;
   late D _model;
 
@@ -51,15 +55,7 @@ abstract class SerializableViewModel<D extends DataModel> extends ViewModel {
     _model = createModel();
   }
 
-  /// The [DataModel] to be serialized.
-  ///
-  /// Subclasses should override this method to return a newly created instance
-  /// of their associated [DataModel] subclass. For example:
-  ///
-  /// ```dart
-  /// @override
-  /// MyDataModel createModel() => MyDataModel();
-  /// ```
+  /// Create the [DataModel] this view model aggregates into.
   @protected
   D createModel();
 
@@ -68,95 +64,6 @@ abstract class SerializableViewModel<D extends DataModel> extends ViewModel {
   void init(SmartphoneStudyController ctrl) {
     super.init(ctrl);
     _model = createModel();
-
-    // restore the data model (if any saved)
-    restore().then((savedModel) {
-      _model = savedModel ?? _model;
-      notifyListeners();
-    });
-
-    // save the data model on a regular basis.
-    _persistenceTimer = Timer.periodic(const Duration(minutes: 3), (_) => save());
-
-    /// Check if we are running in a test environment.
-    /// If so, do not listen to app lifecycle events.
-    /// [AppLifecycleListener] is not supported in a test environment.
-    if (!Platform.environment.containsKey('FLUTTER_TEST')) {
-      AppLifecycleListener(onHide: () async => await save());
-    }
-  }
-
-  @override
-  void clear() {
-    super.clear();
-    _filename = null;
-    _persistenceTimer?.cancel();
-    _persistenceTimer = null;
-    delete();
-  }
-
-  @override
-  void dispose() {
-    _filename = null;
-    _persistenceTimer?.cancel();
-    _persistenceTimer = null;
-
-    save().then((_) => super.dispose());
-  }
-
-  /// Current path and filename of the cache of the model.
-  Future<String> get filename async {
-    String path = await LocalSettings().cacheBasePath ?? '';
-    _filename = '$path/$runtimeType.json';
-    return _filename!;
-  }
-
-  /// Persistently save the [model].
-  /// Returns true if successful, false otherwise.
-  Future<bool> save() async {
-    bool success = true;
-    try {
-      var json = model.toJson();
-      String name = (await filename);
-      debug("Saving $runtimeType data to file '$name'.");
-      File(name).writeAsStringSync(jsonEncode(json));
-    } catch (exception) {
-      success = false;
-      warning('Failed to save $runtimeType - $exception');
-    }
-    return success;
-  }
-
-  /// Permanently delete the cached [model].
-  /// Returns true if successful, false otherwise.
-  bool delete() {
-    bool success = true;
-    try {
-      if (_filename != null) {
-        debug("Deleting $runtimeType data from file '$_filename'.");
-        File(_filename!).deleteSync();
-      }
-    } catch (exception) {
-      success = false;
-      warning('Failed to delete $runtimeType data - $exception');
-    }
-    return success;
-  }
-
-  /// Restore the [model] from persistent storage.
-  /// Returns null if unsuccessful.
-  Future<D?> restore() async {
-    D? result;
-    try {
-      String name = (await filename);
-      debug("Restoring $runtimeType data from file '$name'.");
-      final jsonString = File(name).readAsStringSync();
-      final modelAsJson = json.decode(jsonString) as Map<String, dynamic>;
-      result = model.fromJson(modelAsJson) as D;
-    } catch (exception) {
-      warning('Failed to load $runtimeType - $exception');
-    }
-    return result;
   }
 }
 
@@ -185,11 +92,12 @@ class HourlyMeasure {
   String toString() => '$hour:$minute';
 }
 
-/// The view model for the entire app.
+/// The root view model - owns one instance of every page view model and
+/// forwards [init], [clear], and [dispose] to them.
 class AppViewModel extends ViewModel {
   final HomePageViewModel _homePageViewModel = HomePageViewModel();
   final LoginViewModel _loginViewModel = LoginViewModel();
-  final DataVisualizationPageViewModel _dataVisualizationPageViewModel = DataVisualizationPageViewModel();
+  final StatisticsViewModel _statisticsViewModel = StatisticsViewModel();
   final StudyPageViewModel _studyPageViewModel = StudyPageViewModel();
   final TaskListPageViewModel _taskListPageViewModel = TaskListPageViewModel();
   final ProfilePageViewModel _profilePageViewModel = ProfilePageViewModel();
@@ -202,7 +110,7 @@ class AppViewModel extends ViewModel {
 
   HomePageViewModel get homePageViewModel => _homePageViewModel;
   LoginViewModel get loginViewModel => _loginViewModel;
-  DataVisualizationPageViewModel get dataVisualizationPageViewModel => _dataVisualizationPageViewModel;
+  StatisticsViewModel get statisticsViewModel => _statisticsViewModel;
   StudyPageViewModel get studyPageViewModel => _studyPageViewModel;
   TaskListPageViewModel get taskListPageViewModel => _taskListPageViewModel;
   ProfilePageViewModel get profilePageViewModel => _profilePageViewModel;
@@ -217,7 +125,7 @@ class AppViewModel extends ViewModel {
     _homePageViewModel.init(ctrl);
     _taskListPageViewModel.init(ctrl);
     _studyPageViewModel.init(ctrl);
-    _dataVisualizationPageViewModel.init(ctrl);
+    _statisticsViewModel.init(ctrl);
     _devicesPageViewModel.init(ctrl);
 
     _profilePageViewModel.init(ctrl);
@@ -231,11 +139,10 @@ class AppViewModel extends ViewModel {
     _homePageViewModel.clear();
     _taskListPageViewModel.clear();
     _studyPageViewModel.clear();
-    _dataVisualizationPageViewModel.clear();
+    _statisticsViewModel.clear();
     _devicesPageViewModel.clear();
 
     _profilePageViewModel.clear();
-    _invitationsListViewModel.clear();
     _informedConsentViewModel.clear();
 
     super.clear();
@@ -246,7 +153,7 @@ class AppViewModel extends ViewModel {
     _homePageViewModel.dispose();
     _taskListPageViewModel.dispose();
     _studyPageViewModel.dispose();
-    _dataVisualizationPageViewModel.dispose();
+    _statisticsViewModel.dispose();
     _devicesPageViewModel.dispose();
 
     _profilePageViewModel.dispose();

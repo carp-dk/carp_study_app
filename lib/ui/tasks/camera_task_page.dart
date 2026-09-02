@@ -70,24 +70,20 @@ class CameraTaskPageState extends State<CameraTaskPage> {
                               child: Row(
                                 mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                                 children: [
-                                  OutlinedButton(
+                                  TextButton(
                                     onPressed: () {
                                       Navigator.pop(context);
                                     },
                                     child: Text(locale.translate("Cancel")),
                                   ),
-                                  ElevatedButton(
+                                  FilledButton(
                                     onPressed: () => Navigator.push(
                                       context,
                                       MaterialPageRoute<void>(
                                         builder: (context) => CameraPage(videoUserTask: widget.mediaUserTask),
                                       ),
                                     ),
-                                    style: ElevatedButton.styleFrom(
-                                      backgroundColor: Theme.of(context).colorScheme.primary,
-                                      padding: const EdgeInsets.symmetric(horizontal: 30, vertical: 12),
-                                    ),
-                                    child: Text(locale.translate("next"), style: TextStyle(color: Colors.white)),
+                                    child: Text(locale.translate("next")),
                                   ),
                                 ],
                               ),

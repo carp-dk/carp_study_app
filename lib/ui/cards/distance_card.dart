@@ -1,75 +1,76 @@
 part of carp_study_app;
 
 class DistanceCard extends StatefulWidget {
-  final List<Color> colors;
-
   final MobilityCardViewModel model;
-  const DistanceCard(this.model, {super.key, this.colors = const [CACHET.BLUE_1, CACHET.BLUE_2, CACHET.BLUE_3]});
+  final List<Color> colors;
+  const DistanceCard(this.model, {super.key, this.colors = const [Color(0xff2192C9)]});
 
   @override
   State<DistanceCard> createState() => _DistanceCardState();
 }
 
 class _DistanceCardState extends State<DistanceCard> {
-  // Distance is the average distance over the week
-  num _accumulatedDistance = 0;
-  String _distance = '';
-  num maxValue = 0;
+  /// The index (into [_days]) of the bar selected, or null for the week's average.
+  int? _selectedIndex;
 
-  int touchedIndex = DateTime.now().weekday;
+  /// The 7 days ending today, oldest first - today is always the last bar.
+  List<DailyMobility> get _days => widget.model.days;
 
-  @override
-  void initState() {
-    for (int i = 1; i <= 7; i++) {
-      _accumulatedDistance += widget.model.weekData[i]!.distance;
-    }
-    _distance = (_accumulatedDistance / 7).toStringAsPrecision(3);
-
-    super.initState();
-  }
+  /// The headline figure in km: the selected day, or the daily average.
+  double get _distance => _selectedIndex != null
+      ? _days[_selectedIndex!].distance
+      : _days.fold<double>(0, (sum, day) => sum + day.distance) / _days.length;
 
   @override
   Widget build(BuildContext context) {
+    RPLocalizations locale = RPLocalizations.of(context)!;
+
     return StudiesMaterial(
       backgroundColor: Colors.white,
-      child: Padding(
-        padding: const EdgeInsets.all(8.0),
-        child: Column(
-          children: [
-            Row(
-              children: [
-                Text(
-                  _distance,
-                  style: Theme.of(context).textTheme.headlineMedium!.copyWith(color: Colors.grey.shade900),
-                ),
-                Padding(
-                  padding: const EdgeInsets.only(left: 4.0),
-                  child: Text(
-                    'km ${_getDayName(touchedIndex)}',
+      // Tapping anywhere else on the card drops the selection.
+      child: GestureDetector(
+        onTap: () => setState(() => _selectedIndex = null),
+        child: Padding(
+          padding: const EdgeInsets.all(8.0),
+          child: Column(
+            children: [
+              Row(
+                crossAxisAlignment: CrossAxisAlignment.baseline,
+                textBaseline: TextBaseline.alphabetic,
+                children: [
+                  Text(_distance.toStringAsFixed(1), style: Theme.of(context).textTheme.headlineMedium!),
+                  Padding(
+                    padding: const EdgeInsets.only(left: 4.0),
+                    child: Text(
+                      _selectedIndex != null
+                          ? '${locale.translate('cards.distance.distance')} ${weekdayName(context, _days[_selectedIndex!].date.weekday)}'
+                          : '${locale.translate('cards.distance.distance')} - ${locale.translate('cards.distance.average')}',
+                      style: Theme.of(
+                        context,
+                      ).textTheme.labelSmall!.copyWith(fontWeight: FontWeight.w700, color: Colors.grey.shade600),
+                    ),
+                  ),
+                  const Spacer(),
+                ],
+              ),
+              Row(
+                children: [
+                  Text(
+                    weekRangeLabel(),
                     style: Theme.of(
                       context,
-                    ).textTheme.labelSmall!.copyWith(fontWeight: FontWeight.w700).copyWith(color: Colors.grey.shade600),
+                    ).textTheme.labelSmall!.copyWith(fontWeight: FontWeight.w700, color: Colors.grey.shade600),
                   ),
-                ),
-              ],
-            ),
-            Row(
-              children: [
-                Text(
-                  "${widget.model.currentMonth} ${widget.model.startOfWeek} - ${int.parse(widget.model.endOfWeek) < int.parse(widget.model.startOfWeek) ? widget.model.nextMonth : widget.model.currentMonth} ${widget.model.endOfWeek}, ${widget.model.currentYear}",
-                  style: Theme.of(
-                    context,
-                  ).textTheme.labelSmall!.copyWith(fontWeight: FontWeight.w700).copyWith(color: Colors.grey.shade600),
-                ),
-                Spacer(),
-              ],
-            ),
-            SizedBox(
-              height: 160,
-              width: MediaQuery.of(context).size.width * 0.9,
-              child: StreamBuilder(stream: widget.model.mobilityEvents, builder: (context, snapshot) => barCharts),
-            ),
-          ],
+                  const Spacer(),
+                ],
+              ),
+              SizedBox(
+                height: 160,
+                width: MediaQuery.of(context).size.width * 0.9,
+                child: StreamBuilder(stream: widget.model.mobilityEvents, builder: (context, snapshot) => barCharts),
+              ),
+            ],
+          ),
         ),
       ),
     );
@@ -81,7 +82,7 @@ class _DistanceCardState extends State<DistanceCard> {
         alignment: BarChartAlignment.spaceAround,
         titlesData: FlTitlesData(
           bottomTitles: AxisTitles(
-            sideTitles: SideTitles(showTitles: true, getTitlesWidget: bottomTitles, reservedSize: 20),
+            sideTitles: SideTitles(showTitles: true, getTitlesWidget: bottomTitles, reservedSize: 24),
           ),
           leftTitles: const AxisTitles(),
           rightTitles: AxisTitles(
@@ -90,46 +91,41 @@ class _DistanceCardState extends State<DistanceCard> {
           topTitles: const AxisTitles(),
         ),
         barTouchData: BarTouchData(
-          enabled: false,
-          touchCallback: (p0, p1) {
-            setState(() {
-              touchedIndex = (p1?.spot?.touchedBarGroupIndex ?? DateTime.now().weekday - 1) + 1;
-            });
+          enabled: true,
+          // The distance above the chart already names the selected day.
+          touchTooltipData: noBarTooltip,
+          touchCallback: (event, response) {
+            // Only settle on tap-up, so the selection is not dragged around -
+            // and a tap on empty chart space clears it.
+            if (event is! FlTapUpEvent) return;
+            setState(() => _selectedIndex = response?.spot?.touchedBarGroupIndex);
           },
         ),
         groupsSpace: 4,
-        barGroups: barChartsGroups,
-        maxY: (maxValue) * 1.2,
+        barGroups: [for (final (index, day) in _days.indexed) generateGroupData(index, day.distance)],
+        maxY: max(_days.fold<double>(0, (m, day) => max(m, day.distance)) * 1.2, 1),
         gridData: FlGridData(
           show: true,
           drawVerticalLine: false,
           drawHorizontalLine: true,
-          getDrawingHorizontalLine: (value) {
-            return FlLine(color: Colors.grey.withValues(alpha: 0.3), strokeWidth: 1);
-          },
+          getDrawingHorizontalLine: (value) => FlLine(color: Colors.grey.withValues(alpha: 0.3), strokeWidth: 1),
         ),
         borderData: FlBorderData(show: true, border: Border.all(width: 1, color: Colors.grey.withValues(alpha: 0.2))),
       ),
     );
   }
 
-  List<BarChartGroupData> get barChartsGroups {
-    return widget.model.weekData.entries.map((e) => generateGroupData(e.key, e.value.distance)).toList();
-  }
-
-  BarChartGroupData generateGroupData(int x, double step) {
-    bool isTouched = touchedIndex == x;
-    maxValue = max(maxValue, step);
-    if (isTouched) {
-      _distance = step.toString();
-    }
+  BarChartGroupData generateGroupData(int index, double distance) {
+    // Nothing selected means the week as a whole - every bar reads the same.
+    bool isTouched = _selectedIndex == null || _selectedIndex == index;
 
     return BarChartGroupData(
-      x: x,
+      x: index,
       barRods: [
         BarChartRodData(
-          toY: step.toDouble(),
-          color: widget.colors[0].withValues(alpha: isTouched ? 0.8 : 1),
+          toY: distance,
+          // Solid for the selected day, washed out for the rest.
+          color: isTouched ? widget.colors[0] : widget.colors[0].withValues(alpha: 0.3),
           width: 32,
           borderRadius: const BorderRadius.only(topLeft: Radius.circular(4), topRight: Radius.circular(4)),
         ),
@@ -137,44 +133,22 @@ class _DistanceCardState extends State<DistanceCard> {
     );
   }
 
-  Widget rightTitles(double value, TitleMeta meta) {
+  Widget rightTitles(double value, TitleMeta meta) => SideTitleWidget(
+    meta: meta,
+    space: 6,
+    child: Text(
+      value % meta.appliedInterval == 0 ? value.toStringAsFixed(1) : '',
+      style: Theme.of(context).textTheme.bodyMedium!.copyWith(letterSpacing: 1, color: Colors.grey.shade600),
+    ),
+  );
+
+  Widget bottomTitles(double value, TitleMeta meta) {
+    final index = value.toInt();
+    if (index < 0 || index >= _days.length) return const SizedBox.shrink();
     return SideTitleWidget(
       meta: meta,
       space: 6,
-      child: Text(
-        value.toInt() % meta.appliedInterval == 0 ? value.toInt().toString() : '',
-        style: Theme.of(context).textTheme.bodyMedium!.copyWith(letterSpacing: 1, color: Colors.grey.shade600),
-      ),
+      child: Text(weekdayName(context, _days[index].date.weekday), style: const TextStyle(fontSize: 10)),
     );
-  }
-
-  Widget bottomTitles(double value, TitleMeta meta) {
-    const style = TextStyle(fontSize: 10);
-    return SideTitleWidget(
-      meta: meta,
-      child: Text(_getDayName(value.toInt()), style: style),
-    );
-  }
-
-  String _getDayName(int dayIndex) {
-    RPLocalizations locale = RPLocalizations.of(context)!;
-    switch (dayIndex) {
-      case 1:
-        return locale.translate("pages.data_viz.mon");
-      case 2:
-        return locale.translate("pages.data_viz.tue");
-      case 3:
-        return locale.translate("pages.data_viz.wed");
-      case 4:
-        return locale.translate("pages.data_viz.thu");
-      case 5:
-        return locale.translate("pages.data_viz.fri");
-      case 6:
-        return locale.translate("pages.data_viz.sat");
-      case 7:
-        return locale.translate("pages.data_viz.sun");
-      default:
-        return '';
-    }
   }
 }

@@ -24,185 +24,193 @@ class ProfilePageState extends State<ProfilePage> {
   @override
   Widget build(BuildContext context) {
     RPLocalizations locale = RPLocalizations.of(context)!;
-
     return Scaffold(
-      backgroundColor: Colors.grey.shade100,
-      body: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        mainAxisAlignment: MainAxisAlignment.start,
-        children: [
-          const SizedBox(height: 35),
-          // Top bar
-          Padding(
-            padding: const EdgeInsets.symmetric(horizontal: 10.0),
-            child: Row(
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-              children: [
-                TextButton.icon(
-                  onPressed: () {},
-                  icon: Icon(Icons.account_circle, color: Theme.of(context).primaryColor, size: 30),
-                  label: Text(
-                    locale.translate("pages.profile.title"),
-                    style: Theme.of(
-                      context,
-                    ).textTheme.titleLarge!.copyWith(fontSize: 20).copyWith(color: Theme.of(context).primaryColor),
-                  ),
-                ),
-                IconButton(
-                  icon: Icon(Icons.close, color: Theme.of(context).primaryColor, size: 30),
-                  tooltip: locale.translate('Back'),
-                  onPressed: () {
-                    Navigator.of(context).pop();
-                  },
-                ),
-              ],
-            ),
-          ),
-          widget.model.isAnonymous ? AnonymousCard() : SizedBox.shrink(),
-          Flexible(
-            child: Padding(
-              padding: const EdgeInsets.symmetric(horizontal: 15),
-              child: ListView(
-                padding: EdgeInsets.zero,
+      body: SafeArea(
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Padding(
+              padding: const EdgeInsets.fromLTRB(16, 8, 8, 8),
+              child: Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
-                  _buildSectionCard(context, [
-                    _buildListTile(locale.translate('pages.profile.username'), widget.model.username),
-                    _buildListTile(locale.translate('pages.profile.account_id'), widget.model.userId),
-                    _buildListTile(
+                  Text(locale.translate("pages.profile.title"), style: Theme.of(context).textTheme.headlineSmall!),
+                  IconButton(
+                    icon: Icon(Icons.close, color: Theme.of(context).colorScheme.primary, size: 28),
+                    tooltip: locale.translate('Back'),
+                    onPressed: () => context.pop(),
+                  ),
+                ],
+              ),
+            ),
+            if (widget.model.isAnonymous) AnonymousCard(),
+            Flexible(
+              child: ListView(
+                padding: const EdgeInsets.only(bottom: 24),
+                children: [
+                  _sectionCard([
+                    _fieldTile(locale.translate('pages.profile.username'), widget.model.username),
+                    _fieldTile(locale.translate('pages.profile.account_id'), widget.model.userId, copyable: true),
+                    _fieldTile(
                       locale.translate('pages.profile.full_name'),
                       widget.model.isAnonymous
                           ? locale.translate('pages.about.anonymous.anonymous')
                           : widget.model.fullName,
                     ),
-                    _buildListTile(
+                    _fieldTile(
                       locale.translate('pages.profile.email'),
                       widget.model.isAnonymous
                           ? locale.translate('pages.about.anonymous.anonymous')
                           : widget.model.email,
                     ),
                   ]),
-                  _buildSectionCard(context, [
-                    _buildListTile(locale.translate('pages.profile.study_id'), widget.model.studyId),
-                    _buildListTile(
+                  _sectionHeader('Study'),
+                  _sectionCard([
+                    _fieldTile(locale.translate('pages.profile.study_id'), widget.model.studyId, copyable: true),
+                    _fieldTile(
                       locale.translate('pages.profile.study_deployment_id'),
                       widget.model.studyDeploymentId,
+                      copyable: true,
                     ),
-                    _buildListTile(
+                    _fieldTile(
                       locale.translate('pages.profile.study_name'),
                       locale.translate(widget.model.studyDeploymentTitle),
+                      copyable: true,
                     ),
-                    _buildListTile(locale.translate('pages.profile.participant_id'), widget.model.participantId),
-                    _buildListTile(locale.translate('pages.profile.participant_role'), widget.model.participantRole),
-                    _buildListTile(locale.translate('pages.profile.device_role'), widget.model.deviceRole),
+                    _fieldTile(
+                      locale.translate('pages.profile.participant_id'),
+                      widget.model.participantId,
+                      copyable: true,
+                    ),
+                    _fieldTile(locale.translate('pages.profile.participant_role'), widget.model.participantRole),
+                    _fieldTile(locale.translate('pages.profile.device_role'), widget.model.deviceRole),
                   ]),
-                  _buildSectionCard(context, [
-                    _buildListTile(locale.translate('pages.profile.app_version'), appVersion),
-                    _buildListTile(locale.translate('pages.profile.app_version_code'), buildNumber),
-                    _buildListTile(locale.translate('pages.profile.server_name'), widget.model.currentServer),
-                    _buildListTile(locale.translate('pages.profile.device_id'), widget.model.deviceID),
+                  _sectionHeader('App'),
+                  _sectionCard([
+                    _fieldTile(locale.translate('pages.profile.app_version'), appVersion),
+                    _fieldTile(locale.translate('pages.profile.app_version_code'), buildNumber),
+                    _fieldTile(locale.translate('pages.profile.server_name'), widget.model.currentServer),
+                    _fieldTile(locale.translate('pages.profile.device_id'), widget.model.deviceID),
                   ]),
-                  _buildSectionCard(context, [
-                    _buildActionListTile(
-                      leading: Icon(Icons.mail, color: Theme.of(context).primaryColor),
-                      trailing: const Icon(Icons.arrow_forward_ios, color: CACHET.GREY_6),
-                      title: locale.translate('pages.profile.contact'),
-                      onTap: () async {
-                        _sendEmailToContactResearcher(
-                          locale.translate(widget.model.responsibleEmail),
-                          'Support for study: ${locale.translate(widget.model.studyDeploymentTitle)} - User: ${widget.model.username}',
-                        );
-                      },
-                    ),
-                    _buildActionListTile(
-                      leading: Icon(Icons.policy, color: Theme.of(context).primaryColor),
-                      trailing: const Icon(Icons.arrow_forward_ios, color: CACHET.GREY_6),
-                      title: locale.translate('pages.profile.privacy'),
-                      onTap: () async {
-                        try {
-                          launchUrl(Uri.parse(CarpBackend.carpPrivacyUrl));
-                        } finally {}
-                      },
-                    ),
-                    _buildActionListTile(
-                      leading: Icon(Icons.public, color: Theme.of(context).primaryColor),
-                      trailing: const Icon(Icons.arrow_forward_ios, color: CACHET.GREY_6),
-                      title: locale.translate('pages.profile.study_website'),
-                      onTap: () async {
-                        try {
-                          launchUrl(Uri.parse(CarpBackend.carpWebsiteUrl));
-                        } finally {}
-                      },
-                    ),
-                  ]),
-                  _buildSectionCard(context, [
-                    _buildActionListTile(
-                      leading: const Icon(Icons.logout, color: CACHET.RED_1),
-                      title: locale.translate('pages.profile.leave_study'),
-                      onTap: () {
-                        _showLeaveStudyConfirmationDialog();
-                      },
-                    ),
-                  ]),
-                  _buildSectionCard(context, [
-                    _buildActionListTile(
-                      leading: const Icon(Icons.power_settings_new, color: CACHET.RED_1),
-                      title: locale.translate('pages.profile.log_out'),
-                      onTap: () async {
-                        bool isConnected = await widget.model.checkConnectivity();
-                        if (isConnected) {
-                          _showLogoutConfirmationDialog();
-                        } else {
-                          _showEnableInternetConnectionDialog();
-                        }
-                      },
-                    ),
-                  ]),
+                  const SizedBox(height: 8),
+                  _actionCard(
+                    icon: Icons.info_outline,
+                    iconColor: Theme.of(context).colorScheme.primary,
+                    title: locale.translate('pages.profile.study_details'),
+                    hasChevron: true,
+                    onTap: () => context.push(StudyAboutPage.route),
+                  ),
+                  const SizedBox(height: 8),
+                  _actionCard(
+                    icon: Icons.logout,
+                    iconColor: const Color(0xffEB4B62),
+                    title: locale.translate('pages.profile.leave_study'),
+                    onTap: _showLeaveStudyConfirmationDialog,
+                  ),
+                  _actionCard(
+                    icon: Icons.power_settings_new,
+                    iconColor: const Color(0xffEB4B62),
+                    title: locale.translate('pages.profile.log_out'),
+                    onTap: () async {
+                      bool isConnected = await widget.model.checkConnectivity();
+                      if (isConnected) {
+                        _showLogoutConfirmationDialog();
+                      } else {
+                        _showEnableInternetConnectionDialog();
+                      }
+                    },
+                  ),
                 ],
               ),
             ),
-          ),
-        ],
-      ),
-    );
-  }
-
-  Widget _buildSectionCard(BuildContext context, List<Widget> children) {
-    return Card(
-      color: Colors.grey.shade50,
-      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(8.0)),
-      child: Padding(
-        padding: const EdgeInsets.all(8.0),
-        child: Column(
-          children: ListTile.divideTiles(context: context, tiles: children, color: Colors.grey.shade400).toList(),
+          ],
         ),
       ),
     );
   }
 
-  Widget _buildListTile(String title, String subtitle) {
-    return ListTile(
-      title: Text(title, style: Theme.of(context).textTheme.labelSmall!.copyWith(color: CACHET.GREY_6)),
-      subtitle: FittedBox(
-        fit: BoxFit.scaleDown,
-        alignment: Alignment.centerLeft,
-        child: Text(subtitle, style: Theme.of(context).textTheme.labelMedium!, maxLines: 1),
+  Widget _sectionHeader(String title) {
+    return Padding(
+      padding: const EdgeInsets.fromLTRB(16, 8, 16, 8),
+      child: Text(title, style: Theme.of(context).textTheme.titleMedium!),
+    );
+  }
+
+  Widget _sectionCard(List<Widget> children) {
+    return StudiesMaterial(
+      backgroundColor: Colors.grey.shade50,
+      child: Column(
+        children: [
+          for (var i = 0; i < children.length; i++) ...[
+            children[i],
+            if (i < children.length - 1) Divider(height: 1, indent: 16, endIndent: 16, color: Colors.grey.shade200),
+          ],
+        ],
       ),
     );
   }
 
-  // Helper method to build a ListTile for actions with an icon
-  Widget _buildActionListTile({
-    required Icon leading,
+  Widget _fieldTile(String label, String value, {bool copyable = false}) {
+    return Padding(
+      padding: const EdgeInsets.fromLTRB(16, 10, 8, 10),
+      child: Row(
+        children: [
+          Expanded(
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Text(label, style: Theme.of(context).textTheme.labelSmall!.copyWith(color: Colors.grey.shade600)),
+                const SizedBox(height: 2),
+                Text(
+                  value,
+                  style: Theme.of(context).textTheme.labelMedium!,
+                  maxLines: 1,
+                  overflow: TextOverflow.ellipsis,
+                ),
+              ],
+            ),
+          ),
+          if (copyable)
+            IconButton(
+              icon: Icon(Icons.copy_outlined, size: 18, color: Colors.grey.shade500),
+              visualDensity: VisualDensity.compact,
+              onPressed: () {
+                Clipboard.setData(ClipboardData(text: value));
+                ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text('$label copied')));
+              },
+            )
+          else
+            // Keeps copyable and plain rows the same height.
+            const SizedBox(height: 32),
+        ],
+      ),
+    );
+  }
+
+  Widget _actionCard({
+    required IconData icon,
+    required Color iconColor,
     required String title,
-    Icon? trailing,
+    bool hasChevron = false,
     required VoidCallback onTap,
   }) {
-    return ListTile(
-      leading: leading,
-      title: Text(title, style: Theme.of(context).textTheme.labelLarge!.copyWith(color: Colors.grey.shade900)),
-      trailing: trailing,
-      onTap: onTap,
-      contentPadding: EdgeInsets.symmetric(vertical: 4, horizontal: 16),
+    return StudiesMaterial(
+      backgroundColor: Colors.grey.shade50,
+      margin: const EdgeInsets.only(bottom: 8, left: 16, right: 16),
+      child: InkWell(
+        onTap: onTap,
+        child: Padding(
+          padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 14),
+          child: Row(
+            children: [
+              Icon(icon, size: 22, color: iconColor),
+              const SizedBox(width: 12),
+              Expanded(child: Text(title, style: Theme.of(context).textTheme.labelLarge!)),
+              if (hasChevron) Icon(Icons.arrow_forward_ios, size: 16, color: Colors.grey.shade400),
+            ],
+          ),
+        ),
+      ),
     );
   }
 
@@ -214,18 +222,6 @@ class ProfilePageState extends State<ProfilePage> {
       appVersion = packageInfo.version;
       buildNumber = packageInfo.buildNumber;
     });
-  }
-
-  /// Sends and email to the researcher with the name of the study + user id
-  void _sendEmailToContactResearcher(String email, String subject) async {
-    final url = Uri(
-      scheme: 'mailto',
-      path: email,
-      queryParameters: {'subject': subject},
-    ).toString().replaceAll("+", "%20");
-    try {
-      await launchUrl(Uri.parse(url));
-    } finally {}
   }
 
   Future<void> _showLogoutConfirmationDialog() => _confirm(
@@ -283,20 +279,4 @@ class ProfilePageState extends State<ProfilePage> {
       },
     );
   }
-}
-
-class SlidePageRoute extends PageRouteBuilder<Widget> {
-  final Widget page;
-  SlidePageRoute(this.page)
-    : super(
-        pageBuilder: (context, animation, secondaryAnimation) => page,
-        transitionsBuilder: (context, animation, secondaryAnimation, child) {
-          var begin = Offset(1.0, 0.0);
-          var end = Offset.zero;
-          var curve = Curves.easeInOut;
-          var tween = Tween(begin: begin, end: end).chain(CurveTween(curve: curve));
-          var offsetAnimation = animation.drive(tween);
-          return SlideTransition(position: offsetAnimation, child: child);
-        },
-      );
 }

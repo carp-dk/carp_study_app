@@ -23,9 +23,7 @@ class CarpAppState extends State<CarpStudyApp> {
   /// Reload language translations and re-build the entire app.
   void reloadLocale() => setState(() => rpLocalizationsDelegate.reload());
 
-  // State-driven routing. Bloc state
-  // changes notify the router via refreshListenable, which re-evaluates the
-  // redirect at the current location and moves the user automatically.
+  // State-driven routing: a bloc change refreshes the router, which re-redirects.
   final GoRouter _router = GoRouter(
     initialLocation: homeRoute,
     navigatorKey: _rootNavigatorKey,
@@ -33,30 +31,25 @@ class CarpAppState extends State<CarpStudyApp> {
     errorBuilder: (context, state) => const ErrorPage(),
     redirect: (context, state) async {
       final loc = state.matchedLocation;
-      logAppState('GoRouter.redirect() - evaluating at location: $loc');
 
       // 1) Not authenticated → login page.
       if (AppConfig.deploymentMode != DeploymentMode.local && !bloc.auth.isAuthenticated) {
-        logApp('GoRouter.redirect() - [1] not authenticated → ${LoginPage.route}');
         return LoginPage.route;
       }
 
-      // 2) No study selected → user belongs on the invitation list (or its
-      // details page). Anywhere else gets bounced to the list.
+      // 2) No study → the invitation list (or its details page).
       if (!bloc.study.hasStudy) {
         if (loc == InvitationListPage.route || loc.startsWith('${InvitationDetailsPage.route}/')) {
-          logApp('GoRouter.redirect() - [2] no study, already on invitation flow → stay');
           return null;
         }
-        logApp('GoRouter.redirect() - [2] no study → ${InvitationListPage.route}');
         return InvitationListPage.route;
       }
 
-      // 3) Study selected but consent known to be pending → consent page.
-      // (null means the consent status is still being checked - stay put.)
-      if (!bloc.isConfiguring && bloc.consent.isAccepted == false) {
-        return loc == InformedConsentPage.route ? null : InformedConsentPage.route;
-      }
+      // 3) Consent not signed → the consent document. A redirect replaces the
+      // location, so - unlike a push - a router refresh cannot replay it.
+      final needsSigning = await bloc.appViewModel.informedConsentViewModel.needsSigning();
+      if (needsSigning) return InformedConsentPage.route;
+      if (loc == InformedConsentPage.route) return homeRoute;
 
       // 4) Fully onboarded.
       return null;
@@ -65,42 +58,36 @@ class CarpAppState extends State<CarpStudyApp> {
       ShellRoute(
         navigatorKey: _shellNavigatorKey,
         builder: (BuildContext context, GoRouterState state, Widget child) =>
-            HomePage(model: bloc.appViewModel.homePageViewModel, child: child),
+            CarpAppShell(model: bloc.appViewModel.homePageViewModel, child: child),
         routes: [
-          // Home is just a landing slot — the top-level redirect always moves
-          // the user to the right place based on bloc state.
-          GoRoute(path: homeRoute, parentNavigatorKey: _shellNavigatorKey, redirect: (_, _) => StudyPage.route),
+          // Just a landing slot - the redirect above moves the user on.
+          GoRoute(path: homeRoute, parentNavigatorKey: _shellNavigatorKey, redirect: (_, _) => HomePage.route),
+          GoRoute(
+            path: HomePage.route,
+            parentNavigatorKey: _shellNavigatorKey,
+            pageBuilder: (context, state) => CustomTransitionPage(
+              key: state.pageKey,
+              child: HomePage(model: bloc.appViewModel.homePageViewModel),
+              transitionsBuilder: bottomNavigationBarAnimation,
+            ),
+          ),
           GoRoute(
             path: TaskListPage.route,
             parentNavigatorKey: _shellNavigatorKey,
             pageBuilder: (context, state) => CustomTransitionPage(
+              key: state.pageKey,
               child: TaskListPage(model: bloc.appViewModel.taskListPageViewModel),
               transitionsBuilder: bottomNavigationBarAnimation,
             ),
           ),
+          // /study is a legacy alias for the Home tab.
+          GoRoute(path: StudyPage.route, parentNavigatorKey: _shellNavigatorKey, redirect: (_, _) => HomePage.route),
           GoRoute(
-            path: StudyPage.route,
+            path: StatisticsPage.route,
             parentNavigatorKey: _shellNavigatorKey,
             pageBuilder: (context, state) => CustomTransitionPage(
-              child: StudyPage(model: bloc.appViewModel.studyPageViewModel),
-              transitionsBuilder: bottomNavigationBarAnimation,
-            ),
-            routes: [
-              // /study/consent — nested so the parent StudyPage stays mounted
-              // underneath. parentNavigatorKey escapes the shell so the bottom
-              // nav doesn't bleed through during consent.
-              GoRoute(
-                path: 'consent',
-                parentNavigatorKey: _rootNavigatorKey,
-                builder: (context, state) => InformedConsentPage(model: bloc.appViewModel.informedConsentViewModel),
-              ),
-            ],
-          ),
-          GoRoute(
-            path: DataVisualizationPage.route,
-            parentNavigatorKey: _shellNavigatorKey,
-            pageBuilder: (context, state) => CustomTransitionPage(
-              child: DataVisualizationPage(bloc.appViewModel.dataVisualizationPageViewModel),
+              key: state.pageKey,
+              child: StatisticsPage(bloc.appViewModel.statisticsViewModel),
               transitionsBuilder: bottomNavigationBarAnimation,
             ),
           ),
@@ -108,24 +95,33 @@ class CarpAppState extends State<CarpStudyApp> {
             path: DeviceListPage.route,
             parentNavigatorKey: _shellNavigatorKey,
             pageBuilder: (context, state) => CustomTransitionPage(
+              key: state.pageKey,
               child: DeviceListPage(model: bloc.appViewModel.devicesPageViewModel),
-              transitionsBuilder: bottomNavigationBarAnimation,
-            ),
-          ),
-          GoRoute(
-            path: ProfilePage.route,
-            parentNavigatorKey: _shellNavigatorKey,
-            pageBuilder: (context, state) => CustomTransitionPage(
-              child: ProfilePage(bloc.appViewModel.profilePageViewModel),
               transitionsBuilder: bottomNavigationBarAnimation,
             ),
           ),
         ],
       ),
+      // Profile slides in full-screen over the shell, so: root navigator.
       GoRoute(
-        path: StudyDetailsPage.route,
+        path: ProfilePage.route,
         parentNavigatorKey: _rootNavigatorKey,
-        builder: (context, state) => StudyDetailsPage(model: bloc.appViewModel.studyPageViewModel),
+        pageBuilder: (context, state) => CustomTransitionPage(
+          key: state.pageKey,
+          child: ProfilePage(bloc.appViewModel.profilePageViewModel),
+          transitionsBuilder: slideInFromRightAnimation,
+        ),
+      ),
+      // Consent is not a tab - it replaces the whole app until it is signed.
+      GoRoute(
+        path: InformedConsentPage.route,
+        parentNavigatorKey: _rootNavigatorKey,
+        builder: (context, state) => InformedConsentPage(model: bloc.appViewModel.informedConsentViewModel),
+      ),
+      GoRoute(
+        path: StudyAboutPage.route,
+        parentNavigatorKey: _rootNavigatorKey,
+        builder: (context, state) => StudyAboutPage(model: bloc.appViewModel.studyPageViewModel),
       ),
       GoRoute(
         path: ParticipantDataPage.route,
@@ -168,8 +164,7 @@ class CarpAppState extends State<CarpStudyApp> {
     debugLogDiagnostics: true,
   );
 
-  /// Research Package translations, incl. both local language assets plus
-  /// translations of informed consent and surveys downloaded from CARP
+  /// RP translations: local language assets plus those downloaded from CARP.
   final RPLocalizationsDelegate rpLocalizationsDelegate = _AppLocalizationsDelegate(
     loaders: [const AssetLocalizationLoader(), bloc.resources.localizationLoader],
   );
@@ -189,8 +184,7 @@ class CarpAppState extends State<CarpStudyApp> {
     super.dispose();
   }
 
-  /// Re-load translations when a (new) study is set or has been configured,
-  /// since both make new study-specific translations available.
+  /// Re-load translations when a study is set or configured - both add new ones.
   void _onAppStateChanged() {
     final configured = bloc.state == AppState.configured;
     final deploymentId = bloc.study.study?.studyDeploymentId;
@@ -234,14 +228,14 @@ class CarpAppState extends State<CarpStudyApp> {
       },
       locale: AppConfig.localization?.locale,
       theme: carpTheme,
+      themeMode: ThemeMode.light,
       debugShowCheckedModeBanner: true,
       routerConfig: _router,
     );
   }
 }
 
-/// Loads the RP translations and captures the loaded localization in
-/// [AppConfig], where non-UI layers (e.g. protocol translation) read it.
+/// Loads the RP translations into [AppConfig], where non-UI layers read them.
 class _AppLocalizationsDelegate extends RPLocalizationsDelegate {
   _AppLocalizationsDelegate({required super.loaders});
 
@@ -253,9 +247,27 @@ class _AppLocalizationsDelegate extends RPLocalizationsDelegate {
   }
 }
 
-FadeTransition bottomNavigationBarAnimation(
+/// Fade between bottom-nav tabs: the incoming page fades and gently scales in.
+Widget bottomNavigationBarAnimation(
   BuildContext context,
   Animation<double> animation,
   Animation<double> secondaryAnimation,
   Widget child,
-) => FadeTransition(opacity: animation, child: child);
+) {
+  final fade = CurveTween(curve: Curves.easeOut).animate(animation);
+  return FadeTransition(
+    opacity: fade,
+    child: ScaleTransition(scale: Tween(begin: 0.98, end: 1.0).animate(fade), child: child),
+  );
+}
+
+/// Slide a full-screen page in from the right, as used for the profile page.
+Widget slideInFromRightAnimation(
+  BuildContext context,
+  Animation<double> animation,
+  Animation<double> secondaryAnimation,
+  Widget child,
+) {
+  final tween = Tween(begin: const Offset(1.0, 0.0), end: Offset.zero).chain(CurveTween(curve: Curves.easeInOut));
+  return SlideTransition(position: animation.drive(tween), child: child);
+}

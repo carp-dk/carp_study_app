@@ -1,9 +1,7 @@
 part of carp_study_app;
 
-/// Provides the resource managers matching the current [DeploymentMode]:
-/// local resources in [DeploymentMode.local], CAWS-backed resources otherwise.
-///
-/// Instances are created once and cached.
+/// The resource managers matching the current [DeploymentMode] - local assets
+/// or CAWS-backed. Instances are created once and cached.
 class ResourceManagerFactory {
   bool get _local => AppConfig.deploymentMode == DeploymentMode.local;
 

@@ -129,7 +129,7 @@ class AudioPageState extends State<AudioPage> {
                                         children: [
                                           CircleAvatar(
                                             radius: 30,
-                                            backgroundColor: CACHET.RED_1,
+                                            backgroundColor: const Color(0xffEB4B62),
                                             child: IconButton(
                                               onPressed: () => widget.audioUserTask!.onRecordStop(),
                                               padding: const EdgeInsets.all(0),
@@ -178,14 +178,14 @@ class AudioPageState extends State<AudioPage> {
                                               flex: 1,
                                               child: IconButton(
                                                 onPressed: () => widget.audioUserTask!.onRecordReset(),
-                                                icon: Icon(Icons.replay, color: Colors.grey.shade700, size: 30),
+                                                icon: Icon(Icons.replay, color: Colors.grey.shade800, size: 30),
                                               ),
                                             ),
                                             Expanded(
                                               flex: 3,
                                               child: CircleAvatar(
                                                 radius: 30,
-                                                backgroundColor: CACHET.GREEN_1,
+                                                backgroundColor: const Color(0xff67CE67),
                                                 child: IconButton(
                                                   onPressed: () {
                                                     Navigator.of(context).pop();

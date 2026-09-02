@@ -62,25 +62,21 @@ class AudioTaskPageState extends State<AudioTaskPage> {
                     child: Row(
                       mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                       children: [
-                        OutlinedButton(
+                        TextButton(
                           onPressed: () {
                             widget.audioUserTask!.onCancel();
                             Navigator.pop(context);
                           },
                           child: Text(locale.translate("Cancel")),
                         ),
-                        ElevatedButton(
+                        FilledButton(
                           onPressed: () => Navigator.push(
                             context,
                             MaterialPageRoute<void>(
                               builder: (context) => AudioPage(audioUserTask: widget.audioUserTask),
                             ),
                           ),
-                          style: ElevatedButton.styleFrom(
-                            backgroundColor: Theme.of(context).colorScheme.primary,
-                            padding: const EdgeInsets.symmetric(horizontal: 30, vertical: 12),
-                          ),
-                          child: Text(locale.translate("next"), style: TextStyle(color: Colors.white)),
+                          child: Text(locale.translate("next")),
                         ),
                       ],
                     ),

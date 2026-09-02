@@ -1,9 +1,7 @@
 part of carp_study_app;
 
-/// Handles a connection to the CAWS backend, including configuring the CAWS [app],
-/// authentication, storing study IDs, and uploading informed consent.
-///
-/// Use as a singleton ` CarpBackend()`.
+/// Connection to the CAWS backend: the CAWS [app], authentication, study IDs,
+/// and informed consent upload. Singleton via `CarpBackend()`.
 class CarpBackend {
   /// The URL of the official CARP web site.
   static const String carpWebsiteUrl = "https://carp.dk";

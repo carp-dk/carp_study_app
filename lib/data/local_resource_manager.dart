@@ -1,13 +1,7 @@
 part of carp_study_app;
 
-/// A local assets-based resource manager handling:
-///  * informed consent
-///  * localization
-///  * messages
-///  * study protocol
-///
-/// Local resource JSON files should be added to the app as assets in the
-/// `assets/carp` folder following the normal structure from the "CARP Study App
+/// An assets-based resource manager for consent, localization, messages, and
+/// protocol - JSON files under `assets/carp`, following the "CARP Study App
 /// Configurations" setup:
 ///
 ///  * protocol and consent files goes to 'carp/resources'

@@ -14,12 +14,8 @@ class AppUserTaskFactory implements UserTaskFactory {
   };
 }
 
-/// A user task handling audio recordings.
-///
-/// The [widget] returns an [AudioTaskPage] that can be shown on the UI.
-///
-/// When the recording is started (calling the [onRecordStart] method),
-/// the background task collecting sensor measures is started.
+/// A user task handling audio recordings - [onRecordStart] also starts the
+/// background sensing task.
 class AudioUserTask extends UserTask {
   StreamController<int>? _countDownController;
   Stream<int>? get countDownEvents => _countDownController?.stream;

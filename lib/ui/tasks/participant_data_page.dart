@@ -255,7 +255,6 @@ class ParticipantDataPageState extends State<ParticipantDataPage> {
   Widget build(BuildContext context) {
     RPLocalizations locale = RPLocalizations.of(context)!;
     return Scaffold(
-      backgroundColor: Theme.of(context).scaffoldBackgroundColor,
       body: SafeArea(
         child: Container(
           padding: const EdgeInsets.all(16.0),
@@ -496,7 +495,7 @@ class ParticipantDataPageState extends State<ParticipantDataPage> {
                     showCountryOnly: true,
                     showOnlyCountryWhenClosed: true,
                     alignLeft: false,
-                    textStyle: Theme.of(context).textTheme.labelLarge!.copyWith(color: Colors.grey.shade900),
+                    textStyle: Theme.of(context).textTheme.labelLarge!,
                   ),
                 ),
               ),
@@ -583,7 +582,7 @@ class ParticipantDataPageState extends State<ParticipantDataPage> {
     ) {
       return ElevatedButton(
         onPressed: enabled ? onPressed : null,
-        child: Text(locale.translate(key).toUpperCase(), style: buttonTextStyle),
+        child: Text(locale.translate(key), style: buttonTextStyle),
         style: buttonStyle,
       );
     }

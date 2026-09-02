@@ -8,11 +8,11 @@ import 'dart:ui' as ui;
 import 'dart:io';
 
 import 'package:app_version_update/data/models/app_version_result.dart';
-import 'package:async/async.dart';
+
 import 'package:flutter/gestures.dart';
 
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/rendering.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
 
@@ -27,11 +27,14 @@ import 'package:video_player/video_player.dart';
 import 'package:go_router/go_router.dart';
 import 'package:intl/intl.dart';
 import 'package:flutter_blue_plus/flutter_blue_plus.dart';
+import 'package:permission_handler/permission_handler.dart';
 import 'package:connectivity_plus/connectivity_plus.dart';
 import 'package:open_settings_plus/open_settings_plus.dart';
 import 'package:open_settings_plus/core/open_settings_plus.dart';
 import 'package:appcheck/appcheck.dart';
 import 'package:package_info_plus/package_info_plus.dart';
+import 'package:path_provider/path_provider.dart';
+import 'package:shimmer/shimmer.dart';
 import 'package:app_version_update/app_version_update.dart';
 import 'package:qr_code_scanner_plus/qr_code_scanner_plus.dart' as qr;
 
@@ -41,7 +44,7 @@ import 'package:carp_serializable/carp_serializable.dart';
 import 'package:carp_core/carp_core.dart' hide Smartphone;
 import 'package:carp_mobile_sensing/carp_mobile_sensing.dart';
 import 'package:carp_audio_package/media.dart';
-//import 'package:carp_connectivity_package/connectivity.dart';
+import 'package:carp_connectivity_package/connectivity.dart' show ConnectivitySamplingPackage;
 //import 'package:carp_communication_package/communication.dart';
 import 'package:carp_context_package/carp_context_package.dart';
 import 'package:carp_survey_package/survey.dart';
@@ -57,39 +60,43 @@ import 'package:carp_health_package/health_package.dart';
 import 'package:carp_movesense_package/carp_movesense_package.dart';
 import 'package:carp_themes_package/carp_themes_package.dart';
 
-part 'blocs/app_bloc.dart';
-part 'blocs/app_config.dart';
-part 'blocs/app_log.dart';
-part 'blocs/util.dart';
-part 'blocs/sensing.dart';
+part 'core/app_bloc.dart';
+part 'core/sensing.dart';
+part 'core/carp_backend.dart';
+part 'core/resource_manager_factory.dart';
 
-part 'services/resource_manager_factory.dart';
+part 'helpers/app_config.dart';
+part 'helpers/app_log.dart';
+part 'helpers/util.dart';
+
 part 'services/system_info_service.dart';
 part 'services/auth_service.dart';
 part 'services/study_service.dart';
 part 'services/message_service.dart';
 part 'services/consent_service.dart';
+part 'services/data_stream_query_service.dart';
+part 'services/background_sensing_service.dart';
 
 part 'data/local_settings.dart';
-part 'data/carp_backend.dart';
 part 'data/localization_loader.dart';
 part 'data/local_resource_manager.dart';
 part 'data/participant.dart';
 part 'data/local_participation_service.dart';
 
 part 'view_models/view_model.dart';
-part 'view_models/home_page_model.dart';
-part 'view_models/login_page_model.dart';
-part 'view_models/tasklist_page_model.dart';
-part 'view_models/study_page_model.dart';
-part 'view_models/profile_page_model.dart';
-part 'view_models/device_view_models.dart';
-part 'view_models/data_visualization_page_model.dart';
-part 'view_models/informed_consent_page_model.dart';
+part 'view_models/home_view_model.dart';
+part 'view_models/login_view_model.dart';
+part 'view_models/task_list_view_model.dart';
+part 'view_models/study_view_model.dart';
+part 'view_models/profile_view_model.dart';
+part 'view_models/device_view_model.dart';
+part 'view_models/statistics_view_model.dart';
+part 'view_models/informed_consent_view_model.dart';
 part 'view_models/invitations_view_model.dart';
-part 'view_models/participant_data_page_model.dart';
+part 'view_models/participant_data_view_model.dart';
 part 'view_models/cards/activity_data_model.dart';
 part 'view_models/cards/mobility_data_model.dart';
+part 'view_models/cards/sleep_data_model.dart';
 part 'view_models/cards/steps_data_model.dart';
 part 'view_models/cards/heart_rate_data_model.dart';
 part 'view_models/cards/measurements_data_model.dart';
@@ -99,11 +106,11 @@ part 'view_models/user_tasks.dart';
 
 part 'carp_study_app.dart';
 part 'ui/pages/informed_consent_page.dart';
+part 'ui/pages/carp_app_shell.dart';
 part 'ui/pages/home_page.dart';
 part 'ui/pages/home_page.install_health_connect_dialog.dart';
-part 'ui/colors.dart';
 part 'ui/helpers.dart';
-part 'ui/pages/data_visualization_page.dart';
+part 'ui/pages/statistics_page.dart';
 part 'ui/pages/study_page.dart';
 part 'ui/pages/task_list_page.dart';
 part 'ui/pages/profile_page.dart';
@@ -120,7 +127,7 @@ part 'ui/pages/devices_page.health_service_connect.dart';
 
 part 'ui/tasks/audio_task_page.dart';
 part 'ui/tasks/audio_page.dart';
-part 'ui/pages/study_details_page.dart';
+part 'ui/pages/study_about_page.dart';
 part 'ui/pages/message_details_page.dart';
 part 'ui/pages/invitation_details_page.dart';
 part 'ui/pages/invitation_list_page.dart';
@@ -141,22 +148,22 @@ part 'ui/widgets/dialog_title.dart';
 
 part 'ui/cards/activity_card.dart';
 part 'ui/cards/anonymous_card.dart';
+part 'ui/cards/connections_status_card.dart';
 part 'ui/cards/distance_card.dart';
 part 'ui/cards/heart_rate_card.dart';
 part 'ui/cards/media_card.dart';
 part 'ui/cards/mobility_card.dart';
-part 'ui/cards/scoreboard_card.dart';
+part 'ui/cards/sleep_card.dart';
 part 'ui/cards/steps_card.dart';
 part 'ui/cards/study_progress_card.dart';
 part 'ui/cards/survey_card.dart';
+part 'ui/cards/task_completion_card.dart';
 
 part 'main.g.dart';
 
 late CarpStudyApp app;
 void main() async {
-  // Make sure to have an instance of the WidgetsBinding, which is required
-  // to use platform channels to call native code.
-  // See also >> https://stackoverflow.com/questions/63873338/what-does-widgetsflutterbinding-ensureinitialized-do/63873689
+  // Platform channels need the WidgetsBinding to exist.
   WidgetsFlutterBinding.ensureInitialized();
 
   // Initialize CAMS and related packages (loading json deserialization functions)

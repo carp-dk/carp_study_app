@@ -42,6 +42,12 @@
     <uses-permission android:name="android.permission.FOREGROUND_SERVICE" />
     <uses-permission android:name="android.permission.RECEIVE_BOOT_COMPLETED" />
 
+    <!-- Used by the background service (flutter_background) to keep sampling
+         running while the app is not in the foreground. The service itself is
+         declared in the <application> tag below. -->
+    <uses-permission android:name="android.permission.REQUEST_IGNORE_BATTERY_OPTIMIZATIONS" />
+    <uses-permission android:name="android.permission.FOREGROUND_SERVICE_SPECIAL_USE" />
+
     <!-- The following permissions are used in the Context Package -->
 
     <!--Location Permissions-->
@@ -61,8 +67,8 @@
         android:name="com.google.android.gms.permission.ACTIVITY_RECOGNITION"
         android:maxSdkVersion="28" />
 
-    <!-- The following permissions are used in the flutter_local_notifications Package  -->
-    <uses-permission android:name="android.permission.SCHEDULE_EXACT_ALARM" />
+    <!-- The following permissions are used in the flutter_local_notifications Package.
+         Reminders are scheduled inexactly, so SCHEDULE_EXACT_ALARM is not needed. -->
     <uses-permission android:name="android.permission.VIBRATE" />
 
     <!-- The following permissions are used in the Media Package  -->
@@ -204,6 +210,23 @@
         <!-- service for using the Android activity recognition API
         <service android:name="dk.cachet.activity_recognition_flutter.activity.ActivityRecognizedService"
         android:exported="true"/> -->
+
+        <!-- The foreground service hosting the study sampling pipeline. The
+             flutter_background plugin does not declare it, so it is declared
+             here with its foreground service type.
+             "specialUse" because no single existing type covers the union of
+             streams a study protocol may enable at once - location, activity
+             recognition, step counts, heart rate and ECG from paired BLE
+             sensors - and the protocol is defined server-side per study, so
+             the app cannot know the set at build time. -->
+        <service
+            android:name="de.julianassmann.flutter_background.IsolateHolderService"
+            android:exported="false"
+            android:foregroundServiceType="specialUse">
+            <property
+                android:name="android.app.PROPERTY_SPECIAL_USE_FGS_SUBTYPE"
+                android:value="Runs the data collection protocol of the research study the participant has explicitly consented to join. A single study session concurrently samples several signals - location traces, activity recognition, step counts, and heart rate and ECG streamed from paired Bluetooth sensors - which no single foreground service type covers. Sampling must run uninterrupted for the consented duration because gaps make the resulting time series scientifically unusable, and the participant is shown an ongoing notification the whole time and can stop the study at any point." />
+        </service>
 
         <!-- Don't delete the meta-data below.
              This is used by the Flutter tool to generate GeneratedPluginRegistrant.java -->

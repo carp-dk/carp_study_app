@@ -1,67 +1,88 @@
 part of carp_study_app;
 
+/// The consent document, for the user to read and sign.
+///
+/// [RPUITask] pops its own route when the task is cancelled, and again when it
+/// finishes - so it is given this page's route to pop, and the redirect decides
+/// where that lands.
 class InformedConsentPage extends StatefulWidget {
-  static const String route = '/study/consent';
+  static const String route = '/consent';
   final InformedConsentViewModel model;
-  const InformedConsentPage({super.key, required this.model});
+
+  const InformedConsentPage({required this.model, super.key});
 
   @override
-  InformedConsentState createState() => InformedConsentState();
+  State<InformedConsentPage> createState() => _InformedConsentPageState();
 }
 
-class InformedConsentState extends State<InformedConsentPage> {
-  final GlobalKey<ScaffoldState> _scaffoldKey = GlobalKey<ScaffoldState>();
+class _InformedConsentPageState extends State<InformedConsentPage> {
+  /// The accept in flight, so the document is blocked while it uploads and a
+  /// second DONE cannot start a second upload.
+  Future<void>? _acceptFuture;
 
-  // Tracks whether the user actually completed consent. Anything else that
-  // tears down this page (cancel dialog, system back, programmatic redirect)
-  // is treated as "user did not consent" and leaveStudy() is called from
-  // dispose(). Set BEFORE awaiting the upload so a router-driven redirect
-  // mid-await doesn't get misread as a cancel.
-  bool _submitted = false;
-
-  Future<void> resultCallback(RPTaskResult result) async {
-    _submitted = true;
-    await widget.model.informedConsentHasBeenAccepted(result);
-    if (!mounted) return;
-    context.go(CarpAppState.homeRoute);
+  void _accept(RPTaskResult result) {
+    if (_acceptFuture != null) return;
+    final accepting = _acceptAndRoute(result);
+    setState(() {
+      _acceptFuture = accepting;
+    });
   }
 
-  @override
-  void dispose() {
-    // Bypassing onCancel entirely is intentional — see issue carp-dk/research.package#168.
-    if (!_submitted) {
-      widget.model.abandonConsent();
+  Future<void> _acceptAndRoute(RPTaskResult result) async {
+    try {
+      await widget.model.accept(result);
+      // Consent is given, so the redirect now sends this route to the app.
+      if (mounted) context.go(CarpAppState.homeRoute);
+    } catch (error) {
+      // Never reached CAWS, so the user is not consented - say so and leave.
+      warning('$runtimeType - could not record informed consent - $error');
+      // Drop the spinner first - the dialog is awaited inside this future.
+      if (mounted) setState(() => _acceptFuture = null);
+      if (mounted) await _showFailure();
+      await widget.model.reject();
     }
-    super.dispose();
   }
+
+  Future<void> _showFailure() => showDialog<void>(
+    context: context,
+    barrierDismissible: false,
+    builder: (context) {
+      final locale = RPLocalizations.of(context);
+      return AlertDialog(
+        content: Text(locale?.translate('pages.informed_consent.upload_failed') ?? ''),
+        actions: [TextButton(onPressed: () => Navigator.of(context).pop(), child: const Text('OK'))],
+      );
+    },
+  );
 
   @override
   Widget build(BuildContext context) {
-    RPLocalizations localization = RPLocalizations.of(context)!;
+    // The redirect resolves consent - which loads the document - before routing
+    // here, so a missing one means this page was reached some other way.
+    final document = widget.model.informedConsent;
+    if (document == null) return const ErrorPage();
 
     return Scaffold(
-      key: _scaffoldKey,
-      body: FutureBuilder<RPOrderedTask?>(
-        future: widget.model.getInformedConsent(localization.locale).then((document) async {
-          // No consent document configured for this study → mark accepted
-          // and navigate to /study. Set _submitted so dispose() doesn't tear
-          // the study back down.
-          if (document == null && !_submitted) {
-            _submitted = true;
-            await widget.model.acceptWithoutDocument();
-            if (mounted) context.go(CarpAppState.homeRoute);
-          }
-          return document;
-        }),
-        builder: (context, snapshot) {
-          if (snapshot.connectionState == ConnectionState.done) {
-            if (snapshot.hasData) {
-              return RPUITask(task: snapshot.data!, onSubmit: resultCallback);
-            }
-          }
-
-          return const Center(child: CircularProgressIndicator());
-        },
+      body: Stack(
+        children: [
+          RPUITask(
+            // Leaving is the redirect's call, not the task's.
+            task: document,
+            onSubmit: _accept,
+            // Declining leaves the study - the redirect then shows invitations.
+            onCancel: (_) => unawaited(widget.model.reject()),
+          ),
+          // Block the document while uploading, so it cannot be signed twice.
+          FutureBuilder(
+            future: _acceptFuture,
+            builder: (context, snapshot) => snapshot.connectionState == ConnectionState.waiting
+                ? const ColoredBox(
+                    color: Colors.black26,
+                    child: Center(child: CircularProgressIndicator()),
+                  )
+                : const SizedBox.shrink(),
+          ),
+        ],
       ),
     );
   }

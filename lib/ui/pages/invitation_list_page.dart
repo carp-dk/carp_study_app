@@ -20,7 +20,6 @@ class _InvitationListPageState extends State<InvitationListPage> {
   Widget build(BuildContext context) {
     RPLocalizations locale = RPLocalizations.of(context)!;
     return Scaffold(
-      backgroundColor: Theme.of(context).scaffoldBackgroundColor,
       body: RefreshIndicator(
         onRefresh: widget.model.loadInvitations,
         child: ListenableBuilder(
@@ -31,11 +30,11 @@ class _InvitationListPageState extends State<InvitationListPage> {
               child = const SliverToBoxAdapter(child: Center(child: CircularProgressIndicator()));
             } else {
               final invitations = widget.model.invitations;
-              child = SliverFixedExtentList(
-                itemExtent: 150,
-                delegate: SliverChildBuilderDelegate((context, index) {
-                  return Container(child: InvitationMaterial(invitation: invitations[index]));
-                }, childCount: invitations.length),
+              child = SliverList(
+                delegate: SliverChildBuilderDelegate(
+                  (context, index) => InvitationMaterial(invitation: invitations[index]),
+                  childCount: invitations.length,
+                ),
               );
             }
 
@@ -44,33 +43,21 @@ class _InvitationListPageState extends State<InvitationListPage> {
               // zero or one invitation and the content doesn't fill the screen.
               physics: const AlwaysScrollableScrollPhysics(),
               slivers: [
-                SliverAppBar(
-                  backgroundColor: Theme.of(context).scaffoldBackgroundColor,
-                  title: const CarpAppBar(),
-                  centerTitle: true,
-                  pinned: true,
-                  scrolledUnderElevation: 0,
-                ),
                 SliverToBoxAdapter(
-                  child: Padding(
-                    padding: const EdgeInsets.symmetric(vertical: 16.0),
-                    child: IntrinsicHeight(
-                      child: Stack(
+                  child: SafeArea(
+                    bottom: false,
+                    child: Padding(
+                      padding: const EdgeInsets.fromLTRB(4, 8, 16, 8),
+                      child: Row(
                         children: [
-                          Positioned(
-                            left: 8,
-                            top: 0,
-                            bottom: 0,
-                            child: IconButton(
-                              icon: const Icon(Icons.arrow_back_ios),
-                              onPressed: () => widget.model.signOut(),
-                            ),
+                          IconButton(
+                            icon: const Icon(Icons.arrow_back_ios_new),
+                            onPressed: () => widget.model.signOut(),
                           ),
-                          Center(
+                          Expanded(
                             child: Text(
                               locale.translate('invitation.invitations'),
-                              textAlign: TextAlign.center,
-                              style: const TextStyle(fontWeight: FontWeight.bold, fontSize: 22.0),
+                              style: Theme.of(context).textTheme.headlineSmall,
                             ),
                           ),
                         ],
@@ -80,14 +67,10 @@ class _InvitationListPageState extends State<InvitationListPage> {
                 ),
                 SliverToBoxAdapter(
                   child: Padding(
-                    padding: const EdgeInsets.only(bottom: 8.0, left: 16.0, right: 16.0),
-                    child: Container(
-                      padding: EdgeInsets.all(10.0),
-                      child: Text(
-                        locale.translate('invitation.subtitle'),
-                        textAlign: TextAlign.left,
-                        style: const TextStyle(fontWeight: FontWeight.bold, fontSize: 14.0),
-                      ),
+                    padding: const EdgeInsets.fromLTRB(16, 0, 16, 12),
+                    child: Text(
+                      locale.translate('invitation.subtitle'),
+                      style: Theme.of(context).textTheme.bodyMedium!.copyWith(color: Colors.grey.shade600),
                     ),
                   ),
                 ),
@@ -109,50 +92,41 @@ class InvitationMaterial extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     RPLocalizations locale = RPLocalizations.of(context)!;
+    final theme = Theme.of(context);
     return StudiesMaterial(
       backgroundColor: Colors.white,
+      margin: const EdgeInsets.only(bottom: 12, left: 16, right: 16),
       shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12.0)),
       child: InkWell(
+        borderRadius: BorderRadius.circular(12.0),
         onTap: () {
-          context.push('${InvitationDetailsPage.route}/${invitation.participation.participantId}');
+          context.push('${InvitationDetailsPage.route}/${invitation.studyDeploymentId}');
         },
         child: Padding(
-          padding: const EdgeInsets.all(16.0),
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.stretch,
+          padding: const EdgeInsets.all(14.0),
+          child: Row(
             children: [
-              Text(
-                invitation.invitation.name,
-                maxLines: 1,
-                style: Theme.of(context).textTheme.headlineSmall!
-                    .copyWith(fontWeight: FontWeight.w600)
-                    .copyWith(color: CACHET.TASK_COMPLETED_BLUE, overflow: TextOverflow.ellipsis),
-              ),
-              Text.rich(
-                TextSpan(
+              Expanded(
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    TextSpan(
-                      text: locale.translate('invitation_list.roles_in_the_study.description'),
-                      style: Theme.of(
-                        context,
-                      ).textTheme.titleSmall!.copyWith(color: Colors.grey.shade600, fontSize: 12),
+                    Text(
+                      invitation.invitation.name,
+                      maxLines: 1,
+                      overflow: TextOverflow.ellipsis,
+                      style: theme.textTheme.titleMedium!.copyWith(color: theme.colorScheme.primary),
                     ),
-                    TextSpan(
-                      text: invitation.participantRoleName,
-                      style: Theme.of(
-                        context,
-                      ).textTheme.titleSmall!.copyWith(color: Colors.grey.shade600, fontSize: 12),
+                    const SizedBox(height: 2),
+                    Text(
+                      '${locale.translate('invitation_list.roles_in_the_study.description')}${invitation.participantRoleName ?? '-'}',
+                      maxLines: 1,
+                      overflow: TextOverflow.ellipsis,
+                      style: theme.textTheme.bodySmall!.copyWith(color: Colors.grey.shade600),
                     ),
                   ],
                 ),
               ),
-              Text(
-                invitation.invitation.description ?? '',
-                maxLines: 2,
-                style: Theme.of(
-                  context,
-                ).textTheme.titleSmall!.copyWith(color: Colors.grey.shade900, overflow: TextOverflow.ellipsis),
-              ),
+              Icon(Icons.chevron_right, color: Colors.grey.shade400),
             ],
           ),
         ),
