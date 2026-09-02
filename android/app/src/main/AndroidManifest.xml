@@ -74,6 +74,19 @@
     <uses-permission android:name="android.permission.RECORD_AUDIO" />
     <uses-permission android:name="android.permission.CAMERA" />
 
+    <!-- open_filex declares the media permissions so it can open files from the
+         gallery. We only open a PDF we wrote to our own cache, so drop them -
+         Play requires a photo/video access declaration for apps that keep them. -->
+    <uses-permission
+        android:name="android.permission.READ_MEDIA_IMAGES"
+        tools:node="remove" />
+    <uses-permission
+        android:name="android.permission.READ_MEDIA_VIDEO"
+        tools:node="remove" />
+    <uses-permission
+        android:name="android.permission.READ_MEDIA_AUDIO"
+        tools:node="remove" />
+
     <!-- Permissions for Health Connect API -->
     <!-- Activity (ACTIVITY_RECOGNITION declared above) -->
     <uses-permission android:name="android.permission.ACTIVITY_RECOGNITION" />
