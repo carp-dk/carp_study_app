@@ -10,6 +10,7 @@ import 'exports.dart';
 class _FakePermissions extends PermissionHandlerPlatform with MockPlatformInterfaceMixin {
   PermissionStatus status = PermissionStatus.denied;
   int requestCount = 0;
+  final requested = <Permission>[];
 
   @override
   Future<PermissionStatus> checkPermissionStatus(Permission permission) async => status;
@@ -17,6 +18,7 @@ class _FakePermissions extends PermissionHandlerPlatform with MockPlatformInterf
   @override
   Future<Map<Permission, PermissionStatus>> requestPermissions(List<Permission> permissions) async {
     requestCount++;
+    requested.addAll(permissions);
     status = PermissionStatus.granted;
     return {for (final p in permissions) p: status};
   }
@@ -45,8 +47,10 @@ void main() {
     });
 
     debugDefaultTargetPlatformOverride = TargetPlatform.android;
-    // Reset the singleton, which outlives each test.
+    // Reset the singleton, which outlives each test - and drop the calls the
+    // reset itself makes, so each test starts from a clean log.
     await BackgroundSensingService().refresh();
+    backgroundCalls.clear();
   });
 
   tearDown(() {
@@ -99,8 +103,30 @@ void main() {
       expect(backgroundCalls, contains('disableBackgroundExecution'));
     });
 
-    test('is not supported off Android, so it never starts the service', () async {
+    test('on iOS connect asks for Always location, and no foreground service exists', () async {
       debugDefaultTargetPlatformOverride = TargetPlatform.iOS;
+      await BackgroundSensingService().refresh();
+
+      await BackgroundSensingService().connect();
+
+      expect(permissions.requested, [Permission.locationAlways]);
+      expect(BackgroundSensingService().isConnected, isTrue);
+      expect(backgroundCalls, isEmpty);
+    });
+
+    test('on iOS a revoked Always location disconnects', () async {
+      debugDefaultTargetPlatformOverride = TargetPlatform.iOS;
+      await BackgroundSensingService().connect();
+      expect(BackgroundSensingService().isConnected, isTrue);
+
+      permissions.status = PermissionStatus.denied;
+      await BackgroundSensingService().refresh();
+
+      expect(BackgroundSensingService().isConnected, isFalse);
+    });
+
+    test('is not supported off the phones, so it never starts', () async {
+      debugDefaultTargetPlatformOverride = TargetPlatform.linux;
 
       await BackgroundSensingService().connect();
 
