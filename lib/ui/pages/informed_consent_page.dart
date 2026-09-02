@@ -18,13 +18,13 @@ class InformedConsentPage extends StatefulWidget {
 class _InformedConsentPageState extends State<InformedConsentPage> {
   /// The accept in flight, so the document is blocked while it uploads and a
   /// second DONE cannot start a second upload.
-  Future<void>? _accepting;
+  Future<void>? _acceptFuture;
 
   void _accept(RPTaskResult result) {
-    if (_accepting != null) return;
+    if (_acceptFuture != null) return;
     final accepting = _acceptAndRoute(result);
     setState(() {
-      _accepting = accepting;
+      _acceptFuture = accepting;
     });
   }
 
@@ -37,7 +37,7 @@ class _InformedConsentPageState extends State<InformedConsentPage> {
       // Never reached CAWS, so the user is not consented - say so and leave.
       warning('$runtimeType - could not record informed consent - $error');
       // Drop the spinner first - the dialog is awaited inside this future.
-      if (mounted) setState(() => _accepting = null);
+      if (mounted) setState(() => _acceptFuture = null);
       if (mounted) await _showFailure();
       await widget.model.reject();
     }
@@ -67,14 +67,14 @@ class _InformedConsentPageState extends State<InformedConsentPage> {
         children: [
           RPUITask(
             // Leaving is the redirect's call, not the task's.
-            task: document..closeAfterFinished = false,
+            task: document,
             onSubmit: _accept,
             // Declining leaves the study - the redirect then shows invitations.
             onCancel: (_) => unawaited(widget.model.reject()),
           ),
           // Block the document while uploading, so it cannot be signed twice.
           FutureBuilder(
-            future: _accepting,
+            future: _acceptFuture,
             builder: (context, snapshot) => snapshot.connectionState == ConnectionState.waiting
                 ? const ColoredBox(
                     color: Colors.black26,

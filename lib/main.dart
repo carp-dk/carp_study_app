@@ -11,6 +11,7 @@ import 'package:app_version_update/data/models/app_version_result.dart';
 
 import 'package:flutter/gestures.dart';
 
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
@@ -43,7 +44,7 @@ import 'package:carp_serializable/carp_serializable.dart';
 import 'package:carp_core/carp_core.dart' hide Smartphone;
 import 'package:carp_mobile_sensing/carp_mobile_sensing.dart';
 import 'package:carp_audio_package/media.dart';
-//import 'package:carp_connectivity_package/connectivity.dart';
+import 'package:carp_connectivity_package/connectivity.dart' show ConnectivitySamplingPackage;
 //import 'package:carp_communication_package/communication.dart';
 import 'package:carp_context_package/carp_context_package.dart';
 import 'package:carp_survey_package/survey.dart';
@@ -74,6 +75,7 @@ part 'services/study_service.dart';
 part 'services/message_service.dart';
 part 'services/consent_service.dart';
 part 'services/data_stream_query_service.dart';
+part 'services/background_sensing_service.dart';
 
 part 'data/local_settings.dart';
 part 'data/localization_loader.dart';
@@ -161,9 +163,7 @@ part 'main.g.dart';
 
 late CarpStudyApp app;
 void main() async {
-  // Make sure to have an instance of the WidgetsBinding, which is required
-  // to use platform channels to call native code.
-  // See also >> https://stackoverflow.com/questions/63873338/what-does-widgetsflutterbinding-ensureinitialized-do/63873689
+  // Platform channels need the WidgetsBinding to exist.
   WidgetsFlutterBinding.ensureInitialized();
 
   // Initialize CAMS and related packages (loading json deserialization functions)

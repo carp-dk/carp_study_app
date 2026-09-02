@@ -1,12 +1,10 @@
 part of carp_study_app;
 
-// Status icon colors for the const device/service icon maps below; kept as
-// consts because the maps are const lookups consumed without a BuildContext.
+// Consts, because the icon maps below are const lookups without a BuildContext.
 const Color _statusSuccess = Color(0xff67CE67);
 const Color _statusError = Color(0xffEB4B62);
 
-/// View model for [DeviceListPage] - the deployment's devices and online
-/// services as [DeviceViewModel]s, which own connect/disconnect.
+/// View model for [DeviceListPage] - its devices and services as view models.
 class DeviceListPageViewModel extends ViewModel {
   DeviceListPageViewModel({StudyService? studyService}) : _studyService = studyService;
 
@@ -24,27 +22,24 @@ class DeviceListPageViewModel extends ViewModel {
       )
       .toList();
 
-  /// The online services of this deployment.
-  List<DeviceViewModel> get onlineServices =>
+  /// The services of this deployment.
+  List<DeviceViewModel> get services =>
       _study.deploymentDevices.where((device) => device.deviceManager is ServiceManager).toList();
 
   /// The Health service of this deployment, if any.
   DeviceViewModel? get healthService =>
-      onlineServices.where((device) => device.type == HealthService.DEVICE_TYPE).firstOrNull;
+      services.where((device) => device.type == HealthService.DEVICE_TYPE).firstOrNull;
 }
 
-/// View model for one device row on [DeviceListPage] - name, icon, and live
-/// connection status of its [DeviceManager]; connects and disconnects it.
+/// One device row: name, icon and status of a [DeviceManager]; connects it.
 class DeviceViewModel extends ViewModel {
   DeviceManager deviceManager;
   DeviceViewModel(this.deviceManager) : super();
 
   StreamSubscription<DeviceStatus>? _statusSub;
 
-  // Bridge the device manager's status stream into ChangeNotifier
-  // notifications, so widgets listening to this view model rebuild when the
-  // device connects or disconnects. Subscribed on first listener and cancelled
-  // on the last, so the ephemeral instances from `deploymentDevices` don't leak.
+  // Bridge the status stream into notifications - only while listened to, since
+  // `deploymentDevices` builds these per call.
   @override
   void addListener(VoidCallback listener) {
     _statusSub ??= deviceManager.statusEvents.listen((_) => notifyListeners());
@@ -82,8 +77,7 @@ class DeviceViewModel extends ViewModel {
   /// The device id
   String get id => deviceManager.displayName ?? '';
 
-  /// The BLE name prefix used to filter scan results to devices of this type
-  /// (e.g. "Polar", "Movesense"). Null for non-BLE devices.
+  /// The BLE name prefix scan results are filtered by. Null for non-BLE devices.
   String? get bleNamePrefix {
     final config = deviceManager.configuration;
     if (config is! BLEDevice) return null;
@@ -91,11 +85,7 @@ class DeviceViewModel extends ViewModel {
     return (configured != null && configured.isNotEmpty) ? configured : null;
   }
 
-  /// A printer-friendly name for this device.
-  ///
-  /// The BLE name of a disconnected device is only a remembered pairing, so it
-  /// is not shown - otherwise the device looks connected while offering a
-  /// 'connect' action.
+  /// A printable name - a disconnected device's BLE name is only a memory.
   String get name {
     if (deviceManager is BLEDeviceManager) {
       if (status == DeviceStatus.disconnected || status == DeviceStatus.configured) return '';
@@ -110,17 +100,11 @@ class DeviceViewModel extends ViewModel {
   /// A printer-friendly description of this device.
   String get description => '${_deviceTypeDescription[type!]} - ${status.name}\n$batteryLevel% battery remaining.';
 
-  /// The battery level of this device.
-  ///
-  /// Only relevant if this device is a [HardwareDeviceManager].
-  /// Returns null if not a hardware device.
+  /// The battery level, or null if this is not a [HardwareDeviceManager].
   int? get batteryLevel =>
       (deviceManager is HardwareDeviceManager) ? (deviceManager as HardwareDeviceManager).batteryLevel : null;
 
-  /// The stream of battery level events.
-  ///
-  /// Only relevant if this device is a [HardwareDeviceManager].
-  /// Returns an empty stream if not a hardware device.
+  /// Battery level events - empty if this is not a [HardwareDeviceManager].
   Stream<int> get batteryEvents => deviceManager is HardwareDeviceManager
       ? (deviceManager as HardwareDeviceManager).batteryEvents
       : const Stream.empty();
@@ -168,8 +152,7 @@ class DeviceViewModel extends ViewModel {
   /// Map a selected device to the device in the protocol and connect to it.
   void connectToDevice(BluetoothDevice selectedDevice) {
     if (deviceManager is BLEDeviceManager) {
-      // Use pair() so device-specific onPaired() runs (e.g. Polar derives its
-      // identifier from the BLE name), not just setting the fields directly.
+      // pair(), so device-specific onPaired() runs - not just setting fields.
       (deviceManager as BLEDeviceManager).pair(
         bleAddress: selectedDevice.remoteId.str,
         bleName: selectedDevice.platformName,

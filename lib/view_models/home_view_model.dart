@@ -79,8 +79,13 @@ class HomePageViewModel extends ViewModel {
   /// The connectable data sources of this deployment (everything but the phone).
   List<DeviceViewModel> get connectionSources => _connectionSources;
   bool isSourceActive(DeviceViewModel d) => d.status == DeviceStatus.connected;
-  int get totalSourceCount => _connectionSources.length;
-  int get activeSourceCount => _connectionSources.where(isSourceActive).length;
+
+  /// Background sensing counts too - without it, data only flows in foreground.
+  bool get hasBackgroundSensing => BackgroundSensingService().isSupported;
+  bool get isBackgroundSensingActive => BackgroundSensingService().isConnected;
+
+  int get totalSourceCount => _connectionSources.length + (hasBackgroundSensing ? 1 : 0);
+  int get activeSourceCount => _connectionSources.where(isSourceActive).length + (isBackgroundSensingActive ? 1 : 0);
 
   HomeConnectionState get connectionState {
     final active = activeSourceCount;

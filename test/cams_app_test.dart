@@ -128,5 +128,31 @@ void main() {
     test('parses a CAMS 2.x protocol (new device namespace)', () {
       expectDemoProtocol(parse('test/json/protocol_cams_2x.json'));
     });
+
+    test('parses a bluetooth measure with its scan sampling configuration', () {
+      final measure = Measure.fromJson({
+        '__type': 'dk.cachet.carp.common.application.tasks.Measure.DataStream',
+        'type': ConnectivitySamplingPackage.BLUETOOTH,
+        'overrideSamplingConfiguration': {
+          '__type': 'dk.cachet.carp.common.application.sampling.BluetoothScanPeriodicSamplingConfiguration',
+          'interval': 15000000,
+          'duration': 10000000,
+          'withServices': <String>[],
+          'withRemoteIds': <String>[],
+        },
+      });
+
+      expect(measure.overrideSamplingConfiguration, isA<PeriodicSamplingConfiguration>());
+
+      final supportedTypes = SamplingPackageRegistry().dataTypes.map((d) => d.type).toSet();
+      expect(
+        supportedTypes,
+        containsAll([
+          ConnectivitySamplingPackage.CONNECTIVITY,
+          ConnectivitySamplingPackage.WIFI,
+          ConnectivitySamplingPackage.BLUETOOTH,
+        ]),
+      );
+    });
   });
 }
