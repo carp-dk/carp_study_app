@@ -72,10 +72,10 @@ class StudyPageViewModel extends ViewModel {
   String get privacyPolicyUrl => _study.deployment?.studyDescription?.privacyPolicyUrl ?? CarpBackend.carpPrivacyUrl;
   String get username => _auth.username;
 
-  /// The signed informed consent as a file the participant can keep.
+  /// The signed informed consent, as the bytes to save to a file.
   ///
   /// Null when no signed consent exists (e.g. local deployments).
-  Future<File?> downloadInformedConsent() => _consent.downloadSignedConsent(_study.study);
+  Future<Uint8List?> informedConsentBytes() => _consent.signedConsentBytes(_study.study);
 
   String get piTitle => _study.deployment?.responsible?.title ?? '';
   String get piName => _study.deployment?.responsible?.name ?? '';

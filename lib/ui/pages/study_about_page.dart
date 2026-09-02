@@ -164,21 +164,42 @@ class StudyAboutPage extends StatelessWidget {
     await _launch(url);
   }
 
-  /// Fetch the signed consent and save it, telling the participant where it
-  /// went - a file they cannot find is not a download.
+  /// Fetch the signed consent as PDF and save it via the system save dialog -
+  /// the only way to write outside the app sandbox.
   Future<void> _downloadInformedConsent(BuildContext context) async {
     final locale = RPLocalizations.of(context)!;
-    final file = await model.downloadInformedConsent();
+    final bytes = await model.informedConsentBytes();
     if (!context.mounted) return;
 
-    final message = file == null
-        ? locale.translate('pages.profile.download_consent.unavailable')
-        : locale.translate(
-            Platform.isAndroid
-                ? 'pages.profile.download_consent.saved_downloads'
-                : 'pages.profile.download_consent.saved_files',
-          );
-    ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text(message)));
+    if (bytes == null) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(content: Text(locale.translate('pages.profile.download_consent.unavailable'))),
+      );
+      return;
+    }
+
+    final saved = await FilePicker.saveFile(
+      dialogTitle: locale.translate('pages.profile.download_consent'),
+      fileName: 'informed_consent.pdf',
+      bytes: bytes,
+      mimeType: 'application/pdf',
+    );
+    if (!context.mounted || saved == null) return; // null when cancelled
+
+    ScaffoldMessenger.of(context).showSnackBar(
+      SnackBar(
+        content: Text(locale.translate('pages.profile.download_consent.saved')),
+        action: SnackBarAction(
+          label: locale.translate('pages.profile.download_consent.open'),
+          // Viewers cannot open the returned content:// URI, so open a cache copy.
+          onPressed: () async {
+            final copy = File('${(await getTemporaryDirectory()).path}/informed_consent.pdf');
+            await copy.writeAsBytes(bytes);
+            await OpenFilex.open(copy.path, type: 'application/pdf');
+          },
+        ),
+      ),
+    );
   }
 
   Widget _actionCard(

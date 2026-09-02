@@ -11,22 +11,17 @@ class ConsentService {
   /// Get the informed consent document for this study, or null if it has none.
   Future<RPOrderedTask?> getDocument({bool refresh = false}) => _manager.getConsentDocument(refresh: refresh);
 
-  /// Write the signed consent for [study] to a file the participant can find
-  /// again: Downloads on Android, the app's folder in Files on iOS - which is
-  /// browsable thanks to `UIFileSharingEnabled`.
+  /// The signed consent for [study], as the PDF bytes to write to a file.
   ///
   /// Null when nothing is signed, or the backend cannot be reached.
-  Future<File?> downloadSignedConsent(SmartphoneStudy? study) async {
+  Future<Uint8List?> signedConsentBytes(SmartphoneStudy? study) async {
     if (study == null) return null;
     try {
       final consent = await _backend.getInformedConsentByRole(study.studyDeploymentId, study.participantRoleName);
       if (consent == null) return null;
-      final dir = (Platform.isAndroid ? await getDownloadsDirectory() : null) ??
-          await getApplicationDocumentsDirectory();
-      await dir.create(recursive: true);
-      return File('${dir.path}/informed_consent.json').writeAsString(toJsonString(consent.toJson()));
+      return consentPdf(consent);
     } catch (error) {
-      warning('Could not download informed consent - $error');
+      warning('Could not fetch informed consent - $error');
       return null;
     }
   }
