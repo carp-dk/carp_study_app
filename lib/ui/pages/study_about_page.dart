@@ -172,9 +172,9 @@ class StudyAboutPage extends StatelessWidget {
     if (!context.mounted) return;
 
     if (bytes == null) {
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(content: Text(locale.translate('pages.profile.download_consent.unavailable'))),
-      );
+      ScaffoldMessenger.of(
+        context,
+      ).showSnackBar(SnackBar(content: Text(locale.translate('pages.profile.download_consent.unavailable'))));
       return;
     }
 

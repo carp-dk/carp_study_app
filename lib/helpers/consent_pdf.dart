@@ -7,10 +7,7 @@ Future<Uint8List> consentPdf(InformedConsentInput input) async {
   final signed = _signedConsent(input.consent);
   final document = signed?.consentDocument;
 
-  final pdf = pw.Document(
-    title: document?.title ?? 'Informed Consent',
-    creator: 'CARP Study App',
-  );
+  final pdf = pw.Document(title: document?.title ?? 'Informed Consent', creator: 'CARP Study App');
 
   pdf.addPage(
     pw.MultiPage(
@@ -27,10 +24,7 @@ Future<Uint8List> consentPdf(InformedConsentInput input) async {
           pw.Paragraph(text: input.consent, style: _body, textAlign: pw.TextAlign.justify)
         else
           // Unparseable JSON - printing it raw would dump the signature bytes.
-          pw.Paragraph(
-            text: 'The content of the signed consent document could not be displayed.',
-            style: _body,
-          ),
+          pw.Paragraph(text: 'The content of the signed consent document could not be displayed.', style: _body),
         pw.SizedBox(height: 24),
         _signatureBlock(input, signed),
       ],
@@ -47,48 +41,56 @@ const pw.TextStyle _body = pw.TextStyle(fontSize: 11, lineSpacing: 3);
 final pw.TextStyle _label = pw.TextStyle(fontSize: 8, color: _grey, letterSpacing: 0.5);
 
 pw.Widget _titleBlock(String title, InformedConsentInput input) => pw.Container(
-      width: double.infinity,
-      padding: const pw.EdgeInsets.only(bottom: 12),
-      decoration: pw.BoxDecoration(border: pw.Border(bottom: pw.BorderSide(color: _primary, width: 2))),
-      child: pw.Column(
-        crossAxisAlignment: pw.CrossAxisAlignment.start,
-        children: [
-          pw.Text('INFORMED CONSENT', style: _label),
-          pw.SizedBox(height: 4),
-          pw.Text(title, style: pw.TextStyle(fontSize: 22, fontWeight: pw.FontWeight.bold, color: _primary)),
-          pw.SizedBox(height: 4),
-          pw.Text('Signed ${_date(input.signedTimestamp)}', style: pw.TextStyle(fontSize: 10, color: _grey)),
-        ],
+  width: double.infinity,
+  padding: const pw.EdgeInsets.only(bottom: 12),
+  decoration: pw.BoxDecoration(
+    border: pw.Border(bottom: pw.BorderSide(color: _primary, width: 2)),
+  ),
+  child: pw.Column(
+    crossAxisAlignment: pw.CrossAxisAlignment.start,
+    children: [
+      pw.Text('INFORMED CONSENT', style: _label),
+      pw.SizedBox(height: 4),
+      pw.Text(
+        title,
+        style: pw.TextStyle(fontSize: 22, fontWeight: pw.FontWeight.bold, color: _primary),
       ),
-    );
+      pw.SizedBox(height: 4),
+      pw.Text('Signed ${_date(input.signedTimestamp)}', style: pw.TextStyle(fontSize: 10, color: _grey)),
+    ],
+  ),
+);
 
 /// One consent section, laid out as on the consent review screen.
 pw.Widget _section(RPConsentSection section) => pw.Padding(
-      padding: const pw.EdgeInsets.only(bottom: 14),
-      child: pw.Column(
-        crossAxisAlignment: pw.CrossAxisAlignment.start,
-        children: [
-          pw.Text(section.title, style: pw.TextStyle(fontSize: 14, fontWeight: pw.FontWeight.bold, color: _primary)),
-          pw.SizedBox(height: 4),
-          pw.Text(section.summary, style: _body, textAlign: pw.TextAlign.justify),
-          if (section.content != null && section.content!.isNotEmpty) ...[
-            pw.SizedBox(height: 4),
-            pw.Text(section.content!, style: _body, textAlign: pw.TextAlign.justify),
-          ],
-          for (final dataType in section.dataTypes ?? <RPDataTypeSection>[])
-            pw.Padding(
-              padding: const pw.EdgeInsets.only(left: 12, top: 6),
-              child: pw.Column(
-                crossAxisAlignment: pw.CrossAxisAlignment.start,
-                children: [
-                  pw.Text(dataType.dataName, style: pw.TextStyle(fontSize: 11, fontWeight: pw.FontWeight.bold)),
-                  pw.Text(dataType.dataInformation, style: _body, textAlign: pw.TextAlign.justify),
-                ],
-              ),
-            ),
-        ],
+  padding: const pw.EdgeInsets.only(bottom: 14),
+  child: pw.Column(
+    crossAxisAlignment: pw.CrossAxisAlignment.start,
+    children: [
+      pw.Text(
+        section.title,
+        style: pw.TextStyle(fontSize: 14, fontWeight: pw.FontWeight.bold, color: _primary),
       ),
-    );
+      pw.SizedBox(height: 4),
+      pw.Text(section.summary, style: _body, textAlign: pw.TextAlign.justify),
+      if (section.content != null && section.content!.isNotEmpty) ...[
+        pw.SizedBox(height: 4),
+        pw.Text(section.content!, style: _body, textAlign: pw.TextAlign.justify),
+      ],
+      for (final dataType in section.dataTypes ?? <RPDataTypeSection>[])
+        pw.Padding(
+          padding: const pw.EdgeInsets.only(left: 12, top: 6),
+          child: pw.Column(
+            crossAxisAlignment: pw.CrossAxisAlignment.start,
+            children: [
+              pw.Text(dataType.dataName, style: pw.TextStyle(fontSize: 11, fontWeight: pw.FontWeight.bold)),
+              pw.Text(dataType.dataInformation, style: _body, textAlign: pw.TextAlign.justify),
+            ],
+          ),
+        ),
+    ],
+  ),
+);
 
 /// The drawn signature above a rule, with name, date, and location - like a
 /// paper consent form.
@@ -100,10 +102,7 @@ pw.Widget _signatureBlock(InformedConsentInput input, RPConsentSignatureResult? 
   return pw.Container(
     width: double.infinity,
     padding: const pw.EdgeInsets.all(16),
-    decoration: pw.BoxDecoration(
-      color: PdfColor.fromInt(0xfff2f2f7),
-      borderRadius: pw.BorderRadius.circular(4),
-    ),
+    decoration: pw.BoxDecoration(color: PdfColor.fromInt(0xfff2f2f7), borderRadius: pw.BorderRadius.circular(4)),
     child: pw.Column(
       crossAxisAlignment: pw.CrossAxisAlignment.start,
       children: [
@@ -132,18 +131,18 @@ pw.Widget _signatureBlock(InformedConsentInput input, RPConsentSignatureResult? 
 }
 
 pw.Widget _fact(String label, String value) => pw.Column(
-      crossAxisAlignment: pw.CrossAxisAlignment.start,
-      children: [
-        pw.Text(label, style: _label),
-        pw.Text(value, style: const pw.TextStyle(fontSize: 11)),
-      ],
-    );
+  crossAxisAlignment: pw.CrossAxisAlignment.start,
+  children: [
+    pw.Text(label, style: _label),
+    pw.Text(value, style: const pw.TextStyle(fontSize: 11)),
+  ],
+);
 
 pw.Widget _footer(pw.Context context) => pw.Container(
-      alignment: pw.Alignment.centerRight,
-      margin: const pw.EdgeInsets.only(top: 16),
-      child: pw.Text('${context.pageNumber} / ${context.pagesCount}', style: pw.TextStyle(fontSize: 9, color: _grey)),
-    );
+  alignment: pw.Alignment.centerRight,
+  margin: const pw.EdgeInsets.only(top: 16),
+  child: pw.Text('${context.pageNumber} / ${context.pagesCount}', style: pw.TextStyle(fontSize: 9, color: _grey)),
+);
 
 String _date(DateTime timestamp) => DateFormat.yMMMMd().add_Hm().format(timestamp.toLocal());
 

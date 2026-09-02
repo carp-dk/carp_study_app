@@ -318,9 +318,7 @@ void main() {
               identifier: 'consent',
               consentDocument: RPConsentDocument(
                 title: 'Study Consent',
-                sections: [
-                  RPConsentSection(type: RPConsentSectionType.Overview, summary: 'What this study does.'),
-                ],
+                sections: [RPConsentSection(type: RPConsentSectionType.Overview, summary: 'What this study does.')],
               ),
               signature: RPSignatureResult(firstName: 'Jane', lastName: 'Doe'),
             ).toJson(),
