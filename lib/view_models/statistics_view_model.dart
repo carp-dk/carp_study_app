@@ -82,17 +82,17 @@ class StatisticsViewModel extends ViewModel {
     super.init(ctrl);
 
     _hasUserTasks = _study.hasUserTasks();
-    _hasPolarHeartRateMeasure = _study.hasMeasure(PolarSamplingPackage.HR);
+    _hasPolarHeartRateMeasure = _hasMeasure(PolarSamplingPackage.HR);
     _hasMovesenseHeartRateMeasure = _study.hasMeasure(MovesenseSamplingPackage.HR);
     _hasAudioMeasure = _study.hasMeasure(MediaSamplingPackage.AUDIO);
     _hasVideoMeasure = _study.hasMeasure(MediaSamplingPackage.VIDEO);
     _hasImageMeasure = _study.hasMeasure(MediaSamplingPackage.IMAGE);
-    _hasStepsMeasure = StepsCardViewModel.dataTypes.any(_study.hasMeasure);
-    _hasActivityMeasure = _study.hasMeasure(ContextSamplingPackage.ACTIVITY);
-    _hasMobilityMeasure = _study.hasMeasure(ContextSamplingPackage.MOBILITY);
+    _hasStepsMeasure = StepsCardViewModel.dataTypes.any(_hasMeasure);
+    _hasActivityMeasure = _hasMeasure(ContextSamplingPackage.ACTIVITY);
+    _hasMobilityMeasure = _hasMeasure(ContextSamplingPackage.MOBILITY);
     // A health measure may or may not include sleep types, but the card's
     // hasData gate hides it either way until sleep actually arrives.
-    _hasSleepMeasure = _study.hasMeasure(HealthSamplingPackage.HEALTH);
+    _hasSleepMeasure = _hasMeasure(HealthSamplingPackage.HEALTH);
 
     _activityCardDataModel.init(ctrl);
     _stepsCardDataModel.init(ctrl);
@@ -108,11 +108,21 @@ class StatisticsViewModel extends ViewModel {
     _studyProgressCardDataModel.init(ctrl);
   }
 
+  /// Whether the deployment collects [type] - or the demo generator stands in
+  /// for it, so its card shows up in a demo of a study that does not collect it.
+  bool _hasMeasure(String type) => _study.hasMeasure(type) || DemoDataService.covers(type);
+
   /// Fetch the last 7 days from CAWS and recompute the cards. Best-effort:
   /// a failed fetch leaves existing card data untouched. No-op while running.
   Future<void> refresh() async {
     if (_isRefreshing) return;
     _isRefreshing = true;
+
+    if (AppConfig.demoMode) {
+      DemoDataService().start(this);
+      _isRefreshing = false;
+      return;
+    }
 
     try {
       await Future.wait([
@@ -188,6 +198,7 @@ class StatisticsViewModel extends ViewModel {
 
   @override
   void dispose() {
+    DemoDataService().stop();
     _activityCardDataModel.dispose();
     _stepsCardDataModel.dispose();
     _polarHeartRateCardDataModel.dispose();

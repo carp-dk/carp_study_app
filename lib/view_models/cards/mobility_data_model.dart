@@ -19,7 +19,7 @@ class MobilityCardViewModel extends SerializableViewModel<WeeklyMobility> {
 
   /// Stream of mobility [Measurement]s.
   Stream<Measurement>? get mobilityEvents =>
-      controller?.measurements.where((measurement) => measurement.data is Mobility);
+      measurements?.where((measurement) => measurement.data is Mobility);
 
   @override
   void init(SmartphoneStudyController ctrl) {

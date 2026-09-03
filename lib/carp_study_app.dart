@@ -229,7 +229,7 @@ class CarpAppState extends State<CarpStudyApp> {
       locale: AppConfig.localization?.locale,
       theme: carpTheme,
       themeMode: ThemeMode.light,
-      debugShowCheckedModeBanner: true,
+      debugShowCheckedModeBanner: false,
       routerConfig: _router,
     );
   }

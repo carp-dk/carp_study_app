@@ -80,6 +80,7 @@ part 'services/study_service.dart';
 part 'services/message_service.dart';
 part 'services/consent_service.dart';
 part 'services/data_stream_query_service.dart';
+part 'services/demo_data_service.dart';
 part 'services/background_sensing_service.dart';
 
 part 'data/local_settings.dart';
