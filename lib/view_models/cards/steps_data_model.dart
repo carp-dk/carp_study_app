@@ -41,7 +41,7 @@ class StepsCardViewModel extends SerializableViewModel<WeeklySteps> {
 
   /// Stream of pedometer (step) [DataPoint] measures.
   Stream<Measurement>? get pedometerEvents =>
-      controller?.measurements.where((measurement) => _stepsOf(measurement.data) != null);
+      measurements?.where((measurement) => _stepsOf(measurement.data) != null);
 
   @override
   void init(SmartphoneStudyController ctrl) {
@@ -50,6 +50,7 @@ class StepsCardViewModel extends SerializableViewModel<WeeklySteps> {
     // listen for pedometer events and count them
     pedometerEvents?.listen((measurement) {
       _lastStep = _addStepCount(model, measurement, _lastStep);
+      notifyListeners();
     }, onError: onMeasurementStreamError);
   }
 

@@ -28,7 +28,7 @@ class SleepCardViewModel extends SerializableViewModel<WeeklySleep> {
 
   /// Stream of health measurements carrying sleep.
   Stream<Measurement>? get sleepEvents =>
-      controller?.measurements.where((measurement) => _minutesOf(measurement.data) != null);
+      measurements?.where((measurement) => _minutesOf(measurement.data) != null);
 
   /// The minutes of sleep in [data], or null if it is not a sleep reading.
   static double? _minutesOf(Data data) {

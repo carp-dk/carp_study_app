@@ -24,6 +24,10 @@ abstract class AppConfig {
     (mode) => mode.name == const String.fromEnvironment('deployment-mode', defaultValue: 'production'),
   );
 
+  /// Whether to show generated demo data instead of (missing) real sensor
+  /// readings - for demos and promo videos. See [DemoDataService].
+  static bool demoMode = const bool.fromEnvironment('demo');
+
   /// Debug level for the app and CAMS.
   static DebugLevel debugLevel = DebugLevel.values.firstWhere(
     (level) => level.name == const String.fromEnvironment('debug-level', defaultValue: 'info'),

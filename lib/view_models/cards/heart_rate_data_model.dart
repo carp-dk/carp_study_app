@@ -72,7 +72,7 @@ class HeartRateCardViewModel extends SerializableViewModel<HourlyHeartRate> {
 
   /// Stream of measurements of this card's [dataType] only.
   Stream<Measurement>? get sourceStream =>
-      controller?.measurements.where((measurement) => measurement.dataType.toString() == dataType);
+      measurements?.where((measurement) => measurement.dataType.toString() == dataType);
 
   /// Stream of heart rate readings in BPM, for the card to rebuild on.
   Stream<double>? get heartRateStream =>
