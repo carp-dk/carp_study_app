@@ -75,6 +75,7 @@ void main() {
       await BackgroundSensingService().connect();
 
       expect(permissions.requestCount, 1);
+      expect(permissions.requested, [Permission.ignoreBatteryOptimizations, Permission.location]);
       expect(BackgroundSensingService().isConnected, isTrue);
       expect(backgroundCalls, contains('enableBackgroundExecution'));
       expect(notifications, 1);

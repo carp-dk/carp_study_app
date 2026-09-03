@@ -21,7 +21,10 @@ class DisplayPicturePageState extends State<DisplayPicturePage> {
   void initState() {
     super.initState();
 
-    // initialize video player controller
+    // only a video can be played - a photo is shown with Image.file, and
+    // handing a JPEG to the video player fails with no extractor found.
+    if (!widget.isVideo) return;
+
     _videoPlayerController = VideoPlayerController.file(File(videoFilePath))
       ..initialize().then((_) {
         setState(() {});
@@ -32,8 +35,8 @@ class DisplayPicturePageState extends State<DisplayPicturePage> {
 
   @override
   void dispose() {
-    super.dispose();
     _videoPlayerController?.dispose();
+    super.dispose();
   }
 
   @override
