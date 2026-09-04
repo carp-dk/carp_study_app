@@ -24,11 +24,21 @@ class BackgroundSensingService extends ChangeNotifier {
 
   // The exemption (Android) or Always location (iOS) is the truth - both can
   // be revoked in the phone's settings at any time, so re-read, not remembered.
-  Permission get _permission => _isAndroid ? Permission.ignoreBatteryOptimizations : Permission.locationAlways;
+  // Android 14+ kills the app if the location-type foreground service starts
+  // without location granted, so that is required too.
+  List<Permission> get _permissions =>
+      _isAndroid ? [Permission.ignoreBatteryOptimizations, Permission.location] : [Permission.locationAlways];
 
-  /// Re-read the platform permission and bring the service in line with it.
+  Future<bool> get _isGranted async {
+    for (final permission in _permissions) {
+      if (!await permission.isGranted) return false;
+    }
+    return true;
+  }
+
+  /// Re-read the platform permissions and bring the service in line with them.
   Future<void> refresh() async {
-    var connected = isSupported && await _permission.isGranted;
+    var connected = isSupported && await _isGranted;
 
     // The foreground service exists only on Android; on iOS the granted
     // permission is all there is - location updates keep sensing alive.
@@ -48,7 +58,7 @@ class BackgroundSensingService extends ChangeNotifier {
   Future<void> connect() async {
     if (!isSupported) return;
 
-    await _permission.request();
+    await _permissions.request();
     await refresh();
   }
 
