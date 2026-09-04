@@ -47,9 +47,6 @@ class Sensing {
       deploymentService: deploymentService,
       dataCollectorFactory: DeviceController(),
 
-      // Need to ask for permissions all at once on Android.
-      askForPermissions: Platform.isAndroid ? true : false,
-
       // Only resumed - the user connects to it themselves the first time.
       enableBackgroundMode: false,
     );
