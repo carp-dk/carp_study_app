@@ -139,6 +139,19 @@ void main() {
     });
   });
 
+  group('MobilityCardViewModel.addMeasurements', () {
+    test('keeps days the backfill does not cover', () {
+      final model = MobilityCardViewModel();
+      model.addMeasurements([Measurement.fromData(Mobility(date: DateTime(2026, 8, 10), numberOfPlaces: 2))]);
+      // Yesterday's reading is not uploaded yet, so the refresh returns only today.
+      model.addMeasurements([Measurement.fromData(Mobility(date: DateTime(2026, 8, 11), numberOfPlaces: 3))]);
+
+      final days = model.model.last7Days(today: DateTime(2026, 8, 11));
+      expect(days[5].places, 2);
+      expect(days.last.places, 3);
+    });
+  });
+
   group('ActivityCardViewModel.addMeasurements', () {
     test('does not carry a duration across a day boundary', () {
       final model = ActivityCardViewModel();

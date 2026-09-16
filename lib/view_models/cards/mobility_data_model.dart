@@ -33,9 +33,9 @@ class MobilityCardViewModel extends SerializableViewModel<WeeklyMobility> {
   }
 
   /// Recompute the trailing 7 days from backfilled [measurements] -
-  /// idempotent; the latest reading per day wins.
+  /// idempotent; the latest reading per day wins. Days the backfill does not
+  /// cover keep what they have, so a lagging upload never blanks a day.
   void addMeasurements(List<Measurement> measurements) {
-    model.dailyMobility.clear();
     final sorted = [...measurements]..sort((a, b) => a.sensorTime.compareTo(b.sensorTime));
     for (final measurement in sorted) {
       model.setMobilityFeatures(measurement.data as Mobility);
