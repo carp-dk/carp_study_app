@@ -1,3 +1,8 @@
+## 5.0.2
+
+* Android launcher icon is now an adaptive icon built from the same CARP mark
+  as iOS, with matching padding
+
 ## 4.4.3
 
 * version bump for App Store resubmission; 4.4.1 was already approved and its
