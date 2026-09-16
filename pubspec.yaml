@@ -119,6 +119,7 @@ dev_dependencies:
   integration_test:
     sdk: flutter
   mockito: any
+  flutter_blue_plus_platform_interface: any
   flutter_lints: any
 
 # Is used to change the default app launch icons on iOS and Android.
