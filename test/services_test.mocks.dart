@@ -300,6 +300,15 @@ class MockAuthService extends _i1.Mock implements _i6.AuthService {
           as _i7.Future<void>);
 
   @override
+  _i7.Future<String?> magicLinkForCode(String? code) =>
+      (super.noSuchMethod(
+            Invocation.method(#magicLinkForCode, [code]),
+            returnValue: _i7.Future<String?>.value(),
+            returnValueForMissingStub: _i7.Future<String?>.value(),
+          )
+          as _i7.Future<String?>);
+
+  @override
   _i7.Future<void> signOut() =>
       (super.noSuchMethod(
             Invocation.method(#signOut, []),

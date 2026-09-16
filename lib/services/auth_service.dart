@@ -62,6 +62,11 @@ class AuthService {
   /// Authenticate anonymously using a magic link.
   Future<void> authenticateWithMagicLink(String uri) => _backend.authenticateWithMagicLink(uri);
 
+  /// The magic link belonging to a short sign-in [code], or null if unknown.
+  // ponytail: CAWS has no code -> link endpoint yet, so every code is reported
+  // as invalid. Point this at the endpoint once it exists.
+  Future<String?> magicLinkForCode(String code) async => null;
+
   /// Sign out from CAWS and erase all local authentication information.
   Future<void> signOut() => _backend.signOut();
 }

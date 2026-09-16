@@ -164,5 +164,12 @@
   "pages.devices.connection.step.scan.searching": "Buscando dispositivos cercanos…\nAsegúrate de que tu dispositivo esté encendido y dentro del alcance.",
   "pages.devices.connection.step.scan.show_all": "¿No ves tu dispositivo? Mostrar todos",
   "pages.devices.connection.step.scan.filtered": "Mostrar solo dispositivos coincidentes",
-  "pages.informed_consent.upload_failed": "No se pudo guardar su consentimiento. Compruebe su conexión a internet e inténtelo de nuevo."
+  "pages.informed_consent.upload_failed": "No se pudo guardar su consentimiento. Compruebe su conexión a internet e inténtelo de nuevo.",
+  "pages.login.sign_in.title": "Únete a un estudio",
+  "pages.login.sign_in.tab.scan": "Código QR",
+  "pages.login.sign_in.tab.code": "Código",
+  "pages.login.sign_in.scan_hint": "Apunta la cámara al código QR",
+  "pages.login.sign_in.flip_camera": "Cambiar cámara",
+  "pages.login.sign_in.code_hint": "Introduce el código de 5 caracteres de tu invitación al estudio",
+  "pages.login.sign_in.code_invalid": "Ese código no funcionó. Compruébalo e inténtalo de nuevo."
 }

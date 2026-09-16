@@ -121,7 +121,7 @@ part 'ui/pages/task_list_page.dart';
 part 'ui/pages/profile_page.dart';
 part 'ui/pages/error_page.dart';
 part 'ui/pages/login_page.dart';
-part 'ui/pages/qr_scanner.dart';
+part 'ui/pages/sign_in_dialog.dart';
 part 'ui/pages/enable_connection_dialog.dart';
 part 'ui/pages/device_list_page.dart';
 part 'ui/pages/devices_page.authorization_dialog.dart';

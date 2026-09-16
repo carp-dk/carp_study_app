@@ -141,6 +141,28 @@ void main() {
       expect(await model.signInWithMagicLink('https://carp.dk/magic'), isTrue);
       verify(auth.authenticateWithMagicLink('https://carp.dk/magic')).called(1);
     });
+
+    test('signInWithCode rejects malformed codes without looking up a link', () async {
+      for (final code in ['', 'ABC', 'ABCDEF', 'AB CD', 'ABCD-']) {
+        expect(await model.signInWithCode(code), isFalse, reason: code);
+      }
+      verifyNever(auth.magicLinkForCode(any));
+    });
+
+    test('signInWithCode upper-cases the code and signs in with its link', () async {
+      when(auth.isAuthenticated).thenReturn(true);
+      when(auth.magicLinkForCode('AB3C9')).thenAnswer((_) async => 'https://carp.dk/magic');
+
+      expect(await model.signInWithCode('ab3c9'), isTrue);
+      verify(auth.authenticateWithMagicLink('https://carp.dk/magic')).called(1);
+    });
+
+    test('signInWithCode fails when the code has no link', () async {
+      when(auth.magicLinkForCode(any)).thenAnswer((_) async => null);
+
+      expect(await model.signInWithCode('ABCDE'), isFalse);
+      verifyNever(auth.authenticateWithMagicLink(any));
+    });
   });
 
   group('InvitationsViewModel', () {

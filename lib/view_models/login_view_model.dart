@@ -3,9 +3,15 @@ part of carp_study_app;
 /// The outcome of a sign-in attempt.
 enum SignInResult { success, offline, failed }
 
-/// View model for [LoginPage] and [QRViewExample] - runs the sign-in flow
-/// (CAWS web view, magic link) and sign-out.
+/// View model for [LoginPage] and [SignInDialog] - runs the sign-in flow
+/// (CAWS web view, magic link, sign-in code) and sign-out.
 class LoginViewModel extends ViewModel {
+  /// The number of characters in a sign-in code.
+  static const int codeLength = 5;
+
+  /// Codes are letters and digits only, and always used upper-cased.
+  static final RegExp codeFormat = RegExp('^[A-Z0-9]{$codeLength}\$');
+
   LoginViewModel({AuthService? authService, SystemInfoService? systemInfoService})
     : _authService = authService,
       _systemInfoService = systemInfoService;
@@ -39,6 +45,16 @@ class LoginViewModel extends ViewModel {
 
     notifyListeners();
     return _auth.isAuthenticated;
+  }
+
+  /// Sign in anonymously using a [code] handed out with the study invitation.
+  /// Returns false if [code] is malformed, without attempting to sign in.
+  Future<bool> signInWithCode(String code) async {
+    code = code.toUpperCase();
+    if (!codeFormat.hasMatch(code)) return false;
+
+    final link = await _auth.magicLinkForCode(code);
+    return link != null && await signInWithMagicLink(link);
   }
 
   /// Sign out from CAWS, erasing all authentication information.

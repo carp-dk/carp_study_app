@@ -33,7 +33,7 @@ class _LoginPageState extends State<LoginPage> {
                   onPressed: () {
                     showDialog<void>(
                       context: context,
-                      builder: (context) => QRViewExample(model: widget.model),
+                      builder: (context) => SignInDialog(model: widget.model),
                     );
                   },
                   child: Text(
