@@ -1357,13 +1357,12 @@ packages:
     source: hosted
     version: "2.0.0"
   mobility_features:
-    dependency: "direct overridden"
+    dependency: transitive
     description:
-      path: "packages/mobility_features"
-      ref: "fix/mobility-distance-traveled"
-      resolved-ref: cf6b7de0e7ad184367330247996d19a7e3e41391
-      url: "https://github.com/carp-dk/flutter-plugins"
-    source: git
+      name: mobility_features
+      sha256: "2c8a24e3a3bb346591dcf665c8fbe506cb3a57ff4b9472e75998f9fdc9b9be8c"
+      url: "https://pub.dev"
+    source: hosted
     version: "6.2.1"
   mockito:
     dependency: "direct dev"

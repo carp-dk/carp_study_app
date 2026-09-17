@@ -65,13 +65,6 @@ dependencies:
   open_filex: ^4.7.0
 
 dependency_overrides:
-  # mobility_features 6.2.1 fixes distanceTraveled always being 0 - pull it
-  # from the fork until it is published, then drop this override.
-  mobility_features:
-    git:
-      url: https://github.com/carp-dk/flutter-plugins
-      ref: fix/mobility-distance-traveled
-      path: packages/mobility_features
   # carp_themes_package:
   #   path: ../carp_themes_package
 
