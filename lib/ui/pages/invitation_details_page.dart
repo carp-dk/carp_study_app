@@ -1,7 +1,7 @@
 part of carp_study_app;
 
 class InvitationDetailsPage extends StatelessWidget {
-  static const String route = '/invitation';
+  static const String route = InvitationListPage.route;
   final String invitationId;
   final InvitationsViewModel model;
 
@@ -27,16 +27,14 @@ class InvitationDetailsPage extends StatelessWidget {
               padding: const EdgeInsets.fromLTRB(4, 8, 16, 0),
               child: Row(
                 children: [
-                  IconButton(
-                    icon: const Icon(Icons.arrow_back_ios_new),
-                    onPressed: () {
-                      if (context.canPop()) {
-                        context.pop();
-                      } else {
-                        context.go(InvitationListPage.route);
-                      }
-                    },
-                  ),
+                  // With a single invitation this is the landing page - no list to go back to.
+                  if (model.invitations.length > 1)
+                    IconButton(
+                      icon: const Icon(Icons.arrow_back_ios_new),
+                      onPressed: () => context.canPop() ? context.pop() : context.go(InvitationListPage.route),
+                    )
+                  else
+                    const SizedBox(width: 12),
                   Expanded(
                     child: Text(locale.translate('invitation.invited_to_study'), style: theme.textTheme.titleMedium),
                   ),

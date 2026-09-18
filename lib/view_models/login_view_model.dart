@@ -3,7 +3,7 @@ part of carp_study_app;
 /// The outcome of a sign-in attempt.
 enum SignInResult { success, offline, failed }
 
-/// View model for [LoginPage] and [SignInDialog] - runs the sign-in flow
+/// View model for [LoginPage] and [CodeSignInPage] - runs the sign-in flow
 /// (CAWS web view, magic link, sign-in code) and sign-out.
 class LoginViewModel extends ViewModel {
   /// The number of characters in a sign-in code.
@@ -36,12 +36,24 @@ class LoginViewModel extends ViewModel {
     return result;
   }
 
-  /// Sign in anonymously using a scanned magic link.
-  /// Returns false if [qrCode] is not a link, without attempting to sign in.
-  Future<bool> signInWithMagicLink(String qrCode) async {
-    if (Uri.tryParse(qrCode)?.hasAbsolutePath != true) return false;
+  /// Sign in anonymously using a scanned QR code.
+  ///
+  /// The QR code of a study invitation is a self-signup link
+  /// (`https://<caws>/api/self-signup/<code>`), which is resolved to a magic
+  /// link first. A magic link itself is also accepted.
+  /// Returns false if [qrCode] is neither, without attempting to sign in.
+  Future<bool> signInWithQrCode(String qrCode) async {
+    final segments = Uri.tryParse(qrCode)?.pathSegments ?? [];
+    final isSelfSignup = segments.length == 3 && segments[0] == 'api' && segments[1] == 'self-signup';
+    return isSelfSignup ? signInWithCode(segments[2]) : signInWithMagicLink(qrCode);
+  }
 
-    await _auth.authenticateWithMagicLink(qrCode);
+  /// Sign in anonymously using a magic link.
+  /// Returns false if [link] is not a link, without attempting to sign in.
+  Future<bool> signInWithMagicLink(String link) async {
+    if (Uri.tryParse(link)?.hasAbsolutePath != true) return false;
+
+    await _auth.authenticateWithMagicLink(link);
 
     notifyListeners();
     return _auth.isAuthenticated;

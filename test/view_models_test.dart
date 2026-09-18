@@ -163,6 +163,22 @@ void main() {
       expect(await model.signInWithCode('ABCDE'), isFalse);
       verifyNever(auth.authenticateWithMagicLink(any));
     });
+
+    test('signInWithQrCode resolves a self-signup link through its code', () async {
+      when(auth.isAuthenticated).thenReturn(true);
+      when(auth.magicLinkForCode('XXGHW')).thenAnswer((_) async => 'https://carp.dk/magic');
+
+      expect(await model.signInWithQrCode('https://test.carp.dk/api/self-signup/XXGHW'), isTrue);
+      verify(auth.authenticateWithMagicLink('https://carp.dk/magic')).called(1);
+    });
+
+    test('signInWithQrCode uses any other link as a magic link directly', () async {
+      when(auth.isAuthenticated).thenReturn(true);
+
+      expect(await model.signInWithQrCode('https://carp.dk/magic'), isTrue);
+      verifyNever(auth.magicLinkForCode(any));
+      verify(auth.authenticateWithMagicLink('https://carp.dk/magic')).called(1);
+    });
   });
 
   group('InvitationsViewModel', () {

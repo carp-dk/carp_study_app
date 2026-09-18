@@ -57,12 +57,12 @@ dependencies:
   app_version_update: ^7.0.0
   country_code_picker: ^3.3.0
   intl_phone_number_input: ^0.7.4
-  qr_code_scanner_plus: ^2.0.10+1
   share_plus: ^13.3.0
   shimmer: ^3.0.0
   file_picker: ^12.1.3
   pdf: ^3.12.0
   open_filex: ^4.7.0
+  mobile_scanner: ^7.4.2
 
 dependency_overrides:
   # carp_themes_package:
@@ -94,8 +94,8 @@ dependency_overrides:
   #   path: ../carp.sensing-flutter/packages/carp_survey_package/
   # carp_audio_package:
   #   path: ../carp.sensing-flutter/packages/carp_audio_package/
-  # carp_webservices:
-  #   path: ../carp.sensing-flutter/backends/carp_webservices/
+  carp_webservices:
+    path: ../carp.sensing-flutter_worktree-1/backends/carp_webservices/
   # carp_backend:
   #   path: ../carp.sensing-flutter/backends/carp_backend/
   # research_package:

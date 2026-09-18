@@ -13,11 +13,15 @@ abstract class ViewModel extends ChangeNotifier {
     _controller = ctrl;
   }
 
-  /// The role name of the device of [deviceType] in the current deployment,
-  /// or null if not loaded / not included - data streams are keyed by role.
+  /// The device role that produces [dataType] in the current deployment, as
+  /// declared by its task controls. Data streams are keyed by role, and which
+  /// role a protocol assigns a data type to is arbitrary, so never guess it
+  /// from the device type. Null if not loaded or not collected.
   @protected
-  String? roleOf(String deviceType) =>
-      controller?.deployment?.devices.where((device) => device.type == deviceType).firstOrNull?.roleName;
+  String? roleFor(String dataType) => controller?.deployment?.expectedDataStreams
+      .where((stream) => stream.dataType == dataType)
+      .firstOrNull
+      ?.deviceRoleName;
 
   /// Log and ignore measurement stream errors so sensing can continue.
   void onMeasurementStreamError(Object error, [StackTrace? stackTrace]) {

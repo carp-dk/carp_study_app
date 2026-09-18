@@ -237,8 +237,8 @@ class ProfilePageState extends State<ProfilePage> {
     actionKey: 'pages.profile.leave_study',
     contentKey: 'pages.profile.leave_study.confirmation',
     onConfirmed: () async {
-      await widget.model.leaveStudy();
-      if (mounted) context.go(InvitationListPage.route);
+      final signedOut = await widget.model.leaveStudy();
+      if (mounted) context.go(signedOut ? LoginPage.route : InvitationListPage.route);
     },
   );
 
