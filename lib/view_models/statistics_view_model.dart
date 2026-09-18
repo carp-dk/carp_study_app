@@ -44,14 +44,8 @@ class StatisticsViewModel extends ViewModel {
   final TaskCardViewModel _videoCardDataModel = TaskCardViewModel(AppTask.VIDEO_TYPE);
   final TaskCardViewModel _imageCardDataModel = TaskCardViewModel(AppTask.IMAGE_TYPE);
   final StudyProgressCardViewModel _studyProgressCardDataModel = StudyProgressCardViewModel();
-  final HeartRateCardViewModel _polarHeartRateCardDataModel = HeartRateCardViewModel(
-    PolarSamplingPackage.HR,
-    PolarDevice.DEVICE_TYPE,
-  );
-  final HeartRateCardViewModel _movesenseHeartRateCardDataModel = HeartRateCardViewModel(
-    MovesenseSamplingPackage.HR,
-    MovesenseDevice.DEVICE_TYPE,
-  );
+  final HeartRateCardViewModel _polarHeartRateCardDataModel = HeartRateCardViewModel(PolarSamplingPackage.HR);
+  final HeartRateCardViewModel _movesenseHeartRateCardDataModel = HeartRateCardViewModel(MovesenseSamplingPackage.HR);
 
   ActivityCardViewModel get activityCardDataModel => _activityCardDataModel;
   StepsCardViewModel get stepsCardDataModel => _stepsCardDataModel;
@@ -121,51 +115,34 @@ class StatisticsViewModel extends ViewModel {
         if (hasStepsMeasure)
           _fetchInto(StepsCardViewModel.dataTypes.firstWhere(_study.hasMeasure), _stepsCardDataModel.addMeasurements),
         if (hasActivityMeasure) _fetchInto(ContextSamplingPackage.ACTIVITY, _activityCardDataModel.addMeasurements),
-        // Mobility and health are produced by their connected service, so
-        // their streams are keyed by that service's role, not the phone's
-        // (falling back to the phone when a protocol runs them there).
-        if (hasMobilityMeasure)
-          _fetchInto(
-            ContextSamplingPackage.MOBILITY,
-            _mobilityCardDataModel.addMeasurements,
-            deviceRoleName: _mobilityCardDataModel.deviceRoleName,
-          ),
+        if (hasMobilityMeasure) _fetchInto(ContextSamplingPackage.MOBILITY, _mobilityCardDataModel.addMeasurements),
         // Health data all arrives on one data type; the sleep card picks its
         // own readings out of the batch.
-        // ponytail: health completed via an app task streams under the phone
-        // role instead - not fetched; backfill covers the background stream.
-        if (hasSleepMeasure)
-          _fetchInto(
-            HealthSamplingPackage.HEALTH,
-            _sleepCardDataModel.addMeasurements,
-            deviceRoleName: _sleepCardDataModel.deviceRoleName,
-          ),
-        // Heart rate is recorded by the sensor's own device role, not the
-        // phone's - skip the fetch if that device isn't in the deployment
-        // (nothing to query, and a null role would silently query the phone).
-        if (hasPolarHeartRateMeasure && _polarHeartRateCardDataModel.deviceRoleName != null)
-          _fetchInto(
-            _polarHeartRateCardDataModel.dataType,
-            _polarHeartRateCardDataModel.addMeasurements,
-            deviceRoleName: _polarHeartRateCardDataModel.deviceRoleName,
-          ),
-        if (hasMovesenseHeartRateMeasure && _movesenseHeartRateCardDataModel.deviceRoleName != null)
-          _fetchInto(
-            _movesenseHeartRateCardDataModel.dataType,
-            _movesenseHeartRateCardDataModel.addMeasurements,
-            deviceRoleName: _movesenseHeartRateCardDataModel.deviceRoleName,
-          ),
+        if (hasSleepMeasure) _fetchInto(HealthSamplingPackage.HEALTH, _sleepCardDataModel.addMeasurements),
+        if (hasPolarHeartRateMeasure)
+          _fetchInto(_polarHeartRateCardDataModel.dataType, _polarHeartRateCardDataModel.addMeasurements),
+        if (hasMovesenseHeartRateMeasure)
+          _fetchInto(_movesenseHeartRateCardDataModel.dataType, _movesenseHeartRateCardDataModel.addMeasurements),
       ]);
     } finally {
       _isRefreshing = false;
     }
   }
 
-  /// Fetch [dataType] and hand it to [into] - on failure the card keeps what
-  /// it already has.
-  Future<void> _fetchInto(String dataType, void Function(List<Measurement>) into, {String? deviceRoleName}) async {
-    final measurements = await _queryService.fetch(dataType, deviceRoleName: deviceRoleName);
-    if (measurements != null) into(measurements);
+  /// The roles [dataType] streams under - the SDK keys each measurement by
+  /// its task control's target device (phone, sensor, or service).
+  Iterable<String> rolesFor(String dataType) =>
+      _study.deployment?.expectedDataStreams
+          .where((stream) => stream.dataType == dataType)
+          .map((stream) => stream.deviceRoleName) ??
+      const [];
+
+  /// Fetch [dataType] from every role it streams under and hand the lot to
+  /// [into] - on any failure the card keeps what it already has.
+  Future<void> _fetchInto(String dataType, void Function(List<Measurement>) into) async {
+    final batches = await Future.wait(rolesFor(dataType).map((role) => _queryService.fetch(dataType, role)));
+    if (batches.isEmpty || batches.contains(null)) return;
+    into(batches.expand((measurements) => measurements!).toList());
   }
 
   @override
