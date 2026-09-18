@@ -40,7 +40,7 @@ import 'package:pdf/pdf.dart';
 import 'package:pdf/widgets.dart' as pw;
 import 'package:shimmer/shimmer.dart';
 import 'package:app_version_update/app_version_update.dart';
-import 'package:qr_code_scanner_plus/qr_code_scanner_plus.dart' as qr;
+import 'package:mobile_scanner/mobile_scanner.dart';
 
 // the CARP packages
 import 'package:carp_serializable/carp_serializable.dart';
@@ -121,7 +121,7 @@ part 'ui/pages/task_list_page.dart';
 part 'ui/pages/profile_page.dart';
 part 'ui/pages/error_page.dart';
 part 'ui/pages/login_page.dart';
-part 'ui/pages/qr_scanner.dart';
+part 'ui/pages/code_sign_in_page.dart';
 part 'ui/pages/enable_connection_dialog.dart';
 part 'ui/pages/device_list_page.dart';
 part 'ui/pages/devices_page.authorization_dialog.dart';
@@ -143,6 +143,7 @@ part 'ui/tasks/participant_data_page.dart';
 part 'ui/tasks/camera_page.dart';
 
 part 'ui/widgets/carp_app_bar.dart';
+part 'ui/widgets/qr_to_carp_morph.dart';
 part 'ui/widgets/horizontal_bar.dart';
 part 'ui/widgets/charts_legend.dart';
 part 'ui/widgets/details_banner.dart';

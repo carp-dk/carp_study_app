@@ -25,8 +25,16 @@ class ProfilePageViewModel extends ViewModel {
   /// Sign out and leave the study.
   Future<void> signOutAndLeaveStudy() => bloc.signOutAndLeaveStudy();
 
-  /// Leave the study, returning to the invitation list.
-  Future<void> leaveStudy() => bloc.leaveStudy();
+  /// Leave the study. With other invitations to choose from the user stays
+  /// signed in; with only this one study there is nothing to return to, so
+  /// sign out as well (returns true) and let the router land on login.
+  Future<bool> leaveStudy() async {
+    final invitations = bloc.appViewModel.invitationsListViewModel;
+    await invitations.ensureInvitationsLoaded();
+    final signOut = invitations.invitations.length <= 1;
+    await (signOut ? bloc.signOutAndLeaveStudy() : bloc.leaveStudy());
+    return signOut;
+  }
 
   String get userId => _auth.user?.id ?? _study.study?.participantId ?? '';
   String get username => _auth.username;

@@ -32,17 +32,14 @@ class CarpAppState extends State<CarpStudyApp> {
     redirect: (context, state) async {
       final loc = state.matchedLocation;
 
-      // 1) Not authenticated → login page.
+      // 1) Not authenticated → login page (or its join-a-study sub page).
       if (AppConfig.deploymentMode != DeploymentMode.local && !bloc.auth.isAuthenticated) {
-        return LoginPage.route;
+        return loc.startsWith(LoginPage.route) ? null : LoginPage.route;
       }
 
       // 2) No study → the invitation list (or its details page).
       if (!bloc.study.hasStudy) {
-        if (loc == InvitationListPage.route || loc.startsWith('${InvitationDetailsPage.route}/')) {
-          return null;
-        }
-        return InvitationListPage.route;
+        return loc.startsWith(InvitationListPage.route) ? null : InvitationListPage.route;
       }
 
       // 3) Consent not signed → the consent document. A redirect replaces the
@@ -141,6 +138,18 @@ class CarpAppState extends State<CarpStudyApp> {
         path: LoginPage.route,
         parentNavigatorKey: _rootNavigatorKey,
         builder: (context, state) => LoginPage(model: bloc.appViewModel.loginViewModel),
+        routes: [
+          GoRoute(
+            path: 'join',
+            parentNavigatorKey: _rootNavigatorKey,
+            pageBuilder: (context, state) => CustomTransitionPage(
+              key: state.pageKey,
+              fullscreenDialog: true,
+              child: CodeSignInPage(model: bloc.appViewModel.loginViewModel),
+              transitionsBuilder: slideUpAnimation,
+            ),
+          ),
+        ],
       ),
       GoRoute(
         path: '${MessageDetailsPage.route}/:messageId',
@@ -148,17 +157,19 @@ class CarpAppState extends State<CarpStudyApp> {
         builder: (context, state) => MessageDetailsPage(messageId: state.pathParameters['messageId'] ?? ''),
       ),
       GoRoute(
-        path: '${InvitationDetailsPage.route}/:invitationId',
-        parentNavigatorKey: _rootNavigatorKey,
-        builder: (context, state) => InvitationDetailsPage(
-          model: bloc.appViewModel.invitationsListViewModel,
-          invitationId: state.pathParameters['invitationId'] ?? '',
-        ),
-      ),
-      GoRoute(
         path: InvitationListPage.route,
         parentNavigatorKey: _rootNavigatorKey,
         builder: (context, state) => InvitationListPage(model: bloc.appViewModel.invitationsListViewModel),
+        routes: [
+          GoRoute(
+            path: ':invitationId',
+            parentNavigatorKey: _rootNavigatorKey,
+            builder: (context, state) => InvitationDetailsPage(
+              model: bloc.appViewModel.invitationsListViewModel,
+              invitationId: state.pathParameters['invitationId'] ?? '',
+            ),
+          ),
+        ],
       ),
     ],
     debugLogDiagnostics: true,
@@ -259,6 +270,17 @@ Widget bottomNavigationBarAnimation(
     opacity: fade,
     child: ScaleTransition(scale: Tween(begin: 0.98, end: 1.0).animate(fade), child: child),
   );
+}
+
+/// Slide a full-screen page up from the bottom, as used for the join-a-study page.
+Widget slideUpAnimation(
+  BuildContext context,
+  Animation<double> animation,
+  Animation<double> secondaryAnimation,
+  Widget child,
+) {
+  final tween = Tween(begin: const Offset(0.0, 1.0), end: Offset.zero).chain(CurveTween(curve: Curves.easeOutCubic));
+  return SlideTransition(position: animation.drive(tween), child: child);
 }
 
 /// Slide a full-screen page in from the right, as used for the profile page.

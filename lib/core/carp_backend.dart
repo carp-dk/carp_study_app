@@ -95,7 +95,19 @@ class CarpBackend {
     }
   }
 
-  /// Authenticate using a web view.
+  /// The magic link belonging to a short sign-in [code], or null if CAWS
+  /// does not know the code (or is unreachable).
+  Future<String?> magicLinkForCode(String code) async {
+    try {
+      await initialize();
+      return await CarpAuthService().magicLinkForCode(code);
+    } catch (error) {
+      warning('$runtimeType - Could not resolve sign-in code - $error');
+      return null;
+    }
+  }
+
+  /// Authenticate anonymously using a magic link.
   Future<void> authenticateWithMagicLink(String uri) async {
     try {
       await initialize();

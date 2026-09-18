@@ -62,6 +62,9 @@ PODS:
     - Flutter
   - location (0.0.1):
     - Flutter
+  - mobile_scanner (7.0.0):
+    - Flutter
+    - FlutterMacOS
   - network_info_plus (0.0.1):
     - Flutter
   - oidc_ios (0.0.1):
@@ -83,8 +86,6 @@ PODS:
     - RxSwift (~> 6.8.0)
     - SwiftProtobuf (~> 1.0)
     - Zip (~> 2.1.2)
-  - qr_code_scanner_plus (0.2.6):
-    - Flutter
   - RxSwift (6.8.0)
   - screen_state (5.0.1):
     - Flutter
@@ -132,6 +133,7 @@ DEPENDENCIES:
   - just_audio (from `.symlinks/plugins/just_audio/darwin`)
   - light (from `.symlinks/plugins/light/ios`)
   - location (from `.symlinks/plugins/location/ios`)
+  - mobile_scanner (from `.symlinks/plugins/mobile_scanner/darwin`)
   - network_info_plus (from `.symlinks/plugins/network_info_plus/ios`)
   - oidc_ios (from `.symlinks/plugins/oidc_ios/ios`)
   - open_filex (from `.symlinks/plugins/open_filex/ios`)
@@ -140,7 +142,6 @@ DEPENDENCIES:
   - pedometer (from `.symlinks/plugins/pedometer/ios`)
   - permission_handler_apple (from `.symlinks/plugins/permission_handler_apple/ios`)
   - polar (from `.symlinks/plugins/polar/ios`)
-  - qr_code_scanner_plus (from `.symlinks/plugins/qr_code_scanner_plus/ios`)
   - screen_state (from `.symlinks/plugins/screen_state/ios`)
   - sensors_plus (from `.symlinks/plugins/sensors_plus/ios`)
   - share_plus (from `.symlinks/plugins/share_plus/ios`)
@@ -209,6 +210,8 @@ EXTERNAL SOURCES:
     :path: ".symlinks/plugins/light/ios"
   location:
     :path: ".symlinks/plugins/location/ios"
+  mobile_scanner:
+    :path: ".symlinks/plugins/mobile_scanner/darwin"
   network_info_plus:
     :path: ".symlinks/plugins/network_info_plus/ios"
   oidc_ios:
@@ -225,8 +228,6 @@ EXTERNAL SOURCES:
     :path: ".symlinks/plugins/permission_handler_apple/ios"
   polar:
     :path: ".symlinks/plugins/polar/ios"
-  qr_code_scanner_plus:
-    :path: ".symlinks/plugins/qr_code_scanner_plus/ios"
   screen_state:
     :path: ".symlinks/plugins/screen_state/ios"
   sensors_plus:
@@ -270,6 +271,7 @@ SPEC CHECKSUMS:
   just_audio: 4e391f57b79cad2b0674030a00453ca5ce817eed
   light: 6490592116da81837a414ef49387bbea7a5ed375
   location: 155caecf9da4f280ab5fe4a55f94ceccfab838f8
+  mobile_scanner: 9157936403f5a0644ca3779a38ff8404c5434a93
   network_info_plus: cf61925ab5205dce05a4f0895989afdb6aade5fc
   oidc_ios: 16966cad509ce6850ca4ca1216c5138bef2a8726
   open_filex: 432f3cd11432da3e39f47fcc0df2b1603854eff1
@@ -279,7 +281,6 @@ SPEC CHECKSUMS:
   permission_handler_apple: 92d754bbaa7361d436db2d6c3c1c2a0fdcec462e
   polar: e6c15a5007d85ab02ce12973c152545bcba861cd
   PolarBleSdk: 1d56bb7a3ca0a6df04cb4f652fdccb26064df011
-  qr_code_scanner_plus: c6e79405d5fc87c45349daed2da322bcb2728961
   RxSwift: 4e28be97cbcfeee614af26d83415febbf2bf6f45
   screen_state: e8bc94a9be30050982ffe1bbacc9821bb5287606
   sensors_plus: b70a93b69dafdabd26ce4ac3f4d0529ab9acc4ca

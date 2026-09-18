@@ -404,11 +404,12 @@ packages:
   carp_webservices:
     dependency: "direct main"
     description:
-      name: carp_webservices
-      sha256: c9c1ca9d77c56c37a1dc976bc341681d96686402224f9970d4ba3666ddacce33
-      url: "https://pub.dev"
-    source: hosted
-    version: "4.3.0"
+      path: "backends/carp_webservices"
+      ref: "feat/self-signup-code"
+      resolved-ref: "1dcb51a5c65915a4a600e8f9771516b1295298d4"
+      url: "https://github.com/carp-dk/carp.sensing-flutter.git"
+    source: git
+    version: "4.4.0"
   characters:
     dependency: transitive
     description:
@@ -1356,6 +1357,14 @@ packages:
       url: "https://pub.dev"
     source: hosted
     version: "2.0.0"
+  mobile_scanner:
+    dependency: "direct main"
+    description:
+      name: mobile_scanner
+      sha256: "5a51ea79f0cf8293f616a5d08baae185b59b5e6bb24df01f2a63037ade0bade0"
+      url: "https://pub.dev"
+    source: hosted
+    version: "7.4.2"
   mobility_features:
     dependency: transitive
     description:
@@ -1812,14 +1821,6 @@ packages:
       url: "https://pub.dev"
     source: hosted
     version: "3.0.2"
-  qr_code_scanner_plus:
-    dependency: "direct main"
-    description:
-      name: qr_code_scanner_plus
-      sha256: "20a1abc3d12e48ad1c58eb6f31cabed23cc29469c325e750d6e838613170c94b"
-      url: "https://pub.dev"
-    source: hosted
-    version: "2.2.0"
   recase:
     dependency: transitive
     description:
