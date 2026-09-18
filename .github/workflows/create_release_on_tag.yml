@@ -60,15 +60,14 @@ jobs:
           flutter pub get
           flutter build apk --release --no-tree-shake-icons
 
-      - name: Create Release and upload apk
-        uses: underwindfall/create-release-with-debugapk@v2.0.0
+      # Attach the APK to the release for this tag, creating the release if needed.
+      - name: Upload APK to GitHub release
         env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-        with:
-          tag_name: ${{ github.ref }}
-          asset_path: build/app/outputs/flutter-apk/app-release.apk
-          asset_name: carp-studies-app-${{ github.ref_name }}.apk
-          asset_content_type: application/vnd.android.package-archive
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          gh release view "$GITHUB_REF_NAME" >/dev/null 2>&1 || gh release create "$GITHUB_REF_NAME" --generate-notes
+          cp build/app/outputs/flutter-apk/app-release.apk "carp-studies-app-$GITHUB_REF_NAME.apk"
+          gh release upload "$GITHUB_REF_NAME" "carp-studies-app-$GITHUB_REF_NAME.apk" --clobber
 
       # Setup Ruby/Bundler so fastlane is available
       - name: Setup Fastlane

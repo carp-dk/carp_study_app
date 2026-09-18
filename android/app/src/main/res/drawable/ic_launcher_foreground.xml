@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Same CARP mark as ios/Runner/AppIcon26.icon; 40x20 mark scaled to 54dp
+     (75% of the 72dp adaptive safe zone) so padding matches iOS. -->
+<vector xmlns:android="http://schemas.android.com/apk/res/android"
+    android:width="108dp"
+    android:height="108dp"
+    android:viewportWidth="108"
+    android:viewportHeight="108">
+    <group
+        android:scaleX="1.35"
+        android:scaleY="1.35"
+        android:translateX="27"
+        android:translateY="27">
+        <path
+            android:fillColor="#D61D41"
+            android:pathData="M10.0012 20C10.0012 14.4795 5.52114 10 0 10V30C5.52114 30 10.0012 25.5252 10.0012 20Z" />
+        <path
+            android:fillColor="#D61D41"
+            android:pathData="M30.0035 10H20.0023H10.0011V20C10.0011 25.5205 14.4764 30 20.0023 30H30.0035C35.5246 30 40.0046 25.5252 40.0046 20C40.0046 14.4795 35.5293 10 30.0035 10V10Z" />
+        <path
+            android:fillColor="#FFFFFF"
+            android:pathData="M33.0024 18.6334H29.6787V15.1094H27.1079V18.6334H23.7842V21.3628H27.1079V24.8914H29.6787V21.3628H33.0024V18.6334Z" />
+    </group>
+</vector>
