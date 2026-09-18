@@ -136,7 +136,10 @@ class _ChoiceCard extends StatelessWidget {
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              Text(title, style: TextStyle(fontSize: 19, fontWeight: FontWeight.w600, color: fg)),
+              Text(
+                title,
+                style: TextStyle(fontSize: 19, fontWeight: FontWeight.w600, color: fg),
+              ),
               const SizedBox(height: 2),
               Text(hint, style: TextStyle(fontSize: 15, color: fg.withValues(alpha: 0.75))),
             ],
