@@ -4,8 +4,8 @@ class SleepCardViewModel extends SerializableViewModel<WeeklySleep> {
   @override
   WeeklySleep createModel() => WeeklySleep();
 
-  /// Role the health stream is keyed by in this deployment.
-  String? get deviceRoleName => roleFor(HealthSamplingPackage.HEALTH);
+  /// Sleep streams under the Health Service role, not the phone's.
+  String? get deviceRoleName => roleOf(HealthService.DEVICE_TYPE);
 
   /// Any sleep in the last 7 nights? The page hides an all-empty card.
   bool get hasData => nights.any((night) => night.minutes > 0);

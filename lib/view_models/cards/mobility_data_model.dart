@@ -4,8 +4,8 @@ class MobilityCardViewModel extends SerializableViewModel<WeeklyMobility> {
   @override
   WeeklyMobility createModel() => WeeklyMobility();
 
-  /// Role the mobility stream is keyed by in this deployment.
-  String? get deviceRoleName => roleFor(ContextSamplingPackage.MOBILITY);
+  /// Role mobility streams are keyed by - the Location Service, not the phone.
+  String? get deviceRoleName => roleOf(LocationService.DEVICE_TYPE);
 
   /// Mobility for the 7 days ending today, oldest first.
   List<DailyMobility> get days => model.last7Days();

@@ -1,5 +1,4 @@
 import 'package:carp_context_package/carp_context_package.dart';
-import 'package:carp_health_package/health_package.dart';
 
 import 'exports.dart';
 
@@ -198,7 +197,7 @@ void main() {
 
   group('HeartRateCardViewModel.addMeasurements', () {
     test('calling it again replaces the bands instead of only ever widening them', () {
-      final model = HeartRateCardViewModel(PolarSamplingPackage.HR);
+      final model = HeartRateCardViewModel(PolarSamplingPackage.HR, PolarDevice.DEVICE_TYPE);
 
       model.addMeasurements([_polarHr(90, DateTime(2026, 8, 11, 8, 0))]);
       model.addMeasurements([_polarHr(70, DateTime(2026, 8, 11, 9, 0))]);
@@ -210,7 +209,7 @@ void main() {
     });
 
     test('last24Hours always puts the current hour last, with every slot present', () {
-      final model = HeartRateCardViewModel(PolarSamplingPackage.HR);
+      final model = HeartRateCardViewModel(PolarSamplingPackage.HR, PolarDevice.DEVICE_TYPE);
       model.addMeasurements([_polarHr(70, DateTime(2026, 8, 11, 9, 0))]);
 
       final window = model.model.last24Hours(now: DateTime(2026, 8, 11, 9, 30));
@@ -221,63 +220,55 @@ void main() {
     });
   });
 
-  group('card deviceRoleName', () {
-    // Data streams are keyed by the role a protocol assigns a data type to,
-    // which is arbitrary - so the role comes from the deployment's task
-    // controls, never from the device type. Wrong role = CAWS 400.
-    SmartphoneDeployment deploy(Map<DeviceConfiguration, String> streams) {
-      final phone = Smartphone(roleName: 'Primary Phone');
-      final controls = <TaskControl>{};
-      var id = 0;
-      streams.forEach((device, dataType) {
-        final task = BackgroundTask(
-          name: 'Task #${id++}',
-          measures: [Measure(type: dataType)],
-        );
-        controls.add(TaskControl(triggerId: id, task: task, targetDevice: device));
-      });
-      return SmartphoneDeployment(
-        deviceConfiguration: phone,
+  group('HeartRateCardViewModel.deviceRoleName', () {
+    test('resolves the sensor device role, not the phone role, from the deployment', () {
+      final deployment = SmartphoneDeployment(
+        deviceConfiguration: Smartphone(roleName: Smartphone.DEFAULT_ROLE_NAME),
         registration: SmartphoneRegistration(deviceId: 'phone'),
-        connectedDevices: streams.keys.where((device) => device != phone).toSet(),
-        tasks: controls.map((control) => control.task!).toSet(),
-        taskControls: controls,
+        connectedDevices: {PolarDevice(roleName: 'Custom Polar Role')},
       );
-    }
-
-    MockSmartphoneStudyController controllerFor(SmartphoneDeployment deployment) {
       final controller = MockSmartphoneStudyController();
       when(controller.deployment).thenReturn(deployment);
-      return controller;
-    }
 
-    test('resolves the role the protocol assigned the data type to', () {
-      final controller = controllerFor(
-        deploy({
-          PolarDevice(roleName: 'Custom Polar Role'): PolarSamplingPackage.HR,
-          LocationService(): ContextSamplingPackage.MOBILITY,
-          HealthService(roleName: 'Health Service'): HealthSamplingPackage.HEALTH,
-        }),
+      final model = HeartRateCardViewModel(PolarSamplingPackage.HR, PolarDevice.DEVICE_TYPE)..init(controller);
+
+      // This is the bug that made backfill silently return nothing: querying
+      // by the phone's role name instead of the sensor's finds no data stream.
+      expect(model.deviceRoleName, 'Custom Polar Role');
+      expect(model.deviceRoleName, isNot(Smartphone.DEFAULT_ROLE_NAME));
+    });
+
+    test('is null when the deployment does not include this device type', () {
+      final deployment = SmartphoneDeployment(
+        deviceConfiguration: Smartphone(roleName: Smartphone.DEFAULT_ROLE_NAME),
+        registration: SmartphoneRegistration(deviceId: 'phone'),
       );
+      final controller = MockSmartphoneStudyController();
+      when(controller.deployment).thenReturn(deployment);
 
-      expect((HeartRateCardViewModel(PolarSamplingPackage.HR)..init(controller)).deviceRoleName, 'Custom Polar Role');
-      expect((MobilityCardViewModel()..init(controller)).deviceRoleName, LocationService.DEFAULT_ROLE_NAME);
-      expect((SleepCardViewModel()..init(controller)).deviceRoleName, 'Health Service');
+      final model = HeartRateCardViewModel(PolarSamplingPackage.HR, PolarDevice.DEVICE_TYPE)..init(controller);
+
+      expect(model.deviceRoleName, isNull);
     });
+  });
 
-    test('follows the protocol when a data type is collected on the phone', () {
-      // The test protocol on CAWS collects health via an app task on the
-      // phone, even though a Health Service device is also in the deployment.
-      final controller = controllerFor(deploy({Smartphone(roleName: 'Primary Phone'): HealthSamplingPackage.HEALTH}));
+  group('card deviceRoleName', () {
+    // Mobility and health stream under their connected service's role, not
+    // the phone's - querying the phone's role for them is a CAWS 400.
+    test('resolves a connected service role and is null for an absent one', () {
+      final deployment = SmartphoneDeployment(
+        deviceConfiguration: Smartphone(roleName: Smartphone.DEFAULT_ROLE_NAME),
+        registration: SmartphoneRegistration(deviceId: 'phone'),
+        connectedDevices: {LocationService()},
+      );
+      final controller = MockSmartphoneStudyController();
+      when(controller.deployment).thenReturn(deployment);
 
-      expect((SleepCardViewModel()..init(controller)).deviceRoleName, 'Primary Phone');
-    });
+      final mobility = MobilityCardViewModel()..init(controller);
+      final sleep = SleepCardViewModel()..init(controller);
 
-    test('is null when the deployment does not collect the data type', () {
-      final controller = controllerFor(deploy({}));
-
-      expect((HeartRateCardViewModel(PolarSamplingPackage.HR)..init(controller)).deviceRoleName, isNull);
-      expect((SleepCardViewModel()..init(controller)).deviceRoleName, isNull);
+      expect(mobility.deviceRoleName, LocationService.DEFAULT_ROLE_NAME);
+      expect(sleep.deviceRoleName, isNull);
     });
   });
 }

@@ -13,7 +13,7 @@ void main() {
       final controller = MockSmartphoneStudyController();
       when(controller.measurements).thenAnswer((_) => const Stream<Measurement>.empty());
 
-      final viewModel = HeartRateCardViewModel(PolarSamplingPackage.HR);
+      final viewModel = HeartRateCardViewModel(PolarSamplingPackage.HR, PolarDevice.DEVICE_TYPE);
       viewModel.init(controller);
 
       expect(viewModel.model, isA<HourlyHeartRate>());
