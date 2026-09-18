@@ -7,6 +7,12 @@ abstract class ViewModel extends ChangeNotifier {
 
   SmartphoneStudyController? get controller => _controller;
 
+  /// The measurements the cards source from - generated ones in demo mode,
+  /// which stands in for the sensors entirely rather than mixing with them.
+  @protected
+  Stream<Measurement>? get measurements =>
+      AppConfig.demoMode ? DemoDataService().measurements : controller?.measurements;
+
   /// Initialize this view model before use.
   @mustCallSuper
   void init(SmartphoneStudyController ctrl) {
