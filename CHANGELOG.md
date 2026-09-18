@@ -1,3 +1,9 @@
+## 5.0.3
+
+* Statistics cards fetch data streams under the roles the deployment actually
+  streams under, instead of guessing by device type
+* `carp_webservices` 4.4.0 from pub.dev, git override dropped
+
 ## 5.0.2
 
 * Android launcher icon is now an adaptive icon built from the same CARP mark
