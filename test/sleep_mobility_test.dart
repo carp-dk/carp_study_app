@@ -180,7 +180,7 @@ void main() {
     final mobility = MobilityCardViewModel();
     final steps = StepsCardViewModel();
     final activity = ActivityCardViewModel();
-    final heartRate = HeartRateCardViewModel(PolarSamplingPackage.HR, PolarDevice.DEVICE_TYPE);
+    final heartRate = HeartRateCardViewModel(PolarSamplingPackage.HR);
     expect(sleep.hasData, isFalse);
     expect(mobility.hasData, isFalse);
     expect(mobility.hasDistanceData, isFalse);

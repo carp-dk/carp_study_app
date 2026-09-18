@@ -44,14 +44,8 @@ class StatisticsViewModel extends ViewModel {
   final TaskCardViewModel _videoCardDataModel = TaskCardViewModel(AppTask.VIDEO_TYPE);
   final TaskCardViewModel _imageCardDataModel = TaskCardViewModel(AppTask.IMAGE_TYPE);
   final StudyProgressCardViewModel _studyProgressCardDataModel = StudyProgressCardViewModel();
-  final HeartRateCardViewModel _polarHeartRateCardDataModel = HeartRateCardViewModel(
-    PolarSamplingPackage.HR,
-    PolarDevice.DEVICE_TYPE,
-  );
-  final HeartRateCardViewModel _movesenseHeartRateCardDataModel = HeartRateCardViewModel(
-    MovesenseSamplingPackage.HR,
-    MovesenseDevice.DEVICE_TYPE,
-  );
+  final HeartRateCardViewModel _polarHeartRateCardDataModel = HeartRateCardViewModel(PolarSamplingPackage.HR);
+  final HeartRateCardViewModel _movesenseHeartRateCardDataModel = HeartRateCardViewModel(MovesenseSamplingPackage.HR);
 
   ActivityCardViewModel get activityCardDataModel => _activityCardDataModel;
   StepsCardViewModel get stepsCardDataModel => _stepsCardDataModel;

@@ -3,18 +3,14 @@ part of carp_study_app;
 /// One card per heart rate sensor, identified by its data type namespace -
 /// readings from different sensors are never merged.
 class HeartRateCardViewModel extends SerializableViewModel<HourlyHeartRate> {
-  HeartRateCardViewModel(this.dataType, this.deviceType);
+  HeartRateCardViewModel(this.dataType);
 
   /// The namespaced data type (e.g. [PolarSamplingPackage.HR]) this card
   /// sources from.
   final String dataType;
 
-  /// The [DeviceConfiguration.type] of the sensor hardware (e.g.
-  /// [PolarDevice.DEVICE_TYPE]), used to look up its role in the deployment.
-  final String deviceType;
-
-  /// Role this card's data streams are keyed by (e.g. "Polar HR Sensor").
-  String? get deviceRoleName => roleOf(deviceType);
+  /// Role this card's data stream is keyed by in this deployment.
+  String? get deviceRoleName => roleFor(dataType);
 
   @override
   HourlyHeartRate createModel() => HourlyHeartRate();
