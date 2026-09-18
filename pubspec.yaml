@@ -94,8 +94,14 @@ dependency_overrides:
   #   path: ../carp.sensing-flutter/packages/carp_survey_package/
   # carp_audio_package:
   #   path: ../carp.sensing-flutter/packages/carp_audio_package/
+  # carp_webservices:
+  #   path: ../carp.sensing-flutter/backends/carp_webservices/
+  # ponytail: git ref until carp_webservices 4.4.0 (carp.sensing-flutter#621) is on pub.dev
   carp_webservices:
-    path: ../carp.sensing-flutter_worktree-1/backends/carp_webservices/
+    git:
+      url: https://github.com/carp-dk/carp.sensing-flutter.git
+      ref: feat/self-signup-code
+      path: backends/carp_webservices
   # carp_backend:
   #   path: ../carp.sensing-flutter/backends/carp_backend/
   # research_package:
