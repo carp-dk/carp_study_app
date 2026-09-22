@@ -53,9 +53,9 @@ class CarpBackend {
   /// Initialize this backend. Must be called before used.
   Future<void> initialize() async {
     info('$runtimeType - initializing');
-
     await CarpAuthService().configure(authProperties);
     CarpService().configure(app);
+    _authEvents ??= CarpAuthService().authStateChanges.listen(_onAuthEvent);
 
     // check if there is a user stored locally on the phone
     if (user != null) {
@@ -125,6 +125,26 @@ class CarpBackend {
     user = await CarpAuthService().refresh();
     info('$runtimeType - User authenticated via refresh - user: $user');
     return user!;
+  }
+
+  StreamSubscription<AuthEvent>? _authEvents;
+
+  /// Persist tokens the SDK refreshes on its own (e.g. on a 403 during
+  /// upload), and sign out when a refresh fails - the SDK otherwise keeps
+  /// the stale user, so the app looks signed in while every call 401s.
+  void _onAuthEvent(AuthEvent event) {
+    debug('$runtimeType - auth event: ${event.name}');
+    switch (event) {
+      case AuthEvent.authenticated:
+      case AuthEvent.refreshed:
+        if (CarpAuthService().authenticated) user = CarpAuthService().currentUser;
+      case AuthEvent.failed:
+        // Lost session mid-study: sign out and let the router redirect to login.
+        // (A failed sign-in on the login page is already unauthenticated.)
+        if (bloc.isConfigured) bloc.signOutAndLeaveStudy();
+      case AuthEvent.unauthenticated:
+        break;
+    }
   }
 
   /// Sign out from CAWS and erase all local authentication information.

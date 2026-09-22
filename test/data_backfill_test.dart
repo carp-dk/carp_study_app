@@ -246,12 +246,18 @@ void main() {
         ..addConnectedDevice(polar, phone)
         ..addTaskControl(
           ImmediateTrigger(),
-          BackgroundTask(name: 'hr', measures: [Measure(type: PolarSamplingPackage.HR)]),
+          BackgroundTask(
+            name: 'hr',
+            measures: [Measure(type: PolarSamplingPackage.HR)],
+          ),
           polar,
         )
         ..addTaskControl(
           ImmediateTrigger(),
-          BackgroundTask(name: 'steps', measures: [Measure(type: SensorSamplingPackage.STEP_COUNT)]),
+          BackgroundTask(
+            name: 'steps',
+            measures: [Measure(type: SensorSamplingPackage.STEP_COUNT)],
+          ),
           phone,
         );
       final deployment = SmartphoneDeployment.fromPrimaryDeviceDeployment(
