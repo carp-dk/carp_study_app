@@ -70,8 +70,11 @@ class LoginViewModel extends ViewModel {
   }
 
   /// Sign out from CAWS, erasing all authentication information.
+  ///
+  /// The study belongs to the account, so it goes too - otherwise the next
+  /// account to sign in inherits a study it cannot access (403 on every call).
   Future<void> signOut() async {
-    await _auth.signOut();
+    await bloc.signOutAndLeaveStudy();
     notifyListeners();
   }
 }

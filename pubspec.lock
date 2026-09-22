@@ -404,12 +404,11 @@ packages:
   carp_webservices:
     dependency: "direct main"
     description:
-      path: "backends/carp_webservices"
-      ref: "feat/self-signup-code"
-      resolved-ref: "1dcb51a5c65915a4a600e8f9771516b1295298d4"
-      url: "https://github.com/carp-dk/carp.sensing-flutter.git"
-    source: git
-    version: "4.4.0"
+      name: carp_webservices
+      sha256: d017b48eb9f86030b936e666aad36f5ba888394e52869cae95602fed518f0ef3
+      url: "https://pub.dev"
+    source: hosted
+    version: "4.4.1"
   characters:
     dependency: transitive
     description:
