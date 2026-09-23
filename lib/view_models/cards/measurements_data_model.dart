@@ -4,11 +4,11 @@ class MeasurementsCardViewModel extends ViewModel {
   final Map<String, int> _samplingTable = {};
 
   /// Stream of [Measurement] measures.
-  Stream<Measurement>? get measureEvents => controller?.measurements;
+  Stream<Measurement>? get measureEvents => measurements;
 
   /// Stream of more quiet [DataPoint] measures.
   Stream<Measurement>? get quietMeasureEvents =>
-      controller?.measurements.where((measurement) => measurement.dataType.name != 'sensor');
+      measurements?.where((measurement) => measurement.dataType.name != 'sensor');
 
   /// The total sampling size, derived from the per-type counts in [samplingTable].
   int get samplingSize => _samplingTable.values.fold(0, (sum, count) => sum + count);
