@@ -14,12 +14,10 @@ require 'fileutils'
 
 default_platform(:android)
 
-# Write the latest commit subject as the Play release notes for [version_code].
+# Write the Play release notes for [version_code].
 # Keyed on the uploaded versionCode so Play matches the note to the release.
-# Play caps release notes at 500 chars and rejects empty notes.
 def write_play_changelog(version_code)
-  notes = `git log -1 --pretty=%s`.strip[0, 500]
-  notes = 'Bug fixes and improvements.' if notes.empty?
+  notes = 'Improved stability and performance.'
   dir = 'metadata/android/en-GB/changelogs'
   FileUtils.mkdir_p(dir)
   File.write("#{dir}/#{version_code}.txt", notes)
