@@ -13,6 +13,7 @@ class TaskListPage extends StatefulWidget {
 
 class TaskListPageState extends State<TaskListPage> with TickerProviderStateMixin {
   late TabController _tabController;
+  late Timer _expiryTicker;
 
   @override
   void initState() {
@@ -24,10 +25,13 @@ class TaskListPageState extends State<TaskListPage> with TickerProviderStateMixi
     _tabController.addListener(() {
       setState(() {});
     });
+    // Keep the "time remaining" chips counting down while the page is open.
+    _expiryTicker = Timer.periodic(const Duration(minutes: 1), (_) => setState(() {}));
   }
 
   @override
   void dispose() {
+    _expiryTicker.cancel();
     widget.model.removeListener(_onModelChanged);
     _tabController.dispose();
     super.dispose();
