@@ -338,7 +338,11 @@ class TaskListPageState extends State<TaskListPage> with TickerProviderStateMixi
     final expiresIn = userTask.expiresIn;
     if (expiresIn == null) return ('', false);
     if (expiresIn.isNegative) {
-      userTask.onExpired();
+      // expire() keeps the task in the queue (for the Completed tab and
+      // statistics) - onExpired() would dequeue it and delete it from storage.
+      if (userTask.state != UserTaskState.done && userTask.state != UserTaskState.expired) {
+        AppTaskController().expire(userTask.id);
+      }
       return ('', false);
     }
     return (expiresIn.humanize(locale), expiresIn.inHours < 24);
