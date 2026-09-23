@@ -168,11 +168,8 @@ class TaskListPageState extends State<TaskListPage> with TickerProviderStateMixi
   Widget _taskCard(BuildContext context, UserTask userTask) {
     final locale = RPLocalizations.of(context)!;
     final done = userTask.state == UserTaskState.done;
-    final expired = userTask.state == UserTaskState.expired;
     final accent = done
         ? const Color(0xff006398)
-        : expired
-        ? Colors.grey.shade500
         : taskTypeColors[userTask.type] ?? Theme.of(context).colorScheme.primary;
     final description = locale.translate(userTask.description);
     final (expiry, urgent) = _expiry(locale, userTask);
@@ -191,7 +188,7 @@ class TaskListPageState extends State<TaskListPage> with TickerProviderStateMixi
                 style: Theme.of(context).textTheme.labelMedium!.copyWith(color: accent, fontWeight: FontWeight.w700),
               ),
             ),
-            if (!done && !expired && expiry.isNotEmpty)
+            if (!done && expiry.isNotEmpty)
               _chip(Icons.alarm, expiry, urgent ? const Color(0xffF57C00) : Colors.grey.shade500, filled: urgent),
             if (done && userTask.doneTime != null)
               Text(
@@ -202,7 +199,7 @@ class TaskListPageState extends State<TaskListPage> with TickerProviderStateMixi
         ),
         const SizedBox(height: 8),
         Text(locale.translate(userTask.title), style: Theme.of(context).textTheme.labelLarge!),
-        if (!done && !expired && description.isNotEmpty) ...[
+        if (!done && description.isNotEmpty) ...[
           const SizedBox(height: 4),
           Text(
             description,
@@ -211,7 +208,7 @@ class TaskListPageState extends State<TaskListPage> with TickerProviderStateMixi
             style: Theme.of(context).textTheme.labelMedium!.copyWith(color: Colors.grey.shade600),
           ),
         ],
-        if (!done && !expired) ...[
+        if (!done) ...[
           const SizedBox(height: 12),
           Row(
             crossAxisAlignment: CrossAxisAlignment.center,
