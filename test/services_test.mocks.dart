@@ -550,7 +550,8 @@ class MockUserTask extends _i1.Mock implements _i4.UserTask {
       super.noSuchMethod(Invocation.method(#onCancel, [], {#dequeue: dequeue}), returnValueForMissingStub: null);
 
   @override
-  void onExpired() => super.noSuchMethod(Invocation.method(#onExpired, []), returnValueForMissingStub: null);
+  void onExpired({bool? dequeue = true}) =>
+      super.noSuchMethod(Invocation.method(#onExpired, [], {#dequeue: dequeue}), returnValueForMissingStub: null);
 
   @override
   void onDone({bool? dequeue = false, _i5.Data? result}) => super.noSuchMethod(

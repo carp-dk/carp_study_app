@@ -15,7 +15,7 @@ dependencies:
 
   carp_serializable: ^3.0.0
   carp_core: ^2.2.1
-  carp_mobile_sensing: ^2.4.0
+  carp_mobile_sensing: ^2.4.1
   carp_context_package: ^2.1.1
   carp_connectivity_package: ^2.2.1
   carp_survey_package: ^2.1.1
@@ -75,29 +75,29 @@ dependency_overrides:
 
   # Overriding carp libraries to use the local copy, if needed
   # carp_serializable:
-  #   path: ../carp.sensing-flutter/carp_serializable/
+  #   path: ../carp.sensing-flutter_worktree-1/carp_serializable/
   # carp_core:
-  #   path: ../carp.sensing-flutter/carp_core/
+  #   path: ../carp.sensing-flutter_worktree-1/carp_core/
   # carp_mobile_sensing:
-  #   path: ../carp.sensing-flutter/carp_mobile_sensing/
+  #   path: ../carp.sensing-flutter_worktree-1/carp_mobile_sensing/
   # carp_context_package:
-  #   path: ../carp.sensing-flutter/packages/carp_context_package/
+  #   path: ../carp.sensing-flutter_worktree-1/packages/carp_context_package/
   # carp_health_package:
-  #   path: ../carp.sensing-flutter/packages/carp_health_package/
+  #   path: ../carp.sensing-flutter_worktree-1/packages/carp_health_package/
   # carp_polar_package:
-  #   path: ../carp.sensing-flutter/packages/carp_polar_package/
+  #   path: ../carp.sensing-flutter_worktree-1/packages/carp_polar_package/
   # carp_movesense_package:
-  #   path: ../carp.sensing-flutter/packages/carp_movesense_package/
+  #   path: ../carp.sensing-flutter_worktree-1/packages/carp_movesense_package/
   # carp_connectivity_package:
-  #   path: ../carp.sensing-flutter/packages/carp_connectivity_package/
+  #   path: ../carp.sensing-flutter_worktree-1/packages/carp_connectivity_package/
   # carp_survey_package:
-  #   path: ../carp.sensing-flutter/packages/carp_survey_package/
+  #   path: ../carp.sensing-flutter_worktree-1/packages/carp_survey_package/
   # carp_audio_package:
-  #   path: ../carp.sensing-flutter/packages/carp_audio_package/
+  #   path: ../carp.sensing-flutter_worktree-1/packages/carp_audio_package/
   # carp_webservices:
-  #   path: ../carp.sensing-flutter/backends/carp_webservices/
+  #   path: ../carp.sensing-flutter_worktree-1/backends/carp_webservices/
   # carp_backend:
-  #   path: ../carp.sensing-flutter/backends/carp_backend/
+  #   path: ../carp.sensing-flutter_worktree-1/backends/carp_backend/
   # research_package:
   #   path: ../research.package/
   # cognition_package:

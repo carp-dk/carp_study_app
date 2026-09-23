@@ -349,10 +349,10 @@ packages:
     dependency: "direct main"
     description:
       name: carp_mobile_sensing
-      sha256: a98899cc0c07326035bf23f69826808c9bba445b0e6c46ba491d248d2f4713d7
+      sha256: "5bf9c5b12f202ee28870da1b600432ac9a6bbd44d34164d44e2a0219c50ac50d"
       url: "https://pub.dev"
     source: hosted
-    version: "2.4.0"
+    version: "2.4.1"
   carp_movesense_flutter:
     dependency: transitive
     description:
