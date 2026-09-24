@@ -50,7 +50,10 @@ class StudyService {
 
   /// Refresh and return the status of the current study deployment from the
   /// deployment service. Returns null if no study has been deployed.
+  /// Goes through the client manager so a stopped deployment also stops sensing.
   Future<StudyDeploymentStatus?> refreshDeploymentStatus() async {
+    final running = _controller?.study;
+    if (running != null) return _status = await SmartPhoneClientManager().getStudyDeploymentStatus(running);
     final id = study?.studyDeploymentId;
     return id != null ? _status = await deploymentService.getStudyDeploymentStatus(id) : null;
   }
