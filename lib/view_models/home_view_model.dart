@@ -24,6 +24,7 @@ class HomePageViewModel extends ViewModel {
   StreamSubscription<UserTask>? _userTaskSub;
   StreamSubscription<int>? _messageSub;
   bool _blocAttached = false;
+  AppLifecycleListener? _lifecycle;
 
   /// The announcements/news shown in the "Feeds" section, newest first.
   List<Message> get messages => _messages.messages;
@@ -108,6 +109,8 @@ class HomePageViewModel extends ViewModel {
     unawaited(_checkHealthConnectInstallation());
     unawaited(_checkAppUpdate());
     unawaited(_refreshDeploymentStatus());
+    // e.g. the deployment was stopped on the server while the app was away
+    _lifecycle ??= AppLifecycleListener(onResume: () => unawaited(_refreshDeploymentStatus()));
   }
 
   // The cached status is only filled by an explicit refresh.
@@ -175,6 +178,7 @@ class HomePageViewModel extends ViewModel {
   void dispose() {
     if (_blocAttached) bloc.removeListener(_syncSources);
     controller?.study.removeListener(notifyListeners);
+    _lifecycle?.dispose();
     _cancelDeviceSubs();
     _userTaskSub?.cancel();
     _messageSub?.cancel();
