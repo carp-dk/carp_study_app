@@ -256,6 +256,21 @@ void main() {
       expect(auth.invitations, [forPhone, unassigned]);
     });
 
+    test('getInvitations drops invitations for other apps', () async {
+      ActiveParticipationInvitation invitation(dynamic applicationData) => ActiveParticipationInvitation(
+        Participation('dep-1', 'participant-1', AssignedTo()),
+        StudyInvitation('Test study', null, applicationData),
+      );
+
+      final noAppData = invitation(null);
+      final unnamed = invitation({'protocolApiLevel': '2.0'});
+      final thisApp = invitation({'applicationName': 'carp_study_app'});
+      final otherApp = invitation({'applicationName': 'neuropathy_tracker'});
+      when(backend.getInvitations()).thenAnswer((_) async => [noAppData, unnamed, thisApp, otherApp]);
+
+      expect(await auth.getInvitations(), [noAppData, unnamed, thisApp]);
+    });
+
     test('getInvitations sorts by study name, then deployment id', () async {
       ActiveParticipationInvitation invitation(String name, String deploymentId) => ActiveParticipationInvitation(
         Participation(deploymentId, 'participant-1', AssignedTo()),
