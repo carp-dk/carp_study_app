@@ -70,6 +70,9 @@ class HomePageViewModel extends ViewModel {
       ? null
       : _study.cachedDeploymentStatus!.status ?? StudyDeploymentStatusTypes.Invited;
 
+  /// A stopped study has no tasks or connections left to show.
+  bool get isStopped => deploymentStatus == StudyDeploymentStatusTypes.Stopped;
+
   /// Prompt to install Health Connect? One-shot, via [healthConnectPromptShown].
   bool get shouldPromptHealthConnectInstall => _healthConnectPromptPending;
 

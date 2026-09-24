@@ -37,15 +37,14 @@ class _HomePageState extends State<HomePage> {
               else ...[
                 AppUpdateCard(model: model),
                 StudyAboutCard(model: model),
-                CarpSectionTitle('Connections'),
-                ConnectionsStatusCard(model: model),
+                if (!model.isStopped) ...[CarpSectionTitle('Connections'), ConnectionsStatusCard(model: model)],
                 CarpSectionTitle('Your progress'),
                 IntrinsicHeight(
                   child: Row(
                     crossAxisAlignment: CrossAxisAlignment.stretch,
                     children: [
                       Expanded(child: _activeDaysTile(context)),
-                      Expanded(child: _taskStatusTile(context)),
+                      if (!model.isStopped) Expanded(child: _taskStatusTile(context)),
                     ],
                   ),
                 ),
