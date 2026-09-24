@@ -370,7 +370,7 @@ void main() {
       expect(model.hasVideoMeasure, isFalse);
       expect(model.hasStepsMeasure, isFalse);
       expect(model.hasMobilityMeasure, isFalse);
-      expect(model.hasSleepMeasure, isTrue);
+      expect(model.hasHealthMeasure, isTrue);
     });
 
     test('finds steps under either the API 2.0 or the legacy measure type', () {

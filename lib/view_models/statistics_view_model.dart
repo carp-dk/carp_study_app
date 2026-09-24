@@ -20,7 +20,7 @@ class StatisticsViewModel extends ViewModel {
   bool _hasStepsMeasure = false;
   bool _hasActivityMeasure = false;
   bool _hasMobilityMeasure = false;
-  bool _hasSleepMeasure = false;
+  bool _hasHealthMeasure = false;
 
   // Card availability for the current deployment, computed once in [init].
   bool get hasUserTasks => _hasUserTasks;
@@ -32,7 +32,7 @@ class StatisticsViewModel extends ViewModel {
   bool get hasStepsMeasure => _hasStepsMeasure;
   bool get hasActivityMeasure => _hasActivityMeasure;
   bool get hasMobilityMeasure => _hasMobilityMeasure;
-  bool get hasSleepMeasure => _hasSleepMeasure;
+  bool get hasHealthMeasure => _hasHealthMeasure;
 
   final ActivityCardViewModel _activityCardDataModel = ActivityCardViewModel();
   final StepsCardViewModel _stepsCardDataModel = StepsCardViewModel();
@@ -46,6 +46,7 @@ class StatisticsViewModel extends ViewModel {
   final StudyProgressCardViewModel _studyProgressCardDataModel = StudyProgressCardViewModel();
   final HeartRateCardViewModel _polarHeartRateCardDataModel = HeartRateCardViewModel(PolarSamplingPackage.HR);
   final HeartRateCardViewModel _movesenseHeartRateCardDataModel = HeartRateCardViewModel(MovesenseSamplingPackage.HR);
+  final HeartRateCardViewModel _healthHeartRateCardDataModel = HeartRateCardViewModel(HealthSamplingPackage.HEALTH);
 
   ActivityCardViewModel get activityCardDataModel => _activityCardDataModel;
   StepsCardViewModel get stepsCardDataModel => _stepsCardDataModel;
@@ -58,6 +59,7 @@ class StatisticsViewModel extends ViewModel {
   TaskCardViewModel get imageCardDataModel => _imageCardDataModel;
   HeartRateCardViewModel get polarHeartRateCardDataModel => _polarHeartRateCardDataModel;
   HeartRateCardViewModel get movesenseHeartRateCardDataModel => _movesenseHeartRateCardDataModel;
+  HeartRateCardViewModel get healthHeartRateCardDataModel => _healthHeartRateCardDataModel;
 
   StudyProgressCardViewModel get studyProgressCardDataModel => _studyProgressCardDataModel;
 
@@ -84,14 +86,15 @@ class StatisticsViewModel extends ViewModel {
     _hasStepsMeasure = StepsCardViewModel.dataTypes.any(_study.hasMeasure);
     _hasActivityMeasure = _study.hasMeasure(ContextSamplingPackage.ACTIVITY);
     _hasMobilityMeasure = _study.hasMeasure(ContextSamplingPackage.MOBILITY);
-    // A health measure may or may not include sleep types, but the card's
-    // hasData gate hides it either way until sleep actually arrives.
-    _hasSleepMeasure = _study.hasMeasure(HealthSamplingPackage.HEALTH);
+    // A health measure may or may not include sleep or heart rate types, but
+    // the cards' hasData gate hides them until such data actually arrives.
+    _hasHealthMeasure = _study.hasMeasure(HealthSamplingPackage.HEALTH);
 
     _activityCardDataModel.init(ctrl);
     _stepsCardDataModel.init(ctrl);
     _polarHeartRateCardDataModel.init(ctrl);
     _movesenseHeartRateCardDataModel.init(ctrl);
+    _healthHeartRateCardDataModel.init(ctrl);
     _mobilityCardDataModel.init(ctrl);
     _sleepCardDataModel.init(ctrl);
     _measuresCardDataModel.init(ctrl);
@@ -116,9 +119,13 @@ class StatisticsViewModel extends ViewModel {
           _fetchInto(StepsCardViewModel.dataTypes.firstWhere(_study.hasMeasure), _stepsCardDataModel.addMeasurements),
         if (hasActivityMeasure) _fetchInto(ContextSamplingPackage.ACTIVITY, _activityCardDataModel.addMeasurements),
         if (hasMobilityMeasure) _fetchInto(ContextSamplingPackage.MOBILITY, _mobilityCardDataModel.addMeasurements),
-        // Health data all arrives on one data type; the sleep card picks its
-        // own readings out of the batch.
-        if (hasSleepMeasure) _fetchInto(HealthSamplingPackage.HEALTH, _sleepCardDataModel.addMeasurements),
+        // Health data all arrives on one data type; fetch it once and let each
+        // card pick its own readings out of the batch.
+        if (hasHealthMeasure)
+          _fetchInto(HealthSamplingPackage.HEALTH, (measurements) {
+            _sleepCardDataModel.addMeasurements(measurements);
+            _healthHeartRateCardDataModel.addMeasurements(measurements);
+          }),
         if (hasPolarHeartRateMeasure)
           _fetchInto(_polarHeartRateCardDataModel.dataType, _polarHeartRateCardDataModel.addMeasurements),
         if (hasMovesenseHeartRateMeasure)
@@ -151,6 +158,7 @@ class StatisticsViewModel extends ViewModel {
     _stepsCardDataModel.clear();
     _polarHeartRateCardDataModel.clear();
     _movesenseHeartRateCardDataModel.clear();
+    _healthHeartRateCardDataModel.clear();
     _mobilityCardDataModel.clear();
     _sleepCardDataModel.clear();
     _measuresCardDataModel.clear();
@@ -169,6 +177,7 @@ class StatisticsViewModel extends ViewModel {
     _stepsCardDataModel.dispose();
     _polarHeartRateCardDataModel.dispose();
     _movesenseHeartRateCardDataModel.dispose();
+    _healthHeartRateCardDataModel.dispose();
     _mobilityCardDataModel.dispose();
     _sleepCardDataModel.dispose();
     _measuresCardDataModel.dispose();
