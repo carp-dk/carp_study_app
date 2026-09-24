@@ -108,7 +108,9 @@ class StudyService {
   /// Start sensing, if the study is deployed and not permanently stopped.
   Future<void> start() async {
     final controller = _controller;
-    if (controller == null || !isDeployed || controller.study.status == StudyStatus.Stopped) {
+    if (controller == null ||
+        !isDeployed ||
+        controller.study.deploymentStatus?.status == StudyDeploymentStatusTypes.Stopped) {
       warning(
         '$runtimeType - Cannot start sensing - the study is not deployed '
         '(status: ${controller?.study.status}).',
