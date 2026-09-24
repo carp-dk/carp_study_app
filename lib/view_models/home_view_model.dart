@@ -25,6 +25,10 @@ class HomePageViewModel extends ViewModel {
   StreamSubscription<int>? _messageSub;
   bool _blocAttached = false;
   AppLifecycleListener? _lifecycle;
+  Timer? _statusPoll;
+
+  // ponytail: 5s for testing only - set to 1 minute before release.
+  static const statusPollInterval = Duration(seconds: 5);
 
   /// The announcements/news shown in the "Feeds" section, newest first.
   List<Message> get messages => _messages.messages;
@@ -111,6 +115,9 @@ class HomePageViewModel extends ViewModel {
     unawaited(_refreshDeploymentStatus());
     // e.g. the deployment was stopped on the server while the app was away
     _lifecycle ??= AppLifecycleListener(onResume: () => unawaited(_refreshDeploymentStatus()));
+    // e.g. the deployment was stopped on the server while the app is open
+    _statusPoll?.cancel();
+    _statusPoll = Timer.periodic(statusPollInterval, (_) => unawaited(_refreshDeploymentStatus()));
   }
 
   // The cached status is only filled by an explicit refresh.
@@ -167,6 +174,7 @@ class HomePageViewModel extends ViewModel {
   @override
   void clear() {
     controller?.study.removeListener(notifyListeners);
+    _statusPoll?.cancel();
     _cancelDeviceSubs();
     _connectionSources = const [];
     _healthConnectPromptPending = false;
@@ -179,6 +187,7 @@ class HomePageViewModel extends ViewModel {
     if (_blocAttached) bloc.removeListener(_syncSources);
     controller?.study.removeListener(notifyListeners);
     _lifecycle?.dispose();
+    _statusPoll?.cancel();
     _cancelDeviceSubs();
     _userTaskSub?.cancel();
     _messageSub?.cancel();
