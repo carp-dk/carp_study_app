@@ -48,20 +48,12 @@ class AuthService {
     _invitations =
         all
             .where((invitation) => invitation.assignedDevices?.any((device) => device.device is! Smartphone) != true)
-            .where((invitation) => _isForThisApp(invitation.invitation.applicationData))
             .toList()
           ..sort((a, b) {
             final byName = a.invitation.name.compareTo(b.invitation.name);
             return byName != 0 ? byName : a.studyDeploymentId.compareTo(b.studyDeploymentId);
           });
     return _invitations;
-  }
-
-  /// Study App protocols leave `applicationName` unset; other apps on CAWS
-  /// (e.g. Neuropathy Tracker) set it to their own name.
-  static bool _isForThisApp(dynamic applicationData) {
-    final name = applicationData is Map ? applicationData['applicationName'] : null;
-    return name == null || name == 'carp_study_app';
   }
 
   /// Authenticate using a web view.
