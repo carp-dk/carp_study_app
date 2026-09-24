@@ -35,19 +35,23 @@ class _HomePageState extends State<HomePage> {
               if (!model.isLoaded)
                 _skeleton()
               else ...[
-                AppUpdateCard(model: model),
+                // A stopped study only keeps its details and the announcements.
+                if (!model.isStopped) AppUpdateCard(model: model),
                 StudyAboutCard(model: model),
-                if (!model.isStopped) ...[CarpSectionTitle('Connections'), ConnectionsStatusCard(model: model)],
-                CarpSectionTitle('Your progress'),
-                IntrinsicHeight(
-                  child: Row(
-                    crossAxisAlignment: CrossAxisAlignment.stretch,
-                    children: [
-                      Expanded(child: _activeDaysTile(context)),
-                      if (!model.isStopped) Expanded(child: _taskStatusTile(context)),
-                    ],
+                if (!model.isStopped) ...[
+                  CarpSectionTitle('Connections'),
+                  ConnectionsStatusCard(model: model),
+                  CarpSectionTitle('Your progress'),
+                  IntrinsicHeight(
+                    child: Row(
+                      crossAxisAlignment: CrossAxisAlignment.stretch,
+                      children: [
+                        Expanded(child: _activeDaysTile(context)),
+                        Expanded(child: _taskStatusTile(context)),
+                      ],
+                    ),
                   ),
-                ),
+                ],
                 if (model.messages.isNotEmpty) ...[
                   CarpSectionTitle('Feeds'),
                   for (final message in model.messages) _feedCard(context, message),
