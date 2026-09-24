@@ -60,12 +60,15 @@ class HeartRateCardViewModel extends SerializableViewModel<HourlyHeartRate> {
   static double? bpmOf(Measurement measurement) => switch (measurement.data) {
     PolarHR data => data.samples.firstOrNull?.hr.toDouble(),
     MovesenseHR data => data.hr,
+    HealthData(healthDataType: 'HEART_RATE', value: NumericHealthValue value) => value.numericValue.toDouble(),
     _ => null,
   };
 
-  /// Stream of measurements of this card's [dataType] only.
-  Stream<Measurement>? get sourceStream =>
-      controller?.measurements.where((measurement) => measurement.dataType.toString() == dataType);
+  /// Stream of heart rate measurements of this card's [dataType] only - health
+  /// data shares one data type with steps, sleep, etc.
+  Stream<Measurement>? get sourceStream => controller?.measurements.where(
+    (measurement) => measurement.dataType.toString() == dataType && bpmOf(measurement) != null,
+  );
 
   /// Stream of heart rate readings in BPM, for the card to rebuild on.
   Stream<double>? get heartRateStream =>

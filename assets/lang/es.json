@@ -61,6 +61,7 @@
   "cards.heartrate.title": "Frecuencia cardíaca",
   "cards.heartrate.polar.title": "Frecuencia cardíaca (Polar)",
   "cards.heartrate.movesense.title": "Frecuencia cardíaca (Movesense)",
+  "cards.heartrate.health.title": "Frecuencia cardíaca (Salud)",
   "cards.heartrate.bpm": "LPM",
   "cards.heartrate.range": "Rango",
   "cards.heartrate.average": "Promedio",

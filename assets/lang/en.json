@@ -89,6 +89,7 @@
   "cards.heartrate.title": "Heart Rate",
   "cards.heartrate.polar.title": "Heart Rate (Polar)",
   "cards.heartrate.movesense.title": "Heart Rate (Movesense)",
+  "cards.heartrate.health.title": "Heart Rate (Health)",
   "cards.heartrate.bpm": "BPM",
   "cards.heartrate.heartrate": "Heart rate",
   "cards.heartrate.range": "Range",
