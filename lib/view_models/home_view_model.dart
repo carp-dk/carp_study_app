@@ -118,9 +118,12 @@ class HomePageViewModel extends ViewModel {
     unawaited(_refreshDeploymentStatus());
     // e.g. the deployment was stopped on the server while the app was away
     _lifecycle ??= AppLifecycleListener(onResume: () => unawaited(_refreshDeploymentStatus()));
-    // e.g. the deployment was stopped on the server while the app is open
+    // e.g. the deployment was stopped or an announcement posted while the app is open
     _statusPoll?.cancel();
-    _statusPoll = Timer.periodic(statusPollInterval, (_) => unawaited(_refreshDeploymentStatus()));
+    _statusPoll = Timer.periodic(statusPollInterval, (_) {
+      unawaited(_refreshDeploymentStatus());
+      unawaited(_messages.refresh());
+    });
   }
 
   // The cached status is only filled by an explicit refresh.
