@@ -102,6 +102,8 @@ class HomePageViewModel extends ViewModel {
     _attachToBloc();
     _syncSources();
     _userTaskSub = AppTaskController().userTaskEvents.listen((_) => notifyListeners());
+    // e.g. Stopped, found by a refresh on another page
+    ctrl.study.addListener(notifyListeners);
     _messageSub = _messages.stream.listen((_) => notifyListeners());
     unawaited(_checkHealthConnectInstallation());
     unawaited(_checkAppUpdate());
@@ -161,6 +163,7 @@ class HomePageViewModel extends ViewModel {
 
   @override
   void clear() {
+    controller?.study.removeListener(notifyListeners);
     _cancelDeviceSubs();
     _connectionSources = const [];
     _healthConnectPromptPending = false;
@@ -171,6 +174,7 @@ class HomePageViewModel extends ViewModel {
   @override
   void dispose() {
     if (_blocAttached) bloc.removeListener(_syncSources);
+    controller?.study.removeListener(notifyListeners);
     _cancelDeviceSubs();
     _userTaskSub?.cancel();
     _messageSub?.cancel();

@@ -60,7 +60,7 @@ class StudyService {
 
   /// The last known status of the study deployment, without contacting the
   /// deployment service. Use [refreshDeploymentStatus] to refresh it.
-  StudyDeploymentStatus? get cachedDeploymentStatus => _status;
+  StudyDeploymentStatus? get cachedDeploymentStatus => _controller?.deploymentStatus ?? _status;
 
   /// Initialize sensing and deploy the [study] on this phone.
   ///
