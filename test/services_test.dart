@@ -265,10 +265,11 @@ void main() {
       final noAppData = invitation(null);
       final unnamed = invitation({'protocolApiLevel': '2.0'});
       final thisApp = invitation({'applicationName': 'carp_study_app'});
+      final notSet = invitation({'applicationName': 'not-set'});
       final otherApp = invitation({'applicationName': 'neuropathy_tracker'});
-      when(backend.getInvitations()).thenAnswer((_) async => [noAppData, unnamed, thisApp, otherApp]);
+      when(backend.getInvitations()).thenAnswer((_) async => [noAppData, unnamed, thisApp, notSet, otherApp]);
 
-      expect(await auth.getInvitations(), [noAppData, unnamed, thisApp]);
+      expect(await auth.getInvitations(), [noAppData, unnamed, thisApp, notSet]);
     });
 
     test('getInvitations sorts by study name, then deployment id', () async {

@@ -61,7 +61,8 @@ class AuthService {
   /// (e.g. Neuropathy Tracker) set it to their own name.
   static bool _isForThisApp(dynamic applicationData) {
     final name = applicationData is Map ? applicationData['applicationName'] : null;
-    return name == null || name == 'carp_study_app';
+    // CAWS sends 'not-set' when a study names no app.
+    return name == null || name == 'not-set' || name == 'carp_study_app';
   }
 
   /// Authenticate using a web view.
