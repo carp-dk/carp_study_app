@@ -214,7 +214,7 @@ class _CodeSignInPageState extends State<CodeSignInPage> {
           curve: Curves.easeOut,
           padding: EdgeInsets.fromLTRB(
             24,
-            40,
+            24,
             24,
             max(MediaQuery.viewInsetsOf(context).bottom, MediaQuery.paddingOf(context).bottom) + 16,
           ),
@@ -231,7 +231,7 @@ class _CodeSignInPageState extends State<CodeSignInPage> {
                         style: Theme.of(context).textTheme.bodyLarge,
                         textAlign: TextAlign.center,
                       ),
-                      const SizedBox(height: 32),
+                      const SizedBox(height: 20),
                       Center(
                         child: CodeInput(
                           controller: _code,
@@ -511,12 +511,9 @@ class _GlassSwitch extends StatelessWidget {
   );
 }
 
-/// [LoginViewModel.codeLength] boxes showing the characters of a sign-in code.
-///
-/// Backed by a single text field with transparent text, so paste, backspace and
-/// screen readers work as usual. Anything but letters and digits is filtered
-/// away, also when pasted, and letters are upper-cased.
-class CodeInput extends StatelessWidget {
+/// [LoginViewModel.codeLength] single-character text fields for a sign-in code.
+/// The joined text is mirrored into [controller]; [focusNode] is the first box.
+class CodeInput extends StatefulWidget {
   const CodeInput({
     required this.controller,
     required this.focusNode,
@@ -534,77 +531,122 @@ class CodeInput extends StatelessWidget {
   final bool enabled;
   final bool hasError;
 
+  /// One letter or digit per box, upper-cased.
   static final List<TextInputFormatter> formatters = [
     FilteringTextInputFormatter.allow(RegExp('[a-zA-Z0-9]')),
-    LengthLimitingTextInputFormatter(LoginViewModel.codeLength),
-    TextInputFormatter.withFunction((_, value) => value.copyWith(text: value.text.toUpperCase())),
+    // Typing into a filled box replaces it: keep only the last character.
+    // A paste (more than one new character) is kept whole, to spread over the boxes.
+    TextInputFormatter.withFunction(
+      (old, v) => v.text.length <= 1 || v.text.length - old.text.length > 1
+          ? v.copyWith(text: v.text.toUpperCase())
+          : TextEditingValue(
+              text: v.text[v.text.length - 1].toUpperCase(),
+              selection: const TextSelection.collapsed(offset: 1),
+            ),
+    ),
   ];
 
   @override
-  Widget build(BuildContext context) => ConstrainedBox(
-    constraints: const BoxConstraints(maxWidth: 320),
-    child: Stack(
-      alignment: Alignment.center,
-      children: [
-        ExcludeSemantics(
-          child: AnimatedBuilder(
-            animation: Listenable.merge([controller, focusNode]),
-            builder: (context, _) =>
-                Row(children: List.generate(LoginViewModel.codeLength, (index) => _buildBox(context, index))),
-          ),
-        ),
-        // The real input, laid out over the boxes with invisible text.
-        Positioned.fill(
-          child: TextField(
-            controller: controller,
-            focusNode: focusNode,
-            enabled: enabled,
-            autofocus: true,
-            showCursor: false,
-            textAlign: TextAlign.center,
-            textInputAction: TextInputAction.done,
-            textCapitalization: TextCapitalization.characters,
-            keyboardType: TextInputType.visiblePassword,
-            inputFormatters: formatters,
-            style: const TextStyle(color: Colors.transparent),
-            decoration: const InputDecoration(border: InputBorder.none),
-            onChanged: (value) {
-              onChanged?.call();
-              if (value.length == LoginViewModel.codeLength) onCompleted();
-            },
-            onSubmitted: (_) => onCompleted(),
-          ),
-        ),
-      ],
-    ),
-  );
+  State<CodeInput> createState() => _CodeInputState();
+}
 
-  Widget _buildBox(BuildContext context, int index) {
-    final text = controller.text;
-    final filled = index < text.length;
-    final active = focusNode.hasFocus && index == text.length.clamp(0, LoginViewModel.codeLength - 1);
-    final color = hasError
-        ? Theme.of(context).colorScheme.error
-        : active
-        ? Theme.of(context).colorScheme.primary
-        : Colors.grey.shade300;
+class _CodeInputState extends State<CodeInput> {
+  static const int length = LoginViewModel.codeLength;
+  final List<TextEditingController> _boxes = List.generate(length, (_) => TextEditingController());
+  late final List<FocusNode> _focus = [widget.focusNode, ...List.generate(length - 1, (_) => FocusNode())];
 
-    return Expanded(
-      child: AnimatedContainer(
-        duration: const Duration(milliseconds: 150),
-        margin: const EdgeInsets.symmetric(horizontal: 4),
-        height: 64,
-        alignment: Alignment.center,
-        decoration: BoxDecoration(
-          color: filled ? Colors.white : Colors.grey.shade100,
-          borderRadius: BorderRadius.circular(12),
-          border: Border.all(color: color, width: active || hasError ? 2 : 1),
-        ),
-        child: Text(
-          filled ? text[index] : '',
-          style: Theme.of(
-            context,
-          ).textTheme.headlineSmall!.copyWith(fontWeight: FontWeight.w600, color: Colors.grey.shade900),
+  @override
+  void dispose() {
+    for (final c in _boxes) {
+      c.dispose();
+    }
+    for (final f in _focus.skip(1)) {
+      f.dispose();
+    }
+    super.dispose();
+  }
+
+  void _onBoxChanged(int index, String value) {
+    if (value.length > 1) return _paste(index, value);
+    if (value.isNotEmpty && index < length - 1) _focus[index + 1].requestFocus();
+    if (value.isEmpty && index > 0) _focus[index - 1].requestFocus();
+    _publish();
+  }
+
+  /// Spread a pasted [text] over the boxes from [index] on.
+  void _paste(int index, String text) {
+    final chars = text.characters.take(length - index).toList();
+    for (var i = 0; i < chars.length; i++) {
+      _boxes[index + i].text = chars[i];
+    }
+    _focus[min(index + chars.length, length - 1)].requestFocus();
+    _publish();
+  }
+
+  void _publish() {
+    widget.controller.text = _boxes.map((c) => c.text).join();
+    widget.onChanged?.call();
+    if (widget.controller.text.length == length) widget.onCompleted();
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    final borderColor = widget.hasError ? Theme.of(context).colorScheme.error : Colors.grey.shade300;
+    OutlineInputBorder border(Color color, double width) => OutlineInputBorder(
+      borderRadius: BorderRadius.circular(12),
+      borderSide: BorderSide(color: color, width: width),
+    );
+    return ConstrainedBox(
+      constraints: const BoxConstraints(maxWidth: 320),
+      child: Row(
+        children: List.generate(
+          length,
+          (index) => Expanded(
+            child: Padding(
+              padding: const EdgeInsets.symmetric(horizontal: 4),
+              // Backspace in an empty box: onChanged does not fire, so step back here.
+              child: Focus(
+                onKeyEvent: (_, event) {
+                  if (event is KeyDownEvent &&
+                      event.logicalKey == LogicalKeyboardKey.backspace &&
+                      _boxes[index].text.isEmpty &&
+                      index > 0) {
+                    _focus[index - 1].requestFocus();
+                    return KeyEventResult.handled;
+                  }
+                  return KeyEventResult.ignored;
+                },
+                child: TextField(
+                  controller: _boxes[index],
+                  focusNode: _focus[index],
+                  enabled: widget.enabled,
+                  autofocus: index == 0,
+                  // Focus hops between boxes must not scroll the sheet.
+                  scrollPadding: EdgeInsets.zero,
+                  textAlign: TextAlign.center,
+                  textCapitalization: TextCapitalization.characters,
+                  keyboardType: TextInputType.visiblePassword,
+                  textInputAction: index == length - 1 ? TextInputAction.done : TextInputAction.next,
+                  inputFormatters: CodeInput.formatters,
+                  style: Theme.of(context).textTheme.headlineSmall!.copyWith(fontWeight: FontWeight.w600),
+                  decoration: InputDecoration(
+                    filled: true,
+                    fillColor: Colors.white,
+                    contentPadding: const EdgeInsets.symmetric(vertical: 18),
+                    enabledBorder: border(borderColor, widget.hasError ? 2 : 1),
+                    focusedBorder: border(
+                      widget.hasError ? Theme.of(context).colorScheme.error : Theme.of(context).colorScheme.primary,
+                      2,
+                    ),
+                  ),
+                  onTap: () =>
+                      _boxes[index].selection = TextSelection(baseOffset: 0, extentOffset: _boxes[index].text.length),
+                  onChanged: (value) => _onBoxChanged(index, value),
+                  onSubmitted: (_) => widget.onCompleted(),
+                ),
+              ),
+            ),
+          ),
         ),
       ),
     );
