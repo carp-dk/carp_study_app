@@ -14,7 +14,7 @@ dependencies:
     sdk: flutter
 
   carp_serializable: ^3.0.0
-  carp_core: ^2.2.1
+  carp_core: ^2.2.2
   carp_mobile_sensing: ^2.5.1
   carp_context_package: ^2.1.1
   carp_connectivity_package: ^2.2.1
