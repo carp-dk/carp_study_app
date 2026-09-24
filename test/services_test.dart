@@ -66,10 +66,12 @@ class _FakeMessageManager extends MessageManager {
 /// Records the notifications a service asks for, instead of hitting the platform.
 class _FakeNotificationManager implements NotificationManager {
   final List<String> titles = [];
+  final List<String?> payloads = [];
 
   @override
-  Future<int> createNotification({int? id, required String title, String? body}) async {
+  Future<int> createNotification({int? id, required String title, String? body, String? payload}) async {
     titles.add(title);
+    payloads.add(payload);
     return id ?? titles.length;
   }
 
@@ -188,6 +190,7 @@ void main() {
       manager.toReturn = [message('a', DateTime(2024, 1, 1)), message('b', DateTime(2025, 1, 1))];
       await service.refresh();
       expect(notifications.titles, ['message-b']);
+      expect(notifications.payloads, ['${MessageDetailsPage.route}/b'], reason: 'tapping opens the announcement');
 
       await service.refresh();
       expect(notifications.titles, ['message-b'], reason: 'an already seen message must not notify again');
