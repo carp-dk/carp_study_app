@@ -27,8 +27,8 @@ class HomePageViewModel extends ViewModel {
   AppLifecycleListener? _lifecycle;
   Timer? _statusPoll;
 
-  // ponytail: 5s for testing only - set to 1 minute before release.
-  static const statusPollInterval = Duration(seconds: 5);
+  /// How often Home rechecks the deployment status and announcements.
+  static const statusPollInterval = Duration(minutes: 1);
 
   /// The announcements/news shown in the "Feeds" section, newest first.
   List<Message> get messages => _messages.messages;
