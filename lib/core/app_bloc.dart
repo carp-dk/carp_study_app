@@ -95,7 +95,8 @@ class AppBloc extends ChangeNotifier {
       // Offline-safe, and configures the deployment service Sensing() needs.
       await auth.initialize();
     } else {
-      // Deploy the local protocol if running in local mode
+      // Its device types (location, Polar, ...) only deserialize once Sensing has registered them.
+      Sensing();
       await study.deployLocalProtocol();
     }
 

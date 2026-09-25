@@ -113,6 +113,7 @@ dev_dependencies:
     sdk: flutter
   mockito: any
   flutter_lints: any
+  sqflite_common_ffi: ^2.4.3
 
 # Is used to change the default app launch icons on iOS and Android.
 # To install:
