@@ -1,0 +1,323 @@
+{
+ "__type": "RPOrderedTask",
+ "identifier": "test_consent_task",
+ "closeAfterFinished": false,
+ "steps": [
+  {
+   "__type": "RPVisualConsentStep",
+   "identifier": "test_visual_consent",
+   "title": "",
+   "optional": false,
+   "consentDocument": {
+    "__type": "RPConsentDocument",
+    "signatures": [
+     {
+      "__type": "RPConsentSignature",
+      "identifier": "test_consent_signature",
+      "requiresName": true,
+      "requiresSignatureImage": true
+     }
+    ],
+    "title": "CARP Test Study",
+    "sections": [
+     {
+      "__type": "RPConsentSection",
+      "type": "Welcome",
+      "title": "ic.overview.title",
+      "summary": "ic.overview.summary",
+      "content": "ic.overview.content"
+     },
+     {
+      "__type": "RPConsentSection",
+      "type": "AboutUs",
+      "title": "ic.who.title",
+      "summary": "ic.who.summary",
+      "content": "ic.who.content"
+     },
+     {
+      "__type": "RPConsentSection",
+      "type": "StudyTasks",
+      "title": "ic.tasks.title",
+      "summary": "ic.tasks.summary",
+      "content": "ic.tasks.content"
+     },
+     {
+      "__type": "RPConsentSection",
+      "type": "DataHandling",
+      "title": "ic.data.title",
+      "summary": "ic.data.summary",
+      "content": "ic.data.content"
+     },
+     {
+      "__type": "RPConsentSection",
+      "type": "Location",
+      "title": "ic.location.title",
+      "summary": "ic.location.summary",
+      "content": "ic.location.content",
+      "permissions": [
+       "locationAlways"
+      ]
+     },
+     {
+      "__type": "RPConsentSection",
+      "type": "ActivityRecognition",
+      "title": "ic.activity.title",
+      "summary": "ic.activity.summary",
+      "content": "ic.activity.content",
+      "permissions": [
+       "activityRecognition"
+      ]
+     },
+     {
+      "__type": "RPConsentSection",
+      "type": "Bluetooth",
+      "title": "ic.bluetooth.title",
+      "summary": "ic.bluetooth.summary",
+      "content": "ic.bluetooth.content",
+      "permissions": [
+       "bluetooth"
+      ]
+     },
+     {
+      "__type": "RPConsentSection",
+      "type": "Microphone",
+      "title": "ic.microphone.title",
+      "summary": "ic.microphone.summary",
+      "content": "ic.microphone.content",
+      "permissions": [
+       "microphone"
+      ]
+     },
+     {
+      "__type": "RPConsentSection",
+      "type": "Camera",
+      "title": "ic.camera.title",
+      "summary": "ic.camera.summary",
+      "content": "ic.camera.content",
+      "permissions": [
+       "camera"
+      ]
+     },
+     {
+      "__type": "RPConsentSection",
+      "type": "Notification",
+      "title": "ic.notification.title",
+      "summary": "ic.notification.summary",
+      "content": "ic.notification.content",
+      "permissions": [
+       "notification"
+      ]
+     },
+     {
+      "__type": "RPConsentSection",
+      "type": "Health",
+      "title": "ic.health.title",
+      "summary": "ic.health.summary",
+      "content": "ic.health.content",
+      "permissions": [
+       "health"
+      ],
+      "healthDataTypes": [
+       "STEPS",
+       "DISTANCE_DELTA",
+       "HEART_RATE",
+       "SKIN_TEMPERATURE",
+       "SLEEP_SESSION",
+       "SLEEP_ASLEEP",
+       "SLEEP_DEEP",
+       "SLEEP_LIGHT",
+       "SLEEP_REM"
+      ]
+     },
+     {
+      "__type": "RPConsentSection",
+      "type": "BackgroundSensing",
+      "title": "ic.background.title",
+      "summary": "ic.background.summary",
+      "content": "ic.background.content",
+      "permissions": [
+       "ignoreBatteryOptimizations"
+      ]
+     },
+     {
+      "__type": "RPConsentSection",
+      "type": "YourRights",
+      "title": "ic.rights.title",
+      "summary": "ic.rights.summary",
+      "content": "ic.rights.content"
+     },
+     {
+      "__type": "RPConsentSection",
+      "type": "Overview",
+      "title": "ic.summary.title",
+      "summary": "ic.summary.summary",
+      "content": "ic.summary.content"
+     }
+    ]
+   },
+   "askPermission": true
+  },
+  {
+   "__type": "RPConsentReviewStep",
+   "identifier": "test_consent_review",
+   "title": "ic.review.title",
+   "text": "ic.review.text",
+   "optional": false,
+   "consentDocument": {
+    "__type": "RPConsentDocument",
+    "signatures": [
+     {
+      "__type": "RPConsentSignature",
+      "identifier": "test_consent_signature",
+      "requiresName": true,
+      "requiresSignatureImage": true
+     }
+    ],
+    "title": "CARP Test Study",
+    "sections": [
+     {
+      "__type": "RPConsentSection",
+      "type": "Welcome",
+      "title": "ic.overview.title",
+      "summary": "ic.overview.summary",
+      "content": "ic.overview.content"
+     },
+     {
+      "__type": "RPConsentSection",
+      "type": "AboutUs",
+      "title": "ic.who.title",
+      "summary": "ic.who.summary",
+      "content": "ic.who.content"
+     },
+     {
+      "__type": "RPConsentSection",
+      "type": "StudyTasks",
+      "title": "ic.tasks.title",
+      "summary": "ic.tasks.summary",
+      "content": "ic.tasks.content"
+     },
+     {
+      "__type": "RPConsentSection",
+      "type": "DataHandling",
+      "title": "ic.data.title",
+      "summary": "ic.data.summary",
+      "content": "ic.data.content"
+     },
+     {
+      "__type": "RPConsentSection",
+      "type": "Location",
+      "title": "ic.location.title",
+      "summary": "ic.location.summary",
+      "content": "ic.location.content",
+      "permissions": [
+       "locationAlways"
+      ]
+     },
+     {
+      "__type": "RPConsentSection",
+      "type": "ActivityRecognition",
+      "title": "ic.activity.title",
+      "summary": "ic.activity.summary",
+      "content": "ic.activity.content",
+      "permissions": [
+       "activityRecognition"
+      ]
+     },
+     {
+      "__type": "RPConsentSection",
+      "type": "Bluetooth",
+      "title": "ic.bluetooth.title",
+      "summary": "ic.bluetooth.summary",
+      "content": "ic.bluetooth.content",
+      "permissions": [
+       "bluetooth"
+      ]
+     },
+     {
+      "__type": "RPConsentSection",
+      "type": "Microphone",
+      "title": "ic.microphone.title",
+      "summary": "ic.microphone.summary",
+      "content": "ic.microphone.content",
+      "permissions": [
+       "microphone"
+      ]
+     },
+     {
+      "__type": "RPConsentSection",
+      "type": "Camera",
+      "title": "ic.camera.title",
+      "summary": "ic.camera.summary",
+      "content": "ic.camera.content",
+      "permissions": [
+       "camera"
+      ]
+     },
+     {
+      "__type": "RPConsentSection",
+      "type": "Notification",
+      "title": "ic.notification.title",
+      "summary": "ic.notification.summary",
+      "content": "ic.notification.content",
+      "permissions": [
+       "notification"
+      ]
+     },
+     {
+      "__type": "RPConsentSection",
+      "type": "Health",
+      "title": "ic.health.title",
+      "summary": "ic.health.summary",
+      "content": "ic.health.content",
+      "permissions": [
+       "health"
+      ],
+      "healthDataTypes": [
+       "STEPS",
+       "DISTANCE_DELTA",
+       "HEART_RATE",
+       "SKIN_TEMPERATURE",
+       "SLEEP_SESSION",
+       "SLEEP_ASLEEP",
+       "SLEEP_DEEP",
+       "SLEEP_LIGHT",
+       "SLEEP_REM"
+      ]
+     },
+     {
+      "__type": "RPConsentSection",
+      "type": "BackgroundSensing",
+      "title": "ic.background.title",
+      "summary": "ic.background.summary",
+      "content": "ic.background.content",
+      "permissions": [
+       "ignoreBatteryOptimizations"
+      ]
+     },
+     {
+      "__type": "RPConsentSection",
+      "type": "YourRights",
+      "title": "ic.rights.title",
+      "summary": "ic.rights.summary",
+      "content": "ic.rights.content"
+     },
+     {
+      "__type": "RPConsentSection",
+      "type": "Overview",
+      "title": "ic.summary.title",
+      "summary": "ic.summary.summary",
+      "content": "ic.summary.content"
+     }
+    ]
+   },
+   "reasonForConsent": "ic.review.reason"
+  },
+  {
+   "__type": "RPCompletionStep",
+   "identifier": "test_consent_completion",
+   "title": "ic.completion.title",
+   "text": "ic.completion.text",
+   "optional": false
+  }
+ ]
+}
