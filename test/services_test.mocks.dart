@@ -150,6 +150,15 @@ class MockCarpBackend extends _i1.Mock implements _i6.CarpBackend {
           as _i7.Future<void>);
 
   @override
+  _i7.Future<String?> magicLinkForCode(String? code) =>
+      (super.noSuchMethod(
+            Invocation.method(#magicLinkForCode, [code]),
+            returnValue: _i7.Future<String?>.value(),
+            returnValueForMissingStub: _i7.Future<String?>.value(),
+          )
+          as _i7.Future<String?>);
+
+  @override
   _i7.Future<void> authenticateWithMagicLink(String? uri) =>
       (super.noSuchMethod(
             Invocation.method(#authenticateWithMagicLink, [uri]),
@@ -298,6 +307,15 @@ class MockAuthService extends _i1.Mock implements _i6.AuthService {
             returnValueForMissingStub: _i7.Future<void>.value(),
           )
           as _i7.Future<void>);
+
+  @override
+  _i7.Future<String?> magicLinkForCode(String? code) =>
+      (super.noSuchMethod(
+            Invocation.method(#magicLinkForCode, [code]),
+            returnValue: _i7.Future<String?>.value(),
+            returnValueForMissingStub: _i7.Future<String?>.value(),
+          )
+          as _i7.Future<String?>);
 
   @override
   _i7.Future<void> signOut() =>
@@ -532,7 +550,8 @@ class MockUserTask extends _i1.Mock implements _i4.UserTask {
       super.noSuchMethod(Invocation.method(#onCancel, [], {#dequeue: dequeue}), returnValueForMissingStub: null);
 
   @override
-  void onExpired() => super.noSuchMethod(Invocation.method(#onExpired, []), returnValueForMissingStub: null);
+  void onExpired({bool? dequeue = true}) =>
+      super.noSuchMethod(Invocation.method(#onExpired, [], {#dequeue: dequeue}), returnValueForMissingStub: null);
 
   @override
   void onDone({bool? dequeue = false, _i5.Data? result}) => super.noSuchMethod(

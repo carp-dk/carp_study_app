@@ -1,11 +1,12 @@
 part of carp_study_app;
 
-/// Hours asleep per night, stacked by sleep stage, with per-stage totals as
-/// a legend below. An unstaged night is drawn as a single "asleep" segment.
+/// Hours from bedtime to wake-up per day, stacked by sleep stage then time
+/// awake, with per-segment totals as a legend below. An unstaged night is
+/// drawn as a single "asleep" segment.
 class SleepCardWidget extends StatefulWidget {
   final SleepCardViewModel model;
 
-  /// One colour per [SleepCardViewModel.sleepStageTypes], deepest first.
+  /// One colour per [SleepCardViewModel.segmentTypes].
   final List<Color> colors;
   const SleepCardWidget(
     this.model, {
@@ -13,8 +14,8 @@ class SleepCardWidget extends StatefulWidget {
     // Shades of purple, darker = deeper sleep: deep, light, REM. "Asleep"
     // breaks the fade and goes back to a dark shade - it draws whole
     // unstaged nights on its own, and a pale bar cannot read as selected
-    // next to washed-out staged bars.
-    this.colors = const [Color(0xff3B2E6E), Color(0xff6D5BAF), Color(0xffB3A6E0), Color(0xff5B4B9B)],
+    // next to washed-out staged bars. Awake is grey - in bed, not asleep.
+    this.colors = const [Color(0xff3B2E6E), Color(0xff6D5BAF), Color(0xffB3A6E0), Color(0xff5B4B9B), Color(0xffBDBDBD)],
   });
 
   @override
@@ -31,13 +32,13 @@ class _SleepCardWidgetState extends State<SleepCardWidget> {
 
   /// Translation keys for the segments of a night, in the order
   /// [WeeklySleep.segmentsOn] returns them.
-  static const List<String> _legendKeys = ['deep', 'light', 'rem', 'asleep'];
+  static const List<String> _legendKeys = ['deep', 'light', 'rem', 'asleep', 'awake'];
 
   /// The 7 nights ending today, oldest first - today is always the last bar.
   List<DailySleep> get _nights => widget.model.nights;
 
-  /// Hours of each segment of the night at [index] - the three stages, then
-  /// whatever unstaged sleep stands in for them on a night without stages.
+  /// Hours of each segment of the night at [index] - the three stages, the
+  /// unstaged sleep standing in for them, then the time awake.
   List<double> _stageHours(int index) =>
       widget.model.model.segmentsOn(_nights[index].date).map((minutes) => minutes / 60).toList();
 

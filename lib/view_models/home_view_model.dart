@@ -24,6 +24,11 @@ class HomePageViewModel extends ViewModel {
   StreamSubscription<UserTask>? _userTaskSub;
   StreamSubscription<int>? _messageSub;
   bool _blocAttached = false;
+  AppLifecycleListener? _lifecycle;
+  Timer? _statusPoll;
+
+  /// How often Home rechecks the deployment status and announcements.
+  static const statusPollInterval = Duration(minutes: 1);
 
   /// The announcements/news shown in the "Feeds" section, newest first.
   List<Message> get messages => _messages.messages;
@@ -65,6 +70,9 @@ class HomePageViewModel extends ViewModel {
       ? null
       : _study.cachedDeploymentStatus!.status ?? StudyDeploymentStatusTypes.Invited;
 
+  /// A stopped study has no tasks or connections left to show.
+  bool get isStopped => deploymentStatus == StudyDeploymentStatusTypes.Stopped;
+
   /// Prompt to install Health Connect? One-shot, via [healthConnectPromptShown].
   bool get shouldPromptHealthConnectInstall => _healthConnectPromptPending;
 
@@ -102,10 +110,20 @@ class HomePageViewModel extends ViewModel {
     _attachToBloc();
     _syncSources();
     _userTaskSub = AppTaskController().userTaskEvents.listen((_) => notifyListeners());
+    // e.g. Stopped, found by a refresh on another page
+    ctrl.study.addListener(notifyListeners);
     _messageSub = _messages.stream.listen((_) => notifyListeners());
     unawaited(_checkHealthConnectInstallation());
     unawaited(_checkAppUpdate());
     unawaited(_refreshDeploymentStatus());
+    // e.g. the deployment was stopped on the server while the app was away
+    _lifecycle ??= AppLifecycleListener(onResume: () => unawaited(_refreshDeploymentStatus()));
+    // e.g. the deployment was stopped or an announcement posted while the app is open
+    _statusPoll?.cancel();
+    _statusPoll = Timer.periodic(statusPollInterval, (_) {
+      unawaited(_refreshDeploymentStatus());
+      unawaited(_messages.refresh());
+    });
   }
 
   // The cached status is only filled by an explicit refresh.
@@ -161,6 +179,8 @@ class HomePageViewModel extends ViewModel {
 
   @override
   void clear() {
+    controller?.study.removeListener(notifyListeners);
+    _statusPoll?.cancel();
     _cancelDeviceSubs();
     _connectionSources = const [];
     _healthConnectPromptPending = false;
@@ -171,6 +191,9 @@ class HomePageViewModel extends ViewModel {
   @override
   void dispose() {
     if (_blocAttached) bloc.removeListener(_syncSources);
+    controller?.study.removeListener(notifyListeners);
+    _lifecycle?.dispose();
+    _statusPoll?.cancel();
     _cancelDeviceSubs();
     _userTaskSub?.cancel();
     _messageSub?.cancel();

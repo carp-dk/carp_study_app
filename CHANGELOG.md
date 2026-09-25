@@ -1,3 +1,33 @@
+## 5.0.4
+
+* a deployment stopped on the server stops the study on the phone: sensing
+  stops and Home shows only the study details and announcements (#702)
+* deployment status and announcements are refreshed on resume and every
+  minute on Home (#702)
+* invitations are refetched after leaving a study (#703)
+* Flanker test ends on the last card (#650) and a cancelled Flanker task is no
+  longer duplicated (#704)
+* tapping an announcement notification opens the announcement (#705)
+* sleep card counts a night from bedtime to wake-up on the day it ends, with an
+  awake segment (#706)
+* heart rate card for health data
+* login: code input as one field per character; tab switch between QR scan and
+  a typed sign-in code
+* expired tasks stay out of the Completed tab and keep statistics correct
+* `carp_core` 2.2.2, `carp_mobile_sensing` 2.5.1, `carp_health_package` 4.1.1,
+  `cognition_package` 1.9.1
+
+## 5.0.3
+
+* Statistics cards fetch data streams under the roles the deployment actually
+  streams under, instead of guessing by device type
+* `carp_webservices` 4.4.0 from pub.dev, git override dropped
+
+## 5.0.2
+
+* Android launcher icon is now an adaptive icon built from the same CARP mark
+  as iOS, with matching padding
+
 ## 4.4.3
 
 * version bump for App Store resubmission; 4.4.1 was already approved and its

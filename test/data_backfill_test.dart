@@ -1,6 +1,7 @@
 import 'package:carp_context_package/carp_context_package.dart';
 
 import 'exports.dart';
+import 'services_test.mocks.dart';
 
 /// Self-check for the day-boundary reset in the Steps and Activity
 /// `addMeasurements` - the only new aggregation logic added for backfill.
@@ -139,6 +140,19 @@ void main() {
     });
   });
 
+  group('MobilityCardViewModel.addMeasurements', () {
+    test('keeps days the backfill does not cover', () {
+      final model = MobilityCardViewModel();
+      model.addMeasurements([Measurement.fromData(Mobility(date: DateTime(2026, 8, 10), numberOfPlaces: 2))]);
+      // Yesterday's reading is not uploaded yet, so the refresh returns only today.
+      model.addMeasurements([Measurement.fromData(Mobility(date: DateTime(2026, 8, 11), numberOfPlaces: 3))]);
+
+      final days = model.model.last7Days(today: DateTime(2026, 8, 11));
+      expect(days[5].places, 2);
+      expect(days.last.places, 3);
+    });
+  });
+
   group('ActivityCardViewModel.addMeasurements', () {
     test('does not carry a duration across a day boundary', () {
       final model = ActivityCardViewModel();
@@ -197,7 +211,7 @@ void main() {
 
   group('HeartRateCardViewModel.addMeasurements', () {
     test('calling it again replaces the bands instead of only ever widening them', () {
-      final model = HeartRateCardViewModel(PolarSamplingPackage.HR, PolarDevice.DEVICE_TYPE);
+      final model = HeartRateCardViewModel(PolarSamplingPackage.HR);
 
       model.addMeasurements([_polarHr(90, DateTime(2026, 8, 11, 8, 0))]);
       model.addMeasurements([_polarHr(70, DateTime(2026, 8, 11, 9, 0))]);
@@ -209,7 +223,7 @@ void main() {
     });
 
     test('last24Hours always puts the current hour last, with every slot present', () {
-      final model = HeartRateCardViewModel(PolarSamplingPackage.HR, PolarDevice.DEVICE_TYPE);
+      final model = HeartRateCardViewModel(PolarSamplingPackage.HR);
       model.addMeasurements([_polarHr(70, DateTime(2026, 8, 11, 9, 0))]);
 
       final window = model.model.last24Hours(now: DateTime(2026, 8, 11, 9, 30));
@@ -220,55 +234,50 @@ void main() {
     });
   });
 
-  group('HeartRateCardViewModel.deviceRoleName', () {
-    test('resolves the sensor device role, not the phone role, from the deployment', () {
-      final deployment = SmartphoneDeployment(
-        deviceConfiguration: Smartphone(roleName: Smartphone.DEFAULT_ROLE_NAME),
-        registration: SmartphoneRegistration(deviceId: 'phone'),
-        connectedDevices: {PolarDevice(roleName: 'Custom Polar Role')},
+  group('StatisticsViewModel.rolesFor', () {
+    // Data streams are keyed by the task control's target device, so the
+    // fetch must query the same roles the SDK uploaded under - the phone,
+    // a connected sensor, or a service, whichever the protocol wires.
+    test('returns every role the data type streams under, and nothing for absent ones', () {
+      final phone = Smartphone(roleName: Smartphone.DEFAULT_ROLE_NAME);
+      final polar = PolarDevice(roleName: 'Custom Polar Role');
+      final protocol = StudyProtocol(ownerId: 'owner', name: 'p')
+        ..addPrimaryDevice(phone)
+        ..addConnectedDevice(polar, phone)
+        ..addTaskControl(
+          ImmediateTrigger(),
+          BackgroundTask(
+            name: 'hr',
+            measures: [Measure(type: PolarSamplingPackage.HR)],
+          ),
+          polar,
+        )
+        ..addTaskControl(
+          ImmediateTrigger(),
+          BackgroundTask(
+            name: 'steps',
+            measures: [Measure(type: SensorSamplingPackage.STEP_COUNT)],
+          ),
+          phone,
+        );
+      final deployment = SmartphoneDeployment.fromPrimaryDeviceDeployment(
+        deployment: PrimaryDeviceDeployment(
+          deviceConfiguration: phone,
+          registration: SmartphoneRegistration(deviceId: 'phone'),
+          connectedDevices: {polar},
+          tasks: protocol.tasks,
+          triggers: protocol.triggers,
+          taskControls: protocol.taskControls,
+        ),
       );
-      final controller = MockSmartphoneStudyController();
-      when(controller.deployment).thenReturn(deployment);
+      final service = MockStudyService();
+      when(service.deployment).thenReturn(deployment);
 
-      final model = HeartRateCardViewModel(PolarSamplingPackage.HR, PolarDevice.DEVICE_TYPE)..init(controller);
+      final model = StatisticsViewModel(studyService: service, queryService: _FailingQueryService());
 
-      // This is the bug that made backfill silently return nothing: querying
-      // by the phone's role name instead of the sensor's finds no data stream.
-      expect(model.deviceRoleName, 'Custom Polar Role');
-      expect(model.deviceRoleName, isNot(Smartphone.DEFAULT_ROLE_NAME));
-    });
-
-    test('is null when the deployment does not include this device type', () {
-      final deployment = SmartphoneDeployment(
-        deviceConfiguration: Smartphone(roleName: Smartphone.DEFAULT_ROLE_NAME),
-        registration: SmartphoneRegistration(deviceId: 'phone'),
-      );
-      final controller = MockSmartphoneStudyController();
-      when(controller.deployment).thenReturn(deployment);
-
-      final model = HeartRateCardViewModel(PolarSamplingPackage.HR, PolarDevice.DEVICE_TYPE)..init(controller);
-
-      expect(model.deviceRoleName, isNull);
-    });
-  });
-
-  group('card deviceRoleName', () {
-    // Mobility and health stream under their connected service's role, not
-    // the phone's - querying the phone's role for them is a CAWS 400.
-    test('resolves a connected service role and is null for an absent one', () {
-      final deployment = SmartphoneDeployment(
-        deviceConfiguration: Smartphone(roleName: Smartphone.DEFAULT_ROLE_NAME),
-        registration: SmartphoneRegistration(deviceId: 'phone'),
-        connectedDevices: {LocationService()},
-      );
-      final controller = MockSmartphoneStudyController();
-      when(controller.deployment).thenReturn(deployment);
-
-      final mobility = MobilityCardViewModel()..init(controller);
-      final sleep = SleepCardViewModel()..init(controller);
-
-      expect(mobility.deviceRoleName, LocationService.DEFAULT_ROLE_NAME);
-      expect(sleep.deviceRoleName, isNull);
+      expect(model.rolesFor(PolarSamplingPackage.HR), ['Custom Polar Role']);
+      expect(model.rolesFor(SensorSamplingPackage.STEP_COUNT), [Smartphone.DEFAULT_ROLE_NAME]);
+      expect(model.rolesFor(ContextSamplingPackage.MOBILITY), isEmpty);
     });
   });
 }
@@ -276,7 +285,7 @@ void main() {
 /// A query service that always fails, as when the phone is offline.
 class _FailingQueryService extends DataStreamQueryService {
   @override
-  Future<List<Measurement>?> fetch(String dataType, {String? deviceRoleName}) async => null;
+  Future<List<Measurement>?> fetch(String dataType, String deviceRoleName) async => null;
 }
 
 Measurement _polarHr(int bpm, DateTime at) => Measurement.fromData(

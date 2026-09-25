@@ -13,12 +13,6 @@ abstract class ViewModel extends ChangeNotifier {
     _controller = ctrl;
   }
 
-  /// The role name of the device of [deviceType] in the current deployment,
-  /// or null if not loaded / not included - data streams are keyed by role.
-  @protected
-  String? roleOf(String deviceType) =>
-      controller?.deployment?.devices.where((device) => device.type == deviceType).firstOrNull?.roleName;
-
   /// Log and ignore measurement stream errors so sensing can continue.
   void onMeasurementStreamError(Object error, [StackTrace? stackTrace]) {
     warning('$runtimeType - measurement stream error: $error');
@@ -144,6 +138,8 @@ class AppViewModel extends ViewModel {
 
     _profilePageViewModel.clear();
     _informedConsentViewModel.clear();
+    // so the invitation list is refetched after leaving a study
+    _invitationsListViewModel.clear();
 
     super.clear();
   }

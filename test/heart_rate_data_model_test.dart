@@ -1,3 +1,5 @@
+import 'package:carp_health_package/health_package.dart';
+
 import 'exports.dart';
 
 @GenerateNiceMocks([MockSpec<SmartphoneStudyController>()])
@@ -13,7 +15,7 @@ void main() {
       final controller = MockSmartphoneStudyController();
       when(controller.measurements).thenAnswer((_) => const Stream<Measurement>.empty());
 
-      final viewModel = HeartRateCardViewModel(PolarSamplingPackage.HR, PolarDevice.DEVICE_TYPE);
+      final viewModel = HeartRateCardViewModel(PolarSamplingPackage.HR);
       viewModel.init(controller);
 
       expect(viewModel.model, isA<HourlyHeartRate>());
@@ -21,6 +23,23 @@ void main() {
       // No data yet: every hour bucket is present but empty.
       expect(viewModel.hourlyHeartRate.map((band) => band.value), everyElement(HeartRateMinMaxPrHour(null, null)));
     });
+  });
+
+  test('bpmOf reads health heart rate and ignores other health types', () {
+    Measurement health(String type, num value) => Measurement.fromData(
+      HealthData(
+        uuid: type,
+        value: NumericHealthValue(numericValue: value),
+        unit: 'BEATS_PER_MINUTE',
+        healthDataType: type,
+        dateFrom: DateTime(2026, 8, 11, 9),
+        dateTo: DateTime(2026, 8, 11, 9),
+        platform: HealthPlatform.GOOGLE_HEALTH_CONNECT,
+      ),
+    );
+
+    expect(HeartRateCardViewModel.bpmOf(health('HEART_RATE', 72)), 72);
+    expect(HeartRateCardViewModel.bpmOf(health('STEPS', 500)), isNull);
   });
 
   group('HourlyHeartRate', () {

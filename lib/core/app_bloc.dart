@@ -23,6 +23,7 @@ class AppBloc extends ChangeNotifier {
   AppState _state = AppState.created;
   final AppViewModel _appViewModel = AppViewModel();
   StreamSubscription<UserTask>? _userTaskNotificationSubscription;
+  StreamSubscription<String>? _notificationTapSubscription;
 
   /// The resource managers matching the current deployment mode.
   late final ResourceManagerFactory resources = ResourceManagerFactory();
@@ -155,6 +156,7 @@ class AppBloc extends ChangeNotifier {
   }
 
   /// Open the task page when a task notification is tapped - until [leaveStudy].
+  /// Other notifications (announcements) carry the route to open as payload.
   void _listenToUserTaskNotifications() {
     _userTaskNotificationSubscription ??= AppTaskController().userTaskEvents.listen((userTask) {
       if (userTask.state == UserTaskState.notified) {
@@ -162,6 +164,9 @@ class AppBloc extends ChangeNotifier {
         if (userTask.hasWidget) _rootNavigatorKey.currentContext?.push('/task/${userTask.id}');
       }
     });
+    _notificationTapSubscription ??= SmartPhoneClientManager().notificationManager.notificationTaps.listen(
+      (route) => _rootNavigatorKey.currentContext?.push(route),
+    );
   }
 
   /// Stop sensing and wipe the study from the phone - data is not recoverable.
@@ -173,6 +178,8 @@ class AppBloc extends ChangeNotifier {
     messages.stop();
     await _userTaskNotificationSubscription?.cancel();
     _userTaskNotificationSubscription = null;
+    await _notificationTapSubscription?.cancel();
+    _notificationTapSubscription = null;
 
     // stop sensing - including in background - and remove all deployment info
     await BackgroundSensingService().disconnect();

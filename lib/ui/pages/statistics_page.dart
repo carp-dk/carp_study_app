@@ -81,6 +81,10 @@ class _StatisticsPageState extends State<StatisticsPage> {
         CarpSectionTitle(locale.translate('cards.heartrate.movesense.title')),
         HeartRateCardWidget(model.movesenseHeartRateCardDataModel),
       ],
+      if (model.hasHealthMeasure && model.healthHeartRateCardDataModel.hasData) ...[
+        CarpSectionTitle(locale.translate('cards.heartrate.health.title')),
+        HeartRateCardWidget(model.healthHeartRateCardDataModel),
+      ],
       if (model.hasStepsMeasure && model.stepsCardDataModel.hasData) ...[
         CarpSectionTitle(locale.translate('cards.steps.title')),
         StepsCardWidget(model.stepsCardDataModel),
@@ -89,7 +93,7 @@ class _StatisticsPageState extends State<StatisticsPage> {
         CarpSectionTitle(locale.translate('cards.activity.title')),
         ActivityCard(model.activityCardDataModel),
       ],
-      if (model.hasSleepMeasure && model.sleepCardDataModel.hasData) ...[
+      if (model.hasHealthMeasure && model.sleepCardDataModel.hasData) ...[
         CarpSectionTitle(locale.translate('cards.sleep.title')),
         SleepCardWidget(model.sleepCardDataModel),
       ],

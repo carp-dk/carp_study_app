@@ -1,6 +1,6 @@
 part of carp_study_app;
 
-/// Home stay per day as bars, with places visited and distance travelled below.
+/// Home stay per day as bars, with places visited below.
 /// "Home" is where most time is spent 00:00-06:00; a day without one is empty.
 class MobilityCard extends StatefulWidget {
   final MobilityCardViewModel model;
@@ -71,14 +71,7 @@ class _MobilityCardState extends State<MobilityCard> {
                 child: StreamBuilder(stream: widget.model.mobilityEvents, builder: (context, snapshot) => barCharts),
               ),
               const SizedBox(height: 16),
-              Wrap(
-                spacing: 24,
-                runSpacing: 8,
-                children: [
-                  _feature('${_day.places}', locale.translate('cards.mobility.places')),
-                  _feature(_day.distance.toStringAsFixed(1), locale.translate('cards.mobility.distance')),
-                ],
-              ),
+              _feature('${_day.places}', locale.translate('cards.mobility.places')),
             ],
           ),
         ),
@@ -157,6 +150,13 @@ class _MobilityCardState extends State<MobilityCard> {
           color: isTouched ? widget.colors[0] : widget.colors[0].withValues(alpha: 0.3),
           width: 32,
           borderRadius: const BorderRadius.only(topLeft: Radius.circular(4), topRight: Radius.circular(4)),
+          // A measured day shows a faint track even at 0 %, so "0 %" and
+          // "no measurement" look different.
+          backDrawRodData: BackgroundBarChartRodData(
+            show: homeStay != null,
+            toY: 100,
+            color: widget.colors[0].withValues(alpha: 0.1),
+          ),
         ),
       ],
     );

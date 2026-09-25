@@ -71,6 +71,7 @@ class MessageService {
         await _notifications.createNotification(
           title: message.title ?? 'New announcement',
           body: message.subTitle ?? message.message,
+          payload: '${MessageDetailsPage.route}/${message.id}',
         );
       } catch (error) {
         warning('Could not create a notification for message ${message.id} - $error');

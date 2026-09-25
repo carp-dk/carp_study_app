@@ -3,18 +3,11 @@ part of carp_study_app;
 /// One card per heart rate sensor, identified by its data type namespace -
 /// readings from different sensors are never merged.
 class HeartRateCardViewModel extends SerializableViewModel<HourlyHeartRate> {
-  HeartRateCardViewModel(this.dataType, this.deviceType);
+  HeartRateCardViewModel(this.dataType);
 
   /// The namespaced data type (e.g. [PolarSamplingPackage.HR]) this card
   /// sources from.
   final String dataType;
-
-  /// The [DeviceConfiguration.type] of the sensor hardware (e.g.
-  /// [PolarDevice.DEVICE_TYPE]), used to look up its role in the deployment.
-  final String deviceType;
-
-  /// Role this card's data streams are keyed by (e.g. "Polar HR Sensor").
-  String? get deviceRoleName => roleOf(deviceType);
 
   @override
   HourlyHeartRate createModel() => HourlyHeartRate();
@@ -67,12 +60,15 @@ class HeartRateCardViewModel extends SerializableViewModel<HourlyHeartRate> {
   static double? bpmOf(Measurement measurement) => switch (measurement.data) {
     PolarHR data => data.samples.firstOrNull?.hr.toDouble(),
     MovesenseHR data => data.hr,
+    HealthData(healthDataType: 'HEART_RATE', value: NumericHealthValue value) => value.numericValue.toDouble(),
     _ => null,
   };
 
-  /// Stream of measurements of this card's [dataType] only.
-  Stream<Measurement>? get sourceStream =>
-      controller?.measurements.where((measurement) => measurement.dataType.toString() == dataType);
+  /// Stream of heart rate measurements of this card's [dataType] only - health
+  /// data shares one data type with steps, sleep, etc.
+  Stream<Measurement>? get sourceStream => controller?.measurements.where(
+    (measurement) => measurement.dataType.toString() == dataType && bpmOf(measurement) != null,
+  );
 
   /// Stream of heart rate readings in BPM, for the card to rebuild on.
   Stream<double>? get heartRateStream =>

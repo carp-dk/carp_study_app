@@ -20,7 +20,7 @@ class StatisticsViewModel extends ViewModel {
   bool _hasStepsMeasure = false;
   bool _hasActivityMeasure = false;
   bool _hasMobilityMeasure = false;
-  bool _hasSleepMeasure = false;
+  bool _hasHealthMeasure = false;
 
   // Card availability for the current deployment, computed once in [init].
   bool get hasUserTasks => _hasUserTasks;
@@ -32,7 +32,7 @@ class StatisticsViewModel extends ViewModel {
   bool get hasStepsMeasure => _hasStepsMeasure;
   bool get hasActivityMeasure => _hasActivityMeasure;
   bool get hasMobilityMeasure => _hasMobilityMeasure;
-  bool get hasSleepMeasure => _hasSleepMeasure;
+  bool get hasHealthMeasure => _hasHealthMeasure;
 
   final ActivityCardViewModel _activityCardDataModel = ActivityCardViewModel();
   final StepsCardViewModel _stepsCardDataModel = StepsCardViewModel();
@@ -44,14 +44,9 @@ class StatisticsViewModel extends ViewModel {
   final TaskCardViewModel _videoCardDataModel = TaskCardViewModel(AppTask.VIDEO_TYPE);
   final TaskCardViewModel _imageCardDataModel = TaskCardViewModel(AppTask.IMAGE_TYPE);
   final StudyProgressCardViewModel _studyProgressCardDataModel = StudyProgressCardViewModel();
-  final HeartRateCardViewModel _polarHeartRateCardDataModel = HeartRateCardViewModel(
-    PolarSamplingPackage.HR,
-    PolarDevice.DEVICE_TYPE,
-  );
-  final HeartRateCardViewModel _movesenseHeartRateCardDataModel = HeartRateCardViewModel(
-    MovesenseSamplingPackage.HR,
-    MovesenseDevice.DEVICE_TYPE,
-  );
+  final HeartRateCardViewModel _polarHeartRateCardDataModel = HeartRateCardViewModel(PolarSamplingPackage.HR);
+  final HeartRateCardViewModel _movesenseHeartRateCardDataModel = HeartRateCardViewModel(MovesenseSamplingPackage.HR);
+  final HeartRateCardViewModel _healthHeartRateCardDataModel = HeartRateCardViewModel(HealthSamplingPackage.HEALTH);
 
   ActivityCardViewModel get activityCardDataModel => _activityCardDataModel;
   StepsCardViewModel get stepsCardDataModel => _stepsCardDataModel;
@@ -64,6 +59,7 @@ class StatisticsViewModel extends ViewModel {
   TaskCardViewModel get imageCardDataModel => _imageCardDataModel;
   HeartRateCardViewModel get polarHeartRateCardDataModel => _polarHeartRateCardDataModel;
   HeartRateCardViewModel get movesenseHeartRateCardDataModel => _movesenseHeartRateCardDataModel;
+  HeartRateCardViewModel get healthHeartRateCardDataModel => _healthHeartRateCardDataModel;
 
   StudyProgressCardViewModel get studyProgressCardDataModel => _studyProgressCardDataModel;
 
@@ -90,14 +86,15 @@ class StatisticsViewModel extends ViewModel {
     _hasStepsMeasure = StepsCardViewModel.dataTypes.any(_study.hasMeasure);
     _hasActivityMeasure = _study.hasMeasure(ContextSamplingPackage.ACTIVITY);
     _hasMobilityMeasure = _study.hasMeasure(ContextSamplingPackage.MOBILITY);
-    // A health measure may or may not include sleep types, but the card's
-    // hasData gate hides it either way until sleep actually arrives.
-    _hasSleepMeasure = _study.hasMeasure(HealthSamplingPackage.HEALTH);
+    // A health measure may or may not include sleep or heart rate types, but
+    // the cards' hasData gate hides them until such data actually arrives.
+    _hasHealthMeasure = _study.hasMeasure(HealthSamplingPackage.HEALTH);
 
     _activityCardDataModel.init(ctrl);
     _stepsCardDataModel.init(ctrl);
     _polarHeartRateCardDataModel.init(ctrl);
     _movesenseHeartRateCardDataModel.init(ctrl);
+    _healthHeartRateCardDataModel.init(ctrl);
     _mobilityCardDataModel.init(ctrl);
     _sleepCardDataModel.init(ctrl);
     _measuresCardDataModel.init(ctrl);
@@ -121,51 +118,38 @@ class StatisticsViewModel extends ViewModel {
         if (hasStepsMeasure)
           _fetchInto(StepsCardViewModel.dataTypes.firstWhere(_study.hasMeasure), _stepsCardDataModel.addMeasurements),
         if (hasActivityMeasure) _fetchInto(ContextSamplingPackage.ACTIVITY, _activityCardDataModel.addMeasurements),
-        // Mobility and health are produced by their connected service, so
-        // their streams are keyed by that service's role, not the phone's
-        // (falling back to the phone when a protocol runs them there).
-        if (hasMobilityMeasure)
-          _fetchInto(
-            ContextSamplingPackage.MOBILITY,
-            _mobilityCardDataModel.addMeasurements,
-            deviceRoleName: _mobilityCardDataModel.deviceRoleName,
-          ),
-        // Health data all arrives on one data type; the sleep card picks its
-        // own readings out of the batch.
-        // ponytail: health completed via an app task streams under the phone
-        // role instead - not fetched; backfill covers the background stream.
-        if (hasSleepMeasure)
-          _fetchInto(
-            HealthSamplingPackage.HEALTH,
-            _sleepCardDataModel.addMeasurements,
-            deviceRoleName: _sleepCardDataModel.deviceRoleName,
-          ),
-        // Heart rate is recorded by the sensor's own device role, not the
-        // phone's - skip the fetch if that device isn't in the deployment
-        // (nothing to query, and a null role would silently query the phone).
-        if (hasPolarHeartRateMeasure && _polarHeartRateCardDataModel.deviceRoleName != null)
-          _fetchInto(
-            _polarHeartRateCardDataModel.dataType,
-            _polarHeartRateCardDataModel.addMeasurements,
-            deviceRoleName: _polarHeartRateCardDataModel.deviceRoleName,
-          ),
-        if (hasMovesenseHeartRateMeasure && _movesenseHeartRateCardDataModel.deviceRoleName != null)
-          _fetchInto(
-            _movesenseHeartRateCardDataModel.dataType,
-            _movesenseHeartRateCardDataModel.addMeasurements,
-            deviceRoleName: _movesenseHeartRateCardDataModel.deviceRoleName,
-          ),
+        if (hasMobilityMeasure) _fetchInto(ContextSamplingPackage.MOBILITY, _mobilityCardDataModel.addMeasurements),
+        // Health data all arrives on one data type; fetch it once and let each
+        // card pick its own readings out of the batch.
+        if (hasHealthMeasure)
+          _fetchInto(HealthSamplingPackage.HEALTH, (measurements) {
+            _sleepCardDataModel.addMeasurements(measurements);
+            _healthHeartRateCardDataModel.addMeasurements(measurements);
+          }),
+        if (hasPolarHeartRateMeasure)
+          _fetchInto(_polarHeartRateCardDataModel.dataType, _polarHeartRateCardDataModel.addMeasurements),
+        if (hasMovesenseHeartRateMeasure)
+          _fetchInto(_movesenseHeartRateCardDataModel.dataType, _movesenseHeartRateCardDataModel.addMeasurements),
       ]);
     } finally {
       _isRefreshing = false;
     }
   }
 
-  /// Fetch [dataType] and hand it to [into] - on failure the card keeps what
-  /// it already has.
-  Future<void> _fetchInto(String dataType, void Function(List<Measurement>) into, {String? deviceRoleName}) async {
-    final measurements = await _queryService.fetch(dataType, deviceRoleName: deviceRoleName);
-    if (measurements != null) into(measurements);
+  /// The roles [dataType] streams under - the SDK keys each measurement by
+  /// its task control's target device (phone, sensor, or service).
+  Iterable<String> rolesFor(String dataType) =>
+      _study.deployment?.expectedDataStreams
+          .where((stream) => stream.dataType == dataType)
+          .map((stream) => stream.deviceRoleName) ??
+      const [];
+
+  /// Fetch [dataType] from every role it streams under and hand the lot to
+  /// [into] - on any failure the card keeps what it already has.
+  Future<void> _fetchInto(String dataType, void Function(List<Measurement>) into) async {
+    final batches = await Future.wait(rolesFor(dataType).map((role) => _queryService.fetch(dataType, role)));
+    if (batches.isEmpty || batches.contains(null)) return;
+    into(batches.expand((measurements) => measurements!).toList());
   }
 
   @override
@@ -174,6 +158,7 @@ class StatisticsViewModel extends ViewModel {
     _stepsCardDataModel.clear();
     _polarHeartRateCardDataModel.clear();
     _movesenseHeartRateCardDataModel.clear();
+    _healthHeartRateCardDataModel.clear();
     _mobilityCardDataModel.clear();
     _sleepCardDataModel.clear();
     _measuresCardDataModel.clear();
@@ -192,6 +177,7 @@ class StatisticsViewModel extends ViewModel {
     _stepsCardDataModel.dispose();
     _polarHeartRateCardDataModel.dispose();
     _movesenseHeartRateCardDataModel.dispose();
+    _healthHeartRateCardDataModel.dispose();
     _mobilityCardDataModel.dispose();
     _sleepCardDataModel.dispose();
     _measuresCardDataModel.dispose();
