@@ -29,84 +29,77 @@ void main() {
       _health('SLEEP_SESSION', 1, bedtime).data as HealthData,
     ]);
 
-    // How each platform serializes a night: Android reports whole-number
-    // minutes (int) from a SLEEP_SESSION; iOS reports fractional minutes
-    // (double) from SLEEP_ASLEEP. Backfill parses this JSON via
-    // Measurement.fromJson, same as CAWS data-stream batches.
-    for (final (type, platform, minutes) in [
-      ('SLEEP_SESSION', 'GOOGLE_HEALTH_CONNECT', 480),
-      ('SLEEP_ASLEEP', 'APPLE_HEALTH', 480.5),
-    ]) {
-      final json = jsonEncode(
-        _health(type, 1, bedtime).toJson(),
-      ).replaceFirst('"numericValue":1', '"numericValue":$minutes').replaceFirst('APPLE_HEALTH', platform);
+    // Backfill parses CAWS data-stream batches via Measurement.fromJson.
+    for (final type in ['SLEEP_SESSION', 'SLEEP_ASLEEP']) {
+      final json = jsonEncode(_health(type, 480, bedtime).toJson());
       final model = SleepCardViewModel()
         ..addMeasurements([Measurement.fromJson(jsonDecode(json) as Map<String, dynamic>)]);
 
-      expect(model.model.minutesOn(DateTime(2026, 8, 12)), minutes.toDouble(), reason: type);
+      expect(model.model.minutesOn(DateTime(2026, 8, 12)), 480, reason: type);
     }
   });
 
-  test('a staged night is summed and dated by wake-up, ignoring other health data', () {
+  test('a night counts from bedtime to wake-up, awake gaps included', () {
+    // Real Samsung Health night, Wed 23 - Thu 24 Sep: a 7h 08m session whose
+    // stages add up to only 4h 10m - the other 3h were 63 short wake-ups.
     final model = SleepCardViewModel();
+    final bed = DateTime(2026, 9, 23, 22, 53);
     model.addMeasurements([
-      _health('SLEEP_DEEP', 90, bedtime),
-      _health('SLEEP_LIGHT', 210, bedtime.add(const Duration(hours: 2))),
-      _health('SLEEP_REM', 100, bedtime.add(const Duration(hours: 6))),
-      _health('SLEEP_AWAKE', 25, bedtime.add(const Duration(hours: 3))), // awake is not sleep
-      _health('STEPS', 4000, DateTime(2026, 8, 11, 12)),
+      _health('SLEEP_SESSION', 428, bed),
+      _health('SLEEP_DEEP', 70, bed),
+      _health('SLEEP_LIGHT', 127, bed.add(const Duration(minutes: 90))),
+      _health('SLEEP_REM', 53, bed.add(const Duration(minutes: 300))),
+      _health('STEPS', 4000, DateTime(2026, 9, 23, 12)),
     ]);
 
-    // Stages are disjoint spans of real sleep, so they add up. Every one of
-    // them ends on the 12th, so the whole night lands on the morning the
-    // user woke up rather than being split across midnight.
-    expect(model.model.minutesOn(DateTime(2026, 8, 12)), 400);
-    expect(model.model.minutesOn(DateTime(2026, 8, 11)), 0);
-
-    // Segments come back in chart order (deep, light, REM, then unstaged)
-    // so the stacked bar always draws them the same way round.
-    expect(model.model.segmentsOn(DateTime(2026, 8, 12)), [90, 210, 100, 0]);
+    final thursday = DateTime(2026, 9, 24);
+    expect(model.model.minutesOn(thursday), 428);
+    expect(model.model.segmentsOn(thursday), [70, 127, 53, 0, 178]);
+    expect(model.model.minutesOn(DateTime(2026, 9, 23)), 0);
   });
 
-  test('a night is not split at midnight', () {
+  test('21:00 to 07:00 is 10 hours on the waking day, even with a wake-up at night', () {
     final model = SleepCardViewModel();
     model.addMeasurements([
-      // Falling asleep before midnight: this stage both starts and ends on
-      // the 11th, but it is part of the night that ends on the 12th.
-      _health('SLEEP_LIGHT', 40, DateTime(2026, 8, 11, 22, 30)),
-      _health('SLEEP_DEEP', 90, DateTime(2026, 8, 11, 23, 30)),
-      _health('SLEEP_REM', 60, DateTime(2026, 8, 12, 5)),
+      _health('SLEEP_SESSION', 170, DateTime(2026, 8, 11, 21)), // 21:00 - 23:50
+      _health('SLEEP_SESSION', 410, DateTime(2026, 8, 12, 0, 10)), // 00:10 - 07:00
     ]);
 
-    expect(model.model.minutesOn(DateTime(2026, 8, 12)), 190, reason: 'the whole night is on one bar');
+    expect(model.model.minutesOn(DateTime(2026, 8, 12)), 600);
     expect(model.model.minutesOn(DateTime(2026, 8, 11)), 0);
   });
 
-  test('generic asleep is ignored when the watch also reported stages', () {
+  test('a morning sleep is not split at noon, and a nap counts on its own day', () {
     final model = SleepCardViewModel();
     model.addMeasurements([
-      // A watch stages the night while the phone writes its own flat
-      // reading of the same sleep - adding both would double the night.
-      _health('SLEEP_DEEP', 120, bedtime),
-      _health('SLEEP_LIGHT', 300, bedtime.add(const Duration(hours: 2))),
-      _health('SLEEP_ASLEEP', 430, bedtime),
-      _health('SLEEP_SESSION', 480, bedtime),
+      // Sat 29 Aug: 05:30 - 12:16, all on Saturday.
+      _health('SLEEP_SESSION', 406, DateTime(2026, 8, 29, 5, 30)),
+      // Thu 17 Sep: night to 06:19, then a 15:47 nap - both on Thursday.
+      _health('SLEEP_SESSION', 472, DateTime(2026, 9, 16, 22, 27)),
+      _health('SLEEP_SESSION', 68, DateTime(2026, 9, 17, 15, 47)),
     ]);
 
-    expect(model.model.minutesOn(DateTime(2026, 8, 12)), 420, reason: 'stages are the most detailed source');
-    expect(model.model.segmentsOn(DateTime(2026, 8, 12)), [120, 300, 0, 0]);
+    expect(model.model.minutesOn(DateTime(2026, 8, 29)), 406);
+    expect(model.model.minutesOn(DateTime(2026, 8, 30)), 0);
+    expect(model.model.minutesOn(DateTime(2026, 9, 17)), 540);
   });
 
-  test('an unstaged night draws as a single segment', () {
+  test('an unstaged night is time asleep plus the awake rest of the session', () {
     final model = SleepCardViewModel();
-    model.addMeasurements([
-      _health('SLEEP_ASLEEP', 430, bedtime),
-      _health('SLEEP_SESSION', 480, bedtime), // spans the awake time too
-    ]);
+    model.addMeasurements([_health('SLEEP_ASLEEP', 430, bedtime), _health('SLEEP_SESSION', 480, bedtime)]);
 
-    // ASLEEP is the time actually asleep, so it wins over the session that
-    // merely brackets it - and only one of the two is ever counted.
-    expect(model.model.segmentsOn(DateTime(2026, 8, 12)), [0, 0, 0, 430]);
+    expect(model.model.segmentsOn(DateTime(2026, 8, 12)), [0, 0, 0, 430, 50]);
+  });
+
+  test('the probe and backfill delivering the same reading count it once', () {
+    final model = SleepCardViewModel();
+    final night = _health('SLEEP_SESSION', 480, bedtime);
+    model.addMeasurements([night, night]);
+    expect(model.model.minutesOn(DateTime(2026, 8, 12)), 480);
+
+    // Recomputing on refresh replaces rather than accumulates.
+    model.addMeasurements([_health('SLEEP_SESSION', 300, bedtime)]);
+    expect(model.model.minutesOn(DateTime(2026, 8, 12)), 300);
   });
 
   test('the stack skips stages the phone did not record', () {
@@ -117,38 +110,11 @@ void main() {
     expect(stackSegments([1.5, 3.5, 1.0, 0], 1), [(0, 0.0, 1.5), (1, 2.5, 6.0), (2, 7.0, 8.0)]);
   });
 
-  test('stages win over the session that contains them', () {
-    final model = SleepCardViewModel();
-    model.addMeasurements([
-      // Health Connect reports both: an 8 h session with 7 h of stages
-      // inside it. Counting both would read as 15 h asleep.
-      _health('SLEEP_SESSION', 480, bedtime),
-      _health('SLEEP_DEEP', 120, bedtime),
-      _health('SLEEP_LIGHT', 300, bedtime.add(const Duration(hours: 2))),
-    ]);
-
-    expect(model.model.minutesOn(DateTime(2026, 8, 12)), 420, reason: 'the session is only a fallback');
-  });
-
   test('sleep survives a save/restore round trip', () {
     final model = WeeklySleep()..addSleep(DateTime(2026, 8, 12, 6), 90, type: 'SLEEP_DEEP');
     final restored = model.fromJson(jsonDecode(jsonEncode(model.toJson())) as Map<String, dynamic>);
 
     expect(restored.minutesOn(DateTime(2026, 8, 12)), 90);
-  });
-
-  test('a night recorded as sessions only falls back to them, and accumulates wake-ups', () {
-    final model = SleepCardViewModel();
-    model.addMeasurements([
-      _health('SLEEP_SESSION', 300, bedtime),
-      _health('SLEEP_SESSION', 120, bedtime.add(const Duration(hours: 6))),
-    ]);
-
-    expect(model.model.minutesOn(DateTime(2026, 8, 12)), 420);
-
-    // Recomputing on refresh replaces rather than accumulates.
-    model.addMeasurements([_health('SLEEP_SESSION', 300, bedtime)]);
-    expect(model.model.minutesOn(DateTime(2026, 8, 12)), 300);
   });
 
   test('mobility converts its units and keeps "no home found" distinct from 0%', () {
@@ -188,7 +154,7 @@ void main() {
     expect(activity.hasData, isFalse);
     expect(heartRate.hasData, isFalse);
 
-    sleep.model.addSleep(DateTime.now(), 420, type: 'SLEEP_SESSION');
+    sleep.model.addSleep(DateTime.now(), 420, type: 'SLEEP_ASLEEP');
     expect(sleep.hasData, isTrue);
 
     steps.model.increaseStepCount(DateTime.now(), 100);

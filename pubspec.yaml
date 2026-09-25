@@ -14,8 +14,8 @@ dependencies:
     sdk: flutter
 
   carp_serializable: ^3.0.0
-  carp_core: ^2.2.1
-  carp_mobile_sensing: ^2.4.2
+  carp_core: ^2.2.2
+  carp_mobile_sensing: ^2.5.1
   carp_context_package: ^2.1.1
   carp_connectivity_package: ^2.2.1
   carp_survey_package: ^2.1.1
@@ -29,7 +29,7 @@ dependencies:
   carp_backend: ^2.1.1
 
   research_package: ^3.2.0
-  cognition_package: ^1.9.0
+  cognition_package: ^1.9.1
 
   url_launcher: ^6.1.5
   timeago: ^3.1.0

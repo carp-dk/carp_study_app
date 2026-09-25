@@ -50,14 +50,17 @@ class StudyService {
 
   /// Refresh and return the status of the current study deployment from the
   /// deployment service. Returns null if no study has been deployed.
+  /// Goes through the client manager so a stopped deployment also stops sensing.
   Future<StudyDeploymentStatus?> refreshDeploymentStatus() async {
+    final running = _controller?.study;
+    if (running != null) return _status = await SmartPhoneClientManager().getStudyDeploymentStatus(running);
     final id = study?.studyDeploymentId;
     return id != null ? _status = await deploymentService.getStudyDeploymentStatus(id) : null;
   }
 
   /// The last known status of the study deployment, without contacting the
   /// deployment service. Use [refreshDeploymentStatus] to refresh it.
-  StudyDeploymentStatus? get cachedDeploymentStatus => _status;
+  StudyDeploymentStatus? get cachedDeploymentStatus => _controller?.deploymentStatus ?? _status;
 
   /// Initialize sensing and deploy the [study] on this phone.
   ///
@@ -105,7 +108,9 @@ class StudyService {
   /// Start sensing, if the study is deployed and not permanently stopped.
   Future<void> start() async {
     final controller = _controller;
-    if (controller == null || !isDeployed || controller.study.status == StudyStatus.Stopped) {
+    if (controller == null ||
+        !isDeployed ||
+        controller.study.deploymentStatus?.status == StudyDeploymentStatusTypes.Stopped) {
       warning(
         '$runtimeType - Cannot start sensing - the study is not deployed '
         '(status: ${controller?.study.status}).',

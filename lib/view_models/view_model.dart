@@ -138,6 +138,8 @@ class AppViewModel extends ViewModel {
 
     _profilePageViewModel.clear();
     _informedConsentViewModel.clear();
+    // so the invitation list is refetched after leaving a study
+    _invitationsListViewModel.clear();
 
     super.clear();
   }

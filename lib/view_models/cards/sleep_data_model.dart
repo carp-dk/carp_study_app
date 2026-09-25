@@ -13,74 +13,68 @@ class SleepCardViewModel extends SerializableViewModel<WeeklySleep> {
   /// Real sleep stages, deepest first - disjoint spans, so they can be summed.
   static const List<String> sleepStageTypes = ['SLEEP_DEEP', 'SLEEP_LIGHT', 'SLEEP_REM'];
 
-  /// Unstaged sleep (iPhone ASLEEP, Health Connect SESSION), most precise
-  /// first - fallbacks spanning the same night, not something to add on top.
-  static const List<String> unstagedTypes = ['SLEEP_ASLEEP', sleepSessionType];
+  /// Unstaged time asleep (iPhone), and a whole sleep from bedtime to wake-up (Health Connect).
+  static const String asleepType = 'SLEEP_ASLEEP';
+  static const String sessionType = 'SLEEP_SESSION';
 
-  /// A whole sleep session, bedtime to wake-up.
-  static const String sleepSessionType = 'SLEEP_SESSION';
+  /// Time awake within a sleep - derived, never requested.
+  static const String awakeType = 'SLEEP_AWAKE';
 
   /// All sleep types to request - the probe drops unsupported ones per platform.
-  static const Set<String> sleepDataTypes = {...sleepStageTypes, ...unstagedTypes};
+  static const Set<String> sleepDataTypes = {...sleepStageTypes, asleepType, sessionType};
+
+  /// The segments of a night, bottom to top of its bar.
+  static const List<String> segmentTypes = [...sleepStageTypes, asleepType, awakeType];
+
+  /// Sleep readings by record, so the probe and backfill never double-count.
+  final Map<String, HealthData> _readings = {};
 
   /// Stream of health measurements carrying sleep.
-  Stream<Measurement>? get sleepEvents =>
-      controller?.measurements.where((measurement) => _minutesOf(measurement.data) != null);
+  Stream<Measurement>? get sleepEvents => controller?.measurements.where((measurement) => _isSleep(measurement.data));
 
-  /// The minutes of sleep in [data], or null if it is not a sleep reading.
-  static double? _minutesOf(Data data) {
-    if (data is! HealthData || !sleepDataTypes.contains(data.healthDataType)) return null;
-    final value = data.value;
-    return value is NumericHealthValue ? value.numericValue.toDouble() : null;
-  }
-
-  /// The morning [data] is charted on - a night spans midnight, so split the
-  /// day at noon. ponytail: splits shift workers sleeping across midday.
-  static DateTime _nightOf(HealthData data) {
-    final end = data.dateTo.toLocal();
-    return end.hour < 12 ? end : end.add(const Duration(days: 1));
-  }
+  static bool _isSleep(Data data) => data is HealthData && sleepDataTypes.contains(data.healthDataType);
 
   @override
   void init(SmartphoneStudyController ctrl) {
     super.init(ctrl);
+    _readings.clear();
 
     sleepEvents?.listen((measurement) {
-      _record(model, measurement);
+      _add(measurement.data);
+      model.setSleep(_readings.values);
       notifyListeners();
     }, onError: onMeasurementStreamError);
   }
 
-  /// Fold [measurement] into [into], if it carries sleep.
-  static void _record(WeeklySleep into, Measurement measurement) {
-    final data = measurement.data;
-    final minutes = _minutesOf(data);
-    if (minutes == null) return;
-    into.addSleep(_nightOf(data as HealthData), minutes, type: data.healthDataType);
+  void _add(Data data) {
+    if (!_isSleep(data)) return;
+    data as HealthData;
+    _readings['${data.uuid}|${data.healthDataType}|${data.dateFrom}|${data.dateTo}'] = data;
   }
 
-  /// Recompute the trailing 7 nights from backfilled [measurements] -
-  /// idempotent, so refreshing never double-counts.
+  /// Recompute from backfilled [measurements] - replaces, so refreshing never double-counts.
   void addMeasurements(List<Measurement> measurements) {
-    model.clearSleep();
+    _readings.clear();
     for (final measurement in measurements) {
-      _record(model, measurement);
+      _add(measurement.data);
     }
+    model.setSleep(_readings.values);
     notifyListeners();
   }
 }
 
-/// Sleep minutes organized by the night they belong to.
+/// Sleep minutes organized by the day it ended on.
 @JsonSerializable(includeIfNull: false)
 class WeeklySleep extends DataModel {
-  /// Minutes per night (keyed "2026-08-21", the waking morning) per sleep type.
+  /// Readings less than this apart are one sleep, e.g. waking up at night.
+  static const Duration maxGap = Duration(hours: 2);
+
+  /// Minutes per day (keyed "2026-08-21", the waking day) per [SleepCardViewModel.segmentTypes].
   Map<String, Map<String, double>> nightlyMinutes = {};
 
   static String _dayKey(DateTime date) => DateFormat('yyyy-MM-dd').format(date);
 
-  /// Add [minutes] of [type] to the night of [date]. A night arrives as many
-  /// readings - several per stage, or one per session on a night with
-  /// wake-ups - so readings of the same type accumulate.
+  /// Add [minutes] of [type] to the day of [date].
   void addSleep(DateTime date, double minutes, {required String type}) {
     final night = nightlyMinutes.putIfAbsent(_dayKey(date), () => {});
     night[type] = (night[type] ?? 0) + minutes;
@@ -88,22 +82,63 @@ class WeeklySleep extends DataModel {
 
   void clearSleep() => nightlyMinutes.clear();
 
-  /// Minutes per [SleepCardViewModel.sleepStageTypes] plus one unstaged
-  /// segment - sources overlap, so only the most detailed one is used.
-  List<double> segmentsOn(DateTime date) {
-    final night = nightlyMinutes[_dayKey(date)] ?? const <String, double>{};
-    final stages = [for (final stage in SleepCardViewModel.sleepStageTypes) night[stage] ?? 0];
-    if (stages.any((minutes) => minutes > 0)) return [...stages, 0];
+  /// Rebuild from raw sleep [readings]. Readings less than [maxGap] apart are
+  /// one sleep, counted on the day it ends, from bedtime to wake-up - so
+  /// 21:00 to 07:00 is 10 h on the waking day, and a nap adds to its own day.
+  void setSleep(Iterable<HealthData> readings) {
+    clearSleep();
+    final sorted = readings.toList()..sort((a, b) => a.dateFrom.compareTo(b.dateFrom));
 
-    final unstaged = SleepCardViewModel.unstagedTypes.map((type) => night[type] ?? 0);
-    return [...stages.map((_) => 0.0), unstaged.firstWhere((minutes) => minutes > 0, orElse: () => 0)];
+    var sleep = <HealthData>[];
+    DateTime? end;
+    for (final reading in sorted) {
+      if (end != null && reading.dateFrom.difference(end) > maxGap) {
+        _addSleep(sleep, end);
+        sleep = [];
+        end = null;
+      }
+      sleep.add(reading);
+      if (end == null || reading.dateTo.isAfter(end)) end = reading.dateTo;
+    }
+    if (end != null) _addSleep(sleep, end);
   }
 
-  /// Minutes asleep on the night of [date].
+  /// Split one sleep into stages, unstaged sleep and the awake rest.
+  void _addSleep(List<HealthData> sleep, DateTime end) {
+    double minutes(String type) => sleep
+        .where((reading) => reading.healthDataType == type)
+        .fold(0.0, (sum, reading) => sum + reading.dateTo.difference(reading.dateFrom).inSeconds / 60);
+
+    final total = end.difference(sleep.first.dateFrom).inSeconds / 60;
+    final stages = {for (final type in SleepCardViewModel.sleepStageTypes) type: minutes(type)};
+    final staged = stages.values.fold(0.0, (sum, value) => sum + value);
+
+    // Stages are the most detailed; else time asleep; else the sessions themselves.
+    final asleep = minutes(SleepCardViewModel.asleepType);
+    final unstaged = staged > 0 ? 0.0 : min(total, asleep > 0 ? asleep : minutes(SleepCardViewModel.sessionType));
+
+    final day = end.toLocal();
+    final segments = {
+      ...stages,
+      SleepCardViewModel.asleepType: unstaged,
+      SleepCardViewModel.awakeType: max(0.0, total - staged - unstaged),
+    };
+    segments.forEach((type, value) {
+      if (value > 0) addSleep(day, value, type: type);
+    });
+  }
+
+  /// Minutes per [SleepCardViewModel.segmentTypes] on the day of [date].
+  List<double> segmentsOn(DateTime date) {
+    final night = nightlyMinutes[_dayKey(date)] ?? const <String, double>{};
+    return [for (final type in SleepCardViewModel.segmentTypes) night[type] ?? 0];
+  }
+
+  /// Minutes from bedtime to wake-up on the day of [date].
   double minutesOn(DateTime date) => segmentsOn(date).fold<double>(0, (sum, minutes) => sum + minutes);
 
-  /// Sleep for the 7 nights ending on [today] (defaults to now), oldest
-  /// first - zero for any night with nothing recorded. Today is always last.
+  /// Sleep for the 7 days ending on [today] (defaults to now), oldest
+  /// first - zero for any day with nothing recorded. Today is always last.
   List<DailySleep> last7Days({DateTime? today}) {
     final end = today ?? DateTime.now();
     return List.generate(7, (i) {
@@ -122,11 +157,11 @@ class WeeklySleep extends DataModel {
 class DailySleep {
   final DateTime date;
 
-  /// Minutes asleep that night.
+  /// Minutes from bedtime to wake-up.
   final double minutes;
 
   DailySleep(this.date, this.minutes);
 
-  /// Hours asleep that night, for display.
+  /// Hours, for display.
   double get hours => minutes / 60;
 }
