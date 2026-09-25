@@ -80,6 +80,7 @@
   "cards.sleep.deep": "dyb",
   "cards.sleep.light": "let",
   "cards.sleep.rem": "REM",
+  "cards.sleep.awake": "vågen",
   "cards.steps.title": "Antal Skridt",
   "cards.steps.steps": "skridt",
   "cards.steps.per_week": "skridt/uge",

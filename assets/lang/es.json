@@ -55,6 +55,7 @@
   "cards.sleep.deep": "profundo",
   "cards.sleep.light": "ligero",
   "cards.sleep.rem": "REM",
+  "cards.sleep.awake": "despierto",
   "cards.steps.title": "Numero de pasos",
   "cards.steps.steps": "pasos",
   "cards.steps.per_week": "pasos/semana",
