@@ -52,9 +52,9 @@ class SleepCardViewModel extends SerializableViewModel<WeeklySleep> {
     _readings['${data.uuid}|${data.healthDataType}|${data.dateFrom}|${data.dateTo}'] = data;
   }
 
-  /// Recompute from backfilled [measurements] - replaces, so refreshing never double-counts.
+  /// Merge backfilled [measurements] into the probe's readings - the backend
+  /// lags the upload, so replacing would drop what the phone has not sent yet.
   void addMeasurements(List<Measurement> measurements) {
-    _readings.clear();
     for (final measurement in measurements) {
       _add(measurement.data);
     }

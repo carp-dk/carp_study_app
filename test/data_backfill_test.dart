@@ -210,15 +210,15 @@ void main() {
   });
 
   group('HeartRateCardViewModel.addMeasurements', () {
-    test('calling it again replaces the bands instead of only ever widening them', () {
+    test('merges - an empty or partial backfill keeps readings not yet uploaded', () {
       final model = HeartRateCardViewModel(PolarSamplingPackage.HR);
 
       model.addMeasurements([_polarHr(90, DateTime(2026, 8, 11, 8, 0))]);
+      model.addMeasurements([]);
       model.addMeasurements([_polarHr(70, DateTime(2026, 8, 11, 9, 0))]);
+      model.addMeasurements([_polarHr(90, DateTime(2026, 8, 11, 8, 0))]);
 
-      // A later refresh that no longer includes the 90 bpm reading should not
-      // leave it stuck as the max - the whole window is recomputed each time.
-      expect(model.model.hourlyHeartRate['2026-08-11T08'], isNull);
+      expect(model.model.hourlyHeartRate['2026-08-11T08'], HeartRateMinMaxPrHour(90, 90));
       expect(model.model.hourlyHeartRate['2026-08-11T09'], HeartRateMinMaxPrHour(70, 70));
     });
 
