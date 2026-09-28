@@ -28,8 +28,9 @@ class LoginViewModel extends ViewModel {
   Future<SignInResult> signIn() async {
     if (!await _system.checkConnectivity()) return SignInResult.offline;
 
-    await _auth.initialize();
+    final previousUserId = _auth.user?.id;
     await _auth.authenticate();
+    await _leaveStudyIfAccountChanged(previousUserId);
 
     notifyListeners();
     final result = _auth.isAuthenticated ? SignInResult.success : SignInResult.failed;
@@ -53,10 +54,20 @@ class LoginViewModel extends ViewModel {
   Future<bool> signInWithMagicLink(String link) async {
     if (Uri.tryParse(link)?.hasAbsolutePath != true) return false;
 
+    final previousUserId = _auth.user?.id;
     await _auth.authenticateWithMagicLink(link);
+    await _leaveStudyIfAccountChanged(previousUserId);
 
     notifyListeners();
     return _auth.isAuthenticated;
+  }
+
+  /// A study belongs to the account that joined it - CAWS rejects any other
+  /// account (403). So signing in as a different account leaves the study.
+  Future<void> _leaveStudyIfAccountChanged(String? previousUserId) async {
+    if (_auth.isAuthenticated && _auth.user?.id != previousUserId && bloc.study.hasStudy) {
+      await bloc.leaveStudy();
+    }
   }
 
   /// Sign in anonymously using a [code] handed out with the study invitation.

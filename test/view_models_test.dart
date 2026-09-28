@@ -1,4 +1,5 @@
 import 'package:carp_backend/carp_backend.dart';
+import 'package:carp_webservices/carp_auth/carp_auth.dart';
 import 'package:carp_audio_package/media.dart';
 import 'package:carp_health_package/health_package.dart';
 import 'package:cognition_package/cognition_package.dart';
@@ -115,12 +116,12 @@ void main() {
       verifyNever(auth.authenticate());
     });
 
-    test('signIn initializes, authenticates, and reports success', () async {
+    test('signIn authenticates and reports success', () async {
       when(system.checkConnectivity()).thenAnswer((_) async => true);
       when(auth.isAuthenticated).thenReturn(true);
 
       expect(await model.signIn(), SignInResult.success);
-      verifyInOrder([auth.initialize(), auth.authenticate()]);
+      verify(auth.authenticate()).called(1);
     });
 
     test('signIn reports failure when authentication did not stick', () async {
@@ -178,6 +179,20 @@ void main() {
       expect(await model.signInWithQrCode('https://carp.dk/magic'), isTrue);
       verifyNever(auth.magicLinkForCode(any));
       verify(auth.authenticateWithMagicLink('https://carp.dk/magic')).called(1);
+    });
+
+    test('signing in as another account leaves the study, the same account keeps it', () async {
+      final user = CarpUser(username: 'a', id: 'account-a');
+      when(auth.isAuthenticated).thenReturn(true);
+      when(auth.user).thenAnswer((_) => user);
+      LocalSettings().study = SmartphoneStudy(studyDeploymentId: 'dep-a', deviceRoleName: 'phone');
+
+      await model.signInWithMagicLink('https://carp.dk/magic');
+      expect(bloc.study.hasStudy, isTrue);
+
+      when(auth.authenticateWithMagicLink(any)).thenAnswer((_) async => user.id = 'account-b');
+      await model.signInWithMagicLink('https://carp.dk/magic');
+      expect(bloc.study.hasStudy, isFalse);
     });
   });
 
