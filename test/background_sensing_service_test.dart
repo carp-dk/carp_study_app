@@ -104,26 +104,15 @@ void main() {
       expect(backgroundCalls, contains('disableBackgroundExecution'));
     });
 
-    test('on iOS connect asks for Always location, and no foreground service exists', () async {
+    test('on iOS it is on by default - no permission asked, no foreground service', () async {
       debugDefaultTargetPlatformOverride = TargetPlatform.iOS;
       await BackgroundSensingService().refresh();
+      expect(BackgroundSensingService().isConnected, isTrue);
 
       await BackgroundSensingService().connect();
 
-      expect(permissions.requested, [Permission.locationAlways]);
-      expect(BackgroundSensingService().isConnected, isTrue);
+      expect(permissions.requestCount, 0);
       expect(backgroundCalls, isEmpty);
-    });
-
-    test('on iOS a revoked Always location disconnects', () async {
-      debugDefaultTargetPlatformOverride = TargetPlatform.iOS;
-      await BackgroundSensingService().connect();
-      expect(BackgroundSensingService().isConnected, isTrue);
-
-      permissions.status = PermissionStatus.denied;
-      await BackgroundSensingService().refresh();
-
-      expect(BackgroundSensingService().isConnected, isFalse);
     });
 
     test('is not supported off the phones, so it never starts', () async {

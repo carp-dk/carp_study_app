@@ -154,7 +154,6 @@
   "pages.devices.type.health.access_denied.message": "Der blev ikke givet adgang. For at tillade det skal du gå til: Indstillinger → Apps → CARP Studies → Tilladelser → Sundhed, fitness og wellness → Tillad alle. Træk derefter ned på enhedsskærmen for at opdatere.",
   "pages.devices.location_permission.title": "Tilladelser påkrævet",
   "pages.devices.location_permission.message": "Tilslutning til Bluetooth-enheder i nærheden kræver tilladelserne Enheder i nærheden og Placering. For at tillade dem: gå til Indstillinger → Apps → CARP Studies → Tilladelser, giv de manglende tilladelser, og prøv at forbinde igen.",
-  "pages.devices.background_permission.message": "Baggrundsmåling kræver, at placeringsadgang er sat til Altid. Gå til: Indstillinger → Apps → CARP Studies → Lokalitet, vælg Altid, og vend tilbage til appen. Træk ned på enhedsskærmen for at opdatere.",
   "pages.devices.type.health.instructions.data.steps": "Skridttælling",
   "pages.devices.type.health.instructions.data.heart_rate": "Puls",
   "pages.devices.type.health.instructions.data.exercise": "Træningssessioner",

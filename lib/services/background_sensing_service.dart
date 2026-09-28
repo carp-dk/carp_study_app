@@ -4,9 +4,8 @@ part of carp_study_app;
 /// Not part of the deployment - the user connects to it, the app resumes it.
 ///
 /// On Android that is a foreground service, gated by the battery optimization
-/// exemption. On iOS there is no such service - continuous location updates
-/// keep the app alive, which needs the "Always" location permission; the
-/// sampling packages already enable background location updates themselves.
+/// exemption. On iOS it is only the UIBackgroundModes flag in Info.plist, so it
+/// is always on - location measures ask for "Always" location themselves.
 class BackgroundSensingService extends ChangeNotifier {
   static final BackgroundSensingService _instance = BackgroundSensingService._();
   factory BackgroundSensingService() => _instance;
@@ -22,12 +21,10 @@ class BackgroundSensingService extends ChangeNotifier {
 
   bool get _isAndroid => defaultTargetPlatform == TargetPlatform.android;
 
-  // The exemption (Android) or Always location (iOS) is the truth - both can
-  // be revoked in the phone's settings at any time, so re-read, not remembered.
-  // Android 14+ kills the app if the location-type foreground service starts
-  // without location granted, so that is required too.
-  List<Permission> get _permissions =>
-      _isAndroid ? [Permission.ignoreBatteryOptimizations, Permission.location] : [Permission.locationAlways];
+  // The exemption is the truth - it can be revoked in the phone's settings at
+  // any time, so re-read, not remembered. Android 14+ kills the app if the
+  // location-type foreground service starts without location granted.
+  static const List<Permission> _permissions = [Permission.ignoreBatteryOptimizations, Permission.location];
 
   Future<bool> get _isGranted async {
     for (final permission in _permissions) {
@@ -38,10 +35,9 @@ class BackgroundSensingService extends ChangeNotifier {
 
   /// Re-read the platform permissions and bring the service in line with them.
   Future<void> refresh() async {
-    var connected = isSupported && await _isGranted;
+    // iOS: nothing to start or grant - the Info.plist flag is all there is.
+    var connected = defaultTargetPlatform == TargetPlatform.iOS || (_isAndroid && await _isGranted);
 
-    // The foreground service exists only on Android; on iOS the granted
-    // permission is all there is - location updates keep sensing alive.
     if (_isAndroid) {
       if (connected && !BackgroundService().isEnabled) connected = await _start();
       // Revoked while running - the exemption is gone, so stop the service too.
@@ -54,11 +50,11 @@ class BackgroundSensingService extends ChangeNotifier {
     }
   }
 
-  /// Ask for the platform permission and start sensing in background.
+  /// Ask for the exemption and start sensing in background.
   Future<void> connect() async {
     if (!isSupported) return;
 
-    await _permissions.request();
+    if (_isAndroid) await _permissions.request();
     await refresh();
   }
 
