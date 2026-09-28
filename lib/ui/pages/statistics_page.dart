@@ -82,7 +82,9 @@ class _StatisticsPageState extends State<StatisticsPage> {
         HeartRateCardWidget(model.movesenseHeartRateCardDataModel),
       ],
       if (model.hasHealthMeasure && model.healthHeartRateCardDataModel.hasData) ...[
-        CarpSectionTitle(locale.translate('cards.heartrate.health.title')),
+        CarpSectionTitle(
+          locale.translate('cards.heartrate.health.title', args: {'source': locale.translate(healthPlatformName)}),
+        ),
         HeartRateCardWidget(model.healthHeartRateCardDataModel),
       ],
       if (model.hasStepsMeasure && model.stepsCardDataModel.hasData) ...[

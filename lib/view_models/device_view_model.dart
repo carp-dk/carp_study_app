@@ -65,7 +65,9 @@ class DeviceViewModel extends ViewModel {
   String? get type => deviceManager.deviceType;
 
   /// A printer-friendly name for this [type] of device.
-  String get typeName => _deviceTypeName[type!] ?? 'pages.devices.type.unknown.name';
+  String get typeName => type == HealthService.DEVICE_TYPE
+      ? healthPlatformName
+      : _deviceTypeName[type!] ?? 'pages.devices.type.unknown.name';
 
   /// The status of this device.
   DeviceStatus get status => deviceManager.status;
@@ -111,6 +113,13 @@ class DeviceViewModel extends ViewModel {
 
   /// The icon for this type of device.
   Icon? get icon => _deviceTypeIcon[type!];
+
+  /// A brand logo shown instead of [icon], if this type of device has one.
+  String? get iconImage => switch (type) {
+    MovesenseDevice.DEVICE_TYPE => 'assets/icons/movesense_logo.png',
+    HealthService.DEVICE_TYPE => healthPlatformIcon,
+    _ => null,
+  };
 
   /// The icon or string for the status of this hardware device.
   dynamic get getDeviceStatusIcon => _deviceStatusIcon[status];
@@ -163,6 +172,13 @@ class DeviceViewModel extends ViewModel {
   }
 }
 
+/// Health data lives in Apple Health on iOS and Google Health Connect on Android.
+String get healthPlatformName =>
+    Platform.isIOS ? 'pages.devices.type.health.name.ios' : 'pages.devices.type.health.name.android';
+
+String get healthPlatformIcon =>
+    Platform.isIOS ? 'assets/instructions/apple_health_icon.png' : 'assets/instructions/google_health_connect_icon.png';
+
 const Map<String, String> _deviceTypeName = {
   Smartphone.DEVICE_TYPE: "pages.devices.type.smartphone.name",
   WeatherService.DEVICE_TYPE: "pages.devices.type.weather.name",
@@ -170,7 +186,6 @@ const Map<String, String> _deviceTypeName = {
   LocationService.DEVICE_TYPE: "pages.devices.type.location.name",
   PolarDevice.DEVICE_TYPE: "pages.devices.type.polar.name",
   MovesenseDevice.DEVICE_TYPE: "pages.devices.type.movesense.name",
-  HealthService.DEVICE_TYPE: "pages.devices.type.health.name",
 };
 
 const Map<String, String> _deviceTypeDescription = {

@@ -148,7 +148,7 @@ class HealthServiceConnectPage extends StatelessWidget {
       child: Row(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          Icon(Icons.favorite_outline, color: Theme.of(context).colorScheme.primary, size: 24),
+          Image.asset(healthPlatformIcon, width: 24, height: 24),
           const SizedBox(width: 12),
           Expanded(
             child: Text(

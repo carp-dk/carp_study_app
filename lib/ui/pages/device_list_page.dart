@@ -122,7 +122,7 @@ class DeviceListPageState extends State<DeviceListPage> {
           () => _cardListBuilder(
             enableFeedback: true,
             leading: device.icon!,
-            leadingImage: device.type == MovesenseDevice.DEVICE_TYPE ? 'assets/icons/movesense_logo.png' : null,
+            leadingImage: device.iconImage,
             title: (locale.translate(device.typeName), device.batteryLevel ?? 0),
             subtitle: device.name,
             // Study-managed, so the user cannot disconnect it - nothing to tap.
@@ -152,6 +152,7 @@ class DeviceListPageState extends State<DeviceListPage> {
           DeviceStatus.unknown,
           () => _cardListBuilder(
             leading: service.icon!,
+            leadingImage: service.iconImage,
             title: (locale.translate(service.typeName), null),
             subtitle: null,
             onTap: () async => await _serviceClicked(service),
