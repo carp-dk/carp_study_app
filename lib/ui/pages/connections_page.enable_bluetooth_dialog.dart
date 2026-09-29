@@ -1,7 +1,7 @@
 part of carp_study_app;
 
 class EnableBluetoothDialog extends StatelessWidget {
-  final DeviceViewModel device;
+  final ConnectionViewModel device;
 
   const EnableBluetoothDialog({super.key, required this.device});
 
@@ -11,7 +11,7 @@ class EnableBluetoothDialog extends StatelessWidget {
       scrollable: true,
       titlePadding: const EdgeInsets.symmetric(vertical: 4),
       insetPadding: const EdgeInsets.symmetric(vertical: 24, horizontal: 40),
-      title: const DialogTitle(title: "pages.devices.connection.enable_bluetooth.title"),
+      title: const DialogTitle(title: "pages.connections.connection.enable_bluetooth.title"),
       content: SizedBox(
         height: MediaQuery.of(context).size.height * 0.45,
         child: enableBluetoothInstructions(context, device),
@@ -19,7 +19,7 @@ class EnableBluetoothDialog extends StatelessWidget {
     );
   }
 
-  Widget enableBluetoothInstructions(BuildContext context, DeviceViewModel device) {
+  Widget enableBluetoothInstructions(BuildContext context, ConnectionViewModel device) {
     RPLocalizations locale = RPLocalizations.of(context)!;
     return Column(
       children: [
@@ -28,13 +28,13 @@ class EnableBluetoothDialog extends StatelessWidget {
             child: Column(
               children: [
                 Text(
-                  locale.translate("pages.devices.connection.enable_bluetooth.message1"),
+                  locale.translate("pages.connections.connection.enable_bluetooth.message1"),
                   style: Theme.of(context).textTheme.bodyLarge!,
                   textAlign: TextAlign.justify,
                 ),
                 Padding(padding: EdgeInsets.symmetric(vertical: 16.0)),
                 Text(
-                  locale.translate("pages.devices.connection.enable_bluetooth.message2"),
+                  locale.translate("pages.connections.connection.enable_bluetooth.message2"),
                   style: Theme.of(context).textTheme.bodyLarge!,
                   textAlign: TextAlign.justify,
                 ),
@@ -48,7 +48,7 @@ class EnableBluetoothDialog extends StatelessWidget {
                     ),
                   ),
                 Text(
-                  locale.translate("pages.devices.connection.enable_bluetooth.message3"),
+                  locale.translate("pages.connections.connection.enable_bluetooth.message3"),
                   style: Theme.of(context).textTheme.bodyLarge!,
                   textAlign: TextAlign.justify,
                 ),

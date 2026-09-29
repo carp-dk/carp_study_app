@@ -89,11 +89,11 @@ class CarpAppState extends State<CarpStudyApp> {
             ),
           ),
           GoRoute(
-            path: DeviceListPage.route,
+            path: ConnectionListPage.route,
             parentNavigatorKey: _shellNavigatorKey,
             pageBuilder: (context, state) => CustomTransitionPage(
               key: state.pageKey,
-              child: DeviceListPage(model: bloc.appViewModel.devicesPageViewModel),
+              child: ConnectionListPage(model: bloc.appViewModel.connectionListPageViewModel),
               transitionsBuilder: bottomNavigationBarAnimation,
             ),
           ),

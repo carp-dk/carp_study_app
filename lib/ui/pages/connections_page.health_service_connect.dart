@@ -7,7 +7,7 @@ class HealthServiceConnectPage extends StatelessWidget {
   Widget build(BuildContext context) {
     RPLocalizations locale = RPLocalizations.of(context)!;
 
-    DeviceViewModel healthService = bloc.appViewModel.devicesPageViewModel.healthService!;
+    ConnectionViewModel healthService = bloc.appViewModel.connectionListPageViewModel.healthService!;
 
     return Scaffold(
       backgroundColor: Colors.grey.shade100,
@@ -50,30 +50,30 @@ class HealthServiceConnectPage extends StatelessWidget {
                         TextSpan(
                           children: [
                             TextSpan(
-                              text: "${locale.translate("pages.devices.type.health.instructions.page2.part1")} ",
+                              text: "${locale.translate("pages.connections.type.health.instructions.page2.part1")} ",
                               style: Theme.of(context).textTheme.titleLarge!,
                             ),
                             TextSpan(
                               text:
-                                  "${Platform.isAndroid ? locale.translate("pages.devices.type.health.instructions.page2.android.allow_all") : locale.translate("pages.devices.type.health.instructions.page2.ios.turn_on_all")} ",
+                                  "${Platform.isAndroid ? locale.translate("pages.connections.type.health.instructions.page2.android.allow_all") : locale.translate("pages.connections.type.health.instructions.page2.ios.turn_on_all")} ",
                               style: Theme.of(context).textTheme.titleLarge!.copyWith(
                                 color: Theme.of(context).colorScheme.primary, // Change to desired color
                               ),
                             ),
                             TextSpan(
-                              text: "${locale.translate("pages.devices.type.health.instructions.page2.part2")} ",
+                              text: "${locale.translate("pages.connections.type.health.instructions.page2.part2")} ",
                               style: Theme.of(context).textTheme.titleLarge!,
                             ),
                             TextSpan(
-                              text: "${locale.translate("pages.devices.type.health.instructions.page2.allow")} ",
+                              text: "${locale.translate("pages.connections.type.health.instructions.page2.allow")} ",
                               style: Theme.of(context).textTheme.titleLarge!.copyWith(
                                 color: Theme.of(context).colorScheme.primary, // Change to desired color
                               ),
                             ),
                             TextSpan(
                               text: Platform.isAndroid
-                                  ? locale.translate("pages.devices.type.health.instructions.page2.part3.android")
-                                  : locale.translate("pages.devices.type.health.instructions.page2.part3.ios"),
+                                  ? locale.translate("pages.connections.type.health.instructions.page2.part3.android")
+                                  : locale.translate("pages.connections.type.health.instructions.page2.part3.ios"),
                               style: Theme.of(context).textTheme.titleLarge!,
                             ),
                           ],
@@ -113,7 +113,7 @@ class HealthServiceConnectPage extends StatelessWidget {
                 if (!healthService.deviceManager.isConnected) {
                   await showPermissionDeniedDialog(
                     context,
-                    'pages.devices.type.health.access_denied.message',
+                    'pages.connections.type.health.access_denied.message',
                     image: 'assets/instructions/health_permission_allow_all.png',
                   );
                 }
@@ -138,7 +138,7 @@ class HealthServiceConnectPage extends StatelessWidget {
           const SizedBox(width: 12),
           Expanded(
             child: Text(
-              locale.translate("pages.devices.type.health.instructions.data.title"),
+              locale.translate("pages.connections.type.health.instructions.data.title"),
               style: Theme.of(context).textTheme.labelLarge!,
             ),
           ),

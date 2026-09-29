@@ -1,23 +1,23 @@
 part of carp_study_app;
 
-/// The devices and services list: the phone, then hardware, then services.
-class DeviceListPage extends StatefulWidget {
-  static const String route = '/devices';
-  final DeviceListPageViewModel model;
-  const DeviceListPage({required this.model, super.key});
+/// The Connections page: the phone, then hardware devices, then services.
+class ConnectionListPage extends StatefulWidget {
+  static const String route = '/connections';
+  final ConnectionListPageViewModel model;
+  const ConnectionListPage({required this.model, super.key});
 
   @override
-  DeviceListPageState createState() => DeviceListPageState();
+  ConnectionListPageState createState() => ConnectionListPageState();
 }
 
-class DeviceListPageState extends State<DeviceListPage> {
+class ConnectionListPageState extends State<ConnectionListPage> {
   StreamSubscription<BluetoothAdapterState>? bluetoothStateStream;
   BluetoothAdapterState? bluetoothAdapterState;
   late final AppLifecycleListener _lifecycle;
 
-  late final List<DeviceViewModel> _smartphoneDevice = widget.model.smartphoneDevice;
-  late final List<DeviceViewModel> _hardwareDevices = widget.model.hardwareDevices;
-  late final List<DeviceViewModel> _services = widget.model.services;
+  late final List<ConnectionViewModel> _smartphoneDevice = widget.model.smartphoneDevice;
+  late final List<ConnectionViewModel> _hardwareDevices = widget.model.hardwareDevices;
+  late final List<ConnectionViewModel> _services = widget.model.services;
 
   @override
   void initState() {
@@ -55,7 +55,7 @@ class DeviceListPageState extends State<DeviceListPage> {
             Padding(
               padding: const EdgeInsets.fromLTRB(16, 0, 16, 16),
               child: Text(
-                locale.translate("pages.devices.message"),
+                locale.translate("pages.connections.message"),
                 style: Theme.of(context).textTheme.labelMedium!.copyWith(color: Colors.grey.shade600, height: 1.4),
               ),
             ),
@@ -93,7 +93,7 @@ class DeviceListPageState extends State<DeviceListPage> {
 
   /// The list of smartphones - which is a list with only one smartphone.
   List<Widget> _smartphoneDeviceList(RPLocalizations locale) => [
-    DevicesPageListTitle(locale: locale, type: DevicesPageTypes.phone),
+    ConnectionsPageListTitle(locale: locale, type: ConnectionsPageTypes.phone),
     SliverList(
       delegate: SliverChildBuilderDelegate(
         childCount: _smartphoneDevice.length,
@@ -120,11 +120,11 @@ class DeviceListPageState extends State<DeviceListPage> {
 
   /// The list of connected hardware devices (like a Polar sensor)
   List<Widget> _hardwareDevicesList(RPLocalizations locale) => [
-    DevicesPageListTitle(locale: locale, type: DevicesPageTypes.devices),
+    ConnectionsPageListTitle(locale: locale, type: ConnectionsPageTypes.devices),
     SliverList(
       delegate: SliverChildBuilderDelegate(childCount: _hardwareDevices.length, (BuildContext context, int index) {
-        DeviceViewModel device = _hardwareDevices[index];
-        return _devicesPageCardStream(
+        ConnectionViewModel device = _hardwareDevices[index];
+        return _connectionsPageCardStream(
           device.statusEvents,
           DeviceStatus.unknown,
           () => _cardListBuilder(
@@ -140,7 +140,9 @@ class DeviceListPageState extends State<DeviceListPage> {
             trailing: device.getDeviceStatusIcon is Icon
                 ? device.getDeviceStatusIcon as Icon
                 : _connectPill(
-                    locale.translate(device.getDeviceStatusIcon as String? ?? "pages.devices.status.action.connect"),
+                    locale.translate(
+                      device.getDeviceStatusIcon as String? ?? "pages.connections.status.action.connect",
+                    ),
                   ),
           ),
         );
@@ -150,12 +152,12 @@ class DeviceListPageState extends State<DeviceListPage> {
 
   /// The services, background sensing first - the study depends on it most.
   List<Widget> _servicesList(RPLocalizations locale) => [
-    DevicesPageListTitle(locale: locale, type: DevicesPageTypes.services),
+    ConnectionsPageListTitle(locale: locale, type: ConnectionsPageTypes.services),
     if (BackgroundSensingService().isSupported) _backgroundSensingCard(locale),
     SliverList(
       delegate: SliverChildBuilderDelegate(childCount: _services.length, (BuildContext context, int index) {
-        DeviceViewModel service = _services[index];
-        return _devicesPageCardStream(
+        ConnectionViewModel service = _services[index];
+        return _connectionsPageCardStream(
           service.statusEvents,
           DeviceStatus.unknown,
           () => _cardListBuilder(
@@ -186,12 +188,12 @@ class DeviceListPageState extends State<DeviceListPage> {
             borderColor: connected ? _statusSuccess : Theme.of(context).colorScheme.primary,
             child: _cardListBuilder(
               leading: const Icon(Icons.autorenew_rounded, size: 30, color: Color(0xff3260A4)),
-              title: (locale.translate('pages.devices.type.background.name'), null),
-              subtitle: locale.translate('pages.devices.type.background.description'),
+              title: (locale.translate('pages.connections.type.background.name'), null),
+              subtitle: locale.translate('pages.connections.type.background.description'),
               onTap: connected ? null : _backgroundSensingClicked,
               trailing: connected
                   ? const Icon(Icons.sensors_rounded, color: _statusSuccess, size: 30)
-                  : _connectPill(locale.translate('pages.devices.status.action.connect')),
+                  : _connectPill(locale.translate('pages.connections.status.action.connect')),
             ),
           ),
         );
@@ -270,7 +272,7 @@ class DeviceListPageState extends State<DeviceListPage> {
     );
   }
 
-  Widget _devicesPageCardStream<T>(Stream<T> stream, T? initialData, Widget Function() childBuilder) => Center(
+  Widget _connectionsPageCardStream<T>(Stream<T> stream, T? initialData, Widget Function() childBuilder) => Center(
     child: StudiesMaterial(
       backgroundColor: Colors.grey.shade50,
       child: StreamBuilder<T>(
@@ -281,7 +283,7 @@ class DeviceListPageState extends State<DeviceListPage> {
     ),
   );
 
-  Future<void> _serviceClicked(DeviceViewModel service) async {
+  Future<void> _serviceClicked(ConnectionViewModel service) async {
     if (service.status == DeviceStatus.connected || service.status == DeviceStatus.connecting) {
       return;
     }
@@ -300,7 +302,7 @@ class DeviceListPageState extends State<DeviceListPage> {
             ? await Permission.locationWhenInUse.request()
             : await service.deviceManager.requestPermissions();
         if (!await service.deviceManager.hasPermissions()) {
-          if (mounted) await showPermissionDeniedDialog(context, 'pages.devices.permission.message');
+          if (mounted) await showPermissionDeniedDialog(context, 'pages.connections.permission.message');
           return;
         }
       }
@@ -316,12 +318,12 @@ class DeviceListPageState extends State<DeviceListPage> {
     await showPermissionDeniedDialog(
       context,
       Platform.isAndroid
-          ? 'pages.devices.background_permission.message.android'
-          : 'pages.devices.background_permission.message',
+          ? 'pages.connections.background_permission.message.android'
+          : 'pages.connections.background_permission.message',
     );
   }
 
-  Future<void> _hardwareDeviceClicked(DeviceViewModel device) async {
+  Future<void> _hardwareDeviceClicked(ConnectionViewModel device) async {
     // fast out if no Bluetooth
     if (!(await FlutterBluePlus.isSupported)) return;
 
@@ -343,7 +345,7 @@ class DeviceListPageState extends State<DeviceListPage> {
         final granted = await device.deviceManager.hasPermissions();
         if (!mounted) return;
         if (!granted) {
-          await showPermissionDeniedDialog(context, 'pages.devices.location_permission.message');
+          await showPermissionDeniedDialog(context, 'pages.connections.location_permission.message');
           return;
         }
 
@@ -357,7 +359,7 @@ class DeviceListPageState extends State<DeviceListPage> {
           ),
         );
       } else if (bluetoothAdapterState == BluetoothAdapterState.unauthorized && Platform.isIOS) {
-        await showPermissionDeniedDialog(context, 'pages.devices.bluetooth_permission.message');
+        await showPermissionDeniedDialog(context, 'pages.connections.bluetooth_permission.message');
       }
     }
   }
@@ -370,7 +372,7 @@ Future<void> showPermissionDeniedDialog(BuildContext context, String messageKey,
   return showDialog<void>(
     context: context,
     builder: (context) => AlertDialog(
-      title: Text(locale.translate("pages.devices.location_permission.title")),
+      title: Text(locale.translate("pages.connections.location_permission.title")),
       content: SingleChildScrollView(
         child: Column(
           mainAxisSize: MainAxisSize.min,
