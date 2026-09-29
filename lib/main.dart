@@ -124,7 +124,6 @@ part 'ui/pages/login_page.dart';
 part 'ui/pages/code_sign_in_page.dart';
 part 'ui/pages/enable_connection_dialog.dart';
 part 'ui/pages/device_list_page.dart';
-part 'ui/pages/devices_page.authorization_dialog.dart';
 part 'ui/pages/devices_page.enable_bluetooth_dialog.dart';
 part 'ui/pages/devices_page.bluetooth_connection_page.dart';
 part 'ui/pages/devices_page.list_title.dart';

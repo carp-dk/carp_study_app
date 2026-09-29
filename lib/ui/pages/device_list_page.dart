@@ -13,6 +13,7 @@ class DeviceListPage extends StatefulWidget {
 class DeviceListPageState extends State<DeviceListPage> {
   StreamSubscription<BluetoothAdapterState>? bluetoothStateStream;
   BluetoothAdapterState? bluetoothAdapterState;
+  late final AppLifecycleListener _lifecycle;
 
   late final List<DeviceViewModel> _smartphoneDevice = widget.model.smartphoneDevice;
   late final List<DeviceViewModel> _hardwareDevices = widget.model.hardwareDevices;
@@ -25,10 +26,14 @@ class DeviceListPageState extends State<DeviceListPage> {
       bluetoothAdapterState = state;
       setState(() {});
     });
+    // Back from Settings a permission may have changed. onShow, not onResume:
+    // a permission dialog only makes the app inactive, Settings hides it.
+    _lifecycle = AppLifecycleListener(onShow: () => unawaited(_refreshStatuses()));
   }
 
   @override
   void dispose() {
+    _lifecycle.dispose();
     bluetoothStateStream?.cancel();
     super.dispose();
   }
@@ -74,10 +79,13 @@ class DeviceListPageState extends State<DeviceListPage> {
     );
   }
 
-  /// Re-check every service's state - the cards follow via [statusEvents].
+  /// Bring every service in line with its permissions - the cards follow via [statusEvents].
   Future<void> _refreshStatuses() async {
     for (final service in _services) {
-      await service.deviceManager.hasPermissions();
+      final manager = service.deviceManager;
+      final granted = await manager.hasPermissions();
+      if (granted && manager.canConnect && !manager.isConnecting) await manager.connect();
+      if (!granted && manager.isConnected) await manager.disconnect();
     }
     await BackgroundSensingService().refresh();
     if (mounted) setState(() {});
@@ -279,36 +287,38 @@ class DeviceListPageState extends State<DeviceListPage> {
     }
 
     if (!(await service.deviceManager.hasPermissions())) {
+      if (!mounted) return;
       if (service.type == HealthService.DEVICE_TYPE) {
+        // The page asks for access and explains a denial itself.
         Navigator.of(
           context,
           rootNavigator: true,
         ).push(MaterialPageRoute<void>(builder: (context) => HealthServiceConnectPage()));
-      } else if (service.type == LocationService.DEVICE_TYPE) {
-        final status = await Permission.locationWhenInUse.request();
-        // The OS won't prompt again, so send the user to Settings.
-        if (status.isPermanentlyDenied || status.isRestricted) {
-          await openAppSettings();
+      } else {
+        // The location card only needs While Using - Always is background sensing's.
+        service.type == LocationService.DEVICE_TYPE
+            ? await Permission.locationWhenInUse.request()
+            : await service.deviceManager.requestPermissions();
+        if (!await service.deviceManager.hasPermissions()) {
+          if (mounted) await showPermissionDeniedDialog(context, 'pages.devices.permission.message');
           return;
         }
-        if (!status.isGranted) return;
-      } else {
-        await service.deviceManager.requestPermissions();
       }
     }
     await service.deviceManager.connect();
   }
 
   Future<void> _backgroundSensingClicked() async {
-    await BackgroundSensingService().connect();
-    // If the iOS permission request did not grant Always, explain the Settings fallback.
-    if (!BackgroundSensingService().isConnected && Platform.isIOS && mounted) {
-      await showDialog<void>(
-        context: context,
-        barrierDismissible: true,
-        builder: (context) => _permissionDeniedDialog(context, 'pages.devices.background_permission.message'),
-      );
-    }
+    final background = BackgroundSensingService();
+    await background.connect();
+    // Only a missing permission is the user's to fix in Settings.
+    if (background.isConnected || await background.isGranted || !mounted) return;
+    await showPermissionDeniedDialog(
+      context,
+      Platform.isAndroid
+          ? 'pages.devices.background_permission.message.android'
+          : 'pages.devices.background_permission.message',
+    );
   }
 
   Future<void> _hardwareDeviceClicked(DeviceViewModel device) async {
@@ -330,13 +340,10 @@ class DeviceListPageState extends State<DeviceListPage> {
         if (!await device.deviceManager.hasPermissions()) {
           await device.deviceManager.requestPermissions();
         }
+        final granted = await device.deviceManager.hasPermissions();
         if (!mounted) return;
-        if (!await device.deviceManager.hasPermissions()) {
-          await showDialog<void>(
-            context: context,
-            barrierDismissible: true,
-            builder: (context) => _permissionDeniedDialog(context, 'pages.devices.location_permission.message'),
-          );
+        if (!granted) {
+          await showPermissionDeniedDialog(context, 'pages.devices.location_permission.message');
           return;
         }
 
@@ -350,21 +357,33 @@ class DeviceListPageState extends State<DeviceListPage> {
           ),
         );
       } else if (bluetoothAdapterState == BluetoothAdapterState.unauthorized && Platform.isIOS) {
-        await showDialog<void>(
-          context: context,
-          barrierDismissible: true,
-          builder: (context) => AuthorizationDialog(device: device),
-        );
+        await showPermissionDeniedDialog(context, 'pages.devices.bluetooth_permission.message');
       }
     }
   }
+}
 
-  /// Explain missing permissions and offer the app settings.
-  Widget _permissionDeniedDialog(BuildContext context, String messageKey) {
-    final locale = RPLocalizations.of(context)!;
-    return AlertDialog(
+/// Explain missing permissions and offer the app settings - the OS won't ask
+/// again once a permission is permanently denied, so Settings is the only way.
+Future<void> showPermissionDeniedDialog(BuildContext context, String messageKey, {String? image}) {
+  final locale = RPLocalizations.of(context)!;
+  return showDialog<void>(
+    context: context,
+    builder: (context) => AlertDialog(
       title: Text(locale.translate("pages.devices.location_permission.title")),
-      content: SingleChildScrollView(child: Text(locale.translate(messageKey))),
+      content: SingleChildScrollView(
+        child: Column(
+          mainAxisSize: MainAxisSize.min,
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Text(locale.translate(messageKey)),
+            if (image != null) ...[
+              const SizedBox(height: 16),
+              ClipRRect(borderRadius: BorderRadius.circular(8), child: Image.asset(image)),
+            ],
+          ],
+        ),
+      ),
       actions: [
         TextButton(child: Text(locale.translate("cancel")), onPressed: () => Navigator.pop(context)),
         ElevatedButton(
@@ -376,6 +395,6 @@ class DeviceListPageState extends State<DeviceListPage> {
           },
         ),
       ],
-    );
-  }
+    ),
+  );
 }

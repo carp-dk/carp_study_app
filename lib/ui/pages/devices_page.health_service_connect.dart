@@ -111,7 +111,11 @@ class HealthServiceConnectPage extends StatelessWidget {
                 // If access still isn't granted (e.g. permanently denied, so the
                 // system sheet no longer appears), guide the user to grant it.
                 if (!healthService.deviceManager.isConnected) {
-                  await showDialog<void>(context: context, builder: (context) => _accessDeniedDialog(context, locale));
+                  await showPermissionDeniedDialog(
+                    context,
+                    'pages.devices.type.health.access_denied.message',
+                    image: 'assets/instructions/health_permission_allow_all.png',
+                  );
                 }
                 if (context.mounted) Navigator.pop(context);
               },
@@ -121,34 +125,6 @@ class HealthServiceConnectPage extends StatelessWidget {
       ),
     );
   }
-
-  Widget _accessDeniedDialog(BuildContext context, RPLocalizations locale) => AlertDialog(
-    title: Text(locale.translate("pages.devices.type.health.access_denied.title")),
-    content: SingleChildScrollView(
-      child: Column(
-        mainAxisSize: MainAxisSize.min,
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          Text(locale.translate("pages.devices.type.health.access_denied.message")),
-          const SizedBox(height: 16),
-          ClipRRect(
-            borderRadius: BorderRadius.circular(8),
-            child: Image.asset('assets/instructions/health_permission_allow_all.png'),
-          ),
-        ],
-      ),
-    ),
-    actions: [
-      TextButton(child: Text(locale.translate("cancel")), onPressed: () => Navigator.pop(context)),
-      ElevatedButton(
-        child: Text(locale.translate("settings")),
-        onPressed: () {
-          Platform.isAndroid ? OpenSettingsPlusAndroid().applicationDetails() : OpenSettingsPlusIOS().appSettings();
-          Navigator.pop(context);
-        },
-      ),
-    ],
-  );
 
   Widget _dataDisclosure(BuildContext context, RPLocalizations locale) {
     return Container(

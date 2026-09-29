@@ -31,7 +31,8 @@ class BackgroundSensingService extends ChangeNotifier {
       ? [Permission.ignoreBatteryOptimizations, Permission.location]
       : [Permission.locationWhenInUse, Permission.locationAlways];
 
-  Future<bool> get _isGranted async {
+  /// Are all the permissions background sensing needs granted?
+  Future<bool> get isGranted async {
     for (final permission in _permissions) {
       if (!await permission.isGranted) return false;
     }
@@ -40,7 +41,7 @@ class BackgroundSensingService extends ChangeNotifier {
 
   /// Re-read the platform permissions and bring the service in line with them.
   Future<void> refresh() async {
-    var connected = isSupported && await _isGranted;
+    var connected = isSupported && await isGranted;
 
     // The foreground service exists only on Android; on iOS the granted
     // permission is all there is - location updates keep sensing alive.
