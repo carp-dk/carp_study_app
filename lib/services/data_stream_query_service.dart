@@ -10,10 +10,7 @@ class DataStreamQueryService {
   /// fetch never wipes existing card data.
   Future<List<Measurement>?> fetch(String dataType, String deviceRoleName) async {
     final study = LocalSettings().study;
-    if (study == null || !CarpBackend().isAuthenticated) {
-      info('[STATS-DEBUG] fetch $dataType/$deviceRoleName skipped - study: ${study?.studyDeploymentId}, authenticated: ${CarpBackend().isAuthenticated}');
-      return null;
-    }
+    if (study == null || !CarpBackend().isAuthenticated) return null;
 
     final to = DateTime.now();
     final from = to.subtract(window);
@@ -30,24 +27,10 @@ class DataStreamQueryService {
       final measurements = batches.expand((batch) => batch.measurements);
       // Backend filters by upload time; drop late-synced measurements whose
       // sensor timestamp falls outside the window.
-      final kept = measurements.where((m) => !m.sensorTime.isBefore(from) && !m.sensorTime.isAfter(to)).toList();
-      info('[STATS-DEBUG] fetch $dataType/$deviceRoleName deployment ${study.studyDeploymentId} $from..$to - '
-          '${batches.length} batches, ${measurements.length} measurements, ${kept.length} in window, types: ${_countTypes(kept)}');
-      return kept;
+      return measurements.where((m) => !m.sensorTime.isBefore(from) && !m.sensorTime.isAfter(to)).toList();
     } catch (error) {
       warning('$runtimeType - failed to fetch $dataType for $deviceRoleName: $error');
       return null;
     }
-  }
-
-  // [STATS-DEBUG] count per health type (or data type), e.g. {HEART_RATE: 120, SLEEP_REM: 4}.
-  static Map<String, int> _countTypes(List<Measurement> measurements) {
-    final counts = <String, int>{};
-    for (final m in measurements) {
-      final data = m.data;
-      final type = data is HealthData ? data.healthDataType : m.dataType.name;
-      counts[type] = (counts[type] ?? 0) + 1;
-    }
-    return counts;
   }
 }

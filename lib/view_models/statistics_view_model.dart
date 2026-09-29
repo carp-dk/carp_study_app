@@ -76,7 +76,6 @@ class StatisticsViewModel extends ViewModel {
   @override
   void init(SmartphoneStudyController ctrl) {
     super.init(ctrl);
-    info('[STATS-DEBUG] StatisticsViewModel.init - cards reset to empty');
 
     _hasUserTasks = _study.hasUserTasks();
     _hasPolarHeartRateMeasure = _study.hasMeasure(PolarSamplingPackage.HR);
@@ -109,14 +108,8 @@ class StatisticsViewModel extends ViewModel {
   /// Fetch the last 7 days from CAWS and recompute the cards. Best-effort:
   /// a failed fetch leaves existing card data untouched. No-op while running.
   Future<void> refresh() async {
-    if (_isRefreshing) {
-      info('[STATS-DEBUG] refresh skipped - already running');
-      return;
-    }
+    if (_isRefreshing) return;
     _isRefreshing = true;
-    info('[STATS-DEBUG] refresh start - health: $hasHealthMeasure, steps: $hasStepsMeasure, '
-        'sleep nights: ${_sleepCardDataModel.nights.map((n) => n.minutes.round()).toList()}, '
-        'health HR hasData: ${_healthHeartRateCardDataModel.hasData}');
 
     try {
       await Future.wait([
@@ -140,8 +133,6 @@ class StatisticsViewModel extends ViewModel {
       ]);
     } finally {
       _isRefreshing = false;
-      info('[STATS-DEBUG] refresh done - sleep nights: ${_sleepCardDataModel.nights.map((n) => n.minutes.round()).toList()}, '
-          'health HR hasData: ${_healthHeartRateCardDataModel.hasData}');
     }
   }
 
@@ -156,19 +147,13 @@ class StatisticsViewModel extends ViewModel {
   /// Fetch [dataType] from every role it streams under and hand the lot to
   /// [into] - on any failure the card keeps what it already has.
   Future<void> _fetchInto(String dataType, void Function(List<Measurement>) into) async {
-    final roles = rolesFor(dataType).toList();
-    final batches = await Future.wait(roles.map((role) => _queryService.fetch(dataType, role)));
-    if (batches.isEmpty || batches.contains(null)) {
-      info('[STATS-DEBUG] $dataType not applied - roles: $roles, failed fetches: ${batches.where((b) => b == null).length}');
-      return;
-    }
-    info('[STATS-DEBUG] $dataType applying ${batches.fold<int>(0, (sum, b) => sum + b!.length)} measurements from roles $roles - REPLACES card data');
+    final batches = await Future.wait(rolesFor(dataType).map((role) => _queryService.fetch(dataType, role)));
+    if (batches.isEmpty || batches.contains(null)) return;
     into(batches.expand((measurements) => measurements!).toList());
   }
 
   @override
   void clear() {
-    info('[STATS-DEBUG] StatisticsViewModel.clear');
     _activityCardDataModel.clear();
     _stepsCardDataModel.clear();
     _polarHeartRateCardDataModel.clear();
