@@ -74,7 +74,6 @@ void main() {
 
       await BackgroundSensingService().connect();
 
-      expect(permissions.requestCount, 1);
       expect(permissions.requested, [Permission.ignoreBatteryOptimizations, Permission.location]);
       expect(BackgroundSensingService().isConnected, isTrue);
       expect(backgroundCalls, contains('enableBackgroundExecution'));
@@ -104,13 +103,13 @@ void main() {
       expect(backgroundCalls, contains('disableBackgroundExecution'));
     });
 
-    test('on iOS connect asks for Always location, and no foreground service exists', () async {
+    test('on iOS connect asks for While Using, then Always - no foreground service', () async {
       debugDefaultTargetPlatformOverride = TargetPlatform.iOS;
       await BackgroundSensingService().refresh();
 
       await BackgroundSensingService().connect();
 
-      expect(permissions.requested, [Permission.locationAlways]);
+      expect(permissions.requested, [Permission.locationWhenInUse, Permission.locationAlways]);
       expect(BackgroundSensingService().isConnected, isTrue);
       expect(backgroundCalls, isEmpty);
     });
