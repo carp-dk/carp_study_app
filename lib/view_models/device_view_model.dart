@@ -174,7 +174,7 @@ class DeviceViewModel extends ViewModel {
 
 /// Health data lives in Apple Health on iOS and Health Connect on Android.
 /// App names are not translated - translate() returns them unchanged.
-String get healthPlatformName => Platform.isIOS ? 'Apple Health Everywhere' : 'Health Connect Everywhere';
+String get healthPlatformName => Platform.isIOS ? 'Apple Health' : 'Health Connect';
 
 String get healthPlatformIcon =>
     Platform.isIOS ? 'assets/instructions/apple_health_icon.png' : 'assets/instructions/google_health_connect_icon.png';
