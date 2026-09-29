@@ -180,7 +180,7 @@ class DeviceListPageState extends State<DeviceListPage> {
               leading: const Icon(Icons.autorenew_rounded, size: 30, color: Color(0xff3260A4)),
               title: (locale.translate('pages.devices.type.background.name'), null),
               subtitle: locale.translate('pages.devices.type.background.description'),
-              onTap: connected ? null : BackgroundSensingService().connect,
+              onTap: connected ? null : _backgroundSensingClicked,
               trailing: connected
                   ? const Icon(Icons.sensors_rounded, color: _statusSuccess, size: 30)
                   : _connectPill(locale.translate('pages.devices.status.action.connect')),
@@ -294,6 +294,18 @@ class DeviceListPageState extends State<DeviceListPage> {
       }
     }
     await service.deviceManager.connect();
+  }
+
+  Future<void> _backgroundSensingClicked() async {
+    await BackgroundSensingService().connect();
+    // If the iOS permission request did not grant Always, explain the Settings fallback.
+    if (!BackgroundSensingService().isConnected && Platform.isIOS && mounted) {
+      await showDialog<void>(
+        context: context,
+        barrierDismissible: true,
+        builder: (context) => _permissionDeniedDialog(context, 'pages.devices.background_permission.message'),
+      );
+    }
   }
 
   Future<void> _hardwareDeviceClicked(DeviceViewModel device) async {

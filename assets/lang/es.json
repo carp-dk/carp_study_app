@@ -163,6 +163,7 @@
   "pages.home.retry": "Reintentar",
   "pages.devices.location_permission.title": "Permisos necesarios",
   "pages.devices.location_permission.message": "Conectarse a dispositivos Bluetooth cercanos requiere los permisos de Dispositivos cercanos y Ubicación. Para permitirlos, ve a: Ajustes → Apps → CARP Studies → Permisos, concede los permisos que falten e intenta conectarte de nuevo.",
+  "pages.devices.background_permission.message": "La detección en segundo plano necesita el acceso a la ubicación en Siempre. Ve a: Ajustes → Apps → CARP Studies → Ubicación, elige Siempre y vuelve a la app. Desliza hacia abajo en la pantalla de dispositivos para actualizar.",
   "pages.devices.connection.step.scan.searching": "Buscando dispositivos cercanos…\nAsegúrate de que tu dispositivo esté encendido y dentro del alcance.",
   "pages.devices.connection.step.scan.show_all": "¿No ves tu dispositivo? Mostrar todos",
   "pages.devices.connection.step.scan.filtered": "Mostrar solo dispositivos coincidentes",

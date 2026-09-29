@@ -243,6 +243,7 @@
   "pages.devices.type.health.access_denied.message": "Access was not granted. To allow it, go to: Settings → Apps → CARP Studies → Permissions → Health, fitness and wellness → Allow all. Then pull down on the devices screen to refresh.",
   "pages.devices.location_permission.title": "Permissions needed",
   "pages.devices.location_permission.message": "Connecting to nearby Bluetooth devices requires the Nearby devices and Location permissions. To allow them, go to: Settings → Apps → CARP Studies → Permissions, grant the missing permissions, then try connecting again.",
+  "pages.devices.background_permission.message": "Background sensing needs location access set to Always. Go to: Settings → Apps → CARP Studies → Location, choose Always, then return to the app and pull down on the devices screen to refresh.",
   "pages.devices.type.health.instructions.data.steps": "Step count",
   "pages.devices.type.health.instructions.data.heart_rate": "Heart rate",
   "pages.devices.type.health.instructions.data.exercise": "Exercise sessions",
