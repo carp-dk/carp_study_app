@@ -123,8 +123,6 @@
   "pages.devices.type.weather.name": "Tiempo",
   "pages.devices.type.air_quality.name": "Calidad del aire",
   "pages.devices.type.location.name": "Ubicación",
-  "pages.devices.type.health.name.ios": "Apple Health",
-  "pages.devices.type.health.name.android": "Google Health Connect",
   "pages.devices.type.background.name": "Recogida en segundo plano",
   "pages.devices.type.smartphone.description": "Este teléfono",
   "pages.devices.type.esense.description": "auricular eSense",

@@ -214,19 +214,22 @@ class DeviceListPageState extends State<DeviceListPage> {
       contentPadding: const EdgeInsets.symmetric(vertical: 12, horizontal: 16),
       minVerticalPadding: 0,
       enableFeedback: enableFeedback,
-      // The tinted rounded-square badge shared with the task and feed cards.
-      leading: Container(
-        width: 40,
-        height: 40,
-        alignment: Alignment.center,
-        decoration: BoxDecoration(
-          color: (leading?.color ?? Theme.of(context).colorScheme.primary).withValues(alpha: 0.12),
-          borderRadius: BorderRadius.circular(12),
-        ),
-        child: leadingImage != null
-            ? Image.asset(leadingImage, width: 24, height: 24)
-            : Icon(leading!.icon, color: leading.color ?? Theme.of(context).colorScheme.primary, size: 20),
-      ),
+      // Apple/Google guidelines forbid a badge behind their health logos.
+      leading: leadingImage == healthPlatformIcon
+          ? Image.asset(leadingImage!, width: 40, height: 40)
+          // The tinted rounded-square badge shared with the task and feed cards.
+          : Container(
+              width: 40,
+              height: 40,
+              alignment: Alignment.center,
+              decoration: BoxDecoration(
+                color: (leading?.color ?? Theme.of(context).colorScheme.primary).withValues(alpha: 0.12),
+                borderRadius: BorderRadius.circular(12),
+              ),
+              child: leadingImage != null
+                  ? Image.asset(leadingImage, width: 24, height: 24)
+                  : Icon(leading!.icon, color: leading.color ?? Theme.of(context).colorScheme.primary, size: 20),
+            ),
       title: Row(
         children: [
           Flexible(

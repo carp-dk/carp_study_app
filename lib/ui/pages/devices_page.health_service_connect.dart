@@ -34,6 +34,16 @@ class HealthServiceConnectPage extends StatelessWidget {
                         ),
                       ),
                       const SizedBox(height: 20),
+                      // Name next to the logo, as Apple's HealthKit guidelines require.
+                      Row(
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        children: [
+                          Image.asset(healthPlatformIcon, width: 40, height: 40),
+                          const SizedBox(width: 12),
+                          Flexible(child: Text(healthPlatformName, style: Theme.of(context).textTheme.titleLarge!)),
+                        ],
+                      ),
+                      const SizedBox(height: 20),
                       _dataDisclosure(context, locale),
                       const SizedBox(height: 20),
                       Text.rich(
@@ -148,7 +158,7 @@ class HealthServiceConnectPage extends StatelessWidget {
       child: Row(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          Image.asset(healthPlatformIcon, width: 24, height: 24),
+          Icon(Icons.favorite_outline, color: Theme.of(context).colorScheme.primary, size: 24),
           const SizedBox(width: 12),
           Expanded(
             child: Text(
