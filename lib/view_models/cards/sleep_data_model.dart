@@ -40,6 +40,8 @@ class SleepCardViewModel extends SerializableViewModel<WeeklySleep> {
     _readings.clear();
 
     sleepEvents?.listen((measurement) {
+      final data = measurement.data as HealthData;
+      info('[STATS-DEBUG] sleep live ${data.healthDataType} ${data.dateFrom}..${data.dateTo} - readings: ${_readings.length + 1}');
       _add(measurement.data);
       model.setSleep(_readings.values);
       notifyListeners();
@@ -55,10 +57,13 @@ class SleepCardViewModel extends SerializableViewModel<WeeklySleep> {
   /// Merge backfilled [measurements] into the probe's readings - the backend
   /// lags the upload, so replacing would drop what the phone has not sent yet.
   void addMeasurements(List<Measurement> measurements) {
+    final before = _readings.length;
     for (final measurement in measurements) {
       _add(measurement.data);
     }
     model.setSleep(_readings.values);
+    info('[STATS-DEBUG] sleep backfill merged, readings $before -> ${_readings.length} '
+        '(of ${measurements.length} health measurements) - nights: ${nights.map((n) => n.minutes.round()).toList()}');
     notifyListeners();
   }
 }

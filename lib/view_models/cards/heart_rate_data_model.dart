@@ -88,9 +88,12 @@ class HeartRateCardViewModel extends SerializableViewModel<HourlyHeartRate> {
   /// Merge backfilled [measurements] into the 24h/7d bands - idempotent, as
   /// [_record] only widens; never clears, so readings not yet uploaded stay.
   void addMeasurements(List<Measurement> measurements) {
+    final hadData = hasData;
     for (final measurement in measurements) {
       _record(model, measurement);
     }
+    info('[STATS-DEBUG] $dataType HR backfill - ${measurements.where((m) => bpmOf(m) != null).length} bpm readings '
+        'of ${measurements.length}, hasData $hadData -> $hasData');
     notifyListeners();
   }
 }
