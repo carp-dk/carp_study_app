@@ -92,7 +92,7 @@ class CarpAppShellState extends State<CarpAppShell> {
     if (location.startsWith(StatisticsPage.route)) {
       return 2;
     }
-    if (location.startsWith(DeviceListPage.route)) {
+    if (location.startsWith(ConnectionListPage.route)) {
       return 3;
     }
     return -1;
@@ -110,7 +110,7 @@ class CarpAppShellState extends State<CarpAppShell> {
         context.go(StatisticsPage.route);
         break;
       case 3:
-        context.go(DeviceListPage.route);
+        context.go(ConnectionListPage.route);
         break;
       case -1:
         context.go(CarpAppState.homeRoute);

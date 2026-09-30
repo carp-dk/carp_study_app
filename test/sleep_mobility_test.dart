@@ -97,9 +97,11 @@ void main() {
     model.addMeasurements([night, night]);
     expect(model.model.minutesOn(DateTime(2026, 8, 12)), 480);
 
-    // Recomputing on refresh replaces rather than accumulates.
-    model.addMeasurements([_health('SLEEP_SESSION', 300, bedtime)]);
-    expect(model.model.minutesOn(DateTime(2026, 8, 12)), 300);
+    // A refresh merges: the same reading again, or an empty backfill (not
+    // uploaded yet), leaves the night as it was.
+    model.addMeasurements([night]);
+    model.addMeasurements([]);
+    expect(model.model.minutesOn(DateTime(2026, 8, 12)), 480);
   });
 
   test('the stack skips stages the phone did not record', () {

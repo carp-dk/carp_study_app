@@ -4,7 +4,7 @@ part of carp_study_app;
 enum CurrentStep { scan, instructions, done }
 
 class BluetoothConnectionPage extends StatefulWidget {
-  final DeviceViewModel device;
+  final ConnectionViewModel device;
 
   const BluetoothConnectionPage(CurrentStep currentStep, {super.key, required this.device})
     : _currentStep = currentStep;
@@ -121,10 +121,10 @@ class _BluetoothConnectionPageState extends State<BluetoothConnectionPage> {
   Widget _buildDialogTitle(RPLocalizations locale) {
     final deviceTypeName = locale.translate(widget.device.typeName);
     final stepTitleMap = {
-      CurrentStep.scan: "${locale.translate("pages.devices.connection.step.start.title")} $deviceTypeName",
-      CurrentStep.instructions: locale.translate("pages.devices.connection.step.how_to.title"),
+      CurrentStep.scan: "${locale.translate("pages.connections.connection.step.start.title")} $deviceTypeName",
+      CurrentStep.instructions: locale.translate("pages.connections.connection.step.how_to.title"),
       CurrentStep.done:
-          "${locale.translate("pages.devices.connection.step.confirm.title")} ${selectedDevice?.platformName ?? ''}",
+          "${locale.translate("pages.connections.connection.step.confirm.title")} ${selectedDevice?.platformName ?? ''}",
     };
     return Padding(
       padding: const EdgeInsets.only(bottom: 16),
@@ -235,8 +235,8 @@ class _BluetoothConnectionPageState extends State<BluetoothConnectionPage> {
         context: context,
         builder: (BuildContext context) {
           return AlertDialog(
-            title: Text(locale.translate("pages.devices.connection.connection_failed.title")),
-            content: Text(locale.translate("pages.devices.connection.connection_failed.message")),
+            title: Text(locale.translate("pages.connections.connection.connection_failed.title")),
+            content: Text(locale.translate("pages.connections.connection.connection_failed.message")),
             actions: [TextButton(onPressed: () => Navigator.of(context).pop(), child: Text(locale.translate("ok")))],
           );
         },
@@ -262,8 +262,8 @@ class _BluetoothConnectionPageState extends State<BluetoothConnectionPage> {
               child: Text(
                 locale.translate(
                   showAllDevices
-                      ? "pages.devices.connection.step.scan.filtered"
-                      : "pages.devices.connection.step.scan.show_all",
+                      ? "pages.connections.connection.step.scan.filtered"
+                      : "pages.connections.connection.step.scan.show_all",
                 ),
                 style: Theme.of(context).textTheme.labelLarge!,
               ),
@@ -287,7 +287,7 @@ class _BluetoothConnectionPageState extends State<BluetoothConnectionPage> {
               if (results.isEmpty) {
                 return Center(
                   child: Text(
-                    locale.translate("pages.devices.connection.step.scan.searching"),
+                    locale.translate("pages.connections.connection.step.scan.searching"),
                     style: Theme.of(context).textTheme.labelLarge!.copyWith(color: Colors.grey.shade700),
                     textAlign: TextAlign.center,
                   ),
@@ -314,9 +314,9 @@ class _BluetoothConnectionPageState extends State<BluetoothConnectionPage> {
           child: Text.rich(
             TextSpan(
               children: [
-                TextSpan(text: locale.translate("pages.devices.connection.step.start.1")),
+                TextSpan(text: locale.translate("pages.connections.connection.step.start.1")),
                 TextSpan(
-                  text: locale.translate("pages.devices.connection.instructions"),
+                  text: locale.translate("pages.connections.connection.instructions"),
                   style: TextStyle(
                     color: Theme.of(context).colorScheme.primary,
                     decoration: TextDecoration.underline,
@@ -325,7 +325,7 @@ class _BluetoothConnectionPageState extends State<BluetoothConnectionPage> {
                   recognizer: TapGestureRecognizer()
                     ..onTap = () => setState(() => currentStep = CurrentStep.instructions),
                 ),
-                TextSpan(text: locale.translate("pages.devices.connection.step.start.2")),
+                TextSpan(text: locale.translate("pages.connections.connection.step.start.2")),
               ],
             ),
             style: Theme.of(context).textTheme.labelLarge!.copyWith(color: Colors.grey.shade800),
@@ -378,7 +378,7 @@ class _BluetoothConnectionPageState extends State<BluetoothConnectionPage> {
     );
   }
 
-  Widget connectionInstructions(DeviceViewModel device, BuildContext context) {
+  Widget connectionInstructions(ConnectionViewModel device, BuildContext context) {
     RPLocalizations locale = RPLocalizations.of(context)!;
     AssetImage? assetImage;
 
@@ -471,12 +471,12 @@ class _BluetoothConnectionPageState extends State<BluetoothConnectionPage> {
         Text.rich(
           TextSpan(
             children: [
-              TextSpan(text: "${locale.translate("pages.devices.connection.step.confirm.1")} "),
+              TextSpan(text: "${locale.translate("pages.connections.connection.step.confirm.1")} "),
               TextSpan(
                 text: deviceName,
                 style: const TextStyle(fontWeight: FontWeight.w700),
               ),
-              TextSpan(text: " ${locale.translate("pages.devices.connection.step.confirm.2")}"),
+              TextSpan(text: " ${locale.translate("pages.connections.connection.step.confirm.2")}"),
             ],
           ),
           style: Theme.of(context).textTheme.bodyLarge!.copyWith(height: 1.4),

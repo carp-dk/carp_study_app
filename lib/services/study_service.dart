@@ -142,11 +142,11 @@ class StudyService {
   ///
   /// Note that not all available devices on this phone may be used in the
   /// current deployment.
-  Iterable<DeviceViewModel> get deploymentDevices => deployment == null
+  Iterable<ConnectionViewModel> get deploymentDevices => deployment == null
       ? []
       : SmartPhoneClientManager().deviceController.devices.values
             .where((manager) => deployment!.devices.any((device) => device.type == manager.deviceType))
-            .map((manager) => DeviceViewModel(manager));
+            .map((manager) => ConnectionViewModel(manager));
 
   /// Does this [deployment] have any measures (besides app tasks)?
   bool hasMeasures() => (deployment == null)

@@ -16,6 +16,7 @@ class MessageDetailsPage extends StatelessWidget {
     final subTitle = message.subTitle ?? '';
     final body = message.message ?? '';
     final hasImage = message.image != null && message.image!.isNotEmpty;
+    final url = message.url ?? '';
 
     return Scaffold(
       body: SafeArea(
@@ -83,6 +84,20 @@ class MessageDetailsPage extends StatelessWidget {
                                   style: Theme.of(
                                     context,
                                   ).textTheme.bodyLarge!.copyWith(color: Colors.grey.shade900, height: 1.5),
+                                ),
+                              ],
+                              if (url.isNotEmpty) ...[
+                                const SizedBox(height: 12),
+                                TextButton.icon(
+                                  onPressed: () async {
+                                    try {
+                                      await launchUrl(Uri.parse(url));
+                                    } catch (error) {
+                                      warning("Could not launch message URL - '$url'");
+                                    }
+                                  },
+                                  icon: const Icon(Icons.public_outlined),
+                                  label: Text(locale.translate('pages.about.message.link')),
                                 ),
                               ],
                             ],

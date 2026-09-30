@@ -95,7 +95,7 @@ class AppViewModel extends ViewModel {
   final StudyPageViewModel _studyPageViewModel = StudyPageViewModel();
   final TaskListPageViewModel _taskListPageViewModel = TaskListPageViewModel();
   final ProfilePageViewModel _profilePageViewModel = ProfilePageViewModel();
-  final DeviceListPageViewModel _devicesPageViewModel = DeviceListPageViewModel();
+  final ConnectionListPageViewModel _connectionListPageViewModel = ConnectionListPageViewModel();
   final InvitationsViewModel _invitationsListViewModel = InvitationsViewModel();
   final InformedConsentViewModel _informedConsentViewModel = InformedConsentViewModel();
   final ParticipantDataPageViewModel _participantDataPageViewModel = ParticipantDataPageViewModel();
@@ -108,7 +108,7 @@ class AppViewModel extends ViewModel {
   StudyPageViewModel get studyPageViewModel => _studyPageViewModel;
   TaskListPageViewModel get taskListPageViewModel => _taskListPageViewModel;
   ProfilePageViewModel get profilePageViewModel => _profilePageViewModel;
-  DeviceListPageViewModel get devicesPageViewModel => _devicesPageViewModel;
+  ConnectionListPageViewModel get connectionListPageViewModel => _connectionListPageViewModel;
   InvitationsViewModel get invitationsListViewModel => _invitationsListViewModel;
   InformedConsentViewModel get informedConsentViewModel => _informedConsentViewModel;
   ParticipantDataPageViewModel get participantDataPageViewModel => _participantDataPageViewModel;
@@ -120,7 +120,7 @@ class AppViewModel extends ViewModel {
     _taskListPageViewModel.init(ctrl);
     _studyPageViewModel.init(ctrl);
     _statisticsViewModel.init(ctrl);
-    _devicesPageViewModel.init(ctrl);
+    _connectionListPageViewModel.init(ctrl);
 
     _profilePageViewModel.init(ctrl);
     _invitationsListViewModel.init(ctrl);
@@ -134,7 +134,7 @@ class AppViewModel extends ViewModel {
     _taskListPageViewModel.clear();
     _studyPageViewModel.clear();
     _statisticsViewModel.clear();
-    _devicesPageViewModel.clear();
+    _connectionListPageViewModel.clear();
 
     _profilePageViewModel.clear();
     _informedConsentViewModel.clear();
@@ -150,7 +150,7 @@ class AppViewModel extends ViewModel {
     _taskListPageViewModel.dispose();
     _studyPageViewModel.dispose();
     _statisticsViewModel.dispose();
-    _devicesPageViewModel.dispose();
+    _connectionListPageViewModel.dispose();
 
     _profilePageViewModel.dispose();
     _invitationsListViewModel.dispose();
