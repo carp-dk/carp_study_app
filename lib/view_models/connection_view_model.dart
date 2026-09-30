@@ -4,37 +4,33 @@ part of carp_study_app;
 const Color _statusSuccess = Color(0xff67CE67);
 const Color _statusError = Color(0xffEB4B62);
 
-/// View model for [DeviceListPage] - its devices and services as view models.
-class DeviceListPageViewModel extends ViewModel {
-  DeviceListPageViewModel({StudyService? studyService}) : _studyService = studyService;
+/// View model for [ConnectionListPage] - its devices and services as view models.
+class ConnectionListPageViewModel extends ViewModel {
+  ConnectionListPageViewModel({StudyService? studyService}) : _studyService = studyService;
 
   final StudyService? _studyService;
   StudyService get _study => _studyService ?? bloc.study;
 
   /// The smartphone (primary) device of this deployment.
-  List<DeviceViewModel> get smartphoneDevice =>
+  List<ConnectionViewModel> get smartphoneDevice =>
       _study.deploymentDevices.where((device) => device.deviceManager is SmartphoneDeviceManager).toList();
 
   /// The hardware devices (connected devices) of this deployment.
-  List<DeviceViewModel> get hardwareDevices => _study.deploymentDevices
+  List<ConnectionViewModel> get hardwareDevices => _study.deploymentDevices
       .where(
         (device) => device.deviceManager is HardwareDeviceManager && device.deviceManager is! SmartphoneDeviceManager,
       )
       .toList();
 
   /// The services of this deployment.
-  List<DeviceViewModel> get services =>
+  List<ConnectionViewModel> get services =>
       _study.deploymentDevices.where((device) => device.deviceManager is ServiceManager).toList();
-
-  /// The Health service of this deployment, if any.
-  DeviceViewModel? get healthService =>
-      services.where((device) => device.type == HealthService.DEVICE_TYPE).firstOrNull;
 }
 
 /// One device row: name, icon and status of a [DeviceManager]; connects it.
-class DeviceViewModel extends ViewModel {
+class ConnectionViewModel extends ViewModel {
   DeviceManager deviceManager;
-  DeviceViewModel(this.deviceManager) : super();
+  ConnectionViewModel(this.deviceManager) : super();
 
   StreamSubscription<DeviceStatus>? _statusSub;
 
@@ -65,7 +61,9 @@ class DeviceViewModel extends ViewModel {
   String? get type => deviceManager.deviceType;
 
   /// A printer-friendly name for this [type] of device.
-  String get typeName => _deviceTypeName[type!] ?? 'pages.devices.type.unknown.name';
+  String get typeName => type == HealthService.DEVICE_TYPE
+      ? healthPlatformName
+      : _deviceTypeName[type!] ?? 'pages.connections.type.unknown.name';
 
   /// The status of this device.
   DeviceStatus get status => deviceManager.status;
@@ -111,6 +109,13 @@ class DeviceViewModel extends ViewModel {
 
   /// The icon for this type of device.
   Icon? get icon => _deviceTypeIcon[type!];
+
+  /// A brand logo shown instead of [icon], if this type of device has one.
+  String? get iconImage => switch (type) {
+    MovesenseDevice.DEVICE_TYPE => 'assets/icons/movesense_logo.png',
+    HealthService.DEVICE_TYPE => healthPlatformIcon,
+    _ => null,
+  };
 
   /// The icon or string for the status of this hardware device.
   dynamic get getDeviceStatusIcon => _deviceStatusIcon[status];
@@ -163,24 +168,40 @@ class DeviceViewModel extends ViewModel {
   }
 }
 
+/// Health data lives in Apple Health on iOS and Health Connect on Android.
+/// App names are not translated - translate() returns them unchanged.
+String get healthPlatformName => Platform.isIOS ? 'Apple Health' : 'Health Connect';
+
+/// A health data type from the protocol as a label, using its 'health.type.TYPE'
+/// translation if there is one, e.g. BODY_FAT_PERCENTAGE -> 'Body fat percentage'.
+String healthDataTypeLabel(RPLocalizations locale, HealthDataType type) {
+  final key = 'health.type.${type.name}';
+  final label = locale.translate(key);
+  if (label != key) return label;
+  final words = type.name.toLowerCase().replaceAll('_', ' ');
+  return words[0].toUpperCase() + words.substring(1);
+}
+
+String get healthPlatformIcon =>
+    Platform.isIOS ? 'assets/instructions/apple_health_icon.png' : 'assets/instructions/google_health_connect_icon.png';
+
 const Map<String, String> _deviceTypeName = {
-  Smartphone.DEVICE_TYPE: "pages.devices.type.smartphone.name",
-  WeatherService.DEVICE_TYPE: "pages.devices.type.weather.name",
-  AirQualityService.DEVICE_TYPE: "pages.devices.type.air_quality.name",
-  LocationService.DEVICE_TYPE: "pages.devices.type.location.name",
-  PolarDevice.DEVICE_TYPE: "pages.devices.type.polar.name",
-  MovesenseDevice.DEVICE_TYPE: "pages.devices.type.movesense.name",
-  HealthService.DEVICE_TYPE: "pages.devices.type.health.name",
+  Smartphone.DEVICE_TYPE: "pages.connections.type.smartphone.name",
+  WeatherService.DEVICE_TYPE: "pages.connections.type.weather.name",
+  AirQualityService.DEVICE_TYPE: "pages.connections.type.air_quality.name",
+  LocationService.DEVICE_TYPE: "pages.connections.type.location.name",
+  PolarDevice.DEVICE_TYPE: "pages.connections.type.polar.name",
+  MovesenseDevice.DEVICE_TYPE: "pages.connections.type.movesense.name",
 };
 
 const Map<String, String> _deviceTypeDescription = {
-  Smartphone.DEVICE_TYPE: "pages.devices.type.smartphone.description",
-  WeatherService.DEVICE_TYPE: "pages.devices.type.weather.description",
-  AirQualityService.DEVICE_TYPE: "pages.devices.type.air_quality.description",
-  LocationService.DEVICE_TYPE: "pages.devices.type.location.description",
-  PolarDevice.DEVICE_TYPE: "pages.devices.type.polar.description",
-  MovesenseDevice.DEVICE_TYPE: "pages.devices.type.movesense.description",
-  HealthService.DEVICE_TYPE: "pages.devices.type.health.description",
+  Smartphone.DEVICE_TYPE: "pages.connections.type.smartphone.description",
+  WeatherService.DEVICE_TYPE: "pages.connections.type.weather.description",
+  AirQualityService.DEVICE_TYPE: "pages.connections.type.air_quality.description",
+  LocationService.DEVICE_TYPE: "pages.connections.type.location.description",
+  PolarDevice.DEVICE_TYPE: "pages.connections.type.polar.description",
+  MovesenseDevice.DEVICE_TYPE: "pages.connections.type.movesense.description",
+  HealthService.DEVICE_TYPE: "pages.connections.type.health.description",
 };
 
 const Map<String, Icon> _deviceTypeIcon = {
@@ -194,40 +215,40 @@ const Map<String, Icon> _deviceTypeIcon = {
 };
 
 const Map<DeviceStatus, dynamic> _deviceStatusIcon = {
-  DeviceStatus.configured: "pages.devices.status.action.connect",
+  DeviceStatus.configured: "pages.connections.status.action.connect",
   DeviceStatus.connecting: Icon(Icons.bluetooth_searching_rounded, color: Color(0xff3260A4), size: 30),
   DeviceStatus.reconnected: Icon(Icons.bluetooth_searching_rounded, color: Color(0xff3260A4), size: 30),
   DeviceStatus.connected: Icon(Icons.bluetooth_rounded, color: _statusSuccess, size: 30),
   DeviceStatus.disconnecting: Icon(Icons.bluetooth_searching_rounded, color: Color(0xff3260A4), size: 30),
-  DeviceStatus.disconnected: "pages.devices.status.action.connect",
-  DeviceStatus.paired: "pages.devices.status.action.connect",
+  DeviceStatus.disconnected: "pages.connections.status.action.connect",
+  DeviceStatus.paired: "pages.connections.status.action.connect",
   DeviceStatus.unknown: Icon(Icons.error_outline, color: _statusError, size: 30),
 };
 
 const Map<DeviceStatus, dynamic> _serviceStatusIcon = {
-  DeviceStatus.configured: "pages.devices.status.action.connect",
+  DeviceStatus.configured: "pages.connections.status.action.connect",
   DeviceStatus.connecting: Icon(Icons.sensors_off_rounded, color: _statusSuccess, size: 30),
   DeviceStatus.reconnected: Icon(Icons.sensors_off_rounded, color: _statusSuccess, size: 30),
   DeviceStatus.connected: Icon(Icons.sensors_rounded, color: _statusSuccess, size: 30),
   DeviceStatus.disconnecting: Icon(Icons.sensors_off_rounded, color: _statusSuccess, size: 30),
-  DeviceStatus.disconnected: "pages.devices.status.action.connect",
-  DeviceStatus.paired: "pages.devices.status.action.connect",
+  DeviceStatus.disconnected: "pages.connections.status.action.connect",
+  DeviceStatus.paired: "pages.connections.status.action.connect",
   DeviceStatus.unknown: Icon(Icons.error_outline, color: _statusError, size: 30),
 };
 
 const Map<DeviceStatus, String> _deviceStatusText = {
-  DeviceStatus.connecting: "pages.devices.status.connecting",
-  DeviceStatus.connected: "pages.devices.status.connected",
-  DeviceStatus.disconnected: "pages.devices.status.disconnected",
-  DeviceStatus.paired: "pages.devices.status.paired",
-  DeviceStatus.configured: "pages.devices.status.initialized",
-  DeviceStatus.unknown: "pages.devices.status.unknown",
+  DeviceStatus.connecting: "pages.connections.status.connecting",
+  DeviceStatus.connected: "pages.connections.status.connected",
+  DeviceStatus.disconnected: "pages.connections.status.disconnected",
+  DeviceStatus.paired: "pages.connections.status.paired",
+  DeviceStatus.configured: "pages.connections.status.initialized",
+  DeviceStatus.unknown: "pages.connections.status.unknown",
 };
 
 const Map<String, String> _deviceConnectionInstructions = {
-  Smartphone.DEVICE_TYPE: "pages.devices.type.smartphone.instructions",
-  PolarDevice.DEVICE_TYPE: "pages.devices.type.polar.instructions",
-  MovesenseDevice.DEVICE_TYPE: "pages.devices.type.movesense.instructions",
+  Smartphone.DEVICE_TYPE: "pages.connections.type.smartphone.instructions",
+  PolarDevice.DEVICE_TYPE: "pages.connections.type.polar.instructions",
+  MovesenseDevice.DEVICE_TYPE: "pages.connections.type.movesense.instructions",
 };
 
 const Map<String, String> _deviceConnectionInstructionsImage = {

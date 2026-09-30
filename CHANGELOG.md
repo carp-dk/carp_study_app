@@ -1,3 +1,18 @@
+## 5.0.5
+
+* iOS asks for Apple Health access before collecting health data, instead of
+  failing every read with "Authorization not determined" - `health` and
+  `carp_health_package` pinned to git until released
+* a protocol health task opens the Health connect page and lists its data types
+* signing in as another account leaves the old study
+* sleep and heart rate cards merge the backfill instead of replacing it
+* health service shown as Apple Health / Health Connect with its logo
+* iOS background sensing asks for While Using location before Always
+* one Settings dialog for every denied permission
+* offline start no longer hangs on CAWS sign-in setup
+* Devices page renamed to Connections
+* integration test to seed Apple Health on a real iPhone
+
 ## 5.0.4
 
 * a deployment stopped on the server stops the study on the phone: sensing

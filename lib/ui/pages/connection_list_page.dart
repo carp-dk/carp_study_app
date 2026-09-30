@@ -1,22 +1,23 @@
 part of carp_study_app;
 
-/// The devices and services list: the phone, then hardware, then services.
-class DeviceListPage extends StatefulWidget {
-  static const String route = '/devices';
-  final DeviceListPageViewModel model;
-  const DeviceListPage({required this.model, super.key});
+/// The Connections page: the phone, then hardware devices, then services.
+class ConnectionListPage extends StatefulWidget {
+  static const String route = '/connections';
+  final ConnectionListPageViewModel model;
+  const ConnectionListPage({required this.model, super.key});
 
   @override
-  DeviceListPageState createState() => DeviceListPageState();
+  ConnectionListPageState createState() => ConnectionListPageState();
 }
 
-class DeviceListPageState extends State<DeviceListPage> {
+class ConnectionListPageState extends State<ConnectionListPage> {
   StreamSubscription<BluetoothAdapterState>? bluetoothStateStream;
   BluetoothAdapterState? bluetoothAdapterState;
+  late final AppLifecycleListener _lifecycle;
 
-  late final List<DeviceViewModel> _smartphoneDevice = widget.model.smartphoneDevice;
-  late final List<DeviceViewModel> _hardwareDevices = widget.model.hardwareDevices;
-  late final List<DeviceViewModel> _services = widget.model.services;
+  late final List<ConnectionViewModel> _smartphoneDevice = widget.model.smartphoneDevice;
+  late final List<ConnectionViewModel> _hardwareDevices = widget.model.hardwareDevices;
+  late final List<ConnectionViewModel> _services = widget.model.services;
 
   @override
   void initState() {
@@ -25,10 +26,14 @@ class DeviceListPageState extends State<DeviceListPage> {
       bluetoothAdapterState = state;
       setState(() {});
     });
+    // Back from Settings a permission may have changed. onShow, not onResume:
+    // a permission dialog only makes the app inactive, Settings hides it.
+    _lifecycle = AppLifecycleListener(onShow: () => unawaited(_refreshStatuses()));
   }
 
   @override
   void dispose() {
+    _lifecycle.dispose();
     bluetoothStateStream?.cancel();
     super.dispose();
   }
@@ -50,7 +55,7 @@ class DeviceListPageState extends State<DeviceListPage> {
             Padding(
               padding: const EdgeInsets.fromLTRB(16, 0, 16, 16),
               child: Text(
-                locale.translate("pages.devices.message"),
+                locale.translate("pages.connections.message"),
                 style: Theme.of(context).textTheme.labelMedium!.copyWith(color: Colors.grey.shade600, height: 1.4),
               ),
             ),
@@ -74,10 +79,13 @@ class DeviceListPageState extends State<DeviceListPage> {
     );
   }
 
-  /// Re-check every service's state - the cards follow via [statusEvents].
+  /// Bring every service in line with its permissions - the cards follow via [statusEvents].
   Future<void> _refreshStatuses() async {
     for (final service in _services) {
-      await service.deviceManager.hasPermissions();
+      final manager = service.deviceManager;
+      final granted = await manager.hasPermissions();
+      if (granted && manager.canConnect && !manager.isConnecting) await manager.connect();
+      if (!granted && manager.isConnected) await manager.disconnect();
     }
     await BackgroundSensingService().refresh();
     if (mounted) setState(() {});
@@ -85,7 +93,7 @@ class DeviceListPageState extends State<DeviceListPage> {
 
   /// The list of smartphones - which is a list with only one smartphone.
   List<Widget> _smartphoneDeviceList(RPLocalizations locale) => [
-    DevicesPageListTitle(locale: locale, type: DevicesPageTypes.phone),
+    ConnectionsPageListTitle(locale: locale, type: ConnectionsPageTypes.phone),
     SliverList(
       delegate: SliverChildBuilderDelegate(
         childCount: _smartphoneDevice.length,
@@ -112,17 +120,17 @@ class DeviceListPageState extends State<DeviceListPage> {
 
   /// The list of connected hardware devices (like a Polar sensor)
   List<Widget> _hardwareDevicesList(RPLocalizations locale) => [
-    DevicesPageListTitle(locale: locale, type: DevicesPageTypes.devices),
+    ConnectionsPageListTitle(locale: locale, type: ConnectionsPageTypes.devices),
     SliverList(
       delegate: SliverChildBuilderDelegate(childCount: _hardwareDevices.length, (BuildContext context, int index) {
-        DeviceViewModel device = _hardwareDevices[index];
-        return _devicesPageCardStream(
+        ConnectionViewModel device = _hardwareDevices[index];
+        return _connectionsPageCardStream(
           device.statusEvents,
           DeviceStatus.unknown,
           () => _cardListBuilder(
             enableFeedback: true,
             leading: device.icon!,
-            leadingImage: device.type == MovesenseDevice.DEVICE_TYPE ? 'assets/icons/movesense_logo.png' : null,
+            leadingImage: device.iconImage,
             title: (locale.translate(device.typeName), device.batteryLevel ?? 0),
             subtitle: device.name,
             // Study-managed, so the user cannot disconnect it - nothing to tap.
@@ -132,7 +140,9 @@ class DeviceListPageState extends State<DeviceListPage> {
             trailing: device.getDeviceStatusIcon is Icon
                 ? device.getDeviceStatusIcon as Icon
                 : _connectPill(
-                    locale.translate(device.getDeviceStatusIcon as String? ?? "pages.devices.status.action.connect"),
+                    locale.translate(
+                      device.getDeviceStatusIcon as String? ?? "pages.connections.status.action.connect",
+                    ),
                   ),
           ),
         );
@@ -142,16 +152,17 @@ class DeviceListPageState extends State<DeviceListPage> {
 
   /// The services, background sensing first - the study depends on it most.
   List<Widget> _servicesList(RPLocalizations locale) => [
-    DevicesPageListTitle(locale: locale, type: DevicesPageTypes.services),
+    ConnectionsPageListTitle(locale: locale, type: ConnectionsPageTypes.services),
     if (BackgroundSensingService().isSupported) _backgroundSensingCard(locale),
     SliverList(
       delegate: SliverChildBuilderDelegate(childCount: _services.length, (BuildContext context, int index) {
-        DeviceViewModel service = _services[index];
-        return _devicesPageCardStream(
+        ConnectionViewModel service = _services[index];
+        return _connectionsPageCardStream(
           service.statusEvents,
           DeviceStatus.unknown,
           () => _cardListBuilder(
             leading: service.icon!,
+            leadingImage: service.iconImage,
             title: (locale.translate(service.typeName), null),
             subtitle: null,
             onTap: () async => await _serviceClicked(service),
@@ -177,12 +188,12 @@ class DeviceListPageState extends State<DeviceListPage> {
             borderColor: connected ? _statusSuccess : Theme.of(context).colorScheme.primary,
             child: _cardListBuilder(
               leading: const Icon(Icons.autorenew_rounded, size: 30, color: Color(0xff3260A4)),
-              title: (locale.translate('pages.devices.type.background.name'), null),
-              subtitle: locale.translate('pages.devices.type.background.description'),
+              title: (locale.translate('pages.connections.type.background.name'), null),
+              subtitle: locale.translate('pages.connections.type.background.description'),
               onTap: connected ? null : _backgroundSensingClicked,
               trailing: connected
                   ? const Icon(Icons.sensors_rounded, color: _statusSuccess, size: 30)
-                  : _connectPill(locale.translate('pages.devices.status.action.connect')),
+                  : _connectPill(locale.translate('pages.connections.status.action.connect')),
             ),
           ),
         );
@@ -213,19 +224,22 @@ class DeviceListPageState extends State<DeviceListPage> {
       contentPadding: const EdgeInsets.symmetric(vertical: 12, horizontal: 16),
       minVerticalPadding: 0,
       enableFeedback: enableFeedback,
-      // The tinted rounded-square badge shared with the task and feed cards.
-      leading: Container(
-        width: 40,
-        height: 40,
-        alignment: Alignment.center,
-        decoration: BoxDecoration(
-          color: (leading?.color ?? Theme.of(context).colorScheme.primary).withValues(alpha: 0.12),
-          borderRadius: BorderRadius.circular(12),
-        ),
-        child: leadingImage != null
-            ? Image.asset(leadingImage, width: 24, height: 24)
-            : Icon(leading!.icon, color: leading.color ?? Theme.of(context).colorScheme.primary, size: 20),
-      ),
+      // Apple/Google guidelines forbid a badge behind their health logos.
+      leading: leadingImage == healthPlatformIcon
+          ? Image.asset(leadingImage!, width: 40, height: 40)
+          // The tinted rounded-square badge shared with the task and feed cards.
+          : Container(
+              width: 40,
+              height: 40,
+              alignment: Alignment.center,
+              decoration: BoxDecoration(
+                color: (leading?.color ?? Theme.of(context).colorScheme.primary).withValues(alpha: 0.12),
+                borderRadius: BorderRadius.circular(12),
+              ),
+              child: leadingImage != null
+                  ? Image.asset(leadingImage, width: 24, height: 24)
+                  : Icon(leading!.icon, color: leading.color ?? Theme.of(context).colorScheme.primary, size: 20),
+            ),
       title: Row(
         children: [
           Flexible(
@@ -258,7 +272,7 @@ class DeviceListPageState extends State<DeviceListPage> {
     );
   }
 
-  Widget _devicesPageCardStream<T>(Stream<T> stream, T? initialData, Widget Function() childBuilder) => Center(
+  Widget _connectionsPageCardStream<T>(Stream<T> stream, T? initialData, Widget Function() childBuilder) => Center(
     child: StudiesMaterial(
       backgroundColor: Colors.grey.shade50,
       child: StreamBuilder<T>(
@@ -269,45 +283,47 @@ class DeviceListPageState extends State<DeviceListPage> {
     ),
   );
 
-  Future<void> _serviceClicked(DeviceViewModel service) async {
+  Future<void> _serviceClicked(ConnectionViewModel service) async {
     if (service.status == DeviceStatus.connected || service.status == DeviceStatus.connecting) {
       return;
     }
 
     if (!(await service.deviceManager.hasPermissions())) {
+      if (!mounted) return;
       if (service.type == HealthService.DEVICE_TYPE) {
+        // The page asks for access and explains a denial itself.
         Navigator.of(
           context,
           rootNavigator: true,
         ).push(MaterialPageRoute<void>(builder: (context) => HealthServiceConnectPage()));
-      } else if (service.type == LocationService.DEVICE_TYPE) {
-        final status = await Permission.locationWhenInUse.request();
-        // The OS won't prompt again, so send the user to Settings.
-        if (status.isPermanentlyDenied || status.isRestricted) {
-          await openAppSettings();
+      } else {
+        // The location card only needs While Using - Always is background sensing's.
+        service.type == LocationService.DEVICE_TYPE
+            ? await Permission.locationWhenInUse.request()
+            : await service.deviceManager.requestPermissions();
+        if (!await service.deviceManager.hasPermissions()) {
+          if (mounted) await showPermissionDeniedDialog(context, 'pages.connections.permission.message');
           return;
         }
-        if (!status.isGranted) return;
-      } else {
-        await service.deviceManager.requestPermissions();
       }
     }
     await service.deviceManager.connect();
   }
 
   Future<void> _backgroundSensingClicked() async {
-    await BackgroundSensingService().connect();
-    // If the iOS permission request did not grant Always, explain the Settings fallback.
-    if (!BackgroundSensingService().isConnected && Platform.isIOS && mounted) {
-      await showDialog<void>(
-        context: context,
-        barrierDismissible: true,
-        builder: (context) => _permissionDeniedDialog(context, 'pages.devices.background_permission.message'),
-      );
-    }
+    final background = BackgroundSensingService();
+    await background.connect();
+    // Only a missing permission is the user's to fix in Settings.
+    if (background.isConnected || await background.isGranted || !mounted) return;
+    await showPermissionDeniedDialog(
+      context,
+      Platform.isAndroid
+          ? 'pages.connections.background_permission.message.android'
+          : 'pages.connections.background_permission.message',
+    );
   }
 
-  Future<void> _hardwareDeviceClicked(DeviceViewModel device) async {
+  Future<void> _hardwareDeviceClicked(ConnectionViewModel device) async {
     // fast out if no Bluetooth
     if (!(await FlutterBluePlus.isSupported)) return;
 
@@ -326,13 +342,10 @@ class DeviceListPageState extends State<DeviceListPage> {
         if (!await device.deviceManager.hasPermissions()) {
           await device.deviceManager.requestPermissions();
         }
+        final granted = await device.deviceManager.hasPermissions();
         if (!mounted) return;
-        if (!await device.deviceManager.hasPermissions()) {
-          await showDialog<void>(
-            context: context,
-            barrierDismissible: true,
-            builder: (context) => _permissionDeniedDialog(context, 'pages.devices.location_permission.message'),
-          );
+        if (!granted) {
+          await showPermissionDeniedDialog(context, 'pages.connections.location_permission.message');
           return;
         }
 
@@ -346,21 +359,33 @@ class DeviceListPageState extends State<DeviceListPage> {
           ),
         );
       } else if (bluetoothAdapterState == BluetoothAdapterState.unauthorized && Platform.isIOS) {
-        await showDialog<void>(
-          context: context,
-          barrierDismissible: true,
-          builder: (context) => AuthorizationDialog(device: device),
-        );
+        await showPermissionDeniedDialog(context, 'pages.connections.bluetooth_permission.message');
       }
     }
   }
+}
 
-  /// Explain missing permissions and offer the app settings.
-  Widget _permissionDeniedDialog(BuildContext context, String messageKey) {
-    final locale = RPLocalizations.of(context)!;
-    return AlertDialog(
-      title: Text(locale.translate("pages.devices.location_permission.title")),
-      content: SingleChildScrollView(child: Text(locale.translate(messageKey))),
+/// Explain missing permissions and offer the app settings - the OS won't ask
+/// again once a permission is permanently denied, so Settings is the only way.
+Future<void> showPermissionDeniedDialog(BuildContext context, String messageKey, {String? image}) {
+  final locale = RPLocalizations.of(context)!;
+  return showDialog<void>(
+    context: context,
+    builder: (context) => AlertDialog(
+      title: Text(locale.translate("pages.connections.location_permission.title")),
+      content: SingleChildScrollView(
+        child: Column(
+          mainAxisSize: MainAxisSize.min,
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Text(locale.translate(messageKey)),
+            if (image != null) ...[
+              const SizedBox(height: 16),
+              ClipRRect(borderRadius: BorderRadius.circular(8), child: Image.asset(image)),
+            ],
+          ],
+        ),
+      ),
       actions: [
         TextButton(child: Text(locale.translate("cancel")), onPressed: () => Navigator.pop(context)),
         ElevatedButton(
@@ -372,6 +397,6 @@ class DeviceListPageState extends State<DeviceListPage> {
           },
         ),
       ],
-    );
-  }
+    ),
+  );
 }

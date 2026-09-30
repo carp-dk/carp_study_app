@@ -26,10 +26,13 @@ class BackgroundSensingService extends ChangeNotifier {
   // be revoked in the phone's settings at any time, so re-read, not remembered.
   // Android 14+ kills the app if the location-type foreground service starts
   // without location granted, so that is required too.
-  List<Permission> get _permissions =>
-      _isAndroid ? [Permission.ignoreBatteryOptimizations, Permission.location] : [Permission.locationAlways];
+  // iOS only offers Always once While Using is granted, so ask for that first.
+  List<Permission> get _permissions => _isAndroid
+      ? [Permission.ignoreBatteryOptimizations, Permission.location]
+      : [Permission.locationWhenInUse, Permission.locationAlways];
 
-  Future<bool> get _isGranted async {
+  /// Are all the permissions background sensing needs granted?
+  Future<bool> get isGranted async {
     for (final permission in _permissions) {
       if (!await permission.isGranted) return false;
     }
@@ -38,7 +41,7 @@ class BackgroundSensingService extends ChangeNotifier {
 
   /// Re-read the platform permissions and bring the service in line with them.
   Future<void> refresh() async {
-    var connected = isSupported && await _isGranted;
+    var connected = isSupported && await isGranted;
 
     // The foreground service exists only on Android; on iOS the granted
     // permission is all there is - location updates keep sensing alive.
@@ -58,7 +61,10 @@ class BackgroundSensingService extends ChangeNotifier {
   Future<void> connect() async {
     if (!isSupported) return;
 
-    await _permissions.request();
+    // One at a time - a batch fires them together, so Always would come too early.
+    for (final permission in _permissions) {
+      await permission.request();
+    }
     await refresh();
   }
 
@@ -74,8 +80,8 @@ class BackgroundSensingService extends ChangeNotifier {
   Future<bool> _start() async {
     final localization = AppConfig.localization;
     return await BackgroundService().initialize(
-          notificationTitle: localization?.translate('pages.devices.type.background.name'),
-          notificationText: localization?.translate('pages.devices.type.background.description'),
+          notificationTitle: localization?.translate('pages.connections.type.background.name'),
+          notificationText: localization?.translate('pages.connections.type.background.description'),
         ) &&
         await BackgroundService().enable();
   }

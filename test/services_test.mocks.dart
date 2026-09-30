@@ -599,13 +599,13 @@ class MockStudyService extends _i1.Mock implements _i6.StudyService {
       (super.noSuchMethod(Invocation.getter(#isRunning), returnValue: false, returnValueForMissingStub: false) as bool);
 
   @override
-  Iterable<_i6.DeviceViewModel> get deploymentDevices =>
+  Iterable<_i6.ConnectionViewModel> get deploymentDevices =>
       (super.noSuchMethod(
             Invocation.getter(#deploymentDevices),
-            returnValue: <_i6.DeviceViewModel>[],
-            returnValueForMissingStub: <_i6.DeviceViewModel>[],
+            returnValue: <_i6.ConnectionViewModel>[],
+            returnValueForMissingStub: <_i6.ConnectionViewModel>[],
           )
-          as Iterable<_i6.DeviceViewModel>);
+          as Iterable<_i6.ConnectionViewModel>);
 
   @override
   set study(_i4.SmartphoneStudy? study) =>

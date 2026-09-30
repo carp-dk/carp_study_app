@@ -340,11 +340,12 @@ packages:
   carp_health_package:
     dependency: "direct main"
     description:
-      name: carp_health_package
-      sha256: "5070dbcfbee0fcfc1b3b861becca2438b8c501482e2f4d0dae036e244241ea5f"
-      url: "https://pub.dev"
-    source: hosted
-    version: "4.1.1"
+      path: "packages/carp_health_package"
+      ref: b43bb9e6584e725777c468f61acf0964b24f5dc9
+      resolved-ref: b43bb9e6584e725777c468f61acf0964b24f5dc9
+      url: "https://github.com/carp-dk/carp.sensing-flutter.git"
+    source: git
+    version: "4.1.2"
   carp_mobile_sensing:
     dependency: "direct main"
     description:
@@ -1056,13 +1057,14 @@ packages:
     source: hosted
     version: "2.3.2"
   health:
-    dependency: transitive
+    dependency: "direct overridden"
     description:
-      name: health
-      sha256: "8dd9625c9c26379a5753ad24c33af1d3dc5ce1f36f19c03e17c676c2f8fdbb80"
-      url: "https://pub.dev"
-    source: hosted
-    version: "13.3.2"
+      path: "."
+      ref: "7f4400385a12f7c42f3d89f714af6f085c4de855"
+      resolved-ref: "7f4400385a12f7c42f3d89f714af6f085c4de855"
+      url: "https://github.com/Zeroupper/carp-health-flutter.git"
+    source: git
+    version: "13.3.3"
   hooks:
     dependency: transitive
     description:
