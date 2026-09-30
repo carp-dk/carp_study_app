@@ -53,7 +53,7 @@ class CarpBackend {
   /// Initialize this backend. Must be called before used.
   Future<void> initialize() async {
     info('$runtimeType - initializing');
-    await CarpAuthService().configure(authProperties);
+    await _configureAuth();
     CarpService().configure(app);
     _authEvents ??= CarpAuthService().authStateChanges.listen(_onAuthEvent);
 
@@ -83,8 +83,23 @@ class CarpBackend {
     info('$runtimeType initialized - app: $app');
   }
 
+  bool _authConfigured = false;
+
+  /// Configure CAWS auth, which fetches the OIDC discovery document.
+  /// Offline this fails or hangs (no connect timeout in the SDK), so cap it and retry on next use.
+  Future<void> _configureAuth() async {
+    if (_authConfigured) return;
+    try {
+      await CarpAuthService().configure(authProperties).timeout(const Duration(seconds: 10));
+      _authConfigured = true;
+    } catch (error) {
+      warning('$runtimeType - Could not reach CAWS auth - $error');
+    }
+  }
+
   /// Authenticate using a web view.
   Future<void> authenticate() async {
+    await _configureAuth();
     try {
       user = await CarpAuthService().authenticate();
       LocalSettings().isAnonymous = false;
@@ -97,6 +112,7 @@ class CarpBackend {
   /// The magic link belonging to a short sign-in [code], or null if CAWS
   /// does not know the code (or is unreachable).
   Future<String?> magicLinkForCode(String code) async {
+    await _configureAuth();
     try {
       return await CarpAuthService().magicLinkForCode(code);
     } catch (error) {
@@ -107,6 +123,7 @@ class CarpBackend {
 
   /// Authenticate anonymously using a magic link.
   Future<void> authenticateWithMagicLink(String uri) async {
+    await _configureAuth();
     try {
       user = await CarpAuthService().authenticateWithMagicLink(uri);
       LocalSettings().isAnonymous = true;
@@ -118,6 +135,7 @@ class CarpBackend {
 
   /// Refresh authentication token based on the refresh token.
   Future<CarpUser> refresh() async {
+    await _configureAuth();
     user = await CarpAuthService().refresh();
     info('$runtimeType - User authenticated via refresh - user: $user');
     return user!;
