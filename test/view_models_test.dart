@@ -350,7 +350,9 @@ void main() {
 
   group('Protocol health tasks', () {
     test('a health task opens the health connect page', () {
-      final task = AppUserTaskFactory().create(AppTaskExecutor()..initialize(HealthAppTask(types: [HealthDataType.STEPS])));
+      final task = AppUserTaskFactory().create(
+        AppTaskExecutor()..initialize(HealthAppTask(types: [HealthDataType.STEPS])),
+      );
       expect(task, isA<HealthConnectUserTask>());
       expect(task.widget, isA<HealthServiceConnectPage>());
     });
