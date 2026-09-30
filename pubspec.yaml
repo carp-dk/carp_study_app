@@ -65,6 +65,18 @@ dependencies:
   mobile_scanner: ^7.4.2
 
 dependency_overrides:
+  # iOS Health reports access as missing until requested (carp-dk/carp-health-flutter#527, not merged upstream).
+  # Pinned to commits so the unmerged branches can't change underneath the app.
+  health:
+    git:
+      url: https://github.com/Zeroupper/carp-health-flutter.git
+      ref: 7f4400385a12f7c42f3d89f714af6f085c4de855 # fix/ios-health-request-status, 13.3.3
+  carp_health_package:
+    git:
+      url: https://github.com/carp-dk/carp.sensing-flutter.git
+      ref: b43bb9e6584e725777c468f61acf0964b24f5dc9 # fix/ios-health-request-status
+      path: packages/carp_health_package
+
   # carp_themes_package:
   #   path: ../carp_themes_package
 
