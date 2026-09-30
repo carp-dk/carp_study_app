@@ -1,3 +1,4 @@
+import 'dart:ui' show Locale;
 import 'package:carp_backend/carp_backend.dart';
 import 'package:carp_webservices/carp_auth/carp_auth.dart';
 import 'package:carp_audio_package/media.dart';
@@ -344,6 +345,20 @@ void main() {
 
       expect(model.showParticipantDataCard, isTrue);
       expect(notified, isTrue);
+    });
+  });
+
+  group('Protocol health tasks', () {
+    test('a health task opens the health connect page', () {
+      final task = AppUserTaskFactory().create(AppTaskExecutor()..initialize(HealthAppTask(types: [HealthDataType.STEPS])));
+      expect(task, isA<HealthConnectUserTask>());
+      expect(task.widget, isA<HealthServiceConnectPage>());
+    });
+
+    test('health data types are labelled by translation, else by name', () {
+      final locale = RPLocalizations(const Locale('en'))..translations['health.type.STEPS'] = 'Step count';
+      expect(healthDataTypeLabel(locale, HealthDataType.STEPS), 'Step count');
+      expect(healthDataTypeLabel(locale, HealthDataType.BODY_FAT_PERCENTAGE), 'Body fat percentage');
     });
   });
 

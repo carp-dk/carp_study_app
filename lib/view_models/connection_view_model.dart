@@ -25,10 +25,6 @@ class ConnectionListPageViewModel extends ViewModel {
   /// The services of this deployment.
   List<ConnectionViewModel> get services =>
       _study.deploymentDevices.where((device) => device.deviceManager is ServiceManager).toList();
-
-  /// The Health service of this deployment, if any.
-  ConnectionViewModel? get healthService =>
-      services.where((device) => device.type == HealthService.DEVICE_TYPE).firstOrNull;
 }
 
 /// One device row: name, icon and status of a [DeviceManager]; connects it.
@@ -175,6 +171,16 @@ class ConnectionViewModel extends ViewModel {
 /// Health data lives in Apple Health on iOS and Health Connect on Android.
 /// App names are not translated - translate() returns them unchanged.
 String get healthPlatformName => Platform.isIOS ? 'Apple Health' : 'Health Connect';
+
+/// A health data type from the protocol as a label, using its 'health.type.TYPE'
+/// translation if there is one, e.g. BODY_FAT_PERCENTAGE -> 'Body fat percentage'.
+String healthDataTypeLabel(RPLocalizations locale, HealthDataType type) {
+  final key = 'health.type.${type.name}';
+  final label = locale.translate(key);
+  if (label != key) return label;
+  final words = type.name.toLowerCase().replaceAll('_', ' ');
+  return words[0].toUpperCase() + words.substring(1);
+}
 
 String get healthPlatformIcon =>
     Platform.isIOS ? 'assets/instructions/apple_health_icon.png' : 'assets/instructions/google_health_connect_icon.png';
