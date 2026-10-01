@@ -25,10 +25,11 @@ class _LoginPageState extends State<LoginPage> {
                   SliverFillRemaining(
                     hasScrollBody: false,
                     child: Padding(
-                      padding: const EdgeInsets.fromLTRB(16, 80, 16, 16),
+                      padding: const EdgeInsets.fromLTRB(16, 0, 16, 16),
                       child: Column(
                         crossAxisAlignment: CrossAxisAlignment.stretch,
                         children: [
+                          const Spacer(),
                           Text(
                             locale.translate('pages.login.invited.question'),
                             textAlign: TextAlign.center,
@@ -40,7 +41,7 @@ class _LoginPageState extends State<LoginPage> {
                             textAlign: TextAlign.center,
                             style: textTheme.bodyLarge?.copyWith(color: textTheme.bodySmall?.color),
                           ),
-                          const Spacer(),
+                          const SizedBox(height: 32),
                           _ChoiceCard(
                             icon: Icons.qr_code_2,
                             title: locale.translate('pages.login.invited.code.title'),
