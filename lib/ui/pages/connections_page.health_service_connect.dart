@@ -34,7 +34,7 @@ class HealthServiceConnectPage extends StatelessWidget {
           child: Container(
             child: Column(
               children: [
-                Padding(padding: const EdgeInsets.symmetric(vertical: 8.0, horizontal: 18), child: const CarpAppBar()),
+                const CarpAppBar(),
                 Expanded(
                   child: Padding(
                     padding: const EdgeInsets.symmetric(horizontal: 24.0),

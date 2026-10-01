@@ -25,6 +25,7 @@ import 'package:timeago/timeago.dart' as timeago;
 import 'package:camera/camera.dart';
 import 'package:video_player/video_player.dart';
 import 'package:go_router/go_router.dart';
+import 'package:flutter_svg/flutter_svg.dart';
 import 'package:intl/intl.dart';
 import 'package:flutter_blue_plus/flutter_blue_plus.dart';
 import 'package:permission_handler/permission_handler.dart';

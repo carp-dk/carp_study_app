@@ -7,7 +7,10 @@ formatter:
   page_width: 120
 
 analyzer:
-  exclude: [build/**]
+  exclude:
+    - build/**
+    - android/**
+    - ios/**
   language:
     strict-casts: true
     strict-inference: true

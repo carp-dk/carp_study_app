@@ -64,10 +64,7 @@ class TaskListPageState extends State<TaskListPage> with TickerProviderStateMixi
       body: SafeArea(
         child: Column(
           children: [
-            Padding(
-              padding: const EdgeInsets.symmetric(vertical: 8.0, horizontal: 10),
-              child: const CarpAppBar(hasProfileIcon: true),
-            ),
+            const CarpAppBar(hasProfileIcon: true),
             CarpPageTitle(locale.translate('pages.task_list.title')),
             Expanded(
               child: StreamBuilder<UserTask>(

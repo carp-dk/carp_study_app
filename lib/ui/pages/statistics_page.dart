@@ -39,10 +39,7 @@ class _StatisticsPageState extends State<StatisticsPage> {
               physics: const AlwaysScrollableScrollPhysics(),
               padding: const EdgeInsets.only(bottom: 24),
               children: [
-                const Padding(
-                  padding: EdgeInsets.symmetric(vertical: 8.0, horizontal: 10),
-                  child: CarpAppBar(hasProfileIcon: true),
-                ),
+                const CarpAppBar(hasProfileIcon: true),
                 CarpPageTitle(locale.translate('pages.data_viz.title')),
                 ..._sections(locale),
               ],
