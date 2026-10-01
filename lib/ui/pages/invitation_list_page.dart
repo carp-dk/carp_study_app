@@ -43,25 +43,25 @@ class _InvitationListPageState extends State<InvitationListPage> {
               // zero or one invitation and the content doesn't fill the screen.
               physics: const AlwaysScrollableScrollPhysics(),
               slivers: [
-                SliverToBoxAdapter(
+                const SliverToBoxAdapter(
                   child: SafeArea(
                     bottom: false,
-                    child: Padding(
-                      padding: const EdgeInsets.fromLTRB(4, 8, 16, 8),
-                      child: Row(
-                        children: [
-                          IconButton(
-                            icon: const Icon(Icons.arrow_back_ios_new),
-                            onPressed: () => widget.model.signOut(),
+                    child: Padding(padding: EdgeInsets.symmetric(vertical: 8.0, horizontal: 10), child: CarpAppBar()),
+                  ),
+                ),
+                SliverToBoxAdapter(
+                  child: Padding(
+                    padding: const EdgeInsets.fromLTRB(4, 0, 16, 8),
+                    child: Row(
+                      children: [
+                        IconButton(icon: const Icon(Icons.arrow_back_ios_new), onPressed: () => widget.model.signOut()),
+                        Expanded(
+                          child: Text(
+                            locale.translate('invitation.invitations'),
+                            style: Theme.of(context).textTheme.headlineSmall,
                           ),
-                          Expanded(
-                            child: Text(
-                              locale.translate('invitation.invitations'),
-                              style: Theme.of(context).textTheme.headlineSmall,
-                            ),
-                          ),
-                        ],
-                      ),
+                        ),
+                      ],
                     ),
                   ),
                 ),
