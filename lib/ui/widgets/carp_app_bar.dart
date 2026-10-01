@@ -51,8 +51,7 @@ class CarpAppBar extends StatelessWidget {
                 children: [
                   Container(
                     padding: EdgeInsets.only(left: 8),
-                    // 22: the logo's lowercase x-height (~12.8px) equals the 24px OpenSans title's.
-                    child: SvgPicture.asset('assets/carp_logo.svg', height: 22),
+                    child: SvgPicture.asset('assets/carp_logo.svg', height: 55),
                   ),
                   if (hasProfileIcon)
                     IconButton(
