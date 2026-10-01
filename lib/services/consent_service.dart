@@ -18,7 +18,7 @@ class ConsentService {
     try {
       final consent = await _backend.getInformedConsentByRole(study.studyDeploymentId, study.participantRoleName);
       if (consent == null) return null;
-      return consentPdf(consent);
+      return await consentPdf(consent);
     } catch (error) {
       warning('Could not fetch informed consent - $error');
       return null;
