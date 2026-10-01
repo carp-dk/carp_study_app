@@ -1,7 +1,7 @@
 ## 5.0.6
 
 * new CARP logo in the app bar and on the splash screens
-* login and invitation pages share the home page app bar; login choices centred
+* login and invitation pages share the home page app bar; login choices at the bottom
 
 ## 5.0.5
 
