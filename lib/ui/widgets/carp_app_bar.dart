@@ -51,7 +51,7 @@ class CarpAppBar extends StatelessWidget {
                 children: [
                   Container(
                     padding: EdgeInsets.only(left: 8),
-                    child: Image.asset('assets/carp_logo.png', fit: BoxFit.contain, height: 16),
+                    child: SvgPicture.asset('assets/carp_logo.svg', height: 16),
                   ),
                   if (hasProfileIcon)
                     IconButton(

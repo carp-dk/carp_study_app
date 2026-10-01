@@ -1,3 +1,8 @@
+## 5.0.6
+
+* new CARP logo in the app bar and on the splash screens
+* login and invitation pages share the home page app bar; login choices centred
+
 ## 5.0.5
 
 * iOS asks for Apple Health access before collecting health data, instead of
