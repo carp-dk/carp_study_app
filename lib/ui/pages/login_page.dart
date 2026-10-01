@@ -29,10 +29,15 @@ class _LoginPageState extends State<LoginPage> {
                       child: Column(
                         crossAxisAlignment: CrossAxisAlignment.stretch,
                         children: [
-                          Text(locale.translate('pages.login.invited.question'), style: textTheme.headlineSmall),
+                          Text(
+                            locale.translate('pages.login.invited.question'),
+                            textAlign: TextAlign.center,
+                            style: textTheme.headlineSmall,
+                          ),
                           const SizedBox(height: 8),
                           Text(
                             locale.translate('pages.login.invited.question_hint'),
+                            textAlign: TextAlign.center,
                             style: textTheme.bodyLarge?.copyWith(color: textTheme.bodySmall?.color),
                           ),
                           const Spacer(),
