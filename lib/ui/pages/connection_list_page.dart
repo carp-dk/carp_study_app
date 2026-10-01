@@ -47,10 +47,7 @@ class ConnectionListPageState extends State<ConnectionListPage> {
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            Padding(
-              padding: const EdgeInsets.symmetric(vertical: 8.0, horizontal: 10),
-              child: const CarpAppBar(hasProfileIcon: true),
-            ),
+            const CarpAppBar(hasProfileIcon: true),
             CarpPageTitle(locale.translate('app_home.nav_bar_item.connections')),
             Padding(
               padding: const EdgeInsets.fromLTRB(16, 0, 16, 16),

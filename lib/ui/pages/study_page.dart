@@ -18,10 +18,7 @@ class StudyPageState extends State<StudyPage> {
           crossAxisAlignment: CrossAxisAlignment.center,
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
-            Padding(
-              padding: const EdgeInsets.symmetric(vertical: 8.0, horizontal: 10),
-              child: const CarpAppBar(hasProfileIcon: true),
-            ),
+            const CarpAppBar(hasProfileIcon: true),
             Flexible(
               // Configuration progress is app state, so listen to the bloc
               // for it; the view model is for the study content itself.

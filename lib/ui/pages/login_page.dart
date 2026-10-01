@@ -18,7 +18,7 @@ class _LoginPageState extends State<LoginPage> {
       body: SafeArea(
         child: Column(
           children: [
-            const Padding(padding: EdgeInsets.symmetric(vertical: 8.0, horizontal: 10), child: CarpAppBar()),
+            const CarpAppBar(),
             Expanded(
               child: CustomScrollView(
                 slivers: [
