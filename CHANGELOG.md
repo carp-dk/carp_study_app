@@ -1,3 +1,8 @@
+## 5.0.7
+
+* Android launcher icon ships PNG fallbacks (`mipmap-*/ic_launcher.png`) next to
+  the adaptive icon, so APK tools like Loadly show the CARP icon again
+
 ## 5.0.6
 
 * new CARP logo in the app bar and on the splash screens
