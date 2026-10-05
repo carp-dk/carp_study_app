@@ -418,7 +418,7 @@ void main() {
 
   group('ProfilePageViewModel', () {
     test('is empty-safe when signed out and nothing is deployed', () {
-      final backend = MockCarpBackend();
+      final backend = MockBackend();
       when(backend.user).thenReturn(null);
       when(backend.uri).thenReturn(Uri(scheme: 'https', host: 'test.carp.dk'));
 

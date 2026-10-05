@@ -1,19 +1,19 @@
-// End-to-end test of the join-study flow in LOCAL deployment mode:
-// deploy a protocol locally, gate on informed consent, configure the study
-// (Sensing initialize -> addStudy -> tryDeployment -> verify deployed), and
-// start sensing.
+// End-to-end test of the join-study flow in LOCAL deployment mode, using the
+// study in assets/carp: sign in, accept the invitation, sign consent,
+// configure the study and start sensing.
 //
 // Run on a simulator or device with:
 //
-//   flutter test integration_test --dart-define=deployment-mode=local
-import 'package:carp_core/carp_core.dart' hide Smartphone;
+//   flutter test integration_test
 import 'package:carp_mobile_sensing/carp_mobile_sensing.dart';
 import 'package:carp_backend/carp_backend.dart';
 import 'package:cognition_package/cognition_package.dart';
-import 'package:flutter/foundation.dart';
+import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_test/flutter_test.dart';
+import 'package:go_router/go_router.dart';
 import 'package:integration_test/integration_test.dart';
+import 'package:research_package/research_package.dart';
 
 import 'package:carp_study_app/main.dart';
 
@@ -36,6 +36,10 @@ void mockSimulatorPlatformChannels() {
         return null;
     }
   });
+
+  // Granted battery exemption makes background sensing start, and the real
+  // plugin then opens the "Stop optimizing battery usage" system dialog.
+  messenger.setMockMethodCallHandler(const MethodChannel('flutter_background'), (call) async => true);
 
   messenger.setMockMethodCallHandler(const MethodChannel('dexterous.com/flutter/local_notifications'), (call) async {
     switch (call.method) {
@@ -94,7 +98,7 @@ String _diagnostics() =>
     'bloc.state=${bloc.state}, hasStudy=${bloc.study.hasStudy}, isDeployed=${bloc.study.isDeployed}, '
     'isRunning=${bloc.study.isRunning}, '
     'consentPage=${find.byType(InformedConsentPage).evaluate().isNotEmpty}, '
-    'studyPage=${find.byType(StudyPage).evaluate().isNotEmpty}';
+    'homePage=${find.byType(HomePage).evaluate().isNotEmpty}';
 
 void main() {
   IntegrationTestWidgetsFlutterBinding.ensureInitialized();
@@ -130,77 +134,84 @@ void main() {
       CognitionPackage.ensureInitialized();
       CarpDataManager.ensureInitialized();
 
-      // Deploy a minimal study protocol on the local (on-phone) deployment
-      // service - the in-test equivalent of placing a protocol.json in
-      // assets/carp/resources/ for local mode.
+      // The same steps the screens take, against the study in assets/carp:
+      // sign in -> the one invitation -> accept -> sign consent -> study runs.
       await Settings().init();
-      final phone = Smartphone();
-      final protocol = SmartphoneStudyProtocol(name: 'Join flow integration test', ownerId: 'test')
-        ..addPrimaryDevice(phone)
-        ..addTaskControl(
-          ImmediateTrigger(),
-          BackgroundTask(measures: [Measure(type: DeviceSamplingPackage.BATTERY_STATE)]),
-          phone,
-        );
-      final status = await SmartphoneDeploymentService().createStudyDeployment(protocol);
-      final primaryDeviceRoleName = status.deviceStatusList
-          .firstWhere((deviceStatus) => deviceStatus.device is PrimaryDeviceConfiguration)
-          .device
-          .roleName;
-      LocalSettings().participant = Participant(
-        studyDeploymentId: status.studyDeploymentId,
-        deviceRoleName: primaryDeviceRoleName,
-      );
-      bloc.study.study = SmartphoneStudy(
-        studyDeploymentId: status.studyDeploymentId,
-        deviceRoleName: primaryDeviceRoleName,
-      );
-
       await bloc.initialize();
-
-      // The study descriptor exists, but it is not deployed in the sensing
-      // runtime and consent has not been given yet.
-      expect(bloc.study.hasStudy, isTrue);
-      expect(bloc.study.isDeployed, isFalse);
-      expect(LocalSettings().participant?.hasInformedConsentBeenAccepted ?? false, isFalse);
-
       await tester.pumpWidget(const CarpStudyApp());
+      await pumpUntil(tester, () => find.byType(LoginPage).evaluate().isNotEmpty, reason: 'login page');
 
-      // The home page must gate on consent before configuring the study. With
-      // no local consent document, the consent page auto-accepts, which lets
-      // setup proceed: configure -> deploy -> verify -> start.
-      await pumpUntil(
-        tester,
-        () => LocalSettings().participant?.hasInformedConsentBeenAccepted ?? false,
-        reason: 'consent gate to accept',
+      await bloc.auth.authenticate();
+      final invitations = bloc.appViewModel.invitationsListViewModel;
+      await invitations.loadInvitations();
+      expect(invitations.invitations, hasLength(1));
+      invitations.accept(invitations.invitations.single);
+      expect(bloc.study.hasStudy, isTrue);
+
+      // Consent is signed through the backend, as on CAWS - kept in memory locally.
+      final consent = bloc.appViewModel.informedConsentViewModel;
+      final document = await consent.getInformedConsent();
+      await consent.accept(
+        RPTaskResult(identifier: 'consent')
+          ..results['signature'] = RPConsentSignatureResult(
+            identifier: 'signature',
+            consentDocument: RPConsentDocument(title: document?.identifier ?? 'Consent', sections: []),
+            signature: RPSignatureResult(firstName: 'Integration', signatureImage: 'png'),
+          ),
       );
-      await pumpUntil(tester, () => bloc.isConfigured, reason: 'study configuration to complete');
+      expect(await bloc.consent.hasSignedConsent(bloc.study.study), isTrue);
+      // Leave the login page as it does after sign-in; the router takes it from there.
+      GoRouter.of(tester.element(find.byType(LoginPage))).go(CarpAppState.homeRoute);
 
-      expect(LocalSettings().participant?.hasInformedConsentBeenAccepted ?? false, isTrue);
+      await pumpUntil(tester, () => bloc.isConfigured, reason: 'study configuration to complete');
       expect(bloc.study.isDeployed, isTrue);
-      expect(bloc.study.deployment?.studyDeploymentId, status.studyDeploymentId);
 
       // Sensing must actually have been started - the executor is resumed.
       await pumpUntil(tester, () => bloc.study.isRunning, reason: 'sensing to start');
 
-      // And the user lands on the study page.
-      await pumpUntil(tester, () => find.byType(StudyPage).evaluate().isNotEmpty, reason: 'study page to be shown');
+      // And the user lands on the home page.
+      await pumpUntil(tester, () => find.byType(HomePage).evaluate().isNotEmpty, reason: 'home page to be shown');
 
-      // Signing out tears down sensing, clears auth, erases the study, and
-      // returns to the initial state - the router sends the user back to the
-      // invitation flow.
-      await bloc.signOutAndLeaveStudy();
+      final study = bloc.study.study!;
+      bool isOurs(String? deploymentId) => deploymentId == study.studyDeploymentId;
+      Future<bool> persistedTasks() async =>
+          (await PersistenceService().getUserTasks()).any((t) => isOurs(t.studyDeploymentId));
+      expect(await PersistenceService().getStudy(study.studyDeploymentId, study.deviceRoleName), isNotNull);
+      expect(SmartPhoneClientManager().studies, contains(study));
 
-      expect(bloc.state, AppState.initialized);
-      expect(bloc.study.hasStudy, isFalse);
-      expect(bloc.study.isRunning, isFalse);
-      expect(bloc.auth.isAuthenticated, isFalse);
-
+      // Profile -> Sign Out -> confirm, as the user does it.
+      await tester.tap(find.byTooltip('Profile'));
+      await pumpUntil(tester, () => find.byType(ProfilePage).evaluate().isNotEmpty, reason: 'profile page');
+      await tester.scrollUntilVisible(find.byIcon(Icons.power_settings_new), 300);
+      await tester.tap(find.byIcon(Icons.power_settings_new));
+      await pumpUntil(tester, () => find.byType(AlertDialog).evaluate().isNotEmpty, reason: 'sign out confirmation');
+      await tester.tap(find.descendant(of: find.byType(AlertDialog), matching: find.byType(TextButton)).last);
       await pumpUntil(
         tester,
-        () => find.byType(InvitationListPage).evaluate().isNotEmpty,
-        reason: 'invitation list after signing out',
+        () => find.byType(LoginPage).evaluate().isNotEmpty,
+        reason: 'login page after signing out',
       );
+
+      // Back to the initial state, with nothing of the study left on the phone.
+      expect(bloc.state, AppState.initialized);
+      expect(bloc.auth.isAuthenticated, isFalse);
+      expect(bloc.study.hasStudy, isFalse);
+      expect(bloc.study.isRunning, isFalse);
+      expect(BackgroundSensingService().isConnected, isFalse);
+      expect(LocalSettings().study, isNull);
+      expect(LocalSettings().participant, isNull);
+      expect(SmartPhoneClientManager().studies, isNot(contains(study)));
+      expect(
+        AppTaskController().userTasks.where((t) => isOurs(t.appTaskExecutor.deployment?.studyDeploymentId)),
+        isEmpty,
+      );
+      expect(await PersistenceService().getStudy(study.studyDeploymentId, study.deviceRoleName), isNull);
+      expect(await bloc.consent.hasSignedConsent(study), isFalse);
+      // Dequeued tasks are deleted from the database asynchronously.
+      for (var i = 0; i < 20 && await persistedTasks(); i++) {
+        await tester.pump(const Duration(milliseconds: 250));
+      }
+      expect(await persistedTasks(), isFalse);
     },
   );
 }

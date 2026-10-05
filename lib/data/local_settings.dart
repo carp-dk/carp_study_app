@@ -1,6 +1,7 @@
 part of carp_study_app;
 
 /// Stores settings across app restart: [user], [participant], and [study].
+/// In local mode they are kept in memory only, so every run starts fresh.
 /// Works as a singleton - use `LocalSettings()` for accessing settings.
 class LocalSettings {
   /// The package name of Google Health Connect.
@@ -20,13 +21,16 @@ class LocalSettings {
   factory LocalSettings() => _instance;
   LocalSettings._() : super();
 
+  /// Local mode keeps everything in memory, so a changed study is picked up on restart.
+  Settings? get _settings => AppConfig.deploymentMode == DeploymentMode.local ? null : Settings();
+
   /// The user cached on this device, if any.
   ///
   /// The [user] is the user authenticated to the CAWS backend and stores
   /// authentication information and access tokens.
   CarpUser? get user {
     if (_user == null) {
-      String? userString = Settings().preferences?.getString(userKey);
+      String? userString = _settings?.preferences?.getString(userKey);
 
       _user = (userString != null) ? CarpUser.fromJson(jsonDecode(userString) as Map<String, dynamic>) : null;
     }
@@ -36,9 +40,9 @@ class LocalSettings {
   set user(CarpUser? user) {
     _user = user;
     if (user != null) {
-      Settings().preferences!.setString(userKey, jsonEncode(user.toJson()));
+      _settings?.preferences?.setString(userKey, jsonEncode(user.toJson()));
     } else {
-      Settings().preferences!.remove(userKey);
+      _settings?.preferences?.remove(userKey);
     }
   }
 
@@ -52,7 +56,7 @@ class LocalSettings {
   /// [AppBloc.setStudyInvitation] method.
   Participant? get participant {
     if (_participant == null) {
-      String? userString = Settings().preferences?.getString(participantKey);
+      String? userString = _settings?.preferences?.getString(participantKey);
       _participant = (userString != null) ? Participant.fromJson(jsonDecode(userString) as Map<String, dynamic>) : null;
     }
     return _participant;
@@ -61,9 +65,9 @@ class LocalSettings {
   set participant(Participant? participant) {
     _participant = participant;
     if (participant != null) {
-      Settings().preferences!.setString(participantKey, jsonEncode(participant.toJson()));
+      _settings?.preferences?.setString(participantKey, jsonEncode(participant.toJson()));
     } else {
-      Settings().preferences!.remove(participantKey);
+      _settings?.preferences?.remove(participantKey);
     }
   }
 
@@ -72,7 +76,7 @@ class LocalSettings {
   /// Returns `null` if no study is deployed (yet).
   SmartphoneStudy? get study {
     if (_study != null) return _study;
-    var jsonString = Settings().preferences?.getString(studyKey);
+    var jsonString = _settings?.preferences?.getString(studyKey);
     return _study = (jsonString == null)
         ? null
         : _$SmartphoneStudyFromJson(json.decode(jsonString) as Map<String, dynamic>);
@@ -85,18 +89,24 @@ class LocalSettings {
       "Use the 'eraseStudyDeployment()' method to erase study deployment information.",
     );
     _study = study;
-    Settings().preferences?.setString(studyKey, json.encode(_$SmartphoneStudyToJson(study!)));
+    _settings?.preferences?.setString(studyKey, json.encode(_$SmartphoneStudyToJson(study!)));
   }
 
-  bool get hasSeenBluetoothConnectionInstructions =>
-      Settings().preferences?.getBool('hasSeenBluetoothConnectionInstructions') ?? false;
+  bool? _hasSeenBluetoothConnectionInstructions;
+  bool get hasSeenBluetoothConnectionInstructions => _hasSeenBluetoothConnectionInstructions ??=
+      _settings?.preferences?.getBool('hasSeenBluetoothConnectionInstructions') ?? false;
 
   set hasSeenBluetoothConnectionInstructions(bool seen) {
-    Settings().preferences?.setBool('hasSeenBluetoothConnectionInstructions', seen);
+    _hasSeenBluetoothConnectionInstructions = seen;
+    _settings?.preferences?.setBool('hasSeenBluetoothConnectionInstructions', seen);
   }
 
-  bool get isAnonymous => Settings().preferences?.getBool('isAnonymous') ?? false;
-  set isAnonymous(bool value) => Settings().preferences!.setBool('isAnonymous', value);
+  bool? _isAnonymous;
+  bool get isAnonymous => _isAnonymous ??= _settings?.preferences?.getBool('isAnonymous') ?? false;
+  set isAnonymous(bool value) {
+    _isAnonymous = value;
+    _settings?.preferences?.setBool('isAnonymous', value);
+  }
 
   /// The study deployment id for the currently running deployment.
   String? get studyDeploymentId => _study?.studyDeploymentId;
@@ -106,16 +116,16 @@ class LocalSettings {
   Future<void> eraseStudyDeployment() async {
     _study = null;
     _participant = null;
-    await Settings().preferences!.remove(participantKey);
+    await _settings?.preferences?.remove(participantKey);
 
-    await Settings().preferences!.remove(studyKey);
+    await _settings?.preferences?.remove(studyKey);
     debug('$runtimeType - study deployment erased.');
   }
 
   /// Erase all authentication information on this user from the phone.
   Future<void> eraseAuthCredentials() async {
     _user = null;
-    await Settings().preferences!.remove(userKey);
+    await _settings?.preferences?.remove(userKey);
   }
 
   Future<String?> get deploymentBasePath async =>

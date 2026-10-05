@@ -152,6 +152,7 @@ flutter:
     - assets/lang/
     - assets/carp/lang/
     - assets/carp/resources/
+    - assets/carp/messages/
     - assets/images/messages/
     - assets/carp_logo.svg
     - assets/logo.png
