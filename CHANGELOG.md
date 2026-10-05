@@ -1,3 +1,13 @@
+## 5.0.8
+
+* release APK is split per ABI and compressed: arm64 APK is ~40 MB instead of 166 MB
+  (an `armeabi-v7a` APK is attached for old 32-bit phones)
+
+## 5.0.7
+
+* Android launcher icon ships PNG fallbacks (`mipmap-*/ic_launcher.png`) next to
+  the adaptive icon, so APK tools like Loadly show the CARP icon again
+
 ## 5.0.6
 
 * new CARP logo in the app bar and on the splash screens
@@ -17,6 +27,25 @@
 * offline start no longer hangs on CAWS sign-in setup
 * Devices page renamed to Connections
 * integration test to seed Apple Health on a real iPhone
+
+## 5.0.4
+
+* a deployment stopped on the server stops the study on the phone: sensing
+  stops and Home shows only the study details and announcements (#702)
+* deployment status and announcements are refreshed on resume and every
+  minute on Home (#702)
+* invitations are refetched after leaving a study (#703)
+* Flanker test ends on the last card (#650) and a cancelled Flanker task is no
+  longer duplicated (#704)
+* tapping an announcement notification opens the announcement (#705)
+* sleep card counts a night from bedtime to wake-up on the day it ends, with an
+  awake segment (#706)
+* heart rate card for health data
+* login: code input as one field per character; tab switch between QR scan and
+  a typed sign-in code
+* expired tasks stay out of the Completed tab and keep statistics correct
+* `carp_core` 2.2.2, `carp_mobile_sensing` 2.5.1, `carp_health_package` 4.1.1,
+  `cognition_package` 1.9.1
 
 ## 5.0.3
 
