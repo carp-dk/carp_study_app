@@ -1,3 +1,8 @@
+## 5.0.8
+
+* release APK is split per ABI and compressed: arm64 APK is ~40 MB instead of 166 MB
+  (an `armeabi-v7a` APK is attached for old 32-bit phones)
+
 ## 5.0.7
 
 * Android launcher icon ships PNG fallbacks (`mipmap-*/ic_launcher.png`) next to

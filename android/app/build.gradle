@@ -45,6 +45,12 @@ android {
         main.java.srcDirs += 'src/main/kotlin'
     }
 
+    // Compress native libs and dex inside the APK (~4x smaller sideload download).
+    packaging {
+        jniLibs { useLegacyPackaging = true }
+        dex { useLegacyPackaging = true }
+    }
+
     defaultConfig {
         applicationId "dk.cachet.carp_study_app"
         // You can update the following values to match your application needs.
