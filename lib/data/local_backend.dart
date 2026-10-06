@@ -71,7 +71,9 @@ class LocalBackend implements Backend {
     final translations = await LocalResourceManager()
         .getLocalizations(AppConfig.localization?.locale ?? const Locale('en'))
         .catchError((_) => <String, String>{}); // no lang files - keep the text as is
-    final description = translations[protocol.description] ?? protocol.description;
+    // The invitation page shows this as the study purpose.
+    final purpose = protocol.studyDescription?.purpose ?? protocol.description;
+    final description = translations[purpose] ?? purpose;
 
     return ActiveParticipationInvitation(
       Participation(status.studyDeploymentId, 'local-participant', AssignedTo(roleNames: role == null ? null : {role})),

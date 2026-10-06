@@ -1,4 +1,5 @@
 import 'dart:io';
+import 'dart:ui' show Locale;
 
 import 'package:cognition_package/cognition_package.dart';
 import 'package:research_package/research_package.dart';
@@ -37,7 +38,10 @@ void main() {
     final invitations = await AuthService().getInvitations();
 
     expect(invitations, hasLength(1));
-    expect(invitations.single.invitation.description, isNot(startsWith('study.')), reason: 'key, not translated');
+    final protocol = await LocalResourceManager().getStudyProtocol('');
+    final translations = await LocalResourceManager().getLocalizations(const Locale('en'));
+    final purpose = protocol!.studyDescription!.purpose!;
+    expect(invitations.single.invitation.description, translations[purpose] ?? purpose);
     final study = SmartphoneStudy.fromInvitation(invitations.single);
     expect(study.deviceRoleName, isNotEmpty);
     final deployment = await SmartphoneDeploymentService().getDeviceDeploymentFor(
