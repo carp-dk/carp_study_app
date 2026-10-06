@@ -100,7 +100,7 @@ class _FakeConsentManager extends InformedConsentManager {
 }
 
 @GenerateNiceMocks([
-  MockSpec<CarpBackend>(),
+  MockSpec<Backend>(),
   MockSpec<AuthService>(),
   MockSpec<SystemInfoService>(),
   MockSpec<UserTask>(),
@@ -205,11 +205,11 @@ void main() {
   });
 
   group('AuthService', () {
-    late MockCarpBackend backend;
+    late MockBackend backend;
     late AuthService auth;
 
     setUp(() {
-      backend = MockCarpBackend();
+      backend = MockBackend();
       auth = AuthService(backend: backend);
     });
 
@@ -275,12 +275,12 @@ void main() {
 
   group('ConsentService', () {
     late _FakeConsentManager manager;
-    late MockCarpBackend backend;
+    late MockBackend backend;
     late ConsentService consent;
 
     setUp(() {
       manager = _FakeConsentManager();
-      backend = MockCarpBackend();
+      backend = MockBackend();
       consent = ConsentService(manager, backend: backend);
     });
 

@@ -67,6 +67,7 @@ import 'package:carp_themes_package/carp_themes_package.dart';
 
 part 'core/app_bloc.dart';
 part 'core/sensing.dart';
+part 'core/backend.dart';
 part 'core/carp_backend.dart';
 part 'core/resource_manager_factory.dart';
 
@@ -88,6 +89,7 @@ part 'data/localization_loader.dart';
 part 'data/local_resource_manager.dart';
 part 'data/participant.dart';
 part 'data/local_participation_service.dart';
+part 'data/local_backend.dart';
 
 part 'view_models/view_model.dart';
 part 'view_models/home_view_model.dart';

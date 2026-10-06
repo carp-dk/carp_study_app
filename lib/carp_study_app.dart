@@ -33,7 +33,7 @@ class CarpAppState extends State<CarpStudyApp> {
       final loc = state.matchedLocation;
 
       // 1) Not authenticated → login page (or its join-a-study sub page).
-      if (AppConfig.deploymentMode != DeploymentMode.local && !bloc.auth.isAuthenticated) {
+      if (!bloc.auth.isAuthenticated) {
         return loc.startsWith(LoginPage.route) ? null : LoginPage.route;
       }
 

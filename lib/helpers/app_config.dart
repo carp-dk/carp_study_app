@@ -16,12 +16,16 @@ enum DeploymentMode {
 }
 
 /// App-wide configuration from `--dart-define` variables `deployment-mode`
-/// and `debug-level`, e.g. `flutter run --dart-define=deployment-mode=local`.
+/// and `debug-level`, e.g. `flutter run --dart-define=deployment-mode=dev`.
 /// (`String.fromEnvironment` only reads them in a const context.)
 abstract class AppConfig {
   /// What kind of deployment are we running?
+  ///
+  /// Defaults to [DeploymentMode.local] in debug builds, so a plain `flutter run`
+  /// runs the study in `assets/carp`, and to [DeploymentMode.production] in release builds.
   static DeploymentMode deploymentMode = DeploymentMode.values.firstWhere(
-    (mode) => mode.name == const String.fromEnvironment('deployment-mode', defaultValue: 'production'),
+    (mode) =>
+        mode.name == const String.fromEnvironment('deployment-mode', defaultValue: kDebugMode ? 'local' : 'production'),
   );
 
   /// Debug level for the app and CAMS.

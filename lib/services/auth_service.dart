@@ -1,13 +1,13 @@
 part of carp_study_app;
 
-/// User identity and authentication, wrapping the [CarpBackend] so the rest
-/// of the app does not depend on the CAWS SDK types directly.
+/// User identity and authentication, wrapping the [Backend] (CAWS or local)
+/// so the rest of the app does not depend on where the study comes from.
 class AuthService {
-  AuthService({CarpBackend? backend}) : _backend = backend ?? CarpBackend();
+  AuthService({Backend? backend}) : _backend = backend ?? Backend();
 
-  final CarpBackend _backend;
+  final Backend _backend;
 
-  /// Initialize the CAWS backend. Must be called before authentication.
+  /// Initialize the backend. Must be called before authentication.
   Future<void> initialize() => _backend.initialize();
 
   /// Has the user been authenticated?

@@ -131,6 +131,9 @@ assets/carp/lang/*
 !assets/carp/resources/
 assets/carp/resources/*
 !assets/carp/resources/.gitkeep
+!assets/carp/messages/
+assets/carp/messages/*
+!assets/carp/messages/.gitkeep
 
 # FVM Version Cache
 .fvm/

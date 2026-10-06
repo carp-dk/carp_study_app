@@ -1,3 +1,14 @@
+## 5.1.0
+
+* local deployment mode works like dev/test behind a `Backend` interface (`CarpBackend`, `LocalBackend`):
+  any sign-in works, the one invitation is `assets/carp/resources/protocol.json`, nothing is saved between runs
+* `flutter run` defaults to local mode in debug builds; release builds still default to production
+* local mode registers the protocol's own phone, whatever its role name (e.g. "Primary Phone")
+* the invitation shows the study purpose translated
+* host-only flow tests (`test/flow/`): the real app joins the CARP Test Study under plain `flutter test`
+* removed unused images, icons, test fixtures and outdated docs; fixed three broken image paths
+* README explains the local-mode files and the project layout
+
 ## 5.0.8
 
 * release APK is split per ABI and compressed: arm64 APK is ~40 MB instead of 166 MB
