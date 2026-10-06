@@ -50,7 +50,7 @@ class ProcessMessagePage extends StatelessWidget {
           break;
         case ProcessStatus.other:
           image = Image(
-            image: const AssetImage('assets/icons/info.png'),
+            image: const AssetImage('assets/images/info.png'),
             height: MediaQuery.of(context).size.height * 0.35,
           );
           break;

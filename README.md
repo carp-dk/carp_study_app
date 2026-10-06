@@ -20,16 +20,41 @@ In VSCode, you can add a `launch.json` file to specify different deployment mode
 
 ### Local Deployment
 
-Local mode is intended for designing and debugging a study protocol, informed consent, translations, and messages. In local deployment mode, the app loads its configuration from JSON files stored in the `assets/carp/...` folder structure. This folder structure follows the default structure of the [CARP Study Generator Utility Package](https://github.com/carp-dk/carp.sensing-flutter/tree/main/utilities/carp_study_generator), i.e., that
+Local mode runs a study from files in the app, with no server and no account. It is for designing and testing a study before uploading it to CAWS. Put the files in `assets/carp/` (ignored by git, so study files never end up in this repo):
 
-* `protocol.json` and `consent.json` files go to `carp/resources`
-* language files go to `carp/lang`
-* message files go to `carp/messages`
+```
+assets/carp/
+  resources/protocol.json   the study protocol (required)
+  resources/consent.json    the informed consent (optional - no file, nothing to sign)
+  lang/en.json, da.json     translations for keys used in the protocol and consent (en.json is the fallback)
+  messages/*.json           messages on the Home tab, one file each (optional)
+```
 
-> **Note:** Local mode keeps nothing between runs - edit the files and restart the app to use them. Any sign-in works, and the study appears as the only invitation.
+These are the same files you upload to the CARP Portal later. Generate them with Dart rather than editing by hand - see [Configure your study](https://carp-dk.github.io/carp-docs-starlight/start/configure-your-study/).
 
-Data is stored locally on the phone in the SQLite database.
+Local mode keeps nothing between runs - edit the files and restart the app. Any sign-in works, and the study appears as the only invitation. Collected data is stored on the phone in `carp-data.db` (SQLite).
 
 ### CAWS Deployment
 
 When using CAWS, deployment mode can be set to either `dev`, `test`, or `production`. In all of these cases, the app will try to authenticate to CAWS and download all resources - study protocol, informed consent, translations, and messages - from CAWS. These resources should be added to CAWS before use, and each participant should be added to a study and deployed before it can be downloaded to the app.
+
+## Project layout
+
+```
+lib/
+  main.dart, carp_study_app.dart   app entry, routing (go_router) and localization
+  core/        AppBloc (app state), Backend (CarpBackend for CAWS, LocalBackend for local mode), sensing
+  data/        local mode: LocalBackend, LocalResourceManager (reads assets/carp), LocalSettings
+  services/    auth, study, consent, messages, background sensing
+  view_models/ one per page
+  ui/          pages, cards, tasks and widgets
+assets/
+  lang/        the app's own UI translations (en, da, es) - update all three when adding a key
+  carp/        your local study (see above, gitignored)
+  icons/, images/, instructions/   images used by the UI
+test/          unit and widget tests (test/json holds the protocols used by cams_app_test)
+integration_test/   end-to-end flow on a device: flutter test integration_test -d <device>
+docs/          store release pipeline
+```
+
+Run `flutter test` for the unit tests and `flutter analyze` before opening a PR. Feature PRs target the `test` branch.
