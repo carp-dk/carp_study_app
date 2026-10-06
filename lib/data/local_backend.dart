@@ -66,9 +66,16 @@ class LocalBackend implements Backend {
     final status = await SmartphoneDeploymentService().createStudyDeployment(protocol);
     final role = protocol.participantRoles?.firstOrNull?.role;
 
+    // CAWS sends the invitation text as plain text, but the protocol holds translation
+    // keys, and study translations only load once a study is selected - resolve them here.
+    final translations = await LocalResourceManager()
+        .getLocalizations(AppConfig.localization?.locale ?? const Locale('en'))
+        .catchError((_) => <String, String>{}); // no lang files - keep the text as is
+    final description = translations[protocol.description] ?? protocol.description;
+
     return ActiveParticipationInvitation(
       Participation(status.studyDeploymentId, 'local-participant', AssignedTo(roleNames: role == null ? null : {role})),
-      StudyInvitation(protocol.name, protocol.description, {'studyId': protocol.id}),
+      StudyInvitation(protocol.name, description, {'studyId': protocol.id}),
     )..assignedDevices = [AssignedPrimaryDevice(device: device)];
   }
 

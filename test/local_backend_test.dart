@@ -37,6 +37,7 @@ void main() {
     final invitations = await AuthService().getInvitations();
 
     expect(invitations, hasLength(1));
+    expect(invitations.single.invitation.description, isNot(startsWith('study.')), reason: 'key, not translated');
     final study = SmartphoneStudy.fromInvitation(invitations.single);
     expect(study.deviceRoleName, isNotEmpty);
     final deployment = await SmartphoneDeploymentService().getDeviceDeploymentFor(
