@@ -24,6 +24,7 @@ const _expectedWarnings = [
   'is not connected. Cannot resume sampling',
   'BackgroundService - ',
   'HealthServiceManager has not the permissions required',
+  'HealthServiceManager - Missing health permissions',
   'Could not get location',
   // CAMS: a local deployment cannot unregister devices, and the Flanker ->
   // Reaction Time trigger initializes the Reaction Time task a second time.
