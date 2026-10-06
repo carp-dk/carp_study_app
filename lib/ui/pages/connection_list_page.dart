@@ -330,6 +330,12 @@ class ConnectionListPageState extends State<ConnectionListPage> {
   }
 
   Future<void> _hardwareDeviceClicked(ConnectionViewModel device) async {
+    // Talks to the watch app over WatchConnectivity - no BLE scan.
+    if (device.deviceManager is AppleWatchDeviceManager) {
+      await device.deviceManager.connect();
+      return;
+    }
+
     // fast out if no Bluetooth
     if (!(await FlutterBluePlus.isSupported)) return;
 

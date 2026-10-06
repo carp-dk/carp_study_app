@@ -192,6 +192,7 @@ const Map<String, String> _deviceTypeName = {
   LocationService.DEVICE_TYPE: "pages.connections.type.location.name",
   PolarDevice.DEVICE_TYPE: "pages.connections.type.polar.name",
   MovesenseDevice.DEVICE_TYPE: "pages.connections.type.movesense.name",
+  AppleWatchDevice.DEVICE_TYPE: "pages.connections.type.apple_watch.name",
 };
 
 const Map<String, String> _deviceTypeDescription = {
@@ -201,6 +202,7 @@ const Map<String, String> _deviceTypeDescription = {
   LocationService.DEVICE_TYPE: "pages.connections.type.location.description",
   PolarDevice.DEVICE_TYPE: "pages.connections.type.polar.description",
   MovesenseDevice.DEVICE_TYPE: "pages.connections.type.movesense.description",
+  AppleWatchDevice.DEVICE_TYPE: "pages.connections.type.apple_watch.description",
   HealthService.DEVICE_TYPE: "pages.connections.type.health.description",
 };
 
@@ -211,6 +213,7 @@ const Map<String, Icon> _deviceTypeIcon = {
   LocationService.DEVICE_TYPE: Icon(Icons.location_on, color: _statusSuccess),
   PolarDevice.DEVICE_TYPE: Icon(Icons.monitor_heart, size: 30, color: _statusError),
   MovesenseDevice.DEVICE_TYPE: Icon(Icons.circle, size: 30, color: Color(0xff646363)),
+  AppleWatchDevice.DEVICE_TYPE: Icon(Icons.watch, size: 30, color: Color(0xff3260A4)),
   HealthService.DEVICE_TYPE: Icon(Icons.favorite_rounded, size: 30, color: _statusError),
 };
 

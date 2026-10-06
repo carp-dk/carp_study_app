@@ -63,6 +63,7 @@ import 'package:cognition_package/cognition_package.dart';
 import 'package:carp_health_package/health_package.dart';
 // import 'package:health/health.dart';
 import 'package:carp_movesense_package/carp_movesense_package.dart';
+import 'package:carp_aware_package/carp_aware_package.dart';
 import 'package:carp_themes_package/carp_themes_package.dart';
 
 part 'core/app_bloc.dart';

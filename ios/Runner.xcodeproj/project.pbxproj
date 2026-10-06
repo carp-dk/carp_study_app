@@ -9,15 +9,23 @@
 /* Begin PBXBuildFile section */
 		1498D2341E8E89220040F4C2 /* GeneratedPluginRegistrant.m in Sources */ = {isa = PBXBuildFile; fileRef = 1498D2331E8E89220040F4C2 /* GeneratedPluginRegistrant.m */; };
 		1DF7245C2EC76C6800F24410 /* PhoneNumberKit in Frameworks */ = {isa = PBXBuildFile; productRef = 1DF7245B2EC76C6800F24410 /* PhoneNumberKit */; };
+		2BB5DC6863FA2939E0DC61CB /* ContentView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2CFA27593E9F8457CFC2B000 /* ContentView.swift */; };
 		331C808B294A63AB00263BE5 /* RunnerTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 331C807B294A618700263BE5 /* RunnerTests.swift */; };
+		3949A18722757746E4099B39 /* CarpWatchSensorController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5EEB11EBC91507BE8929CA93 /* CarpWatchSensorController.swift */; };
 		3B3967161E833CAA004F5970 /* AppFrameworkInfo.plist in Resources */ = {isa = PBXBuildFile; fileRef = 3B3967151E833CAA004F5970 /* AppFrameworkInfo.plist */; };
+		53AFB7530B5C522FFBA93C3C /* Foundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 999EBDFFAEF8257C0DE9C935 /* Foundation.framework */; };
 		74858FAF1ED2DC5600515810 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 74858FAE1ED2DC5600515810 /* AppDelegate.swift */; };
 		78A318202AECB46A00862997 /* FlutterGeneratedPluginSwiftPackage in Frameworks */ = {isa = PBXBuildFile; productRef = 78A3181F2AECB46A00862997 /* FlutterGeneratedPluginSwiftPackage */; };
+		845D5EDD957482B636A58EC8 /* AppIcon26.icon in Resources */ = {isa = PBXBuildFile; fileRef = F4422F0E2FD1A31D00EE32CC /* AppIcon26.icon */; };
 		97C146FC1CF9000F007C117D /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 97C146FA1CF9000F007C117D /* Main.storyboard */; };
 		97C146FE1CF9000F007C117D /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 97C146FD1CF9000F007C117D /* Assets.xcassets */; };
 		97C147011CF9000F007C117D /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 97C146FF1CF9000F007C117D /* LaunchScreen.storyboard */; };
+		9E3BABAEA0862898FEE3636C /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 01A00097963C23E5E9359B07 /* Assets.xcassets */; };
+		B05A4075551200C446C24227 /* carp-aware-watch in Frameworks */ = {isa = PBXBuildFile; productRef = A1776EEFB9315CC6EE1C4E50 /* carp-aware-watch */; };
+		C7B56D95CDB1620211CEED76 /* CARPWatchApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = E32BC70E9425DA7123CF8312 /* CARPWatchApp.swift */; };
 		D93ECDADCF301D48CCE6DCE8 /* Pods_Runner.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = A0826C16315D483B5D5065B1 /* Pods_Runner.framework */; };
 		F4422F0F2FD1A31D00EE32CC /* AppIcon26.icon in Resources */ = {isa = PBXBuildFile; fileRef = F4422F0E2FD1A31D00EE32CC /* AppIcon26.icon */; };
+		FCBE7F4C7AB1CAC12EB11CDF /* CARPWatch Watch App.app in Embed Watch Content */ = {isa = PBXBuildFile; fileRef = 472C0194566B26BBE6DEE74A /* CARPWatch Watch App.app */; settings = {ATTRIBUTES = (RemoveHeadersOnCopy, ); }; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -28,9 +36,27 @@
 			remoteGlobalIDString = 97C146ED1CF9000F007C117D;
 			remoteInfo = Runner;
 		};
+		3A75FDF887896004F1A121CA /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = 97C146E61CF9000F007C117D /* Project object */;
+			proxyType = 1;
+			remoteGlobalIDString = 4458BE9124B417F077A5FCDA;
+			remoteInfo = "CARPWatch Watch App";
+		};
 /* End PBXContainerItemProxy section */
 
 /* Begin PBXCopyFilesBuildPhase section */
+		3413420C73A4BBF4B822C8DB /* Embed Watch Content */ = {
+			isa = PBXCopyFilesBuildPhase;
+			buildActionMask = 2147483647;
+			dstPath = "$(CONTENTS_FOLDER_PATH)/Watch";
+			dstSubfolderSpec = 16;
+			files = (
+				FCBE7F4C7AB1CAC12EB11CDF /* CARPWatch Watch App.app in Embed Watch Content */,
+			);
+			name = "Embed Watch Content";
+			runOnlyForDeploymentPostprocessing = 0;
+		};
 		9705A1C41CF9048500538489 /* Embed Frameworks */ = {
 			isa = PBXCopyFilesBuildPhase;
 			buildActionMask = 2147483647;
@@ -44,16 +70,21 @@
 /* End PBXCopyFilesBuildPhase section */
 
 /* Begin PBXFileReference section */
+		01A00097963C23E5E9359B07 /* Assets.xcassets */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
 		07704947DB81F2B6DF72CD55 /* Pods-Runner.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-Runner.release.xcconfig"; path = "Target Support Files/Pods-Runner/Pods-Runner.release.xcconfig"; sourceTree = "<group>"; };
 		1498D2321E8E86230040F4C2 /* GeneratedPluginRegistrant.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = GeneratedPluginRegistrant.h; sourceTree = "<group>"; };
 		1498D2331E8E89220040F4C2 /* GeneratedPluginRegistrant.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = GeneratedPluginRegistrant.m; sourceTree = "<group>"; };
+		1CD40E86965A75216E10C35F /* CARPWatch Watch App.entitlements */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.plist.entitlements; path = "CARPWatch Watch App.entitlements"; sourceTree = "<group>"; };
 		1D1FA2E62E702A03007D2AD0 /* da */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = da; path = da.lproj/Main.strings; sourceTree = "<group>"; };
 		1D1FA2E72E702A03007D2AD0 /* da */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = da; path = da.lproj/LaunchScreen.strings; sourceTree = "<group>"; };
 		2C59C2E48EC4AA0836DC8545 /* Pods-Runner.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-Runner.debug.xcconfig"; path = "Target Support Files/Pods-Runner/Pods-Runner.debug.xcconfig"; sourceTree = "<group>"; };
+		2CFA27593E9F8457CFC2B000 /* ContentView.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; path = ContentView.swift; sourceTree = "<group>"; };
 		331C807B294A618700263BE5 /* RunnerTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RunnerTests.swift; sourceTree = "<group>"; };
 		331C8081294A63A400263BE5 /* RunnerTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = RunnerTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 		347899093EECC473C86D2933 /* Pods-Runner.profile.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-Runner.profile.xcconfig"; path = "Target Support Files/Pods-Runner/Pods-Runner.profile.xcconfig"; sourceTree = "<group>"; };
 		3B3967151E833CAA004F5970 /* AppFrameworkInfo.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; name = AppFrameworkInfo.plist; path = Flutter/AppFrameworkInfo.plist; sourceTree = "<group>"; };
+		472C0194566B26BBE6DEE74A /* CARPWatch Watch App.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = "CARPWatch Watch App.app"; sourceTree = BUILT_PRODUCTS_DIR; };
+		5EEB11EBC91507BE8929CA93 /* CarpWatchSensorController.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; path = CarpWatchSensorController.swift; sourceTree = "<group>"; };
 		74858FAD1ED2DC5600515810 /* Runner-Bridging-Header.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = "Runner-Bridging-Header.h"; sourceTree = "<group>"; };
 		74858FAE1ED2DC5600515810 /* AppDelegate.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
 		78E0A7A72DC9AD7400C4905E /* FlutterGeneratedPluginSwiftPackage */ = {isa = PBXFileReference; lastKnownFileType = wrapper; name = FlutterGeneratedPluginSwiftPackage; path = Flutter/ephemeral/Packages/FlutterGeneratedPluginSwiftPackage; sourceTree = "<group>"; };
@@ -65,9 +96,12 @@
 		97C146FD1CF9000F007C117D /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
 		97C147001CF9000F007C117D /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/LaunchScreen.storyboard; sourceTree = "<group>"; };
 		97C147021CF9000F007C117D /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
+		999EBDFFAEF8257C0DE9C935 /* Foundation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Foundation.framework; path = Platforms/WatchOS.platform/Developer/SDKs/WatchOS11.0.sdk/System/Library/Frameworks/Foundation.framework; sourceTree = DEVELOPER_DIR; };
 		A0826C16315D483B5D5065B1 /* Pods_Runner.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_Runner.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		D653928A2B7565FF006884D6 /* Runner.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = Runner.entitlements; sourceTree = "<group>"; };
+		DF5349E6497F0F4A2C31C1D0 /* CARPWatch-Watch-App-Info.plist */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.plist.xml; path = "CARPWatch-Watch-App-Info.plist"; sourceTree = "<group>"; };
 		E1E629EF268DFF1000DDDF95 /* RunnerRelease.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = RunnerRelease.entitlements; sourceTree = "<group>"; };
+		E32BC70E9425DA7123CF8312 /* CARPWatchApp.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; path = CARPWatchApp.swift; sourceTree = "<group>"; };
 		F4422F0E2FD1A31D00EE32CC /* AppIcon26.icon */ = {isa = PBXFileReference; lastKnownFileType = folder.iconcomposer.icon; path = AppIcon26.icon; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
@@ -89,9 +123,32 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
+		ADD257E9CAC6B08CE4F5B5A8 /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				53AFB7530B5C522FFBA93C3C /* Foundation.framework in Frameworks */,
+				B05A4075551200C446C24227 /* carp-aware-watch in Frameworks */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
+		041FA6223B85B33785D1A9E2 /* CARPWatch Watch App */ = {
+			isa = PBXGroup;
+			children = (
+				E32BC70E9425DA7123CF8312 /* CARPWatchApp.swift */,
+				2CFA27593E9F8457CFC2B000 /* ContentView.swift */,
+				5EEB11EBC91507BE8929CA93 /* CarpWatchSensorController.swift */,
+				01A00097963C23E5E9359B07 /* Assets.xcassets */,
+				1CD40E86965A75216E10C35F /* CARPWatch Watch App.entitlements */,
+				DF5349E6497F0F4A2C31C1D0 /* CARPWatch-Watch-App-Info.plist */,
+			);
+			name = "CARPWatch Watch App";
+			path = "CARPWatch Watch App";
+			sourceTree = "<group>";
+		};
 		156316E8163C99B329747A50 /* Pods */ = {
 			isa = PBXGroup;
 			children = (
@@ -108,6 +165,14 @@
 				331C807B294A618700263BE5 /* RunnerTests.swift */,
 			);
 			path = RunnerTests;
+			sourceTree = "<group>";
+		};
+		6A917AAF817F0AF1FAC34782 /* watchOS */ = {
+			isa = PBXGroup;
+			children = (
+				999EBDFFAEF8257C0DE9C935 /* Foundation.framework */,
+			);
+			name = watchOS;
 			sourceTree = "<group>";
 		};
 		9740EEB11CF90186004384FC /* Flutter */ = {
@@ -131,6 +196,7 @@
 				331C8082294A63A400263BE5 /* RunnerTests */,
 				156316E8163C99B329747A50 /* Pods */,
 				AA2CBB88B8E54B91DA3559BD /* Frameworks */,
+				041FA6223B85B33785D1A9E2 /* CARPWatch Watch App */,
 			);
 			sourceTree = "<group>";
 		};
@@ -139,6 +205,7 @@
 			children = (
 				97C146EE1CF9000F007C117D /* Runner.app */,
 				331C8081294A63A400263BE5 /* RunnerTests.xctest */,
+				472C0194566B26BBE6DEE74A /* CARPWatch Watch App.app */,
 			);
 			name = Products;
 			sourceTree = "<group>";
@@ -165,6 +232,7 @@
 			isa = PBXGroup;
 			children = (
 				A0826C16315D483B5D5065B1 /* Pods_Runner.framework */,
+				6A917AAF817F0AF1FAC34782 /* watchOS */,
 			);
 			name = Frameworks;
 			sourceTree = "<group>";
@@ -190,6 +258,26 @@
 			productReference = 331C8081294A63A400263BE5 /* RunnerTests.xctest */;
 			productType = "com.apple.product-type.bundle.unit-test";
 		};
+		4458BE9124B417F077A5FCDA /* CARPWatch Watch App */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = FB3B3D45AE82C1EE528E4381 /* Build configuration list for PBXNativeTarget "CARPWatch Watch App" */;
+			buildPhases = (
+				CA73B23B1E821CBDCB791DAD /* Sources */,
+				ADD257E9CAC6B08CE4F5B5A8 /* Frameworks */,
+				A8CE7B98497F6465B417A853 /* Resources */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+			);
+			name = "CARPWatch Watch App";
+			packageProductDependencies = (
+				A1776EEFB9315CC6EE1C4E50 /* carp-aware-watch */,
+			);
+			productName = "CARPWatch Watch App";
+			productReference = 472C0194566B26BBE6DEE74A /* CARPWatch Watch App.app */;
+			productType = "com.apple.product-type.application";
+		};
 		97C146ED1CF9000F007C117D /* Runner */ = {
 			isa = PBXNativeTarget;
 			buildConfigurationList = 97C147051CF9000F007C117D /* Build configuration list for PBXNativeTarget "Runner" */;
@@ -200,12 +288,13 @@
 				97C146EB1CF9000F007C117D /* Frameworks */,
 				97C146EC1CF9000F007C117D /* Resources */,
 				9705A1C41CF9048500538489 /* Embed Frameworks */,
+				3413420C73A4BBF4B822C8DB /* Embed Watch Content */,
 				3B06AD1E1E4923F5004D2608 /* Thin Binary */,
-				BE864319EDCB4DB16025075C /* [CP] Copy Pods Resources */,
 			);
 			buildRules = (
 			);
 			dependencies = (
+				BCDABEA70699086F0A322A13 /* PBXTargetDependency */,
 			);
 			name = Runner;
 			packageProductDependencies = (
@@ -256,6 +345,7 @@
 			targets = (
 				97C146ED1CF9000F007C117D /* Runner */,
 				331C8080294A63A400263BE5 /* RunnerTests */,
+				4458BE9124B417F077A5FCDA /* CARPWatch Watch App */,
 			);
 		};
 /* End PBXProject section */
@@ -277,6 +367,15 @@
 				F4422F0F2FD1A31D00EE32CC /* AppIcon26.icon in Resources */,
 				97C146FE1CF9000F007C117D /* Assets.xcassets in Resources */,
 				97C146FC1CF9000F007C117D /* Main.storyboard in Resources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		A8CE7B98497F6465B417A853 /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				9E3BABAEA0862898FEE3636C /* Assets.xcassets in Resources */,
+				845D5EDD957482B636A58EC8 /* AppIcon26.icon in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -336,23 +435,6 @@
 			shellPath = /bin/sh;
 			shellScript = "/bin/sh \"$FLUTTER_ROOT/packages/flutter_tools/bin/xcode_backend.sh\" build\n";
 		};
-		BE864319EDCB4DB16025075C /* [CP] Copy Pods Resources */ = {
-			isa = PBXShellScriptBuildPhase;
-			buildActionMask = 2147483647;
-			files = (
-			);
-			inputFileListPaths = (
-				"${PODS_ROOT}/Target Support Files/Pods-Runner/Pods-Runner-resources-${CONFIGURATION}-input-files.xcfilelist",
-			);
-			name = "[CP] Copy Pods Resources";
-			outputFileListPaths = (
-				"${PODS_ROOT}/Target Support Files/Pods-Runner/Pods-Runner-resources-${CONFIGURATION}-output-files.xcfilelist",
-			);
-			runOnlyForDeploymentPostprocessing = 0;
-			shellPath = /bin/sh;
-			shellScript = "\"${PODS_ROOT}/Target Support Files/Pods-Runner/Pods-Runner-resources.sh\"\n";
-			showEnvVarsInLog = 0;
-		};
 /* End PBXShellScriptBuildPhase section */
 
 /* Begin PBXSourcesBuildPhase section */
@@ -373,6 +455,16 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
+		CA73B23B1E821CBDCB791DAD /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				C7B56D95CDB1620211CEED76 /* CARPWatchApp.swift in Sources */,
+				2BB5DC6863FA2939E0DC61CB /* ContentView.swift in Sources */,
+				3949A18722757746E4099B39 /* CarpWatchSensorController.swift in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
 /* End PBXSourcesBuildPhase section */
 
 /* Begin PBXTargetDependency section */
@@ -380,6 +472,12 @@
 			isa = PBXTargetDependency;
 			target = 97C146ED1CF9000F007C117D /* Runner */;
 			targetProxy = 331C8085294A63A400263BE5 /* PBXContainerItemProxy */;
+		};
+		BCDABEA70699086F0A322A13 /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			name = "CARPWatch Watch App";
+			target = 4458BE9124B417F077A5FCDA /* CARPWatch Watch App */;
+			targetProxy = 3A75FDF887896004F1A121CA /* PBXContainerItemProxy */;
 		};
 /* End PBXTargetDependency section */
 
@@ -405,6 +503,41 @@
 /* End PBXVariantGroup section */
 
 /* Begin XCBuildConfiguration section */
+		131158113873130542D33E49 /* Release */ = {
+			isa = XCBuildConfiguration;
+			baseConfigurationReference = 9740EEB31CF90195004384FC /* Generated.xcconfig */;
+			buildSettings = {
+				ALWAYS_EMBED_SWIFT_STANDARD_LIBRARIES = YES;
+				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon26;
+				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
+				CODE_SIGN_ENTITLEMENTS = "CARPWatch Watch App/CARPWatch Watch App.entitlements";
+				CODE_SIGN_STYLE = Automatic;
+				CURRENT_PROJECT_VERSION = "$(FLUTTER_BUILD_NUMBER)";
+				DEVELOPMENT_TEAM = 59TCTNUBMQ;
+				GENERATE_INFOPLIST_FILE = YES;
+				INFOPLIST_FILE = "CARPWatch Watch App/CARPWatch-Watch-App-Info.plist";
+				INFOPLIST_KEY_CFBundleDisplayName = CARP;
+				INFOPLIST_KEY_NSBluetoothAlwaysUsageDescription = "Nearby Bluetooth devices are scanned to estimate social context. No connection is made.";
+				INFOPLIST_KEY_NSHealthShareUsageDescription = "Your heart rate is read from the Apple Watch for the study you are enrolled in.";
+				INFOPLIST_KEY_NSHealthUpdateUsageDescription = "This study does not write any data to the Health app.";
+				INFOPLIST_KEY_NSLocationAlwaysAndWhenInUseUsageDescription = "Your location is collected for the study you are enrolled in.";
+				INFOPLIST_KEY_NSLocationWhenInUseUsageDescription = "Your location is collected for the study you are enrolled in.";
+				INFOPLIST_KEY_NSMicrophoneUsageDescription = "The microphone is used to measure the noise level around you. No audio is recorded or saved.";
+				INFOPLIST_KEY_UISupportedInterfaceOrientations = "UIInterfaceOrientationPortrait UIInterfaceOrientationPortraitUpsideDown";
+				INFOPLIST_KEY_WKCompanionAppBundleIdentifier = com.cachet.carpstudyapp;
+				MARKETING_VERSION = "$(FLUTTER_BUILD_NAME)";
+				PRODUCT_BUNDLE_IDENTIFIER = com.cachet.carpstudyapp.watchkitapp;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SDKROOT = watchos;
+				SKIP_INSTALL = YES;
+				SUPPORTED_PLATFORMS = "watchos watchsimulator";
+				SWIFT_VERSION = 5.0;
+				TARGETED_DEVICE_FAMILY = 4;
+				VALIDATE_PRODUCT = YES;
+				WATCHOS_DEPLOYMENT_TARGET = 10.0;
+			};
+			name = Release;
+		};
 		249021D3217E4FDB00AE95B9 /* Profile */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
@@ -448,7 +581,7 @@
 				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
 				GCC_WARN_UNUSED_FUNCTION = YES;
 				GCC_WARN_UNUSED_VARIABLE = YES;
-				IPHONEOS_DEPLOYMENT_TARGET = 15.0;
+				IPHONEOS_DEPLOYMENT_TARGET = 16.0;
 				MTL_ENABLE_DEBUG_INFO = NO;
 				SDKROOT = iphoneos;
 				SUPPORTED_PLATFORMS = iphoneos;
@@ -472,7 +605,7 @@
 				INFOPLIST_FILE = Runner/Info.plist;
 				INFOPLIST_KEY_CFBundleDisplayName = "CARP Studies";
 				INFOPLIST_KEY_LSApplicationCategoryType = "public.app-category.healthcare-fitness";
-				IPHONEOS_DEPLOYMENT_TARGET = 15.0;
+				IPHONEOS_DEPLOYMENT_TARGET = 16.0;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
 					"@executable_path/Frameworks",
@@ -488,6 +621,41 @@
 				SWIFT_VERSION = 5.0;
 				TARGETED_DEVICE_FAMILY = 1;
 				VERSIONING_SYSTEM = "apple-generic";
+			};
+			name = Profile;
+		};
+		2CC4434625D76718B68AC137 /* Profile */ = {
+			isa = XCBuildConfiguration;
+			baseConfigurationReference = 9740EEB31CF90195004384FC /* Generated.xcconfig */;
+			buildSettings = {
+				ALWAYS_EMBED_SWIFT_STANDARD_LIBRARIES = YES;
+				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon26;
+				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
+				CODE_SIGN_ENTITLEMENTS = "CARPWatch Watch App/CARPWatch Watch App.entitlements";
+				CODE_SIGN_STYLE = Automatic;
+				CURRENT_PROJECT_VERSION = "$(FLUTTER_BUILD_NUMBER)";
+				DEVELOPMENT_TEAM = 59TCTNUBMQ;
+				GENERATE_INFOPLIST_FILE = YES;
+				INFOPLIST_FILE = "CARPWatch Watch App/CARPWatch-Watch-App-Info.plist";
+				INFOPLIST_KEY_CFBundleDisplayName = CARP;
+				INFOPLIST_KEY_NSBluetoothAlwaysUsageDescription = "Nearby Bluetooth devices are scanned to estimate social context. No connection is made.";
+				INFOPLIST_KEY_NSHealthShareUsageDescription = "Your heart rate is read from the Apple Watch for the study you are enrolled in.";
+				INFOPLIST_KEY_NSHealthUpdateUsageDescription = "This study does not write any data to the Health app.";
+				INFOPLIST_KEY_NSLocationAlwaysAndWhenInUseUsageDescription = "Your location is collected for the study you are enrolled in.";
+				INFOPLIST_KEY_NSLocationWhenInUseUsageDescription = "Your location is collected for the study you are enrolled in.";
+				INFOPLIST_KEY_NSMicrophoneUsageDescription = "The microphone is used to measure the noise level around you. No audio is recorded or saved.";
+				INFOPLIST_KEY_UISupportedInterfaceOrientations = "UIInterfaceOrientationPortrait UIInterfaceOrientationPortraitUpsideDown";
+				INFOPLIST_KEY_WKCompanionAppBundleIdentifier = com.cachet.carpstudyapp;
+				MARKETING_VERSION = "$(FLUTTER_BUILD_NAME)";
+				PRODUCT_BUNDLE_IDENTIFIER = com.cachet.carpstudyapp.watchkitapp;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SDKROOT = watchos;
+				SKIP_INSTALL = YES;
+				SUPPORTED_PLATFORMS = "watchos watchsimulator";
+				SWIFT_VERSION = 5.0;
+				TARGETED_DEVICE_FAMILY = 4;
+				VALIDATE_PRODUCT = YES;
+				WATCHOS_DEPLOYMENT_TARGET = 10.0;
 			};
 			name = Profile;
 		};
@@ -538,6 +706,40 @@
 			};
 			name = Profile;
 		};
+		387CFC27BFA2C821EA43AD8C /* Debug */ = {
+			isa = XCBuildConfiguration;
+			baseConfigurationReference = 9740EEB31CF90195004384FC /* Generated.xcconfig */;
+			buildSettings = {
+				ALWAYS_EMBED_SWIFT_STANDARD_LIBRARIES = YES;
+				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon26;
+				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
+				CODE_SIGN_ENTITLEMENTS = "CARPWatch Watch App/CARPWatch Watch App.entitlements";
+				CODE_SIGN_STYLE = Automatic;
+				CURRENT_PROJECT_VERSION = "$(FLUTTER_BUILD_NUMBER)";
+				DEVELOPMENT_TEAM = 59TCTNUBMQ;
+				GENERATE_INFOPLIST_FILE = YES;
+				INFOPLIST_FILE = "CARPWatch Watch App/CARPWatch-Watch-App-Info.plist";
+				INFOPLIST_KEY_CFBundleDisplayName = CARP;
+				INFOPLIST_KEY_NSBluetoothAlwaysUsageDescription = "Nearby Bluetooth devices are scanned to estimate social context. No connection is made.";
+				INFOPLIST_KEY_NSHealthShareUsageDescription = "Your heart rate is read from the Apple Watch for the study you are enrolled in.";
+				INFOPLIST_KEY_NSHealthUpdateUsageDescription = "This study does not write any data to the Health app.";
+				INFOPLIST_KEY_NSLocationAlwaysAndWhenInUseUsageDescription = "Your location is collected for the study you are enrolled in.";
+				INFOPLIST_KEY_NSLocationWhenInUseUsageDescription = "Your location is collected for the study you are enrolled in.";
+				INFOPLIST_KEY_NSMicrophoneUsageDescription = "The microphone is used to measure the noise level around you. No audio is recorded or saved.";
+				INFOPLIST_KEY_UISupportedInterfaceOrientations = "UIInterfaceOrientationPortrait UIInterfaceOrientationPortraitUpsideDown";
+				INFOPLIST_KEY_WKCompanionAppBundleIdentifier = com.cachet.carpstudyapp;
+				MARKETING_VERSION = "$(FLUTTER_BUILD_NAME)";
+				PRODUCT_BUNDLE_IDENTIFIER = com.cachet.carpstudyapp.watchkitapp;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SDKROOT = watchos;
+				SKIP_INSTALL = YES;
+				SUPPORTED_PLATFORMS = "watchos watchsimulator";
+				SWIFT_VERSION = 5.0;
+				TARGETED_DEVICE_FAMILY = 4;
+				WATCHOS_DEPLOYMENT_TARGET = 10.0;
+			};
+			name = Debug;
+		};
 		97C147031CF9000F007C117D /* Debug */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
@@ -587,7 +789,7 @@
 				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
 				GCC_WARN_UNUSED_FUNCTION = YES;
 				GCC_WARN_UNUSED_VARIABLE = YES;
-				IPHONEOS_DEPLOYMENT_TARGET = 15.0;
+				IPHONEOS_DEPLOYMENT_TARGET = 16.0;
 				MTL_ENABLE_DEBUG_INFO = YES;
 				ONLY_ACTIVE_ARCH = YES;
 				SDKROOT = iphoneos;
@@ -638,7 +840,7 @@
 				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
 				GCC_WARN_UNUSED_FUNCTION = YES;
 				GCC_WARN_UNUSED_VARIABLE = YES;
-				IPHONEOS_DEPLOYMENT_TARGET = 15.0;
+				IPHONEOS_DEPLOYMENT_TARGET = 16.0;
 				MTL_ENABLE_DEBUG_INFO = NO;
 				SDKROOT = iphoneos;
 				SUPPORTED_PLATFORMS = iphoneos;
@@ -664,7 +866,7 @@
 				INFOPLIST_FILE = Runner/Info.plist;
 				INFOPLIST_KEY_CFBundleDisplayName = "CARP Studies";
 				INFOPLIST_KEY_LSApplicationCategoryType = "public.app-category.healthcare-fitness";
-				IPHONEOS_DEPLOYMENT_TARGET = 15.0;
+				IPHONEOS_DEPLOYMENT_TARGET = 16.0;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
 					"@executable_path/Frameworks",
@@ -701,7 +903,7 @@
 				INFOPLIST_FILE = Runner/Info.plist;
 				INFOPLIST_KEY_CFBundleDisplayName = "CARP Studies";
 				INFOPLIST_KEY_LSApplicationCategoryType = "public.app-category.healthcare-fitness";
-				IPHONEOS_DEPLOYMENT_TARGET = 15.0;
+				IPHONEOS_DEPLOYMENT_TARGET = 16.0;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
 					"@executable_path/Frameworks",
@@ -754,6 +956,16 @@
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Release;
 		};
+		FB3B3D45AE82C1EE528E4381 /* Build configuration list for PBXNativeTarget "CARPWatch Watch App" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				131158113873130542D33E49 /* Release */,
+				387CFC27BFA2C821EA43AD8C /* Debug */,
+				2CC4434625D76718B68AC137 /* Profile */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
 /* End XCConfigurationList section */
 
 /* Begin XCLocalSwiftPackageReference section */
@@ -783,6 +995,10 @@
 		78A3181F2AECB46A00862997 /* FlutterGeneratedPluginSwiftPackage */ = {
 			isa = XCSwiftPackageProductDependency;
 			productName = FlutterGeneratedPluginSwiftPackage;
+		};
+		A1776EEFB9315CC6EE1C4E50 /* carp-aware-watch */ = {
+			isa = XCSwiftPackageProductDependency;
+			productName = "carp-aware-watch";
 		};
 /* End XCSwiftPackageProductDependency section */
 	};

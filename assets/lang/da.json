@@ -175,6 +175,8 @@
   "pages.connections.type.esense.name": "eSense",
   "pages.connections.type.polar.name": "Polar",
   "pages.connections.type.movesense.name": "Movesense",
+  "pages.connections.type.apple_watch.name": "Apple Watch",
+  "pages.connections.type.apple_watch.description": "Apple Watch med CARP-urappen",
   "pages.connections.type.weather.name": "Vejr",
   "pages.connections.type.air_quality.name": "Luftkvalitet",
   "pages.connections.type.location.name": "Lokalisering",

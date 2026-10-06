@@ -23,6 +23,7 @@ dependencies:
   carp_polar_package: ^2.1.0
   carp_health_package: ^4.1.1
   carp_movesense_package: ^3.1.0
+  carp_aware_package: ^1.0.0 # iOS only, needs the CARPWatch watchOS target
   carp_themes_package: ^0.2.1
 
   carp_webservices: ^4.4.1
@@ -135,13 +136,6 @@ dev_dependencies:
 #  3. run 'dart run flutter_launcher_icons:main'
 
 flutter:
-  # Route all iOS native deps through CocoaPods. The Polar BLE SDK (via the
-  # `polar` plugin) and Movesense (`mdsflutter`, CocoaPods-only) both pull in
-  # SwiftProtobuf; with Swift Package Manager enabled Polar resolves it via SPM
-  # while Movesense uses CocoaPods, producing duplicate-symbol link errors.
-  config:
-    enable-swift-package-manager: false
-
   uses-material-design: true
 
   assets:
