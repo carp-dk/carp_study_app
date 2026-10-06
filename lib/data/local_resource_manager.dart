@@ -15,7 +15,7 @@ class LocalResourceManager
   /// The path to the json files to be loaded using this resource manager.
   static final String basePath = 'assets/carp';
 
-  Map<String, String>? _translations;
+  final Map<String, Map<String, String>> _translations = {};
   RPOrderedTask? _informedConsent;
   final Map<String, Message> _messages = {};
   SmartphoneStudyProtocol? _protocol;
@@ -68,14 +68,19 @@ class LocalResourceManager
 
   @override
   Future<Map<String, String>> getLocalizations(Locale locale, {bool refresh = false}) async {
-    if (_translations == null) {
-      var path = '$basePath/lang/${locale.languageCode}.json';
-      var jsonString = await rootBundle.loadString(path);
-
-      Map<String, dynamic> jsonMap = json.decode(jsonString) as Map<String, dynamic>;
-      _translations = jsonMap.map((key, value) => MapEntry(key, value.toString()));
+    final code = locale.languageCode;
+    if (_translations[code] == null) {
+      String jsonString;
+      try {
+        jsonString = await rootBundle.loadString('$basePath/lang/$code.json');
+      } catch (_) {
+        warning("$runtimeType - No '$basePath/lang/$code.json', using 'en.json' instead.");
+        jsonString = await rootBundle.loadString('$basePath/lang/en.json');
+      }
+      final jsonMap = json.decode(jsonString) as Map<String, dynamic>;
+      _translations[code] = jsonMap.map((key, value) => MapEntry(key, value.toString()));
     }
-    return _translations!;
+    return _translations[code]!;
   }
 
   @override
@@ -97,7 +102,10 @@ class LocalResourceManager
   Future<List<Message>> getMessages({DateTime? start, DateTime? end, int? count = 20}) async {
     if (_messages.isEmpty) {
       final assetManifest = await AssetManifest.loadFromAssetBundle(rootBundle);
-      final files = assetManifest.listAssets().where((string) => string.startsWith("$basePath/messages/")).toList();
+      final files = assetManifest
+          .listAssets()
+          .where((string) => string.startsWith("$basePath/messages/") && string.endsWith('.json'))
+          .toList();
 
       for (var file in files) {
         var jsonString = await rootBundle.loadString(file);

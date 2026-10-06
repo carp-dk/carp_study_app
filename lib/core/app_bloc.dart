@@ -91,14 +91,8 @@ class AppBloc extends ChangeNotifier {
 
     CarpResourceManager().initialize();
 
-    if (AppConfig.deploymentMode != DeploymentMode.local) {
-      // Offline-safe, and configures the deployment service Sensing() needs.
-      await auth.initialize();
-    } else {
-      // Its device types (location, Polar, ...) only deserialize once Sensing has registered them.
-      Sensing();
-      await study.deployLocalProtocol();
-    }
+    // Offline-safe, and configures the deployment service Sensing() needs.
+    await auth.initialize();
 
     _state = AppState.initialized;
     notifyListeners();

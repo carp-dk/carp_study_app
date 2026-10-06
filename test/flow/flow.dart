@@ -134,8 +134,10 @@ class Flow {
     tester.binding.defaultBinaryMessenger.allMessagesHandler = (channel, handler, message) {
       if (channel == 'flutter/assets') {
         final key = utf8.decode(message!.buffer.asUint8List());
-        if (key.startsWith('assets/carp/')) {
-          return Future.value(ByteData.sublistView(File('$fixtures/${key.split('/').last}').readAsBytesSync()));
+        final fixture = File('$fixtures/${key.split('/').last}');
+        // Anything else in a developer's local assets/carp (e.g. messages) loads as is.
+        if (key.startsWith('assets/carp/') && fixture.existsSync()) {
+          return Future.value(ByteData.sublistView(fixture.readAsBytesSync()));
         }
       }
       if (handler != null) return handler(message);
@@ -182,6 +184,20 @@ class Flow {
     _router = tester.widget<MaterialApp>(find.byType(MaterialApp)).routerConfig! as GoRouter;
     _router!.routerDelegate.addListener(_onRoute);
     _onRoute();
+    await _join();
+  }
+
+  /// Signs in and accepts the one local invitation, as the login and invitation pages do.
+  Future<void> _join() async {
+    await pumpUntil(() => find.byType(LoginPage).evaluate().isNotEmpty, 'the login page');
+    await tester.runAsync(() async {
+      await bloc.auth.authenticate();
+      final invitations = bloc.appViewModel.invitationsListViewModel;
+      await invitations.loadInvitations();
+      invitations.accept(invitations.invitations.single);
+    });
+    _router!.go(CarpAppState.homeRoute);
+    await tester.pump();
   }
 
   Future<void> _stop() async {

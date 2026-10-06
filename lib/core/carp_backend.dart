@@ -2,7 +2,7 @@ part of carp_study_app;
 
 /// Connection to the CAWS backend: the CAWS [app], authentication, study IDs,
 /// and informed consent upload. Singleton via `CarpBackend()`.
-class CarpBackend {
+class CarpBackend implements Backend {
   /// The URL of the official CARP web site.
   static const String carpWebsiteUrl = "https://carp.dk";
 
@@ -26,6 +26,7 @@ class CarpBackend {
   }
 
   /// The URI of the CAWS server - depending on deployment mode.
+  @override
   Uri get uri => Uri(scheme: 'https', host: uris[AppConfig.deploymentMode]);
 
   /// The URI of the CAWS authentication service.
@@ -51,6 +52,7 @@ class CarpBackend {
   );
 
   /// Initialize this backend. Must be called before used.
+  @override
   Future<void> initialize() async {
     info('$runtimeType - initializing');
     await _configureAuth();
@@ -98,6 +100,7 @@ class CarpBackend {
   }
 
   /// Authenticate using a web view.
+  @override
   Future<void> authenticate() async {
     await _configureAuth();
     try {
@@ -111,6 +114,7 @@ class CarpBackend {
 
   /// The magic link belonging to a short sign-in [code], or null if CAWS
   /// does not know the code (or is unreachable).
+  @override
   Future<String?> magicLinkForCode(String code) async {
     await _configureAuth();
     try {
@@ -122,6 +126,7 @@ class CarpBackend {
   }
 
   /// Authenticate anonymously using a magic link.
+  @override
   Future<void> authenticateWithMagicLink(String uri) async {
     await _configureAuth();
     try {
@@ -162,15 +167,18 @@ class CarpBackend {
   }
 
   /// Sign out from CAWS and erase all local authentication information.
+  @override
   Future<void> signOut() async {
     if (CarpAuthService().authenticated) await CarpAuthService().logout();
     await LocalSettings().eraseAuthCredentials();
   }
 
   /// Has the user been authenticated?
+  @override
   bool get isAuthenticated => CarpAuthService().authenticated;
 
   /// The user authenticated, if any.
+  @override
   CarpUser? get user => LocalSettings().user;
   set user(CarpUser? user) => LocalSettings().user = user;
 
@@ -188,6 +196,7 @@ class CarpBackend {
   List<ActiveParticipationInvitation> invitations = [];
 
   /// Get the list of active invitations for this user from the [CarpParticipationService].
+  @override
   Future<List<ActiveParticipationInvitation>> getInvitations() async {
     CarpParticipationService().configureFrom(CarpService());
 
@@ -195,6 +204,7 @@ class CarpBackend {
   }
 
   /// Set the [study] used on this phone.
+  @override
   set study(SmartphoneStudy study) {
     info('Setting (new) study in CAWS services - study: $study');
     CarpService().study = study;
@@ -208,6 +218,7 @@ class CarpBackend {
   ///
   /// Looks for the first instance of a [RPConsentSignatureResult] in [consent]
   /// and uploads this.
+  @override
   Future<InformedConsentInput?> uploadInformedConsent(RPTaskResult consent) async {
     if (user == null) {
       warning('$runtimeType - No user authenticated.');
@@ -251,7 +262,8 @@ class CarpBackend {
     return uploadedConsent;
   }
 
-  Future<InformedConsentInput?>? getInformedConsentByRole(String studyDeploymentId, String? role) async {
+  @override
+  Future<InformedConsentInput?> getInformedConsentByRole(String studyDeploymentId, String? role) async {
     return await CarpParticipationService().participation(studyDeploymentId).getInformedConsentByRole(role);
   }
 }

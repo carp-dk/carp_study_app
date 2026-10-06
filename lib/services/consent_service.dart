@@ -2,10 +2,10 @@ part of carp_study_app;
 
 /// The consent document and signed consent in CAWS - policy is the view model's.
 class ConsentService {
-  ConsentService(this._manager, {CarpBackend? backend}) : _backend = backend ?? CarpBackend();
+  ConsentService(this._manager, {Backend? backend}) : _backend = backend ?? Backend();
 
   final InformedConsentManager _manager;
-  final CarpBackend _backend;
+  final Backend _backend;
 
   /// Get the informed consent document for this study, or null if it has none.
   Future<RPOrderedTask?> getDocument({bool refresh = false}) => _manager.getConsentDocument(refresh: refresh);
