@@ -35,7 +35,7 @@ jobs:
         uses: flutter-actions/setup-flutter@v4
         with:
           channel: stable
-          version: 3.44.6
+          version: 3.47.5
 
       - name: Clean
         run: flutter clean

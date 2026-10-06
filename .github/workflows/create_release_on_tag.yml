@@ -19,7 +19,7 @@ jobs:
       - name: Set up Flutter
         uses: subosito/flutter-action@v2
         with:
-          flutter-version: "3.44.6"
+          flutter-version: "3.47.5"
           channel: stable
           cache: true
           pub-cache: true
@@ -58,7 +58,7 @@ jobs:
         run: |
           flutter clean
           flutter pub get
-          flutter build apk --release --no-tree-shake-icons
+          flutter build apk --release --split-per-abi --no-tree-shake-icons
 
       # Attach the APK to the release for this tag, creating the release if needed.
       - name: Upload APK to GitHub release
@@ -66,8 +66,10 @@ jobs:
           GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: |
           gh release view "$GITHUB_REF_NAME" >/dev/null 2>&1 || gh release create "$GITHUB_REF_NAME" --generate-notes
-          cp build/app/outputs/flutter-apk/app-release.apk "carp-studies-app-$GITHUB_REF_NAME.apk"
-          gh release upload "$GITHUB_REF_NAME" "carp-studies-app-$GITHUB_REF_NAME.apk" --clobber
+          # arm64 covers practically all phones; armeabi-v7a is for old 32-bit devices.
+          cp build/app/outputs/flutter-apk/app-arm64-v8a-release.apk "carp-studies-app-$GITHUB_REF_NAME.apk"
+          cp build/app/outputs/flutter-apk/app-armeabi-v7a-release.apk "carp-studies-app-$GITHUB_REF_NAME-armeabi-v7a.apk"
+          gh release upload "$GITHUB_REF_NAME" "carp-studies-app-$GITHUB_REF_NAME.apk" "carp-studies-app-$GITHUB_REF_NAME-armeabi-v7a.apk" --clobber
 
       # Setup Ruby/Bundler so fastlane is available
       - name: Setup Fastlane

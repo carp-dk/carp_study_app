@@ -39,10 +39,7 @@ class _StatisticsPageState extends State<StatisticsPage> {
               physics: const AlwaysScrollableScrollPhysics(),
               padding: const EdgeInsets.only(bottom: 24),
               children: [
-                const Padding(
-                  padding: EdgeInsets.symmetric(vertical: 8.0, horizontal: 10),
-                  child: CarpAppBar(hasProfileIcon: true),
-                ),
+                const CarpAppBar(hasProfileIcon: true),
                 CarpPageTitle(locale.translate('pages.data_viz.title')),
                 ..._sections(locale),
               ],
@@ -82,7 +79,7 @@ class _StatisticsPageState extends State<StatisticsPage> {
         HeartRateCardWidget(model.movesenseHeartRateCardDataModel),
       ],
       if (model.hasHealthMeasure && model.healthHeartRateCardDataModel.hasData) ...[
-        CarpSectionTitle(locale.translate('cards.heartrate.health.title')),
+        CarpSectionTitle(locale.translate('cards.heartrate.health.title', args: {'source': healthPlatformName})),
         HeartRateCardWidget(model.healthHeartRateCardDataModel),
       ],
       if (model.hasStepsMeasure && model.stepsCardDataModel.hasData) ...[

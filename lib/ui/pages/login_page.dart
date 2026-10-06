@@ -16,67 +16,69 @@ class _LoginPageState extends State<LoginPage> {
     final textTheme = Theme.of(context).textTheme;
     return Scaffold(
       body: SafeArea(
-        child: Center(
-          child: Column(
-            mainAxisAlignment: MainAxisAlignment.end,
-            crossAxisAlignment: CrossAxisAlignment.center,
-            children: [
-              Expanded(
-                child: Container(
-                  margin: const EdgeInsets.symmetric(vertical: 32, horizontal: 56),
-                  child: Image.asset('assets/carp_logo.png', fit: BoxFit.contain),
-                ),
+        child: Column(
+          children: [
+            const CarpAppBar(),
+            Expanded(
+              child: CustomScrollView(
+                slivers: [
+                  SliverFillRemaining(
+                    hasScrollBody: false,
+                    child: Padding(
+                      padding: const EdgeInsets.fromLTRB(16, 0, 16, 16),
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.stretch,
+                        children: [
+                          const Spacer(),
+                          Text(
+                            locale.translate('pages.login.invited.question'),
+                            textAlign: TextAlign.center,
+                            style: textTheme.headlineSmall,
+                          ),
+                          const SizedBox(height: 8),
+                          Text(
+                            locale.translate('pages.login.invited.question_hint'),
+                            textAlign: TextAlign.center,
+                            style: textTheme.bodyLarge?.copyWith(color: textTheme.bodySmall?.color),
+                          ),
+                          const SizedBox(height: 32),
+                          _ChoiceCard(
+                            icon: Icons.qr_code_2,
+                            title: locale.translate('pages.login.invited.code.title'),
+                            hint: locale.translate('pages.login.invited.code.hint'),
+                            primary: true,
+                            onTap: () => context.push(CodeSignInPage.route),
+                          ),
+                          const SizedBox(height: 12),
+                          _ChoiceCard(
+                            icon: Icons.person_outline,
+                            title: locale.translate('pages.login.invited.account.title'),
+                            hint: locale.translate('pages.login.invited.account.hint'),
+                            primary: false,
+                            onTap: _signIn,
+                          ),
+                          if (widget.model.isAuthenticated)
+                            TextButton(
+                              onPressed: () {
+                                showDialog<bool>(context: context, builder: (context) => const LogoutMessage()).then((
+                                  value,
+                                ) async {
+                                  if (value == true) {
+                                    await widget.model.signOut();
+                                    if (mounted) setState(() {});
+                                  }
+                                });
+                              },
+                              child: Text(locale.translate('pages.login.logout')),
+                            ),
+                        ],
+                      ),
+                    ),
+                  ),
+                ],
               ),
-              Padding(
-                padding: const EdgeInsets.symmetric(horizontal: 32),
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.stretch,
-                  children: [
-                    Text(
-                      locale.translate('pages.login.invited.question'),
-                      textAlign: TextAlign.center,
-                      style: textTheme.headlineSmall?.copyWith(fontWeight: FontWeight.w600),
-                    ),
-                    const SizedBox(height: 8),
-                    Text(
-                      locale.translate('pages.login.invited.question_hint'),
-                      textAlign: TextAlign.center,
-                      style: textTheme.bodyLarge?.copyWith(color: textTheme.bodySmall?.color),
-                    ),
-                    const SizedBox(height: 24),
-                    _ChoiceCard(
-                      icon: Icons.qr_code_2,
-                      title: locale.translate('pages.login.invited.code.title'),
-                      hint: locale.translate('pages.login.invited.code.hint'),
-                      primary: true,
-                      onTap: () => context.push(CodeSignInPage.route),
-                    ),
-                    const SizedBox(height: 12),
-                    _ChoiceCard(
-                      icon: Icons.person_outline,
-                      title: locale.translate('pages.login.invited.account.title'),
-                      hint: locale.translate('pages.login.invited.account.hint'),
-                      primary: false,
-                      onTap: _signIn,
-                    ),
-                    const SizedBox(height: 16),
-                  ],
-                ),
-              ),
-              if (widget.model.isAuthenticated)
-                TextButton(
-                  onPressed: () {
-                    showDialog<bool>(context: context, builder: (context) => const LogoutMessage()).then((value) async {
-                      if (value == true) {
-                        await widget.model.signOut();
-                        if (mounted) setState(() {});
-                      }
-                    });
-                  },
-                  child: Text(locale.translate('pages.login.logout')),
-                ),
-            ],
-          ),
+            ),
+          ],
         ),
       ),
     );

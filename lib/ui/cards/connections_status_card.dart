@@ -27,7 +27,7 @@ class _ConnectionsStatusCardState extends State<ConnectionsStatusCard> {
     final (accent, icon, title) = switch (model.connectionState) {
       HomeConnectionState.all => (_green, Icons.sync, 'Connected & sending data'),
       HomeConnectionState.partial => (_amber, Icons.sync_problem, 'Partially connected'),
-      HomeConnectionState.none => (_rose, Icons.sync_disabled, 'No devices connected'),
+      HomeConnectionState.none => (_rose, Icons.sync_disabled, 'Nothing connected'),
     };
 
     final sources = switch (model.connectionState) {
@@ -109,12 +109,16 @@ class _ConnectionsStatusCardState extends State<ConnectionsStatusCard> {
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         if (model.hasBackgroundSensing)
-          _sourceRow(context, locale.translate('pages.devices.type.background.name'), model.isBackgroundSensingActive),
+          _sourceRow(
+            context,
+            locale.translate('pages.connections.type.background.name'),
+            model.isBackgroundSensingActive,
+          ),
         for (final d in model.connectionSources)
           _sourceRow(context, locale.translate(d.typeName), model.isSourceActive(d)),
         Divider(height: 1, color: Colors.grey.shade200),
         InkWell(
-          onTap: () => context.go(DeviceListPage.route),
+          onTap: () => context.go(ConnectionListPage.route),
           child: Padding(
             padding: const EdgeInsets.all(16),
             child: Row(

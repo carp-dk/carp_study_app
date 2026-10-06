@@ -24,10 +24,7 @@ class AudioTaskPageState extends State<AudioTaskPage> {
                 children: [
                   Row(
                     children: [
-                      Padding(
-                        padding: const EdgeInsets.symmetric(vertical: 8.0, horizontal: 10),
-                        child: const CarpAppBar(hasProfileIcon: false),
-                      ),
+                      const CarpAppBar(hasProfileIcon: false),
                       Spacer(),
                       IconButton(
                         color: Colors.grey.shade900,

@@ -85,13 +85,9 @@ class HeartRateCardViewModel extends SerializableViewModel<HourlyHeartRate> {
     }, onError: onMeasurementStreamError);
   }
 
-  /// Recompute the trailing 24h/7d bands from backfilled [measurements] -
-  /// idempotent; no ordering requirement, [_record] widens bands independently.
+  /// Merge backfilled [measurements] into the 24h/7d bands - idempotent, as
+  /// [_record] only widens; never clears, so readings not yet uploaded stay.
   void addMeasurements(List<Measurement> measurements) {
-    model.hourlyHeartRate.clear();
-    model.dailyHeartRate.clear();
-    model.maxHeartRate = null;
-    model.minHeartRate = null;
     for (final measurement in measurements) {
       _record(model, measurement);
     }

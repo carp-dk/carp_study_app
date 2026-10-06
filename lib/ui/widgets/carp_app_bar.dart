@@ -35,34 +35,25 @@ class CarpSectionTitle extends StatelessWidget {
   }
 }
 
+/// The logo header shared by all pages, with an optional profile button.
 class CarpAppBar extends StatelessWidget {
   final bool hasProfileIcon;
   const CarpAppBar({super.key, this.hasProfileIcon = false});
 
   @override
   Widget build(BuildContext context) {
-    return Container(
-      child: Column(
+    return Padding(
+      padding: const EdgeInsets.symmetric(vertical: 8, horizontal: 10),
+      child: Row(
+        mainAxisAlignment: MainAxisAlignment.spaceBetween,
         children: [
-          Column(
-            children: [
-              Row(
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                children: [
-                  Container(
-                    padding: EdgeInsets.only(left: 8),
-                    child: Image.asset('assets/carp_logo.png', fit: BoxFit.contain, height: 16),
-                  ),
-                  if (hasProfileIcon)
-                    IconButton(
-                      icon: Icon(Icons.account_circle, color: Theme.of(context).primaryColor, size: 30),
-                      tooltip: 'Profile',
-                      onPressed: () => context.push(ProfilePage.route),
-                    ),
-                ],
-              ),
-            ],
-          ),
+          Padding(padding: const EdgeInsets.only(left: 8), child: SvgPicture.asset('assets/carp_logo.svg', height: 44)),
+          if (hasProfileIcon)
+            IconButton(
+              icon: Icon(Icons.account_circle, color: Theme.of(context).primaryColor, size: 30),
+              tooltip: 'Profile',
+              onPressed: () => context.push(ProfilePage.route),
+            ),
         ],
       ),
     );
