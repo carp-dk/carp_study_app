@@ -130,8 +130,10 @@ class ConnectionListPageState extends State<ConnectionListPage> {
             leadingImage: device.iconImage,
             title: (locale.translate(device.typeName), device.batteryLevel ?? 0),
             subtitle: device.name,
-            // Study-managed, so the user cannot disconnect it - nothing to tap.
-            onTap: device.status == DeviceStatus.connected || device.status == DeviceStatus.connecting
+            // Study-managed, so the user cannot disconnect it - only local mode inspects its data.
+            onTap: device.status == DeviceStatus.connected && _isLocal
+                ? () => _showWrittenMeasurements(device)
+                : device.status == DeviceStatus.connected || device.status == DeviceStatus.connecting
                 ? null
                 : () async => await _hardwareDeviceClicked(device),
             trailing: device.getDeviceStatusIcon is Icon
@@ -280,7 +282,14 @@ class ConnectionListPageState extends State<ConnectionListPage> {
     ),
   );
 
+  /// Only a local deployment exposes the on-device database for inspection.
+  bool get _isLocal => AppConfig.deploymentMode == DeploymentMode.local;
+
+  Future<void> _showWrittenMeasurements(ConnectionViewModel device) =>
+      showModalBottomSheet<void>(context: context, builder: (context) => _WrittenMeasurementsSheet(device));
+
   Future<void> _serviceClicked(ConnectionViewModel service) async {
+    if (service.status == DeviceStatus.connected && _isLocal) return _showWrittenMeasurements(service);
     if (service.status == DeviceStatus.connected || service.status == DeviceStatus.connecting) {
       return;
     }
@@ -360,6 +369,66 @@ class ConnectionListPageState extends State<ConnectionListPage> {
       }
     }
   }
+}
+
+/// Local deployment only: the rows written to SQLite for [device], re-read every 2s.
+class _WrittenMeasurementsSheet extends StatefulWidget {
+  final ConnectionViewModel device;
+  const _WrittenMeasurementsSheet(this.device);
+
+  @override
+  State<_WrittenMeasurementsSheet> createState() => _WrittenMeasurementsSheetState();
+}
+
+class _WrittenMeasurementsSheetState extends State<_WrittenMeasurementsSheet> {
+  late final String? _role = widget.device.deviceManager.configuration?.roleName;
+  late final _rows = _poll();
+
+  Stream<(List<Map<String, Object?>>, String?)> _poll() async* {
+    final dataManager = bloc.study.controller?.dataManager;
+    final db = dataManager is SQLiteDataManager ? dataManager.database : null;
+    final args = [_role, bloc.study.deployment?.studyDeploymentId];
+    const where = 'WHERE device_role_name = ? AND deployment_id = ?';
+    while (db != null && db.isOpen) {
+      final counts = await db.rawQuery(
+        'SELECT data_type, COUNT(*) AS n FROM measurements $where GROUP BY data_type ORDER BY n DESC',
+        args,
+      );
+      final last = await db.rawQuery('SELECT measurement FROM measurements $where ORDER BY id DESC LIMIT 1', args);
+      yield (counts, last.firstOrNull?['measurement'] as String?);
+      await Future<void>.delayed(const Duration(seconds: 2));
+    }
+  }
+
+  @override
+  Widget build(BuildContext context) => SafeArea(
+    child: Padding(
+      padding: const EdgeInsets.all(16),
+      child: StreamBuilder(
+        stream: _rows,
+        builder: (context, snapshot) {
+          final (counts, last) = snapshot.data ?? (const <Map<String, Object?>>[], null);
+          return Column(
+            mainAxisSize: MainAxisSize.min,
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Text('Written to SQLite - $_role', style: Theme.of(context).textTheme.titleMedium),
+              const SizedBox(height: 8),
+              if (snapshot.connectionState == ConnectionState.done)
+                const Text('No open SQLite database.')
+              else if (counts.isEmpty)
+                const Text('Nothing written yet.'),
+              for (final row in counts) Text('${row['n']}  ${row['data_type']}'),
+              if (last != null) ...[
+                const SizedBox(height: 8),
+                Text(last, maxLines: 6, overflow: TextOverflow.ellipsis, style: Theme.of(context).textTheme.bodySmall),
+              ],
+            ],
+          );
+        },
+      ),
+    ),
+  );
 }
 
 /// Explain missing permissions and offer the app settings - the OS won't ask
