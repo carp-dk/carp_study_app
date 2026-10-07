@@ -124,6 +124,7 @@ dev_dependencies:
   integration_test:
     sdk: flutter
   mockito: any
+  flutter_blue_plus_platform_interface: any
   flutter_lints: any
   sqflite_common_ffi: ^2.4.3
 
