@@ -332,7 +332,10 @@ class ConnectionListPageState extends State<ConnectionListPage> {
   Future<void> _hardwareDeviceClicked(ConnectionViewModel device) async {
     // Talks to the watch app over WatchConnectivity - no BLE scan.
     if (device.deviceManager is AppleWatchDeviceManager) {
-      await device.deviceManager.connect();
+      await Navigator.of(
+        context,
+        rootNavigator: true,
+      ).push(MaterialPageRoute<void>(builder: (context) => AppleWatchConnectPage(device: device)));
       return;
     }
 

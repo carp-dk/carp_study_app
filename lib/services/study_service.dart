@@ -151,6 +151,8 @@ class StudyService {
       ? []
       : SmartPhoneClientManager().deviceController.devices.values
             .where((manager) => deployment!.devices.any((device) => device.type == manager.deviceType))
+            // The Apple Watch needs an iPhone - hide it elsewhere.
+            .where((manager) => manager.deviceType != AppleWatchDevice.DEVICE_TYPE || Platform.isIOS)
             .map((manager) => ConnectionViewModel(manager));
 
   /// Does this [deployment] have any measures (besides app tasks)?
