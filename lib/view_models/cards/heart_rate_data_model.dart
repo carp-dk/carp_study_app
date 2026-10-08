@@ -66,8 +66,12 @@ class HeartRateCardViewModel extends SerializableViewModel<HourlyHeartRate> {
 
   /// Stream of heart rate measurements of this card's [dataType] only - health
   /// data shares one data type with steps, sleep, etc.
+  /// A health catch-up spans 30 days; the card shows at most the last 7.
   Stream<Measurement>? get sourceStream => controller?.measurements.where(
-    (measurement) => measurement.dataType.toString() == dataType && bpmOf(measurement) != null,
+    (measurement) =>
+        measurement.dataType.toString() == dataType &&
+        bpmOf(measurement) != null &&
+        measurement.sensorTime.isAfter(DateTime.now().subtract(const Duration(days: 7))),
   );
 
   /// Stream of heart rate readings in BPM, for the card to rebuild on.
@@ -119,8 +123,10 @@ class HourlyHeartRate extends DataModel {
   /// Heart rate bands per calendar day, keyed by [_dayKey] (e.g. "2026-08-21").
   Map<String, HeartRateMinMaxPrHour> dailyHeartRate = {};
 
-  static String _hourKey(DateTime at) => DateFormat('yyyy-MM-ddTHH').format(at);
-  static String _dayKey(DateTime at) => DateFormat('yyyy-MM-dd').format(at);
+  // Called per sample (80k+ on a health catch-up), so avoid DateFormat.
+  static String _pad(int n) => n.toString().padLeft(2, '0');
+  static String _dayKey(DateTime at) => '${at.year}-${_pad(at.month)}-${_pad(at.day)}';
+  static String _hourKey(DateTime at) => '${_dayKey(at)}T${_pad(at.hour)}';
 
   /// The current heart rate
   @JsonKey(includeFromJson: false, includeToJson: false)
@@ -134,8 +140,9 @@ class HourlyHeartRate extends DataModel {
   /// Widen the bands [heartRate] belongs to: the hour slot and calendar day
   /// containing [at].
   void addHeartRate(double heartRate, {required DateTime at}) {
-    hourlyHeartRate[_hourKey(at)] = _widen(hourlyHeartRate[_hourKey(at)], heartRate);
-    dailyHeartRate[_dayKey(at)] = _widen(dailyHeartRate[_dayKey(at)], heartRate);
+    final hour = _hourKey(at), day = _dayKey(at);
+    hourlyHeartRate[hour] = _widen(hourlyHeartRate[hour], heartRate);
+    dailyHeartRate[day] = _widen(dailyHeartRate[day], heartRate);
   }
 
   /// [band] grown to include [heartRate], or a new band around it.
