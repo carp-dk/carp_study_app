@@ -341,8 +341,8 @@ packages:
     dependency: "direct main"
     description:
       path: "packages/carp_health_package"
-      ref: "9fbcb0d582e08c0abe9893179f1dbb2e96b88835"
-      resolved-ref: "9fbcb0d582e08c0abe9893179f1dbb2e96b88835"
+      ref: cd2fad6d3064b9bac7eaddff5c206c8213320bda
+      resolved-ref: cd2fad6d3064b9bac7eaddff5c206c8213320bda
       url: "https://github.com/carp-dk/carp.sensing-flutter.git"
     source: git
     version: "4.1.2"
@@ -350,8 +350,8 @@ packages:
     dependency: "direct main"
     description:
       path: carp_mobile_sensing
-      ref: "9fbcb0d582e08c0abe9893179f1dbb2e96b88835"
-      resolved-ref: "9fbcb0d582e08c0abe9893179f1dbb2e96b88835"
+      ref: cd2fad6d3064b9bac7eaddff5c206c8213320bda
+      resolved-ref: cd2fad6d3064b9bac7eaddff5c206c8213320bda
       url: "https://github.com/carp-dk/carp.sensing-flutter.git"
     source: git
     version: "2.5.1"
@@ -407,8 +407,8 @@ packages:
     dependency: "direct main"
     description:
       path: "backends/carp_webservices"
-      ref: "9fbcb0d582e08c0abe9893179f1dbb2e96b88835"
-      resolved-ref: "9fbcb0d582e08c0abe9893179f1dbb2e96b88835"
+      ref: cd2fad6d3064b9bac7eaddff5c206c8213320bda
+      resolved-ref: cd2fad6d3064b9bac7eaddff5c206c8213320bda
       url: "https://github.com/carp-dk/carp.sensing-flutter.git"
     source: git
     version: "4.4.1"

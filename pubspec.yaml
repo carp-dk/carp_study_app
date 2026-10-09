@@ -76,17 +76,17 @@ dependency_overrides:
   carp_health_package:
     git:
       url: https://github.com/carp-dk/carp.sensing-flutter.git
-      ref: 9fbcb0d582e08c0abe9893179f1dbb2e96b88835 # perf/health-import-ui
+      ref: cd2fad6d3064b9bac7eaddff5c206c8213320bda # perf/health-import-ui
       path: packages/carp_health_package
   carp_mobile_sensing:
     git:
       url: https://github.com/carp-dk/carp.sensing-flutter.git
-      ref: 9fbcb0d582e08c0abe9893179f1dbb2e96b88835 # perf/health-import-ui
+      ref: cd2fad6d3064b9bac7eaddff5c206c8213320bda # perf/health-import-ui
       path: carp_mobile_sensing
   carp_webservices:
     git:
       url: https://github.com/carp-dk/carp.sensing-flutter.git
-      ref: 9fbcb0d582e08c0abe9893179f1dbb2e96b88835 # perf/health-import-ui
+      ref: cd2fad6d3064b9bac7eaddff5c206c8213320bda # perf/health-import-ui
       path: backends/carp_webservices
 
   # carp_themes_package:

@@ -66,12 +66,8 @@ class HeartRateCardViewModel extends SerializableViewModel<HourlyHeartRate> {
 
   /// Stream of heart rate measurements of this card's [dataType] only - health
   /// data shares one data type with steps, sleep, etc.
-  /// A health catch-up spans 30 days; the card shows at most the last 7.
   Stream<Measurement>? get sourceStream => controller?.measurements.where(
-    (measurement) =>
-        measurement.dataType.toString() == dataType &&
-        bpmOf(measurement) != null &&
-        measurement.sensorTime.isAfter(DateTime.now().subtract(const Duration(days: 7))),
+    (measurement) => measurement.dataType.toString() == dataType && bpmOf(measurement) != null,
   );
 
   /// Stream of heart rate readings in BPM, for the card to rebuild on.
@@ -123,7 +119,7 @@ class HourlyHeartRate extends DataModel {
   /// Heart rate bands per calendar day, keyed by [_dayKey] (e.g. "2026-08-21").
   Map<String, HeartRateMinMaxPrHour> dailyHeartRate = {};
 
-  // Called per sample (80k+ on a health catch-up), so avoid DateFormat.
+  // Called per sample (thousands on a health catch-up), so avoid DateFormat.
   static String _pad(int n) => n.toString().padLeft(2, '0');
   static String _dayKey(DateTime at) => '${at.year}-${_pad(at.month)}-${_pad(at.day)}';
   static String _hourKey(DateTime at) => '${_dayKey(at)}T${_pad(at.hour)}';
