@@ -65,17 +65,29 @@ dependencies:
   mobile_scanner: ^7.4.2
 
 dependency_overrides:
-  # iOS Health reports access as missing until requested (carp-dk/carp-health-flutter#527, not merged upstream).
-  # Pinned to commits so the unmerged branches can't change underneath the app.
+  # Unmerged upstream fixes, pinned to commits so the branches can't change underneath the app:
+  # - health: iOS access reported as missing until requested (carp-dk/carp-health-flutter#527)
+  #   + health reads off the UI thread (perf/health-import-ui).
+  # - carp.sensing-flutter: health catch-up imported in a background isolate (perf/health-import-ui).
   health:
     git:
       url: https://github.com/Zeroupper/carp-health-flutter.git
-      ref: 7f4400385a12f7c42f3d89f714af6f085c4de855 # fix/ios-health-request-status, 13.3.3
+      ref: 3e2ecce01f57b2110e028b83837d93b8be5890ce # perf/health-import-ui, 13.3.3
   carp_health_package:
     git:
       url: https://github.com/carp-dk/carp.sensing-flutter.git
-      ref: b43bb9e6584e725777c468f61acf0964b24f5dc9 # fix/ios-health-request-status
+      ref: cd2fad6d3064b9bac7eaddff5c206c8213320bda # perf/health-import-ui
       path: packages/carp_health_package
+  carp_mobile_sensing:
+    git:
+      url: https://github.com/carp-dk/carp.sensing-flutter.git
+      ref: cd2fad6d3064b9bac7eaddff5c206c8213320bda # perf/health-import-ui
+      path: carp_mobile_sensing
+  carp_webservices:
+    git:
+      url: https://github.com/carp-dk/carp.sensing-flutter.git
+      ref: cd2fad6d3064b9bac7eaddff5c206c8213320bda # perf/health-import-ui
+      path: backends/carp_webservices
 
   # carp_themes_package:
   #   path: ../carp_themes_package
