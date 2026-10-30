@@ -248,6 +248,11 @@ final class CarpWatchSensorController: NSObject, ObservableObject {
     // MARK: - Start / stop
 
     func start() {
+        guard hasAppliedPhoneSettings else {
+            statusMessage = "Open CARP on the phone to load study settings"
+            applyPhoneSettings()
+            return
+        }
         let sensors = selectedSensors()
         guard !sensors.isEmpty else {
             stop()

@@ -17,9 +17,16 @@ class _AppleWatchConnectPageState extends State<AppleWatchConnectPage> {
 
   Future<void> _connect(RPLocalizations locale) async {
     setState(() => _connecting = true);
-    final status = await _manager.connect();
+    DeviceStatus status;
+    try {
+      status = await _manager.connect();
+    } catch (error) {
+      warning('Apple Watch connection failed: $error');
+      status = DeviceStatus.disconnected;
+    } finally {
+      if (mounted) setState(() => _connecting = false);
+    }
     if (!mounted) return;
-    setState(() => _connecting = false);
     if (status == DeviceStatus.connected) return Navigator.pop(context);
 
     // The plugin tells why: no watch paired, or the CARP watch app is missing.

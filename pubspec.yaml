@@ -6,7 +6,7 @@ publish_to: "none"
 version: 5.1.0+1
 
 environment:
-  sdk: ">=3.8.0 <4.0.0"
+  sdk: ">=3.12.2 <4.0.0"
   flutter: ">=3.32.0"
 
 dependencies:
@@ -22,8 +22,11 @@ dependencies:
   carp_audio_package: ^2.1.0
   carp_polar_package: ^2.1.0
   carp_health_package: ^4.1.1
-  carp_movesense_package: ^3.1.0
-  carp_aware_package: ^1.0.0 # iOS only, needs the CARPWatch watchOS target
+  # App-local until the sampling package publishes movesense_plus support.
+  carp_movesense_package:
+    path: packages/carp_movesense_package
+  movesense_plus: ^2.0.0
+  carp_aware_package: ^1.1.0 # iOS only, needs the CARPWatch watchOS target
   carp_themes_package: ^0.2.1
 
   carp_webservices: ^4.4.1

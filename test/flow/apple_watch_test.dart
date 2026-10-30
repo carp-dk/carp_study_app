@@ -6,6 +6,7 @@ import 'flow.dart';
 
 void main() {
   flowTest('the protocol Apple Watch is listed on iOS only, with its instructions', (tester, flow) async {
+    addTearDown(() => debugDefaultTargetPlatformOverride = null);
     await flow.signConsent();
     await flow.pumpUntil(() => bloc.study.isRunning, 'sensing to start');
     List<String> devices() => [for (final d in bloc.study.deploymentDevices) d.typeName];
