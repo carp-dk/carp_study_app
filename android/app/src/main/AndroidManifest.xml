@@ -51,7 +51,7 @@
 
     <!--Location Permissions-->
     <uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION" />
-    <!-- carp_movesense_flutter declares FINE with maxSdkVersion=30, which strips it
+    <!-- Movesense declares FINE with maxSdkVersion=30, which strips it
          on Android 31+ and crashes the location NMEA listener. Remove that cap. -->
     <uses-permission
         android:name="android.permission.ACCESS_FINE_LOCATION"

@@ -1,5 +1,11 @@
 ## 5.1.0
 
+* Movesense uses `movesense_plus` 2.0.0 through an app-local CARP sampling package
+* Apple Watch uses `carp_aware_package` 1.1.0; Connections is iOS-only
+
+* iOS uses Swift Package Manager (CocoaPods only for plugins without SPM support); minimum iOS 16
+* Apple Watch support via `carp_aware_package`: the `CARPWatch Watch App` watchOS target collects
+  motion, heart rate, battery, noise etc. and the phone receives it as an `AppleWatchDevice`
 * local deployment mode works like dev/test behind a `Backend` interface (`CarpBackend`, `LocalBackend`):
   any sign-in works, the one invitation is `assets/carp/resources/protocol.json`, nothing is saved between runs
 * `flutter run` defaults to local mode in debug builds; release builds still default to production

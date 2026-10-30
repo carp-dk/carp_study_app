@@ -24,6 +24,7 @@ class Sensing {
     SamplingPackageRegistry().register(HealthSamplingPackage());
     SamplingPackageRegistry().register(PolarSamplingPackage());
     SamplingPackageRegistry().register(MovesenseSamplingPackage());
+    SamplingPackageRegistry().register(AppleWatchSamplingPackage());
 
     // Needed in LOCAL too - a local protocol may still upload to CAWS.
     DataManagerRegistry().register(CarpDataManagerFactory());

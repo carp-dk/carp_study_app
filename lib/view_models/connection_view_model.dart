@@ -3,6 +3,7 @@ part of carp_study_app;
 // Consts, because the icon maps below are const lookups without a BuildContext.
 const Color _statusSuccess = Color(0xff67CE67);
 const Color _statusError = Color(0xffEB4B62);
+const Color _appleWatchColor = Color(0xff3260A4);
 
 /// View model for [ConnectionListPage] - its devices and services as view models.
 class ConnectionListPageViewModel extends ViewModel {
@@ -192,6 +193,7 @@ const Map<String, String> _deviceTypeName = {
   LocationService.DEVICE_TYPE: "pages.connections.type.location.name",
   PolarDevice.DEVICE_TYPE: "pages.connections.type.polar.name",
   MovesenseDevice.DEVICE_TYPE: "pages.connections.type.movesense.name",
+  AppleWatchDevice.DEVICE_TYPE: "pages.connections.type.apple_watch.name",
 };
 
 const Map<String, String> _deviceTypeDescription = {
@@ -201,6 +203,7 @@ const Map<String, String> _deviceTypeDescription = {
   LocationService.DEVICE_TYPE: "pages.connections.type.location.description",
   PolarDevice.DEVICE_TYPE: "pages.connections.type.polar.description",
   MovesenseDevice.DEVICE_TYPE: "pages.connections.type.movesense.description",
+  AppleWatchDevice.DEVICE_TYPE: "pages.connections.type.apple_watch.description",
   HealthService.DEVICE_TYPE: "pages.connections.type.health.description",
 };
 
@@ -211,6 +214,7 @@ const Map<String, Icon> _deviceTypeIcon = {
   LocationService.DEVICE_TYPE: Icon(Icons.location_on, color: _statusSuccess),
   PolarDevice.DEVICE_TYPE: Icon(Icons.monitor_heart, size: 30, color: _statusError),
   MovesenseDevice.DEVICE_TYPE: Icon(Icons.circle, size: 30, color: Color(0xff646363)),
+  AppleWatchDevice.DEVICE_TYPE: Icon(Icons.watch, size: 30, color: _appleWatchColor),
   HealthService.DEVICE_TYPE: Icon(Icons.favorite_rounded, size: 30, color: _statusError),
 };
 
@@ -249,6 +253,7 @@ const Map<String, String> _deviceConnectionInstructions = {
   Smartphone.DEVICE_TYPE: "pages.connections.type.smartphone.instructions",
   PolarDevice.DEVICE_TYPE: "pages.connections.type.polar.instructions",
   MovesenseDevice.DEVICE_TYPE: "pages.connections.type.movesense.instructions",
+  AppleWatchDevice.DEVICE_TYPE: "pages.connections.type.apple_watch.instructions",
 };
 
 const Map<String, String> _deviceConnectionInstructionsImage = {
