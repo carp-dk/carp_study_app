@@ -104,7 +104,8 @@ class ConnectionListPageState extends State<ConnectionListPage> {
                 title: (
                   "${_smartphoneDevice[index].phoneInfo["model"]!} "
                       "- ${_smartphoneDevice[index].phoneInfo["version"]!}",
-                  _smartphoneDevice[index].batteryLevel ?? 0,
+                  // The phone manager uses zero until its first successful battery read.
+                  _smartphoneDevice[index].batteryLevel == 0 ? null : _smartphoneDevice[index].batteryLevel,
                 ),
                 subtitle: _smartphoneDevice[index].phoneInfo['name']!,
               ),
@@ -121,28 +122,32 @@ class ConnectionListPageState extends State<ConnectionListPage> {
     SliverList(
       delegate: SliverChildBuilderDelegate(childCount: _hardwareDevices.length, (BuildContext context, int index) {
         ConnectionViewModel device = _hardwareDevices[index];
-        return _connectionsPageCardStream(
-          device.statusEvents,
-          DeviceStatus.unknown,
-          () => _cardListBuilder(
-            enableFeedback: true,
-            leading: device.icon!,
-            leadingImage: device.iconImage,
-            title: (locale.translate(device.typeName), device.batteryLevel ?? 0),
-            subtitle: device.name,
-            // Study-managed, so the user cannot disconnect it - only local mode inspects its data.
-            onTap: device.status == DeviceStatus.connected && _isLocal
-                ? () => _showWrittenMeasurements(device)
-                : device.status == DeviceStatus.connected || device.status == DeviceStatus.connecting
-                ? null
-                : () async => await _hardwareDeviceClicked(device),
-            trailing: device.getDeviceStatusIcon is Icon
-                ? device.getDeviceStatusIcon as Icon
-                : _connectPill(
-                    locale.translate(
-                      device.getDeviceStatusIcon as String? ?? "pages.connections.status.action.connect",
-                    ),
-                  ),
+        return ListenableBuilder(
+          listenable: device,
+          builder: (context, _) => Center(
+            child: StudiesMaterial(
+              backgroundColor: Colors.grey.shade50,
+              child: _cardListBuilder(
+                enableFeedback: true,
+                leading: device.icon!,
+                leadingImage: device.iconImage,
+                title: (locale.translate(device.typeName), device.batteryLevel),
+                subtitle: device.name,
+                // Study-managed, so the user cannot disconnect it - only local mode inspects its data.
+                onTap: device.status == DeviceStatus.connected && _isLocal
+                    ? () => _showWrittenMeasurements(device)
+                    : device.status == DeviceStatus.connected || device.status == DeviceStatus.connecting
+                    ? null
+                    : () async => await _hardwareDeviceClicked(device),
+                trailing: device.getDeviceStatusIcon is Icon
+                    ? device.getDeviceStatusIcon as Icon
+                    : _connectPill(
+                        locale.translate(
+                          device.getDeviceStatusIcon as String? ?? "pages.connections.status.action.connect",
+                        ),
+                      ),
+              ),
+            ),
           ),
         );
       }),
@@ -249,7 +254,7 @@ class ConnectionListPageState extends State<ConnectionListPage> {
               style: Theme.of(context).textTheme.labelLarge!,
             ),
           ),
-          if (title.$2 != null && title.$2! > 0) ...[
+          if (title.$2 != null && title.$2! >= 0 && title.$2! <= 100) ...[
             const SizedBox(width: 6),
             BatteryPercentage(batteryLevel: title.$2!),
           ],
