@@ -66,3 +66,36 @@ xcodebuild -workspace ios/Runner.xcworkspace -scheme Runner \
 Run config-only immediately before xcodebuild: `flutter pub get` regenerates the
 SPM wrapper with Flutter's default iOS minimum, while config-only raises it to
 this project's iOS 16 minimum.
+
+## Local watch smoke test
+
+`assets/carp/resources/protocol.json` is intentionally git-ignored: it can contain
+study-specific credentials. The local copy has an optional Apple Watch with all
+nine measures, 10 Hz motion, one-minute incremental transfers, audio analysis
+for 60 seconds followed by 180 seconds rest, and microphone background runtime.
+For recovery, it keeps watch records and saves a second copy in the phone's AWARE
+database. These copies are not an automatic retry mechanism; monitor storage.
+Raw audio recording is disabled in the companion app.
+
+1. Build/install the iPhone app in local mode (`flutter run
+   --dart-define=deployment-mode=local`) and install its watch companion.
+2. Start a fresh local study so the edited protocol is loaded. Under Connections,
+   connect Apple Watch. If the initial pairing check fails, retry after activation.
+3. Open CARP on the watch, tap **Reload settings**, then **Start**, and grant the
+   requested watch permissions. Wear the watch for heart rate and move your wrist.
+4. Keep CARP open on the phone. After a minute, or using **Send data to phone**
+   on the watch, tap the connected Apple Watch card on the phone.
+5. The **Written to SQLite - Apple Watch** sheet should show increasing
+   `dk.carp.watch.aware.*` counts and the latest measurement (refreshes every two
+   seconds). A connected badge alone is not proof of data reception.
+
+Local mode checks watch-to-phone storage, **not backend upload**. The package's
+known delivery limitations above still apply. Some sensors may not produce
+records until their permissions and environmental conditions are satisfied.
+
+Validate your actual local protocol without committing it:
+
+```sh
+flutter test test/apple_watch_protocol_test.dart \
+  --dart-define=WATCH_PROTOCOL=assets/carp/resources/protocol.json
+```
