@@ -1,5 +1,6 @@
 ## 5.1.0
 
+* Movesense uses `carp_movesense_package` 4.0.0, which runs on `movesense_plus` 2.x (replaces the discontinued `carp_movesense_flutter`)
 * local deployment mode works like dev/test behind a `Backend` interface (`CarpBackend`, `LocalBackend`):
   any sign-in works, the one invitation is `assets/carp/resources/protocol.json`, nothing is saved between runs
 * `flutter run` defaults to local mode in debug builds; release builds still default to production
