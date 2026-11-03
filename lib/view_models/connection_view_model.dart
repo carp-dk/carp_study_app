@@ -276,7 +276,6 @@ const Map<String, String> _deviceConnectionInstructions = {
   Smartphone.DEVICE_TYPE: "pages.connections.type.smartphone.instructions",
   PolarDevice.DEVICE_TYPE: "pages.connections.type.polar.instructions",
   MovesenseDevice.DEVICE_TYPE: "pages.connections.type.movesense.instructions",
-  AppleWatchDevice.DEVICE_TYPE: "pages.connections.type.apple_watch.instructions",
 };
 
 const Map<String, String> _deviceConnectionInstructionsImage = {

@@ -5,7 +5,7 @@ import '../exports.dart';
 import 'flow.dart';
 
 void main() {
-  flowTest('the protocol Apple Watch is listed on iOS only, with its instructions', (tester, flow) async {
+  flowTest('the protocol Apple Watch is listed on iOS only, with its onboarding', (tester, flow) async {
     addTearDown(() => debugDefaultTargetPlatformOverride = null);
     await flow.signConsent();
     await flow.pumpUntil(() => bloc.study.isRunning, 'sensing to start');
@@ -23,9 +23,8 @@ void main() {
     Navigator.of(
       tester.element(find.byType(HomePage)),
     ).push(MaterialPageRoute<void>(builder: (_) => AppleWatchConnectPage(device: device)));
-    await tester.pumpAndSettle();
-    expect(find.text('How to connect'), findsOneWidget);
-    expect(find.textContaining('install CARP under Available Apps'), findsOneWidget);
+    await flow.pumpUntil(() => find.text('Pair your Apple Watch').evaluate().isNotEmpty, 'the watch onboarding');
+    expect(find.text('Looking for a paired Apple Watch…'), findsOneWidget);
     debugDefaultTargetPlatformOverride = null;
   });
 }
