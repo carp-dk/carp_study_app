@@ -1,10 +1,7 @@
-# Movesense and Apple Watch
+# Apple Watch
 
 ## Dependencies
 
-- `carp_movesense_package` 4.0.0 (git ref, until published) runs on `movesense_plus` 2.x,
-  replacing the discontinued `carp_movesense_flutter`. Existing CARP protocols, devices
-  and probes are unchanged.
 - `carp_aware_package: ^1.1.0` supplies Apple Watch sampling over WatchConnectivity.
 - Minimum iOS 16, watchOS 10, Dart 3.12.2. Swift Package Manager is enabled.
 
@@ -38,10 +35,10 @@ on the watch, and `saveToLocalAwareDatabase: true` for a phone-side copy. Neithe
 setting automatically replays missing records into CARP; watch storage must be
 monitored. Reliable replay/acknowledgement needs an upstream package fix.
 
-Before release, test with a real iPhone, Apple Watch and Movesense: first pairing,
+Before release, test with a real iPhone, and Apple Watch: first pairing,
 permissions denied, background collection, phone offline, reconnection, retained
 records, and records arriving in the configured CARP backend. Host tests and
-simulator builds cannot verify Bluetooth or watch-to-server delivery.
+simulator builds cannot verify watch-to-server delivery.
 
 ## Checks
 
