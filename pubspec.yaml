@@ -22,10 +22,12 @@ dependencies:
   carp_audio_package: ^2.1.0
   carp_polar_package: ^2.1.0
   carp_health_package: ^4.1.1
-  # App-local until the sampling package publishes movesense_plus support.
+  # 4.0.0 (movesense_plus) is unpublished; pinned to carp-dk/carp.sensing-flutter feat/movesense-plus.
   carp_movesense_package:
-    path: packages/carp_movesense_package
-  movesense_plus: ^2.0.0
+    git:
+      url: https://github.com/carp-dk/carp.sensing-flutter.git
+      ref: 95c0eb6503e442c01d971b57788087f2d667d239
+      path: packages/carp_movesense_package
   carp_aware_package: ^1.1.0 # iOS only, needs the CARPWatch watchOS target
   carp_themes_package: ^0.2.1
 

@@ -1,6 +1,6 @@
 ## 5.1.0
 
-* Movesense uses `movesense_plus` 2.0.0 through an app-local CARP sampling package
+* Movesense uses `carp_movesense_package` 4.0.0, which runs on `movesense_plus` 2.x
 * Apple Watch uses `carp_aware_package` 1.1.0; Connections is iOS-only
 
 * iOS uses Swift Package Manager (CocoaPods only for plugins without SPM support); minimum iOS 16

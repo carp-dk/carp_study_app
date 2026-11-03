@@ -2,11 +2,9 @@
 
 ## Dependencies
 
-- `movesense_plus: ^2.0.0` replaces `carp_movesense_flutter`.
-- `packages/carp_movesense_package` is the published 3.1.0 source (MIT), with its
-  plugin dependency/import changed to `movesense_plus`. Existing CARP protocols,
-  devices and probes are unchanged. Remove the local copy when the published
-  sampling package supports this plugin.
+- `carp_movesense_package` 4.0.0 (git ref, until published) runs on `movesense_plus` 2.x,
+  replacing the discontinued `carp_movesense_flutter`. Existing CARP protocols, devices
+  and probes are unchanged.
 - `carp_aware_package: ^1.1.0` supplies Apple Watch sampling over WatchConnectivity.
 - Minimum iOS 16, watchOS 10, Dart 3.12.2. Swift Package Manager is enabled.
 
