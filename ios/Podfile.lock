@@ -18,8 +18,6 @@ PODS:
     - Flutter
   - camera_avfoundation (0.0.1):
     - Flutter
-  - carp_movesense_flutter (0.1.1):
-    - Flutter
   - connectivity_plus (0.0.1):
     - Flutter
   - dchs_flutter_beacon (0.6.10):
@@ -65,6 +63,8 @@ PODS:
   - mobile_scanner (7.0.0):
     - Flutter
     - FlutterMacOS
+  - movesense_plus (2.0.0):
+    - Flutter
   - network_info_plus (0.0.1):
     - Flutter
   - oidc_ios (0.0.1):
@@ -114,7 +114,6 @@ DEPENDENCIES:
   - audioplayers_darwin (from `.symlinks/plugins/audioplayers_darwin/darwin`)
   - battery_plus (from `.symlinks/plugins/battery_plus/ios`)
   - camera_avfoundation (from `.symlinks/plugins/camera_avfoundation/ios`)
-  - carp_movesense_flutter (from `.symlinks/plugins/carp_movesense_flutter/ios`)
   - connectivity_plus (from `.symlinks/plugins/connectivity_plus/ios`)
   - dchs_flutter_beacon (from `.symlinks/plugins/dchs_flutter_beacon/ios`)
   - device_info_plus (from `.symlinks/plugins/device_info_plus/ios`)
@@ -134,6 +133,7 @@ DEPENDENCIES:
   - light (from `.symlinks/plugins/light/ios`)
   - location (from `.symlinks/plugins/location/ios`)
   - mobile_scanner (from `.symlinks/plugins/mobile_scanner/darwin`)
+  - movesense_plus (from `.symlinks/plugins/movesense_plus/ios`)
   - network_info_plus (from `.symlinks/plugins/network_info_plus/ios`)
   - oidc_ios (from `.symlinks/plugins/oidc_ios/ios`)
   - open_filex (from `.symlinks/plugins/open_filex/ios`)
@@ -172,8 +172,6 @@ EXTERNAL SOURCES:
     :path: ".symlinks/plugins/battery_plus/ios"
   camera_avfoundation:
     :path: ".symlinks/plugins/camera_avfoundation/ios"
-  carp_movesense_flutter:
-    :path: ".symlinks/plugins/carp_movesense_flutter/ios"
   connectivity_plus:
     :path: ".symlinks/plugins/connectivity_plus/ios"
   dchs_flutter_beacon:
@@ -212,6 +210,8 @@ EXTERNAL SOURCES:
     :path: ".symlinks/plugins/location/ios"
   mobile_scanner:
     :path: ".symlinks/plugins/mobile_scanner/darwin"
+  movesense_plus:
+    :path: ".symlinks/plugins/movesense_plus/ios"
   network_info_plus:
     :path: ".symlinks/plugins/network_info_plus/ios"
   oidc_ios:
@@ -251,12 +251,11 @@ SPEC CHECKSUMS:
   audioplayers_darwin: 835ced6edd4c9fc8ebb0a7cc9e294a91d99917d5
   battery_plus: b42253f6d2dde71712f8c36fef456d99121c5977
   camera_avfoundation: 5675ca25298b6f81fa0a325188e7df62cc217741
-  carp_movesense_flutter: 9fac69db6612c07b9f33f36180a3f40b3591c750
   connectivity_plus: cb623214f4e1f6ef8fe7403d580fdad517d2f7dd
   dchs_flutter_beacon: 249ca73abb4ae4aedb0fd29d754ddc39cfa3bc2f
   device_info_plus: 21fcca2080fbcd348be798aa36c3e5ed849eefbe
   file_picker_darwin: 5c32d1a83c7cd2e4e2d2eaea629cf830b3b5dc49
-  Flutter: cabc95a1d2626b1b06e7179b784ebcf0c0cde467
+  Flutter: 71a624a5bc0c04062bf19101d501e466baf2fb47
   flutter_activity_recognition: 52dfad4c1e9cec99f0841b3ed0efcc9d424b3deb
   flutter_appauth: d4abcf54856e5d8ba82ed7646ffc83245d4aa448
   flutter_blue_plus_darwin: 20a08bfeaa0f7804d524858d3d8744bcc1b6dbc3
@@ -272,6 +271,7 @@ SPEC CHECKSUMS:
   light: 6490592116da81837a414ef49387bbea7a5ed375
   location: 155caecf9da4f280ab5fe4a55f94ceccfab838f8
   mobile_scanner: 9157936403f5a0644ca3779a38ff8404c5434a93
+  movesense_plus: 8213c5ab8f616f47d657c7f0766f2a79d89de842
   network_info_plus: cf61925ab5205dce05a4f0895989afdb6aade5fc
   oidc_ios: 16966cad509ce6850ca4ca1216c5138bef2a8726
   open_filex: 432f3cd11432da3e39f47fcc0df2b1603854eff1
