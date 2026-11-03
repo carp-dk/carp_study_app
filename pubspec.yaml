@@ -26,7 +26,7 @@ dependencies:
   carp_movesense_package:
     git:
       url: https://github.com/carp-dk/carp.sensing-flutter.git
-      ref: 95c0eb6503e442c01d971b57788087f2d667d239
+      ref: a7824a14b117288a88dbc1e850b37da141c07319
       path: packages/carp_movesense_package
   carp_aware_package: ^1.1.0 # iOS only, needs the CARPWatch watchOS target
   carp_themes_package: ^0.2.1
