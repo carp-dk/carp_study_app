@@ -44,8 +44,8 @@ class _AppleWatchConnectPageState extends State<AppleWatchConnectPage> {
   void initState() {
     super.initState();
     _status = _manager.watchStatus;
-    // Resume at the first unmet step - steps unlock in order.
-    _page = _done.indexOf(false).clamp(0, _steps.length - 1);
+    // A connected watch opens on its live data; otherwise resume at the first unmet step.
+    _page = _manager.isConnected ? _steps.length - 1 : _done.indexOf(false).clamp(0, _steps.length - 1);
     _pages = PageController(initialPage: _page);
     _subscriptions
       ..add(_manager.watchStatusEvents.listen(_onStatus))

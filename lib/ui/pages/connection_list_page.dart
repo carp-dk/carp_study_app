@@ -134,7 +134,10 @@ class ConnectionListPageState extends State<ConnectionListPage> {
                 title: (locale.translate(device.typeName), device.batteryLevel),
                 subtitle: _watchHint(locale, device) ?? device.name,
                 // Study-managed, so the user cannot disconnect it - only local mode inspects its data.
-                onTap: device.status == DeviceStatus.connected && _isLocal
+                // The watch page shows its own live data, so it opens in every state.
+                onTap: device.deviceManager is AppleWatchDeviceManager
+                    ? () async => await _hardwareDeviceClicked(device)
+                    : device.status == DeviceStatus.connected && _isLocal
                     ? () => _showWrittenMeasurements(device)
                     : device.status == DeviceStatus.connected || device.status == DeviceStatus.connecting
                     ? null

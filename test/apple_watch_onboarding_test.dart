@@ -115,15 +115,23 @@ void main() {
     expect(find.text('Waiting for CARP to open on the watch…'), findsOneWidget);
     expect(find.text('Open CARP on the watch'), findsWidgets);
 
-    // Reopened with the watch app closed and no data yet: resumes at the open step.
-    watch.current = AppleWatchStatus(isSupported: true, isPaired: true, isWatchAppInstalled: true);
-    await tester.pumpWidget(
-      MaterialApp(
-        localizationsDelegates: [RPLocalizations.delegate],
-        home: AppleWatchConnectPage(key: UniqueKey(), device: ConnectionViewModel(watch)),
-      ),
-    );
-    await settle();
+    Future<void> reopen() async {
+      await tester.pumpWidget(
+        MaterialApp(
+          localizationsDelegates: [RPLocalizations.delegate],
+          home: AppleWatchConnectPage(key: UniqueKey(), device: ConnectionViewModel(watch)),
+        ),
+      );
+      await settle();
+    }
+
+    // Reopened while connected: straight to the live data.
+    await reopen();
+    expect(find.text('Data from your watch'), findsOneWidget);
+
+    // Reopened not connected, watch app closed, no data yet: resumes at the open step.
+    watch.status = DeviceStatus.configured;
+    await reopen();
     expect(find.text('Open CARP on the watch'), findsOneWidget);
     // Stop the morph's ticker before the test ends.
     await tester.pumpWidget(const SizedBox());
