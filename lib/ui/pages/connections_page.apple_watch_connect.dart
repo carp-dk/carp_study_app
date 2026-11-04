@@ -38,7 +38,7 @@ class _AppleWatchConnectPageState extends State<AppleWatchConnectPage> {
   CarpMorphMode get _mode {
     final transfer = _transfer;
     if (transfer != null && transfer.chunkIndex < transfer.totalChunks) return CarpMorphMode.syncing;
-    if (!_status.isReachable) return CarpMorphMode.away;
+    if (!_status.isReachable || !_status.isCollectingData) return CarpMorphMode.away;
     return _counts.isEmpty ? CarpMorphMode.collecting : CarpMorphMode.sent;
   }
 
@@ -253,7 +253,9 @@ class _AppleWatchConnectPageState extends State<AppleWatchConnectPage> {
         'pages.connections.type.apple_watch.receiving',
         args: {'percent': (100 * transfer!.chunkIndex / transfer.totalChunks).round()},
       ),
-      CarpMorphMode.away => locale.translate('pages.connections.type.apple_watch.open_to_send'),
+      CarpMorphMode.away => locale.translate(
+        'pages.connections.type.apple_watch.${_status.isReachable ? 'stopped' : 'open_to_send'}',
+      ),
       CarpMorphMode.collecting => locale.translate('pages.connections.type.apple_watch.waiting_for_data'),
       CarpMorphMode.sent => locale.translate(
         'pages.connections.type.apple_watch.received',

@@ -71,9 +71,17 @@ void main() {
     await tapNext();
 
     // The watch app only sends data while open - reachability is that.
-    expect(find.text('Waiting for CARP to open on the watch…'), findsOneWidget);
+    expect(find.text('Waiting for CARP to open on the watch… keep the watch screen on'), findsOneWidget);
     expect(next().onPressed, isNull);
-    watch.emit(AppleWatchStatus(isSupported: true, isPaired: true, isWatchAppInstalled: true, isReachable: true));
+    watch.emit(
+      AppleWatchStatus(
+        isSupported: true,
+        isPaired: true,
+        isWatchAppInstalled: true,
+        isReachable: true,
+        isCollectingData: true,
+      ),
+    );
     await settle();
     expect(find.text('CARP is open on the watch'), findsOneWidget);
     await tapNext();
@@ -112,8 +120,13 @@ void main() {
     // Watch app closed: the data page says to open it again.
     watch.emit(AppleWatchStatus(isSupported: true, isPaired: true, isWatchAppInstalled: true));
     await settle();
-    expect(find.text('Waiting for CARP to open on the watch…'), findsOneWidget);
-    expect(find.text('Open CARP on the watch'), findsWidgets);
+    expect(find.text('Waiting for CARP to open on the watch… keep the watch screen on'), findsOneWidget);
+    expect(find.text('Watch screen off or CARP closed'), findsOneWidget);
+
+    // Open but stopped on the watch: say how to start, like the watch does.
+    watch.emit(AppleWatchStatus(isSupported: true, isPaired: true, isWatchAppInstalled: true, isReachable: true));
+    await settle();
+    expect(find.text('Tap the CARP logo on the watch to start'), findsOneWidget);
 
     Future<void> reopen() async {
       await tester.pumpWidget(
@@ -131,6 +144,7 @@ void main() {
 
     // Reopened not connected, watch app closed, no data yet: resumes at the open step.
     watch.status = DeviceStatus.configured;
+    watch.current = AppleWatchStatus(isSupported: true, isPaired: true, isWatchAppInstalled: true);
     await reopen();
     expect(find.text('Open CARP on the watch'), findsOneWidget);
     // Stop the morph's ticker before the test ends.

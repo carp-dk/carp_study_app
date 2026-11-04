@@ -410,5 +410,7 @@ final class CarpWatchSensorController: NSObject, ObservableObject {
 
     private func updateReachability() {
         isPhoneReachable = WCSession.isSupported() && WCSession.default.isReachable
+        // The phone mirrors this state; AWARE only reports it on start/stop, which a cold launch misses.
+        if isPhoneReachable { WCSession.default.sendMessage(["status": isRunning ? 1 : 0], replyHandler: nil) }
     }
 }
