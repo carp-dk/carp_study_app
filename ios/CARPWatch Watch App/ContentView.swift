@@ -34,8 +34,9 @@ struct ContentView: View {
     }
 
     var body: some View {
-        ScrollView {
-            VStack(spacing: 4) {
+        // No scrolling: the text keeps a fixed size and the sphere takes whatever height is left.
+        NavigationStack {
+            VStack(spacing: 2) {
                 // The sphere is the action: start when stopped, otherwise send now.
                 Button {
                     WKInterfaceDevice.current().play(.click)
@@ -43,24 +44,34 @@ struct ContentView: View {
                 } label: {
                     CarpMorphView(mode: mode, progress: controller.syncProgress)
                         .aspectRatio(184 / 150, contentMode: .fit)
+                        .frame(maxWidth: .infinity, maxHeight: .infinity)
                         .contentShape(Rectangle())
                 }
                 .buttonStyle(.plain)
                 .disabled(controller.isSyncing)
                 .accessibilityLabel(controller.isRunning ? "Send data to phone" : "Start collecting")
                 Text(title)
-                    .font(.headline)
+                    .font(.system(size: 16, weight: .semibold))
+                    .lineLimit(1)
+                    .minimumScaleFactor(0.7)
                 Text(detail)
-                    .font(.footnote)
+                    .font(.system(size: 13))
                     .foregroundStyle(.secondary)
                     .multilineTextAlignment(.center)
-
-                if controller.isRunning {
-                    Button("Stop", role: .destructive) { controller.stop() }
-                        .padding(.top, 16)
-                }
+                    .lineLimit(2, reservesSpace: true)
+                    .minimumScaleFactor(0.7)
             }
             .accessibilityElement(children: .contain)
+            .toolbar {
+                if controller.isRunning {
+                    ToolbarItem(placement: .topBarLeading) {
+                        Button(role: .destructive) { controller.stop() } label: {
+                            Image(systemName: "stop.fill")
+                        }
+                        .accessibilityLabel("Stop collecting")
+                    }
+                }
+            }
         }
     }
 }
