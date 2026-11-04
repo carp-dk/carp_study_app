@@ -10,6 +10,7 @@
 		1498D2341E8E89220040F4C2 /* GeneratedPluginRegistrant.m in Sources */ = {isa = PBXBuildFile; fileRef = 1498D2331E8E89220040F4C2 /* GeneratedPluginRegistrant.m */; };
 		1DF7245C2EC76C6800F24410 /* PhoneNumberKit in Frameworks */ = {isa = PBXBuildFile; productRef = 1DF7245B2EC76C6800F24410 /* PhoneNumberKit */; };
 		2BB5DC6863FA2939E0DC61CB /* ContentView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2CFA27593E9F8457CFC2B000 /* ContentView.swift */; };
+		C4A1D2E3F40516273849AB01 /* CarpMorphView.swift in Sources */ = {isa = PBXBuildFile; fileRef = C4A1D2E3F40516273849AB02 /* CarpMorphView.swift */; };
 		331C808B294A63AB00263BE5 /* RunnerTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 331C807B294A618700263BE5 /* RunnerTests.swift */; };
 		3949A18722757746E4099B39 /* CarpWatchSensorController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5EEB11EBC91507BE8929CA93 /* CarpWatchSensorController.swift */; };
 		3B3967161E833CAA004F5970 /* AppFrameworkInfo.plist in Resources */ = {isa = PBXBuildFile; fileRef = 3B3967151E833CAA004F5970 /* AppFrameworkInfo.plist */; };
@@ -78,6 +79,7 @@
 		1D1FA2E62E702A03007D2AD0 /* da */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = da; path = da.lproj/Main.strings; sourceTree = "<group>"; };
 		1D1FA2E72E702A03007D2AD0 /* da */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = da; path = da.lproj/LaunchScreen.strings; sourceTree = "<group>"; };
 		2C59C2E48EC4AA0836DC8545 /* Pods-Runner.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-Runner.debug.xcconfig"; path = "Target Support Files/Pods-Runner/Pods-Runner.debug.xcconfig"; sourceTree = "<group>"; };
+		C4A1D2E3F40516273849AB02 /* CarpMorphView.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; path = CarpMorphView.swift; sourceTree = "<group>"; };
 		2CFA27593E9F8457CFC2B000 /* ContentView.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; path = ContentView.swift; sourceTree = "<group>"; };
 		331C807B294A618700263BE5 /* RunnerTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RunnerTests.swift; sourceTree = "<group>"; };
 		331C8081294A63A400263BE5 /* RunnerTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = RunnerTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
@@ -140,6 +142,7 @@
 			children = (
 				E32BC70E9425DA7123CF8312 /* CARPWatchApp.swift */,
 				2CFA27593E9F8457CFC2B000 /* ContentView.swift */,
+				C4A1D2E3F40516273849AB02 /* CarpMorphView.swift */,
 				5EEB11EBC91507BE8929CA93 /* CarpWatchSensorController.swift */,
 				01A00097963C23E5E9359B07 /* Assets.xcassets */,
 				1CD40E86965A75216E10C35F /* CARPWatch Watch App.entitlements */,
@@ -461,6 +464,7 @@
 			files = (
 				C7B56D95CDB1620211CEED76 /* CARPWatchApp.swift in Sources */,
 				2BB5DC6863FA2939E0DC61CB /* ContentView.swift in Sources */,
+				C4A1D2E3F40516273849AB01 /* CarpMorphView.swift in Sources */,
 				3949A18722757746E4099B39 /* CarpWatchSensorController.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;

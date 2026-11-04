@@ -24,7 +24,11 @@ struct CARPWatch_Watch_AppApp: App {
             case .background: controller.transferNow()
             // Nothing forwards WatchConnectivity reachability changes while the
             // app is away, so the indicator is refreshed on the way back in.
-            case .active: controller.refreshReachability()
+            // Opening the app is the participant's way to send - so send.
+            case .active:
+                controller.refreshReachability()
+                controller.applyPhoneSettings()
+                controller.transferNow()
             default: break
             }
         }

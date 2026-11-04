@@ -9,6 +9,7 @@ import Combine
 import Foundation
 import SwiftUI
 import WatchConnectivity
+import WatchKit
 
 import com_awareframework_ios_core
 import com_awareframework_ios_sensor_applewatch_shared
@@ -30,6 +31,15 @@ final class CarpWatchSensorController: NSObject, ObservableObject {
     @Published private(set) var activeSensorCount = 0
     @Published private(set) var lastTransferAt: Date?
     @Published private(set) var isPhoneReachable = false
+    @Published private(set) var isSyncing = false
+    /// Share of the current sync's files the phone has received, 0-1.
+    @Published private(set) var syncProgress = 0.0
+    /// Files sent in the last sync - AWARE does not report record counts.
+    @Published private(set) var lastSyncFiles = 0
+    /// True for a few seconds after a sync, while the morph shows the CARP mark.
+    @Published private(set) var justSent = false
+
+    private var transferObservers: Set<AnyCancellable> = []
 
     /// The AWARE device id of this watch. Handy to show in a debug screen.
     let deviceId = AwareUtils.getCommonDeviceId()
@@ -142,6 +152,10 @@ final class CarpWatchSensorController: NSObject, ObservableObject {
         // the columnar format on, it is 3-5x smaller than row-oriented JSON.
         AWDataTransferManager.shared.useColumnarFormat = true
         AWDataTransferManager.shared.recordsPerChunk = 500
+        AWDataTransferManager.shared.$overallProgress
+            .receive(on: RunLoop.main)
+            .sink { [weak self] in self?.syncProgress = $0 }
+            .store(in: &transferObservers)
 
         updateReachability()
         // Covers the warm launch where the session is already activated and no
@@ -338,14 +352,22 @@ final class CarpWatchSensorController: NSObject, ObservableObject {
         guard !AWSensorManager.shared.sensors.isEmpty else { return }
 
         statusMessage = "Transferring…"
+        isSyncing = true
 
         let completion: (Error?) -> Void = { [weak self] error in
             Task { @MainActor in
                 guard let self else { return }
+                self.isSyncing = false
                 if let error {
                     self.statusMessage = "Transfer failed: \(error.localizedDescription)"
                 } else {
                     self.lastTransferAt = Date()
+                    self.lastSyncFiles = AWDataTransferManager.shared.totalChunks
+                    if self.lastSyncFiles > 0 {
+                        WKInterfaceDevice.current().play(.success)
+                        self.justSent = true
+                        DispatchQueue.main.asyncAfter(deadline: .now() + 6) { self.justSent = false }
+                    }
                     self.statusMessage = self.isRunning
                         ? "Collecting from \(self.activeSensorCount) sensors"
                         : "Transfer complete"

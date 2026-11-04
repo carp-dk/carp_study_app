@@ -5,7 +5,14 @@ import 'exports.dart';
 
 class _Watch extends AppleWatchDeviceManager {
   final events = StreamController<AppleWatchStatus>.broadcast();
+  final batches = StreamController<AppleWatchRecords>.broadcast();
+  final transfers = StreamController<AppleWatchFileTransfer>.broadcast();
   AppleWatchStatus current = AppleWatchStatus();
+
+  @override
+  Stream<AppleWatchRecords> get records => batches.stream;
+  @override
+  Stream<AppleWatchFileTransfer> get fileTransferEvents => transfers.stream;
 
   @override
   AppleWatchStatus get watchStatus => current;
@@ -29,7 +36,11 @@ void main() {
     }
 
     final watch = _Watch()..status = DeviceStatus.configured;
-    addTearDown(watch.events.close);
+    addTearDown(() async {
+      await watch.events.close();
+      await watch.batches.close();
+      await watch.transfers.close();
+    });
     await tester.pumpWidget(
       MaterialApp(
         localizationsDelegates: [RPLocalizations.delegate],
@@ -59,33 +70,52 @@ void main() {
     expect(watch.isConnected, isTrue, reason: 'connects as soon as the watch can deliver data');
     await tapNext();
 
+    // The watch app only sends data while open - reachability is that.
+    expect(find.text('Waiting for CARP to open on the watch…'), findsOneWidget);
     expect(next().onPressed, isNull);
-    watch.emit(AppleWatchStatus(isSupported: true, isPaired: true, isWatchAppInstalled: true, isCollectingData: true));
+    watch.emit(AppleWatchStatus(isSupported: true, isPaired: true, isWatchAppInstalled: true, isReachable: true));
     await settle();
+    expect(find.text('CARP is open on the watch'), findsOneWidget);
     await tapNext();
 
-    expect(find.text('Waiting for the first data from the watch…'), findsOneWidget);
+    expect(find.text('Waiting for data…'), findsOneWidget);
     expect(next().onPressed, isNull, reason: 'done only once data has arrived');
-    watch.emit(
-      AppleWatchStatus(
-        isSupported: true,
-        isPaired: true,
-        isWatchAppInstalled: true,
-        isCollectingData: true,
-        lastFileTransferAt: DateTime.now(),
+    watch.transfers.add(
+      AppleWatchFileTransfer(
+        table: AppleWatchTable.heartRate,
+        fileName: 'hr.json',
+        chunkIndex: 1,
+        totalChunks: 4,
+        state: WatchFileTransferState.received,
       ),
     );
     await settle();
-    for (final ok in [
-      'Apple Watch paired',
-      'CARP installed on the watch',
-      'Watch is collecting data',
-      'First data received',
-    ]) {
-      expect(find.text(ok), findsOneWidget);
-    }
+    expect(find.text('Receiving data 25%'), findsOneWidget);
+    watch.batches
+      ..add(AppleWatchRecords(table: AppleWatchTable.heartRate, chunkIndex: 1, totalChunks: 1, records: [{}, {}]))
+      ..add(AppleWatchRecords(table: AppleWatchTable.motion, chunkIndex: 1, totalChunks: 1, records: [{}, {}, {}]));
+    watch.transfers.add(
+      AppleWatchFileTransfer(
+        table: AppleWatchTable.motion,
+        fileName: 'motion.json',
+        chunkIndex: 4,
+        totalChunks: 4,
+        state: WatchFileTransferState.decoded,
+      ),
+    );
+    await settle();
+    expect(find.text('5 measurements received'), findsOneWidget);
+    expect(find.text('Heart rate'), findsOneWidget);
+    expect(find.text('Motion'), findsOneWidget);
+    expect(next().onPressed, isNotNull);
 
-    // Reopened while connected but not collecting: resumes at the start step, not "done".
+    // Watch app closed: the data page says to open it again.
+    watch.emit(AppleWatchStatus(isSupported: true, isPaired: true, isWatchAppInstalled: true));
+    await settle();
+    expect(find.text('Waiting for CARP to open on the watch…'), findsOneWidget);
+    expect(find.text('Open CARP on the watch'), findsWidgets);
+
+    // Reopened with the watch app closed and no data yet: resumes at the open step.
     watch.current = AppleWatchStatus(isSupported: true, isPaired: true, isWatchAppInstalled: true);
     await tester.pumpWidget(
       MaterialApp(
@@ -94,6 +124,8 @@ void main() {
       ),
     );
     await settle();
-    expect(find.text('Start CARP on the watch'), findsOneWidget);
+    expect(find.text('Open CARP on the watch'), findsOneWidget);
+    // Stop the morph's ticker before the test ends.
+    await tester.pumpWidget(const SizedBox());
   });
 }

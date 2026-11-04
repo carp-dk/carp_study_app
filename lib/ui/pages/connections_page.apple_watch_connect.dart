@@ -1,7 +1,7 @@
 part of carp_study_app;
 
-/// Step-by-step Apple Watch setup: pair, install CARP on the watch, start it,
-/// and see the first data arrive. Each step is checked against the live
+/// Step-by-step Apple Watch setup: pair, install CARP on the watch, open it,
+/// and watch the data come in. Each step is checked against the live
 /// WatchConnectivity status, so the participant knows it actually works.
 class AppleWatchConnectPage extends StatefulWidget {
   final ConnectionViewModel device;
@@ -12,27 +12,33 @@ class AppleWatchConnectPage extends StatefulWidget {
 }
 
 class _AppleWatchConnectPageState extends State<AppleWatchConnectPage> {
-  static const _steps = ['pair', 'install', 'start', 'done'];
-  static const _icons = [Icons.watch, Icons.install_mobile, Icons.play_circle_outline, Icons.check_circle_outline];
+  static const _steps = ['pair', 'install', 'open', 'data'];
+  static const _icons = [Icons.watch, Icons.install_mobile, Icons.touch_app_outlined];
 
   late final PageController _pages;
   late int _page;
   late AppleWatchStatus _status;
-  StreamSubscription<AppleWatchStatus>? _subscription;
+  final List<StreamSubscription<dynamic>> _subscriptions = [];
+
+  /// Records received per AWARE table while this page is open.
+  final Map<String, int> _counts = {};
+  AppleWatchFileTransfer? _transfer;
+  Timer? _transferIdle;
 
   AppleWatchDeviceManager get _manager => widget.device.deviceManager as AppleWatchDeviceManager;
 
-  bool get _hasData => _status.lastFileTransferAt != null;
+  bool get _hasData => _status.lastFileTransferAt != null || _counts.isNotEmpty;
 
   /// Whether each step's requirement is met, in [_steps] order.
-  List<bool> get _done => [
-    _status.isPaired,
-    _status.isWatchAppInstalled,
-    // ponytail: isCollectingData resets when the phone app restarts, so data arriving counts too.
-    // A watch stopped after a transfer still reads as started; a heartbeat from the watch would fix it.
-    _status.isCollectingData || _hasData,
-    _hasData,
-  ];
+  /// The watch app only sends data while it is open - that is what "open" checks.
+  List<bool> get _done => [_status.isPaired, _status.isWatchAppInstalled, _status.isReachable, _hasData];
+
+  CarpMorphMode get _mode {
+    final transfer = _transfer;
+    if (transfer != null && transfer.chunkIndex < transfer.totalChunks) return CarpMorphMode.syncing;
+    if (!_status.isReachable) return CarpMorphMode.away;
+    return _counts.isEmpty ? CarpMorphMode.collecting : CarpMorphMode.sent;
+  }
 
   @override
   void initState() {
@@ -41,13 +47,19 @@ class _AppleWatchConnectPageState extends State<AppleWatchConnectPage> {
     // Resume at the first unmet step - steps unlock in order.
     _page = _done.indexOf(false).clamp(0, _steps.length - 1);
     _pages = PageController(initialPage: _page);
-    _subscription = _manager.watchStatusEvents.listen(_onStatus);
+    _subscriptions
+      ..add(_manager.watchStatusEvents.listen(_onStatus))
+      ..add(_manager.fileTransferEvents.listen(_onTransfer))
+      ..add(_manager.records.listen(_onRecords));
     unawaited(_connect());
   }
 
   @override
   void dispose() {
-    unawaited(_subscription?.cancel());
+    for (final subscription in _subscriptions) {
+      unawaited(subscription.cancel());
+    }
+    _transferIdle?.cancel();
     _pages.dispose();
     super.dispose();
   }
@@ -56,6 +68,21 @@ class _AppleWatchConnectPageState extends State<AppleWatchConnectPage> {
     if (!mounted) return;
     setState(() => _status = status);
     if (status.isAvailable) unawaited(_connect());
+  }
+
+  void _onTransfer(AppleWatchFileTransfer transfer) {
+    if (!mounted) return;
+    setState(() => _transfer = transfer);
+    // A chunk can get lost on the way - stop showing a sync nothing is coming for.
+    _transferIdle?.cancel();
+    _transferIdle = Timer(const Duration(seconds: 5), () {
+      if (mounted) setState(() => _transfer = null);
+    });
+  }
+
+  void _onRecords(AppleWatchRecords batch) {
+    if (!mounted || batch.records.isEmpty) return;
+    setState(() => _counts.update(batch.table, (n) => n + batch.records.length, ifAbsent: () => batch.records.length));
   }
 
   /// Activates WatchConnectivity, so the watch can fetch its settings, and
@@ -120,7 +147,7 @@ class _AppleWatchConnectPageState extends State<AppleWatchConnectPage> {
                     width: i == _page ? 20 : 8,
                     height: 8,
                     decoration: BoxDecoration(
-                      color: i == _page ? _appleWatchColor : Colors.grey.shade300,
+                      color: i == _page ? CarpSphereMorph.red : Colors.grey.shade300,
                       borderRadius: BorderRadius.circular(4),
                     ),
                   ),
@@ -156,7 +183,7 @@ class _AppleWatchConnectPageState extends State<AppleWatchConnectPage> {
     final theme = Theme.of(context);
     String t(String key, [int? step]) =>
         locale.translate('pages.connections.type.apple_watch.step.${_steps[step ?? i]}.$key');
-    Widget check(int step) => _check(_done[step], t(_done[step] ? 'ok' : 'waiting', step));
+    final data = i == _steps.length - 1;
 
     return ListView(
       padding: const EdgeInsets.symmetric(horizontal: 20),
@@ -165,25 +192,34 @@ class _AppleWatchConnectPageState extends State<AppleWatchConnectPage> {
         const SizedBox(height: 4),
         Text(t('title'), style: theme.textTheme.titleLarge!.copyWith(color: Colors.grey.shade900)),
         const SizedBox(height: 24),
-        Center(
-          child: Container(
-            width: 120,
-            height: 120,
-            decoration: BoxDecoration(
-              color: _appleWatchColor.withValues(alpha: 0.12),
-              borderRadius: BorderRadius.circular(32),
+        if (data) ...[
+          _watchScreen(locale),
+          const SizedBox(height: 16),
+          // What kinds of data arrived, and how much, right under the visual.
+          for (final MapEntry(:key, :value) in _counts.entries)
+            _count(
+              locale.translate('pages.connections.type.apple_watch.data.${key.replaceFirst('ios_watch_', '')}'),
+              value,
             ),
-            child: Icon(_icons[i], size: 64, color: _appleWatchColor),
+          const SizedBox(height: 8),
+          // The watch app sends only while open, so say so whenever it is not.
+          _check(_status.isReachable, t(_status.isReachable ? 'ok' : 'waiting', 2)),
+        ] else
+          Center(
+            child: Container(
+              width: 120,
+              height: 120,
+              decoration: BoxDecoration(
+                color: CarpSphereMorph.red.withValues(alpha: 0.1),
+                borderRadius: BorderRadius.circular(32),
+              ),
+              child: Icon(_icons[i], size: 64, color: CarpSphereMorph.red),
+            ),
           ),
-        ),
         const SizedBox(height: 24),
         Text(t('body'), style: theme.textTheme.bodyLarge!.copyWith(height: 1.4)),
         const SizedBox(height: 24),
-        // The last page sums up every check; the others show their own.
-        if (i == _steps.length - 1)
-          for (var j = 0; j < _steps.length; j++) check(j)
-        else
-          check(i),
+        if (!data) _check(_done[i], t(_done[i] ? 'ok' : 'waiting')),
         if (i < 2) ...[
           const SizedBox(height: 16),
           Align(
@@ -198,6 +234,58 @@ class _AppleWatchConnectPageState extends State<AppleWatchConnectPage> {
       ],
     );
   }
+
+  /// The same sphere-to-CARP morph the watch shows, with what it means below.
+  Widget _watchScreen(RPLocalizations locale) {
+    final transfer = _transfer;
+    final total = _counts.values.fold(0, (a, b) => a + b);
+    final mode = _mode;
+    final label = switch (mode) {
+      CarpMorphMode.syncing => locale.translate(
+        'pages.connections.type.apple_watch.receiving',
+        args: {'percent': (100 * transfer!.chunkIndex / transfer.totalChunks).round()},
+      ),
+      CarpMorphMode.away => locale.translate('pages.connections.type.apple_watch.open_to_send'),
+      CarpMorphMode.collecting => locale.translate('pages.connections.type.apple_watch.waiting_for_data'),
+      CarpMorphMode.sent => locale.translate(
+        'pages.connections.type.apple_watch.received',
+        args: {'count': NumberFormat.decimalPattern().format(total)},
+      ),
+    };
+    return Center(
+      child: Container(
+        width: 230,
+        padding: const EdgeInsets.fromLTRB(12, 12, 12, 16),
+        decoration: BoxDecoration(color: Colors.black, borderRadius: BorderRadius.circular(44)),
+        child: Column(
+          children: [
+            AspectRatio(
+              aspectRatio: 184 / 150,
+              child: CarpSphereMorph(
+                mode: mode,
+                progress: transfer == null ? 0 : transfer.chunkIndex / transfer.totalChunks,
+              ),
+            ),
+            Text(
+              label,
+              textAlign: TextAlign.center,
+              style: Theme.of(context).textTheme.labelLarge!.copyWith(color: Colors.white),
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+
+  Widget _count(String label, int count) => Padding(
+    padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 3),
+    child: Row(
+      children: [
+        Expanded(child: Text(label, style: Theme.of(context).textTheme.bodyMedium)),
+        Text(NumberFormat.decimalPattern().format(count), style: Theme.of(context).textTheme.labelLarge),
+      ],
+    ),
+  );
 
   Widget _check(bool ok, String text) => Padding(
     padding: const EdgeInsets.only(bottom: 10),

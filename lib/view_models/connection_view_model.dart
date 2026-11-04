@@ -46,9 +46,10 @@ class ConnectionViewModel extends ViewModel {
       _subscriptions.add(batteryEvents.listen((_) => notifyListeners()));
     }
     if (deviceManager case AppleWatchDeviceManager watch) {
-      _subscriptions.add(
-        watch.records.where((batch) => batch.table == AppleWatchTable.device).listen((_) => notifyListeners()),
-      );
+      _subscriptions
+        ..add(watch.records.where((batch) => batch.table == AppleWatchTable.device).listen((_) => notifyListeners()))
+        // Whether the watch app is open - the card tells the user to open it to send data.
+        ..add(watch.watchStatusEvents.listen((_) => notifyListeners()));
     }
   }
 

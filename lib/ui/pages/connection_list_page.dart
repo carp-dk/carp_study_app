@@ -132,7 +132,7 @@ class ConnectionListPageState extends State<ConnectionListPage> {
                 leading: device.icon!,
                 leadingImage: device.iconImage,
                 title: (locale.translate(device.typeName), device.batteryLevel),
-                subtitle: device.name,
+                subtitle: _watchHint(locale, device) ?? device.name,
                 // Study-managed, so the user cannot disconnect it - only local mode inspects its data.
                 onTap: device.status == DeviceStatus.connected && _isLocal
                     ? () => _showWrittenMeasurements(device)
@@ -274,6 +274,21 @@ class ConnectionListPageState extends State<ConnectionListPage> {
       trailing: trailing,
       onTap: onTap,
     );
+  }
+
+  /// A connected watch only sends data while the CARP watch app is open, so say whether it is.
+  String? _watchHint(RPLocalizations locale, ConnectionViewModel device) {
+    if (device.deviceManager case AppleWatchDeviceManager watch when watch.isConnected) {
+      String t(String key, [Map<String, Object?>? args]) =>
+          locale.translate('pages.connections.type.apple_watch.hint.$key', args: args);
+      final status = watch.watchStatus, last = status.lastFileTransferAt;
+      return [
+        if (device.name.isNotEmpty) device.name,
+        if (status.isReachable) t('open') else t('closed'),
+        if (!status.isReachable && last != null) t('last', {'ago': timeago.format(last.toLocal())}),
+      ].join('\n');
+    }
+    return null;
   }
 
   Widget _connectionsPageCardStream<T>(Stream<T> stream, T? initialData, Widget Function() childBuilder) => Center(
