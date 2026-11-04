@@ -66,14 +66,14 @@
    "roleName": "Weather Service",
    "isOptional": true,
    "defaultSamplingConfiguration": {},
-   "apiKey": ""
+   "apiKey": "<OPENWEATHERMAP_API_KEY>"
   },
   {
    "__type": "dk.carp.cams.devices.AirQualityService",
    "roleName": "Air Quality Service",
    "isOptional": true,
    "defaultSamplingConfiguration": {},
-   "apiKey": ""
+   "apiKey": "<WAQI_API_KEY>"
   },
   {
    "__type": "dk.carp.cams.devices.HealthService",
