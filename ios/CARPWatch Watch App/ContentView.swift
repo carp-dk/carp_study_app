@@ -5,8 +5,9 @@
 //  Created by Alireza Hajebrahimi on 17/08/2026.
 //
 import SwiftUI
+import WatchKit
 
-/// One glance: the CARP morph and what it means. Start/Stop is a scroll away.
+/// One glance: the CARP morph and what it means. Tapping it starts or sends; Stop is a scroll away.
 struct ContentView: View {
     @ObservedObject var controller: CarpWatchSensorController
 
@@ -27,11 +28,11 @@ struct ContentView: View {
     }
 
     private var detail: String {
-        if !controller.isRunning { return controller.statusMessage }
+        if !controller.isRunning { return "Tap to start" }
         switch mode {
         case .syncing: return "\(Int(controller.syncProgress * 100))% · keep CARP open"
         case .sent: return "Just now"
-        case .away: return "Saved on the watch · sends later"
+        case .away: return "Saved on the watch · tap to send"
         case .collecting:
             let sensors = "\(controller.activeSensorCount) sensors"
             guard let last = controller.lastTransferAt else { return sensors }
@@ -42,8 +43,18 @@ struct ContentView: View {
     var body: some View {
         ScrollView {
             VStack(spacing: 4) {
-                CarpMorphView(mode: mode, progress: controller.syncProgress)
-                    .aspectRatio(184 / 150, contentMode: .fit)
+                // The sphere is the action: start when stopped, otherwise send now.
+                Button {
+                    WKInterfaceDevice.current().play(.click)
+                    controller.isRunning ? controller.transferNow() : controller.start()
+                } label: {
+                    CarpMorphView(mode: mode, progress: controller.syncProgress)
+                        .aspectRatio(184 / 150, contentMode: .fit)
+                        .contentShape(Rectangle())
+                }
+                .buttonStyle(.plain)
+                .disabled(controller.isSyncing)
+                .accessibilityLabel(controller.isRunning ? "Send data to phone" : "Start collecting")
                 Text(title)
                     .font(.headline)
                 Text(detail)
@@ -51,11 +62,10 @@ struct ContentView: View {
                     .foregroundStyle(.secondary)
                     .multilineTextAlignment(.center)
 
-                Button(controller.isRunning ? "Stop" : "Start") {
-                    controller.toggle()
+                if controller.isRunning {
+                    Button("Stop", role: .destructive) { controller.stop() }
+                        .padding(.top, 16)
                 }
-                .tint(controller.isRunning ? .red : CarpMorphView.red)
-                .padding(.top, 16)
             }
             .accessibilityElement(children: .contain)
         }
