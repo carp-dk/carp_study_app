@@ -49,7 +49,9 @@ class ConnectionViewModel extends ViewModel {
       _subscriptions
         ..add(watch.records.where((batch) => batch.table == AppleWatchTable.device).listen((_) => notifyListeners()))
         // Whether the watch app is open - the card tells the user to open it to send data.
-        ..add(watch.watchStatusEvents.listen((_) => notifyListeners()));
+        ..add(watch.watchStatusEvents.listen((_) => notifyListeners()))
+        // isSending expires with time, not with an event.
+        ..add(Stream<void>.periodic(const Duration(seconds: 30)).listen((_) => notifyListeners()));
     }
   }
 
@@ -284,3 +286,14 @@ const Map<String, String> _deviceConnectionInstructionsImage = {
   PolarDevice.DEVICE_TYPE: "assets/instructions/polar_h9_h10_instructions.png",
   MovesenseDevice.DEVICE_TYPE: "assets/instructions/movesense_instructions.png",
 };
+
+extension AppleWatchSending on AppleWatchDeviceManager {
+  /// Reachability drops whenever the watch screen dims, yet CARP keeps sending
+  /// in the background - so data within two transfer intervals counts too.
+  bool get isSending {
+    final last = watchStatus.lastFileTransferAt;
+    final interval = configuration?.fileTransferInterval ?? const Duration(minutes: 15);
+    final window = interval * 2 < const Duration(minutes: 2) ? const Duration(minutes: 2) : interval * 2;
+    return watchStatus.isReachable || (last != null && DateTime.now().difference(last) < window);
+  }
+}

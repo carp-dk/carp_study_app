@@ -15,6 +15,8 @@ class _AppleWatchConnectPageState extends State<AppleWatchConnectPage> {
   static const _steps = ['pair', 'install', 'open', 'data'];
   static const _icons = [Icons.watch, Icons.install_mobile, Icons.touch_app_outlined];
 
+  /// A connected watch has nothing left to set up - the page only shows its live state.
+  late final bool _statusOnly = _manager.isConnected;
   late final PageController _pages;
   late int _page;
   late AppleWatchStatus _status;
@@ -30,13 +32,13 @@ class _AppleWatchConnectPageState extends State<AppleWatchConnectPage> {
   bool get _hasData => _status.lastFileTransferAt != null || _counts.isNotEmpty;
 
   /// Whether each step's requirement is met, in [_steps] order.
-  /// The watch app only sends data while it is open - that is what "open" checks.
-  List<bool> get _done => [_status.isPaired, _status.isWatchAppInstalled, _status.isReachable, _hasData];
+  /// "open" passes while the watch app is open or has just sent data.
+  List<bool> get _done => [_status.isPaired, _status.isWatchAppInstalled, _manager.isSending, _hasData];
 
   CarpMorphMode get _mode {
     final transfer = _transfer;
     if (transfer != null && transfer.chunkIndex < transfer.totalChunks) return CarpMorphMode.syncing;
-    if (!_status.isReachable) return CarpMorphMode.away;
+    if (!_manager.isSending) return CarpMorphMode.away;
     return _counts.isEmpty ? CarpMorphMode.collecting : CarpMorphMode.sent;
   }
 
@@ -44,13 +46,15 @@ class _AppleWatchConnectPageState extends State<AppleWatchConnectPage> {
   void initState() {
     super.initState();
     _status = _manager.watchStatus;
-    // A connected watch opens on its live data; otherwise resume at the first unmet step.
-    _page = _manager.isConnected ? _steps.length - 1 : _done.indexOf(false).clamp(0, _steps.length - 1);
+    // Resume at the first unmet step - steps unlock in order.
+    _page = _statusOnly ? _steps.length - 1 : _done.indexOf(false).clamp(0, _steps.length - 1);
     _pages = PageController(initialPage: _page);
     _subscriptions
       ..add(_manager.watchStatusEvents.listen(_onStatus))
       ..add(_manager.fileTransferEvents.listen(_onTransfer))
-      ..add(_manager.records.listen(_onRecords));
+      ..add(_manager.records.listen(_onRecords))
+      // isSending expires with time, not with an event.
+      ..add(Stream<void>.periodic(const Duration(seconds: 30)).listen((_) => setState(() {})));
     unawaited(_connect());
   }
 
@@ -128,51 +132,55 @@ class _AppleWatchConnectPageState extends State<AppleWatchConnectPage> {
                 ),
               ),
             ),
-            Expanded(
-              child: PageView.builder(
-                controller: _pages,
-                // Steps unlock in order - only the buttons move between them.
-                physics: const NeverScrollableScrollPhysics(),
-                itemCount: _steps.length,
-                itemBuilder: (context, i) => _stepPage(locale, i),
+            if (_statusOnly)
+              Expanded(child: _stepPage(locale, _page))
+            else ...[
+              Expanded(
+                child: PageView.builder(
+                  controller: _pages,
+                  // Steps unlock in order - only the buttons move between them.
+                  physics: const NeverScrollableScrollPhysics(),
+                  itemCount: _steps.length,
+                  itemBuilder: (context, i) => _stepPage(locale, i),
+                ),
               ),
-            ),
-            Row(
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: [
-                for (var i = 0; i < _steps.length; i++)
-                  AnimatedContainer(
-                    duration: const Duration(milliseconds: 200),
-                    margin: const EdgeInsets.symmetric(horizontal: 4),
-                    width: i == _page ? 20 : 8,
-                    height: 8,
-                    decoration: BoxDecoration(
-                      color: i == _page ? CarpSphereMorph.red : Colors.grey.shade300,
-                      borderRadius: BorderRadius.circular(4),
-                    ),
-                  ),
-              ],
-            ),
-            Padding(
-              padding: const EdgeInsets.fromLTRB(20, 16, 20, 16),
-              child: Row(
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              Row(
+                mainAxisAlignment: MainAxisAlignment.center,
                 children: [
-                  TextButton(
-                    onPressed: () => _page == 0 ? Navigator.pop(context) : _goTo(_page - 1),
-                    child: Text(locale.translate(_page == 0 ? 'cancel' : 'back')),
-                  ),
-                  FilledButton(
-                    onPressed: !_done[_page]
-                        ? null
-                        : last
-                        ? () => Navigator.pop(context)
-                        : () => _goTo(_page + 1),
-                    child: Text(locale.translate(last ? 'done' : 'next')),
-                  ),
+                  for (var i = 0; i < _steps.length; i++)
+                    AnimatedContainer(
+                      duration: const Duration(milliseconds: 200),
+                      margin: const EdgeInsets.symmetric(horizontal: 4),
+                      width: i == _page ? 20 : 8,
+                      height: 8,
+                      decoration: BoxDecoration(
+                        color: i == _page ? CarpSphereMorph.red : Colors.grey.shade300,
+                        borderRadius: BorderRadius.circular(4),
+                      ),
+                    ),
                 ],
               ),
-            ),
+              Padding(
+                padding: const EdgeInsets.fromLTRB(20, 16, 20, 16),
+                child: Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  children: [
+                    TextButton(
+                      onPressed: () => _page == 0 ? Navigator.pop(context) : _goTo(_page - 1),
+                      child: Text(locale.translate(_page == 0 ? 'cancel' : 'back')),
+                    ),
+                    FilledButton(
+                      onPressed: !_done[_page]
+                          ? null
+                          : last
+                          ? () => Navigator.pop(context)
+                          : () => _goTo(_page + 1),
+                      child: Text(locale.translate(last ? 'done' : 'next')),
+                    ),
+                  ],
+                ),
+              ),
+            ],
           ],
         ),
       ),
@@ -188,8 +196,10 @@ class _AppleWatchConnectPageState extends State<AppleWatchConnectPage> {
     return ListView(
       padding: const EdgeInsets.symmetric(horizontal: 20),
       children: [
-        Text('${i + 1}/${_steps.length}', style: theme.textTheme.labelLarge!.copyWith(color: Colors.grey.shade600)),
-        const SizedBox(height: 4),
+        if (!_statusOnly) ...[
+          Text('${i + 1}/${_steps.length}', style: theme.textTheme.labelLarge!.copyWith(color: Colors.grey.shade600)),
+          const SizedBox(height: 4),
+        ],
         Text(t('title'), style: theme.textTheme.titleLarge!.copyWith(color: Colors.grey.shade900)),
         const SizedBox(height: 24),
         if (data) ...[
@@ -203,7 +213,7 @@ class _AppleWatchConnectPageState extends State<AppleWatchConnectPage> {
             ),
           const SizedBox(height: 8),
           // The watch app sends only while open, so say so whenever it is not.
-          _check(_status.isReachable, t(_status.isReachable ? 'ok' : 'waiting', 2)),
+          _check(_manager.isSending, t(_manager.isSending ? 'ok' : 'waiting', 2)),
         ] else
           Center(
             child: Container(

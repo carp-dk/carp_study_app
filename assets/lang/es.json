@@ -61,6 +61,7 @@
   "cards.heartrate.title": "Frecuencia cardíaca",
   "cards.heartrate.polar.title": "Frecuencia cardíaca (Polar)",
   "cards.heartrate.movesense.title": "Frecuencia cardíaca (Movesense)",
+  "cards.heartrate.apple_watch.title": "Frecuencia cardíaca (Apple Watch)",
   "cards.heartrate.health.title": "Frecuencia cardíaca ({{source}})",
   "cards.heartrate.bpm": "LPM",
   "cards.heartrate.range": "Rango",

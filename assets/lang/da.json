@@ -87,6 +87,7 @@
   "cards.heartrate.title": "Hjerterytme",
   "cards.heartrate.polar.title": "Hjerterytme (Polar)",
   "cards.heartrate.movesense.title": "Hjerterytme (Movesense)",
+  "cards.heartrate.apple_watch.title": "Hjerterytme (Apple Watch)",
   "cards.heartrate.health.title": "Hjerterytme ({{source}})",
   "cards.heartrate.bpm": "SPM",
   "cards.heartrate.heartrate": "Hjerterytme",

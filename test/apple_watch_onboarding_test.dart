@@ -125,12 +125,25 @@ void main() {
       await settle();
     }
 
+    // A dimmed watch is unreachable but still sending in the background - recent data counts as open.
+    watch.emit(
+      AppleWatchStatus(
+        isSupported: true,
+        isPaired: true,
+        isWatchAppInstalled: true,
+        lastFileTransferAt: DateTime.now(),
+      ),
+    );
+    await settle();
+    expect(find.text('CARP is open on the watch'), findsOneWidget);
+
     // Reopened while connected: straight to the live data.
     await reopen();
     expect(find.text('Data from your watch'), findsOneWidget);
 
     // Reopened not connected, watch app closed, no data yet: resumes at the open step.
     watch.status = DeviceStatus.configured;
+    watch.current = AppleWatchStatus(isSupported: true, isPaired: true, isWatchAppInstalled: true);
     await reopen();
     expect(find.text('Open CARP on the watch'), findsOneWidget);
     // Stop the morph's ticker before the test ends.

@@ -287,8 +287,8 @@ class ConnectionListPageState extends State<ConnectionListPage> {
       final status = watch.watchStatus, last = status.lastFileTransferAt;
       return [
         if (device.name.isNotEmpty) device.name,
-        if (status.isReachable) t('open') else t('closed'),
-        if (!status.isReachable && last != null) t('last', {'ago': timeago.format(last.toLocal())}),
+        if (watch.isSending) t('open') else t('closed'),
+        if (!watch.isSending && last != null) t('last', {'ago': timeago.format(last.toLocal())}),
       ].join('\n');
     }
     return null;

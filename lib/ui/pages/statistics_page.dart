@@ -30,6 +30,7 @@ class _StatisticsPageState extends State<StatisticsPage> {
             widget.model.activityCardDataModel,
             widget.model.polarHeartRateCardDataModel,
             widget.model.movesenseHeartRateCardDataModel,
+            widget.model.appleWatchHeartRateCardDataModel,
             widget.model.mobilityCardDataModel,
             widget.model.sleepCardDataModel,
           ]),
@@ -77,6 +78,10 @@ class _StatisticsPageState extends State<StatisticsPage> {
       if (model.hasMovesenseHeartRateMeasure && model.movesenseHeartRateCardDataModel.hasData) ...[
         CarpSectionTitle(locale.translate('cards.heartrate.movesense.title')),
         HeartRateCardWidget(model.movesenseHeartRateCardDataModel),
+      ],
+      if (model.hasAppleWatchHeartRateMeasure && model.appleWatchHeartRateCardDataModel.hasData) ...[
+        CarpSectionTitle(locale.translate('cards.heartrate.apple_watch.title')),
+        HeartRateCardWidget(model.appleWatchHeartRateCardDataModel),
       ],
       if (model.hasHealthMeasure && model.healthHeartRateCardDataModel.hasData) ...[
         CarpSectionTitle(locale.translate('cards.heartrate.health.title', args: {'source': healthPlatformName})),

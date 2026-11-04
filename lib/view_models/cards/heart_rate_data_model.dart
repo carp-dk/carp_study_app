@@ -60,6 +60,7 @@ class HeartRateCardViewModel extends SerializableViewModel<HourlyHeartRate> {
   static double? bpmOf(Measurement measurement) => switch (measurement.data) {
     PolarHR data => data.samples.firstOrNull?.hr.toDouble(),
     MovesenseHR data => data.hr,
+    AppleWatchHeartRate data => data.hr,
     HealthData(healthDataType: 'HEART_RATE', value: NumericHealthValue value) => value.numericValue.toDouble(),
     _ => null,
   };

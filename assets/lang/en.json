@@ -90,6 +90,7 @@
   "cards.heartrate.title": "Heart Rate",
   "cards.heartrate.polar.title": "Heart Rate (Polar)",
   "cards.heartrate.movesense.title": "Heart Rate (Movesense)",
+  "cards.heartrate.apple_watch.title": "Heart Rate (Apple Watch)",
   "cards.heartrate.health.title": "Heart Rate ({{source}})",
   "cards.heartrate.bpm": "BPM",
   "cards.heartrate.heartrate": "Heart rate",

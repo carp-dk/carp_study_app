@@ -13,6 +13,7 @@ class StatisticsViewModel extends ViewModel {
   bool _hasUserTasks = false;
   bool _hasPolarHeartRateMeasure = false;
   bool _hasMovesenseHeartRateMeasure = false;
+  bool _hasAppleWatchHeartRateMeasure = false;
   bool _hasAudioMeasure = false;
   bool _hasVideoMeasure = false;
   bool _hasImageMeasure = false;
@@ -26,6 +27,7 @@ class StatisticsViewModel extends ViewModel {
   bool get hasUserTasks => _hasUserTasks;
   bool get hasPolarHeartRateMeasure => _hasPolarHeartRateMeasure;
   bool get hasMovesenseHeartRateMeasure => _hasMovesenseHeartRateMeasure;
+  bool get hasAppleWatchHeartRateMeasure => _hasAppleWatchHeartRateMeasure;
   bool get hasAudioMeasure => _hasAudioMeasure;
   bool get hasVideoMeasure => _hasVideoMeasure;
   bool get hasImageMeasure => _hasImageMeasure;
@@ -46,6 +48,9 @@ class StatisticsViewModel extends ViewModel {
   final StudyProgressCardViewModel _studyProgressCardDataModel = StudyProgressCardViewModel();
   final HeartRateCardViewModel _polarHeartRateCardDataModel = HeartRateCardViewModel(PolarSamplingPackage.HR);
   final HeartRateCardViewModel _movesenseHeartRateCardDataModel = HeartRateCardViewModel(MovesenseSamplingPackage.HR);
+  final HeartRateCardViewModel _appleWatchHeartRateCardDataModel = HeartRateCardViewModel(
+    AppleWatchSamplingPackage.HEART_RATE,
+  );
   final HeartRateCardViewModel _healthHeartRateCardDataModel = HeartRateCardViewModel(HealthSamplingPackage.HEALTH);
 
   ActivityCardViewModel get activityCardDataModel => _activityCardDataModel;
@@ -59,6 +64,7 @@ class StatisticsViewModel extends ViewModel {
   TaskCardViewModel get imageCardDataModel => _imageCardDataModel;
   HeartRateCardViewModel get polarHeartRateCardDataModel => _polarHeartRateCardDataModel;
   HeartRateCardViewModel get movesenseHeartRateCardDataModel => _movesenseHeartRateCardDataModel;
+  HeartRateCardViewModel get appleWatchHeartRateCardDataModel => _appleWatchHeartRateCardDataModel;
   HeartRateCardViewModel get healthHeartRateCardDataModel => _healthHeartRateCardDataModel;
 
   StudyProgressCardViewModel get studyProgressCardDataModel => _studyProgressCardDataModel;
@@ -80,6 +86,7 @@ class StatisticsViewModel extends ViewModel {
     _hasUserTasks = _study.hasUserTasks();
     _hasPolarHeartRateMeasure = _study.hasMeasure(PolarSamplingPackage.HR);
     _hasMovesenseHeartRateMeasure = _study.hasMeasure(MovesenseSamplingPackage.HR);
+    _hasAppleWatchHeartRateMeasure = _study.hasMeasure(AppleWatchSamplingPackage.HEART_RATE);
     _hasAudioMeasure = _study.hasMeasure(MediaSamplingPackage.AUDIO);
     _hasVideoMeasure = _study.hasMeasure(MediaSamplingPackage.VIDEO);
     _hasImageMeasure = _study.hasMeasure(MediaSamplingPackage.IMAGE);
@@ -94,6 +101,7 @@ class StatisticsViewModel extends ViewModel {
     _stepsCardDataModel.init(ctrl);
     _polarHeartRateCardDataModel.init(ctrl);
     _movesenseHeartRateCardDataModel.init(ctrl);
+    _appleWatchHeartRateCardDataModel.init(ctrl);
     _healthHeartRateCardDataModel.init(ctrl);
     _mobilityCardDataModel.init(ctrl);
     _sleepCardDataModel.init(ctrl);
@@ -130,6 +138,8 @@ class StatisticsViewModel extends ViewModel {
           _fetchInto(_polarHeartRateCardDataModel.dataType, _polarHeartRateCardDataModel.addMeasurements),
         if (hasMovesenseHeartRateMeasure)
           _fetchInto(_movesenseHeartRateCardDataModel.dataType, _movesenseHeartRateCardDataModel.addMeasurements),
+        if (hasAppleWatchHeartRateMeasure)
+          _fetchInto(_appleWatchHeartRateCardDataModel.dataType, _appleWatchHeartRateCardDataModel.addMeasurements),
       ]);
     } finally {
       _isRefreshing = false;
@@ -158,6 +168,7 @@ class StatisticsViewModel extends ViewModel {
     _stepsCardDataModel.clear();
     _polarHeartRateCardDataModel.clear();
     _movesenseHeartRateCardDataModel.clear();
+    _appleWatchHeartRateCardDataModel.clear();
     _healthHeartRateCardDataModel.clear();
     _mobilityCardDataModel.clear();
     _sleepCardDataModel.clear();
@@ -177,6 +188,7 @@ class StatisticsViewModel extends ViewModel {
     _stepsCardDataModel.dispose();
     _polarHeartRateCardDataModel.dispose();
     _movesenseHeartRateCardDataModel.dispose();
+    _appleWatchHeartRateCardDataModel.dispose();
     _healthHeartRateCardDataModel.dispose();
     _mobilityCardDataModel.dispose();
     _sleepCardDataModel.dispose();
