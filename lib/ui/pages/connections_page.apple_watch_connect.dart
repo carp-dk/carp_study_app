@@ -32,13 +32,13 @@ class _AppleWatchConnectPageState extends State<AppleWatchConnectPage> {
   bool get _hasData => _status.lastFileTransferAt != null || _counts.isNotEmpty;
 
   /// Whether each step's requirement is met, in [_steps] order.
-  /// "open" passes while the watch app is open or has just sent data.
-  List<bool> get _done => [_status.isPaired, _status.isWatchAppInstalled, _manager.isSending, _hasData];
+  /// The watch app only sends data while it is open - that is what "open" checks.
+  List<bool> get _done => [_status.isPaired, _status.isWatchAppInstalled, _status.isReachable, _hasData];
 
   CarpMorphMode get _mode {
     final transfer = _transfer;
     if (transfer != null && transfer.chunkIndex < transfer.totalChunks) return CarpMorphMode.syncing;
-    if (!_manager.isSending) return CarpMorphMode.away;
+    if (!_status.isReachable) return CarpMorphMode.away;
     return _counts.isEmpty ? CarpMorphMode.collecting : CarpMorphMode.sent;
   }
 
@@ -52,9 +52,7 @@ class _AppleWatchConnectPageState extends State<AppleWatchConnectPage> {
     _subscriptions
       ..add(_manager.watchStatusEvents.listen(_onStatus))
       ..add(_manager.fileTransferEvents.listen(_onTransfer))
-      ..add(_manager.records.listen(_onRecords))
-      // isSending expires with time, not with an event.
-      ..add(Stream<void>.periodic(const Duration(seconds: 30)).listen((_) => setState(() {})));
+      ..add(_manager.records.listen(_onRecords));
     unawaited(_connect());
   }
 
@@ -213,7 +211,7 @@ class _AppleWatchConnectPageState extends State<AppleWatchConnectPage> {
             ),
           const SizedBox(height: 8),
           // The watch app sends only while open, so say so whenever it is not.
-          _check(_manager.isSending, t(_manager.isSending ? 'ok' : 'waiting', 2)),
+          _check(_status.isReachable, t(_status.isReachable ? 'ok' : 'waiting', 2)),
         ] else
           Center(
             child: Container(
