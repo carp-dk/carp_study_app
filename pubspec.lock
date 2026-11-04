@@ -348,20 +348,18 @@ packages:
   carp_health_package:
     dependency: "direct main"
     description:
-      path: "packages/carp_health_package"
-      ref: cd2fad6d3064b9bac7eaddff5c206c8213320bda
-      resolved-ref: cd2fad6d3064b9bac7eaddff5c206c8213320bda
-      url: "https://github.com/carp-dk/carp.sensing-flutter.git"
-    source: git
-    version: "4.1.2"
+      name: carp_health_package
+      sha256: "5070dbcfbee0fcfc1b3b861becca2438b8c501482e2f4d0dae036e244241ea5f"
+      url: "https://pub.dev"
+    source: hosted
+    version: "4.1.1"
   carp_mobile_sensing:
     dependency: "direct main"
     description:
-      path: carp_mobile_sensing
-      ref: cd2fad6d3064b9bac7eaddff5c206c8213320bda
-      resolved-ref: cd2fad6d3064b9bac7eaddff5c206c8213320bda
-      url: "https://github.com/carp-dk/carp.sensing-flutter.git"
-    source: git
+      name: carp_mobile_sensing
+      sha256: f0be50af0a18bc5c91e0648c9a22e1416a4a951ac1113be07e4028cc62190fc9
+      url: "https://pub.dev"
+    source: hosted
     version: "2.5.1"
   carp_movesense_flutter:
     dependency: transitive
@@ -414,12 +412,11 @@ packages:
   carp_webservices:
     dependency: "direct main"
     description:
-      path: "backends/carp_webservices"
-      ref: cd2fad6d3064b9bac7eaddff5c206c8213320bda
-      resolved-ref: cd2fad6d3064b9bac7eaddff5c206c8213320bda
-      url: "https://github.com/carp-dk/carp.sensing-flutter.git"
-    source: git
-    version: "4.4.1"
+      name: carp_webservices
+      sha256: "893538175e6503a7aeaf1c67e16aef57b9a3ba46abeadba21cf337c716e36111"
+      url: "https://pub.dev"
+    source: hosted
+    version: "4.4.3"
   characters:
     dependency: transitive
     description:
@@ -1067,14 +1064,13 @@ packages:
     source: hosted
     version: "2.3.2"
   health:
-    dependency: "direct overridden"
+    dependency: transitive
     description:
-      path: "."
-      ref: "3e2ecce01f57b2110e028b83837d93b8be5890ce"
-      resolved-ref: "3e2ecce01f57b2110e028b83837d93b8be5890ce"
-      url: "https://github.com/Zeroupper/carp-health-flutter.git"
-    source: git
-    version: "13.3.3"
+      name: health
+      sha256: "8dd9625c9c26379a5753ad24c33af1d3dc5ce1f36f19c03e17c676c2f8fdbb80"
+      url: "https://pub.dev"
+    source: hosted
+    version: "13.3.2"
   hooks:
     dependency: transitive
     description:
