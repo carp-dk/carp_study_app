@@ -3,6 +3,7 @@ part of carp_study_app;
 // Consts, because the icon maps below are const lookups without a BuildContext.
 const Color _statusSuccess = Color(0xff67CE67);
 const Color _statusError = Color(0xffEB4B62);
+const Color _appleWatchColor = Color(0xff3260A4);
 
 /// View model for [ConnectionListPage] - its devices and services as view models.
 class ConnectionListPageViewModel extends ViewModel {
@@ -32,28 +33,42 @@ class ConnectionViewModel extends ViewModel {
   DeviceManager deviceManager;
   ConnectionViewModel(this.deviceManager) : super();
 
-  StreamSubscription<DeviceStatus>? _statusSub;
+  final List<StreamSubscription<dynamic>> _subscriptions = [];
 
-  // Bridge the status stream into notifications - only while listened to, since
+  // Bridge device updates into notifications - only while listened to, since
   // `deploymentDevices` builds these per call.
   @override
   void addListener(VoidCallback listener) {
-    _statusSub ??= deviceManager.statusEvents.listen((_) => notifyListeners());
     super.addListener(listener);
+    if (_subscriptions.isNotEmpty) return;
+    _subscriptions.add(statusEvents.listen((_) => notifyListeners()));
+    if (deviceManager is HardwareDeviceManager) {
+      _subscriptions.add(batteryEvents.listen((_) => notifyListeners()));
+    }
+    if (deviceManager case AppleWatchDeviceManager watch) {
+      _subscriptions
+        ..add(watch.records.where((batch) => batch.table == AppleWatchTable.device).listen((_) => notifyListeners()))
+        // Whether the watch app is open - the card tells the user to open it to send data.
+        ..add(watch.watchStatusEvents.listen((_) => notifyListeners()));
+    }
   }
 
   @override
   void removeListener(VoidCallback listener) {
     super.removeListener(listener);
-    if (!hasListeners) {
-      _statusSub?.cancel();
-      _statusSub = null;
+    if (!hasListeners) _cancelSubscriptions();
+  }
+
+  void _cancelSubscriptions() {
+    for (final subscription in _subscriptions) {
+      unawaited(subscription.cancel());
     }
+    _subscriptions.clear();
   }
 
   @override
   void dispose() {
-    _statusSub?.cancel();
+    _cancelSubscriptions();
     super.dispose();
   }
 
@@ -85,6 +100,16 @@ class ConnectionViewModel extends ViewModel {
 
   /// A printable name - a disconnected device's BLE name is only a memory.
   String get name {
+    if (deviceManager case AppleWatchDeviceManager watch) {
+      if (!watch.isConnected) return '';
+      final info = watch.watchInfo;
+      final version = info?.systemVersion?.trim();
+      return {
+        for (final value in [info?.name, info?.model])
+          if (value != null && value.trim().isNotEmpty && value.trim() != 'Apple Watch') value.trim(),
+        if (version != null && version.isNotEmpty) 'watchOS $version',
+      }.join(' · ');
+    }
     if (deviceManager is BLEDeviceManager) {
       if (status == DeviceStatus.disconnected || status == DeviceStatus.configured) return '';
       return (deviceManager as BLEDeviceManager).bleName ?? '';
@@ -192,6 +217,7 @@ const Map<String, String> _deviceTypeName = {
   LocationService.DEVICE_TYPE: "pages.connections.type.location.name",
   PolarDevice.DEVICE_TYPE: "pages.connections.type.polar.name",
   MovesenseDevice.DEVICE_TYPE: "pages.connections.type.movesense.name",
+  AppleWatchDevice.DEVICE_TYPE: "pages.connections.type.apple_watch.name",
 };
 
 const Map<String, String> _deviceTypeDescription = {
@@ -201,6 +227,7 @@ const Map<String, String> _deviceTypeDescription = {
   LocationService.DEVICE_TYPE: "pages.connections.type.location.description",
   PolarDevice.DEVICE_TYPE: "pages.connections.type.polar.description",
   MovesenseDevice.DEVICE_TYPE: "pages.connections.type.movesense.description",
+  AppleWatchDevice.DEVICE_TYPE: "pages.connections.type.apple_watch.description",
   HealthService.DEVICE_TYPE: "pages.connections.type.health.description",
 };
 
@@ -211,6 +238,7 @@ const Map<String, Icon> _deviceTypeIcon = {
   LocationService.DEVICE_TYPE: Icon(Icons.location_on, color: _statusSuccess),
   PolarDevice.DEVICE_TYPE: Icon(Icons.monitor_heart, size: 30, color: _statusError),
   MovesenseDevice.DEVICE_TYPE: Icon(Icons.circle, size: 30, color: Color(0xff646363)),
+  AppleWatchDevice.DEVICE_TYPE: Icon(Icons.watch, size: 30, color: _appleWatchColor),
   HealthService.DEVICE_TYPE: Icon(Icons.favorite_rounded, size: 30, color: _statusError),
 };
 

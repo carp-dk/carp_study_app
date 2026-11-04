@@ -63,6 +63,7 @@ import 'package:cognition_package/cognition_package.dart';
 import 'package:carp_health_package/health_package.dart';
 // import 'package:health/health.dart';
 import 'package:carp_movesense_package/carp_movesense_package.dart';
+import 'package:carp_aware_package/carp_aware_package.dart';
 import 'package:carp_themes_package/carp_themes_package.dart';
 
 part 'core/app_bloc.dart';
@@ -131,6 +132,7 @@ part 'ui/pages/connections_page.enable_bluetooth_dialog.dart';
 part 'ui/pages/connections_page.bluetooth_connection_page.dart';
 part 'ui/pages/connections_page.list_title.dart';
 part 'ui/pages/connections_page.health_service_connect.dart';
+part 'ui/pages/connections_page.apple_watch_connect.dart';
 
 part 'ui/tasks/audio_task_page.dart';
 part 'ui/tasks/audio_page.dart';
@@ -146,6 +148,7 @@ part 'ui/tasks/camera_page.dart';
 
 part 'ui/widgets/carp_app_bar.dart';
 part 'ui/widgets/qr_to_carp_morph.dart';
+part 'ui/widgets/carp_sphere_morph.dart';
 part 'ui/widgets/horizontal_bar.dart';
 part 'ui/widgets/charts_legend.dart';
 part 'ui/widgets/details_banner.dart';

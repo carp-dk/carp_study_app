@@ -154,5 +154,24 @@ void main() {
         ]),
       );
     });
+
+    // The study app must understand protocols with an Apple Watch (AWARE).
+    test('round-trips a protocol with an Apple Watch', () {
+      final phone = Smartphone();
+      final watch = AppleWatchDevice();
+      final protocol = SmartphoneStudyProtocol(ownerId: 'owner', name: 'watch')
+        ..addPrimaryDevice(phone)
+        ..addConnectedDevice(watch, phone)
+        ..addTaskControl(
+          ImmediateTrigger(),
+          BackgroundTask(measures: [Measure(type: AppleWatchSamplingPackage.HEART_RATE)]),
+          watch,
+        );
+
+      final parsed = SmartphoneStudyProtocol.fromJson(json.decode(json.encode(protocol)) as Map<String, dynamic>);
+
+      expect(parsed.connectedDevices!.single, isA<AppleWatchDevice>());
+      expect(SamplingPackageRegistry().dataTypes.map((d) => d.type), contains(AppleWatchSamplingPackage.HEART_RATE));
+    });
   });
 }

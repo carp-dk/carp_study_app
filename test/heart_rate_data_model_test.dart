@@ -42,6 +42,10 @@ void main() {
     expect(HeartRateCardViewModel.bpmOf(health('STEPS', 500)), isNull);
   });
 
+  test('bpmOf reads Apple Watch heart rate', () {
+    expect(HeartRateCardViewModel.bpmOf(Measurement.fromData(AppleWatchHeartRate(hr: 64))), 64);
+  });
+
   group('HourlyHeartRate', () {
     test('addHeartRate widens the band of both the hour slot and the calendar day', () {
       HourlyHeartRate hr = HourlyHeartRate();
