@@ -86,7 +86,7 @@ void main() {
     expect(find.text('CARP is open on the watch'), findsOneWidget);
     await tapNext();
 
-    expect(find.text('Waiting for data…'), findsOneWidget);
+    expect(find.text('Collecting on the watch'), findsOneWidget);
     expect(next().onPressed, isNull, reason: 'done only once data has arrived');
     watch.transfers.add(
       AppleWatchFileTransfer(

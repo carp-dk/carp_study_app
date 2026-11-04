@@ -197,7 +197,7 @@
   "pages.connections.type.apple_watch.step.data.body": "Keep wearing the watch. Open CARP on it now and then to send its data to this phone. The watch keeps what it collects until then.",
   "pages.connections.type.apple_watch.receiving": "Receiving data {{percent}}%",
   "pages.connections.type.apple_watch.received": "{{count}} measurements received",
-  "pages.connections.type.apple_watch.waiting_for_data": "Waiting for data…",
+  "pages.connections.type.apple_watch.waiting_for_data": "Collecting on the watch",
   "pages.connections.type.apple_watch.open_to_send": "Watch screen off or CARP closed",
   "pages.connections.type.apple_watch.stopped": "Tap the CARP logo on the watch to start",
   "pages.connections.type.apple_watch.hint.open": "CARP open on the watch · collecting data",

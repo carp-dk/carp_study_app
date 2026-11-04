@@ -195,7 +195,7 @@
   "pages.connections.type.apple_watch.step.data.body": "Bliv ved med at bære uret. Åbn CARP på det en gang imellem for at sende dets data til denne telefon. Uret gemmer det, det indsamler, indtil da.",
   "pages.connections.type.apple_watch.receiving": "Modtager data {{percent}}%",
   "pages.connections.type.apple_watch.received": "{{count}} målinger modtaget",
-  "pages.connections.type.apple_watch.waiting_for_data": "Venter på data…",
+  "pages.connections.type.apple_watch.waiting_for_data": "Indsamler på uret",
   "pages.connections.type.apple_watch.open_to_send": "Urets skærm er slukket, eller CARP er lukket",
   "pages.connections.type.apple_watch.stopped": "Tryk på CARP-logoet på uret for at starte",
   "pages.connections.type.apple_watch.hint.open": "CARP åben på uret · indsamler data",

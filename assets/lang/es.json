@@ -140,7 +140,7 @@
   "pages.connections.type.apple_watch.step.data.body": "Sigue llevando el reloj. Abre CARP en él de vez en cuando para enviar sus datos a este teléfono. El reloj guarda lo que recoge hasta entonces.",
   "pages.connections.type.apple_watch.receiving": "Recibiendo datos {{percent}}%",
   "pages.connections.type.apple_watch.received": "{{count}} mediciones recibidas",
-  "pages.connections.type.apple_watch.waiting_for_data": "Esperando datos…",
+  "pages.connections.type.apple_watch.waiting_for_data": "Recopilando en el reloj",
   "pages.connections.type.apple_watch.open_to_send": "Pantalla del reloj apagada o CARP cerrada",
   "pages.connections.type.apple_watch.stopped": "Toca el logo de CARP en el reloj para empezar",
   "pages.connections.type.apple_watch.hint.open": "CARP abierta en el reloj · recopilando datos",

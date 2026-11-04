@@ -17,27 +17,20 @@ struct ContentView: View {
         return controller.justSent ? .sent : .collecting
     }
 
+    /// The state the phone mirrors: Stopped or Collecting - sending is part of collecting.
     private var title: String {
         if !controller.isRunning { return "Stopped" }
-        switch mode {
-        case .syncing: return "Sending to phone"
-        case .sent: return "Sent to phone"
-        case .away: return "Phone not nearby"
-        case .collecting: return "Collecting"
-        }
+        return controller.isPhoneReachable ? "Collecting" : "Phone not nearby"
     }
 
     private var detail: String {
+        if controller.isSyncing { return "Sending to phone \(Int(controller.syncProgress * 100))%" }
         if !controller.isRunning { return "Tap to start" }
-        switch mode {
-        case .syncing: return "\(Int(controller.syncProgress * 100))% · keep CARP open"
-        case .sent: return "Just now"
-        case .away: return "Saved on the watch · tap to send"
-        case .collecting:
-            let sensors = "\(controller.activeSensorCount) sensors"
-            guard let last = controller.lastTransferAt else { return sensors }
-            return "\(sensors) · sent \(last.formatted(.relative(presentation: .named)))"
-        }
+        if controller.justSent { return "Sent to phone just now" }
+        if !controller.isPhoneReachable { return "Saved on the watch · tap to send" }
+        let sensors = "\(controller.activeSensorCount) sensors"
+        guard let last = controller.lastTransferAt else { return sensors }
+        return "\(sensors) · sent \(last.formatted(.relative(presentation: .named)))"
     }
 
     var body: some View {

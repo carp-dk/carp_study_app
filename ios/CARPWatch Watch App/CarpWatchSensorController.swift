@@ -63,6 +63,7 @@ final class CarpWatchSensorController: NSObject, ObservableObject {
     ]
 
     private var transferTimer: Timer?
+    private var reachabilityTimer: Timer?
     private var hasAppliedPhoneSettings = false
     private var hasActivated = false
 
@@ -398,19 +399,24 @@ final class CarpWatchSensorController: NSObject, ObservableObject {
         UserDefaults.standard.set(isRunning, forKey: Self.isRunningKey)
     }
 
-    /// Re-read whether the phone is in range.
-    ///
-    /// `AWWCSessionManager` owns the `WCSessionDelegate` and does not forward
-    /// `sessionReachabilityDidChange`, so the indicator cannot update itself.
-    /// The app refreshes it whenever the watch app comes back to the front,
-    /// which is the only moment anyone is looking at it.
-    func refreshReachability() {
-        updateReachability()
+    /// Polls reachability while on screen - AWARE owns the WCSessionDelegate and
+    /// drops `sessionReachabilityDidChange`, so nothing else would notice the phone come back.
+    func setOnScreen(_ onScreen: Bool) {
+        reachabilityTimer?.invalidate()
+        reachabilityTimer = nil
+        guard onScreen else { return }
+        updateReachability(announce: true)
+        reachabilityTimer = Timer.scheduledTimer(withTimeInterval: 3, repeats: true) { [weak self] _ in
+            Task { @MainActor in self?.updateReachability() }
+        }
     }
 
-    private func updateReachability() {
-        isPhoneReachable = WCSession.isSupported() && WCSession.default.isReachable
-        // The phone mirrors this state; AWARE only reports it on start/stop, which a cold launch misses.
-        if isPhoneReachable { WCSession.default.sendMessage(["status": isRunning ? 1 : 0], replyHandler: nil) }
+    private func updateReachability(announce: Bool = false) {
+        let reachable = WCSession.isSupported() && WCSession.default.isReachable
+        // The phone mirrors isRunning but forgets it on restart; AWARE only sends it on start/stop.
+        if reachable && (announce || !isPhoneReachable) {
+            WCSession.default.sendMessage(["status": isRunning ? 1 : 0], replyHandler: nil)
+        }
+        isPhoneReachable = reachable
     }
 }

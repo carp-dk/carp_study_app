@@ -21,12 +21,12 @@ struct CARPWatch_Watch_AppApp: App {
             switch phase {
             // Hand whatever has been collected to the phone before the app is
             // suspended, so nothing is left behind if the app is terminated.
-            case .background: controller.transferNow()
-            // Nothing forwards WatchConnectivity reachability changes while the
-            // app is away, so the indicator is refreshed on the way back in.
+            case .background:
+                controller.setOnScreen(false)
+                controller.transferNow()
             // Opening the app is the participant's way to send - so send.
             case .active:
-                controller.refreshReachability()
+                controller.setOnScreen(true)
                 controller.applyPhoneSettings()
                 controller.transferNow()
             default: break
