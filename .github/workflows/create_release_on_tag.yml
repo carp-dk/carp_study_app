@@ -76,13 +76,13 @@ jobs:
         uses: ruby/setup-ruby@v1
         with:
           ruby-version: "3.3"
-          bundler-cache: false
+          bundler-cache: true
           working-directory: android
 
       # Production release to Google Play runs only on tags (like the iOS
       # App Store workflow on Xcode Cloud).
       - if: startsWith(github.ref, 'refs/tags/')
-        run: fastlane release
+        run: bundle exec fastlane release
         env:
           PLAY_STORE_JSON_KEY: PLAY_STORE_CONFIG.json
         working-directory: android

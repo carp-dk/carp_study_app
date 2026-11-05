@@ -37,7 +37,7 @@ jobs:
         uses: ruby/setup-ruby@v1
         with:
           ruby-version: "3.3"
-          bundler-cache: false
+          bundler-cache: true
           working-directory: android
 
       - name: Configure Keystore
@@ -57,7 +57,7 @@ jobs:
         working-directory: android
 
       - if: github.ref == 'refs/heads/test'
-        run: fastlane test
+        run: bundle exec fastlane test
         env:
           PLAY_STORE_JSON_KEY: PLAY_STORE_CONFIG.json
         working-directory: android
