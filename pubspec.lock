@@ -364,11 +364,10 @@ packages:
   carp_movesense_package:
     dependency: "direct main"
     description:
-      path: "packages/carp_movesense_package"
-      ref: a7824a14b117288a88dbc1e850b37da141c07319
-      resolved-ref: a7824a14b117288a88dbc1e850b37da141c07319
-      url: "https://github.com/carp-dk/carp.sensing-flutter.git"
-    source: git
+      name: carp_movesense_package
+      sha256: "4131bdd837fa38f6dbc39d1a3333a9f943c497eaa6f806820fd6402bb16b803d"
+      url: "https://pub.dev"
+    source: hosted
     version: "4.0.0"
   carp_polar_package:
     dependency: "direct main"
@@ -1385,10 +1384,10 @@ packages:
     dependency: transitive
     description:
       name: movesense_plus
-      sha256: "7bc274c1f03c7d9136dcbf10753754068ff448e00eff4debc4e6cc0c6f39543b"
+      sha256: d839c21a5c82ea2180873be5790a36ffa3466ce9d7b06f923bd45b5869a9ab6c
       url: "https://pub.dev"
     source: hosted
-    version: "2.0.1"
+    version: "2.0.2"
   native_toolchain_c:
     dependency: transitive
     description:
