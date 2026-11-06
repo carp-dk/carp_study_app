@@ -137,6 +137,8 @@ class ConnectionListPageState extends State<ConnectionListPage> {
                 // The watch page shows its own live data, so it opens in every state.
                 onTap: device.deviceManager is AppleWatchDeviceManager
                     ? () async => await _hardwareDeviceClicked(device)
+                    : device.status == DeviceStatus.connected && DeviceLiveMonitor.supports(device.deviceManager)
+                    ? () => _showLiveData(device)
                     : device.status == DeviceStatus.connected && _isLocal
                     ? () => _showWrittenMeasurements(device)
                     : device.status == DeviceStatus.connected || device.status == DeviceStatus.connecting
@@ -308,6 +310,11 @@ class ConnectionListPageState extends State<ConnectionListPage> {
 
   /// Only a local deployment exposes the on-device database for inspection.
   bool get _isLocal => AppConfig.deploymentMode == DeploymentMode.local;
+
+  Future<void> _showLiveData(ConnectionViewModel device) => Navigator.of(
+    context,
+    rootNavigator: true,
+  ).push(MaterialPageRoute<void>(builder: (context) => DeviceLiveDataPage(device: device)));
 
   Future<void> _showWrittenMeasurements(ConnectionViewModel device) =>
       showModalBottomSheet<void>(context: context, builder: (context) => _WrittenMeasurementsSheet(device));

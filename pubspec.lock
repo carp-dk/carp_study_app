@@ -348,37 +348,27 @@ packages:
   carp_health_package:
     dependency: "direct main"
     description:
-      path: "packages/carp_health_package"
-      ref: cd2fad6d3064b9bac7eaddff5c206c8213320bda
-      resolved-ref: cd2fad6d3064b9bac7eaddff5c206c8213320bda
-      url: "https://github.com/carp-dk/carp.sensing-flutter.git"
-    source: git
-    version: "4.1.2"
+      name: carp_health_package
+      sha256: "5070dbcfbee0fcfc1b3b861becca2438b8c501482e2f4d0dae036e244241ea5f"
+      url: "https://pub.dev"
+    source: hosted
+    version: "4.1.1"
   carp_mobile_sensing:
     dependency: "direct main"
     description:
-      path: carp_mobile_sensing
-      ref: cd2fad6d3064b9bac7eaddff5c206c8213320bda
-      resolved-ref: cd2fad6d3064b9bac7eaddff5c206c8213320bda
-      url: "https://github.com/carp-dk/carp.sensing-flutter.git"
-    source: git
-    version: "2.5.1"
-  carp_movesense_flutter:
-    dependency: transitive
-    description:
-      name: carp_movesense_flutter
-      sha256: b7317f260921cef2a89f3dcb4eb1cee71311134fe3e4f18fad48e80e51bdd8c0
+      name: carp_mobile_sensing
+      sha256: f0be50af0a18bc5c91e0648c9a22e1416a4a951ac1113be07e4028cc62190fc9
       url: "https://pub.dev"
     source: hosted
-    version: "0.1.1"
+    version: "2.5.1"
   carp_movesense_package:
     dependency: "direct main"
     description:
       name: carp_movesense_package
-      sha256: "2095485f3312f8e08ff051a9138b45c38d9ab7bec8c7f92b98b87ff281e20d9b"
+      sha256: "4131bdd837fa38f6dbc39d1a3333a9f943c497eaa6f806820fd6402bb16b803d"
       url: "https://pub.dev"
     source: hosted
-    version: "3.1.0"
+    version: "4.0.0"
   carp_polar_package:
     dependency: "direct main"
     description:
@@ -414,12 +404,11 @@ packages:
   carp_webservices:
     dependency: "direct main"
     description:
-      path: "backends/carp_webservices"
-      ref: cd2fad6d3064b9bac7eaddff5c206c8213320bda
-      resolved-ref: cd2fad6d3064b9bac7eaddff5c206c8213320bda
-      url: "https://github.com/carp-dk/carp.sensing-flutter.git"
-    source: git
-    version: "4.4.1"
+      name: carp_webservices
+      sha256: "893538175e6503a7aeaf1c67e16aef57b9a3ba46abeadba21cf337c716e36111"
+      url: "https://pub.dev"
+    source: hosted
+    version: "4.4.3"
   characters:
     dependency: transitive
     description:
@@ -1067,14 +1056,13 @@ packages:
     source: hosted
     version: "2.3.2"
   health:
-    dependency: "direct overridden"
+    dependency: transitive
     description:
-      path: "."
-      ref: "3e2ecce01f57b2110e028b83837d93b8be5890ce"
-      resolved-ref: "3e2ecce01f57b2110e028b83837d93b8be5890ce"
-      url: "https://github.com/Zeroupper/carp-health-flutter.git"
-    source: git
-    version: "13.3.3"
+      name: health
+      sha256: "8dd9625c9c26379a5753ad24c33af1d3dc5ce1f36f19c03e17c676c2f8fdbb80"
+      url: "https://pub.dev"
+    source: hosted
+    version: "13.3.2"
   hooks:
     dependency: transitive
     description:
@@ -1392,6 +1380,14 @@ packages:
       url: "https://pub.dev"
     source: hosted
     version: "5.6.4"
+  movesense_plus:
+    dependency: transitive
+    description:
+      name: movesense_plus
+      sha256: d839c21a5c82ea2180873be5790a36ffa3466ce9d7b06f923bd45b5869a9ab6c
+      url: "https://pub.dev"
+    source: hosted
+    version: "2.0.2"
   native_toolchain_c:
     dependency: transitive
     description:

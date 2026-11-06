@@ -302,5 +302,14 @@
   "pages.connections.connection.step.scan.searching": "Søger efter enheder i nærheden…\nSørg for, at din enhed er tændt og inden for rækkevidde.",
   "pages.connections.connection.step.scan.show_all": "Kan du ikke se din enhed? Vis alle",
   "pages.connections.connection.step.scan.filtered": "Vis kun matchende enheder",
-  "pages.informed_consent.upload_failed": "Dit samtykke kunne ikke gemmes. Tjek din internetforbindelse, og prøv igen."
+  "pages.informed_consent.upload_failed": "Dit samtykke kunne ikke gemmes. Tjek din internetforbindelse, og prøv igen.",
+  "pages.connections.live.status.waiting": "Venter på data…",
+  "pages.connections.live.status.live": "Live",
+  "pages.connections.live.status.silent": "Ingen data",
+  "pages.connections.live.rr": "RR-interval",
+  "pages.connections.live.taps": "Tryk",
+  "pages.connections.live.tap_hint": "Tryk på sensoren for at se det registreret her.",
+  "pages.connections.live.no_data": "Der kommer ingen data. Tjek at remmen sidder på og er fugtet, og at sensoren er tæt på telefonen.",
+  "pages.connections.live.ecg_unavailable": "EKG er ikke tilgængelig",
+  "pages.connections.live.na": "N/A"
 }

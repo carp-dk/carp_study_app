@@ -16,6 +16,8 @@ flutter run --dart-define="deployment-mode=dev" --dart-define="debug-level=debug
 
 would run the app against the CAWS dev server with debug level set to debug. Without `deployment-mode`, a debug build (`flutter run`) runs in local mode and a release build uses production.
 
+Add `--dart-define="skip-consent=true"` to skip the informed consent during development. It only works in local mode.
+
 In VSCode, you can add a `launch.json` file to specify different deployment modes.
 
 ### Local Deployment
