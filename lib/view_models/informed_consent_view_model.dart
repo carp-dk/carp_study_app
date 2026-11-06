@@ -18,6 +18,7 @@ class InformedConsentViewModel extends ViewModel {
   Future<bool> needsSigning() async => _needsSigning ??= _resolveNeedsSigning();
 
   Future<bool> _resolveNeedsSigning() async {
+    if (AppConfig.skipConsent) return false;
     if (await _isAccepted) return false;
 
     if (await getInformedConsent() == null) {
