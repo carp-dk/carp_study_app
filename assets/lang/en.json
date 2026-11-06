@@ -328,5 +328,14 @@
   "tasks.participant_data.review.title": "Review",
   "pages.home.setup_failed": "Could not set up the study. Please check your internet connection and try again.",
   "pages.home.retry": "Retry",
-  "pages.informed_consent.upload_failed": "Could not save your consent. Please check your internet connection and try again."
+  "pages.informed_consent.upload_failed": "Could not save your consent. Please check your internet connection and try again.",
+  "pages.connections.live.status.waiting": "Waiting for data…",
+  "pages.connections.live.status.live": "Live",
+  "pages.connections.live.status.silent": "No data",
+  "pages.connections.live.rr": "RR interval",
+  "pages.connections.live.taps": "Taps",
+  "pages.connections.live.tap_hint": "Tap the sensor to see it register here.",
+  "pages.connections.live.no_data": "No data is coming in. Check that the strap is on and moistened, and that the sensor is close to the phone.",
+  "pages.connections.live.ecg_unavailable": "ECG not available",
+  "pages.connections.live.na": "N/A"
 }

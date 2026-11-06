@@ -215,5 +215,14 @@
   "pages.login.sign_in.tab.code": "Código",
   "pages.login.sign_in.scan_hint": "Apunta la cámara al código QR",
   "pages.login.sign_in.code_hint": "Introduce el código de 5 caracteres de tu invitación al estudio",
-  "pages.login.sign_in.code_invalid": "Ese código no funcionó. Compruébalo e inténtalo de nuevo."
+  "pages.login.sign_in.code_invalid": "Ese código no funcionó. Compruébalo e inténtalo de nuevo.",
+  "pages.connections.live.status.waiting": "Esperando datos…",
+  "pages.connections.live.status.live": "En vivo",
+  "pages.connections.live.status.silent": "Sin datos",
+  "pages.connections.live.rr": "Intervalo RR",
+  "pages.connections.live.taps": "Toques",
+  "pages.connections.live.tap_hint": "Toca el sensor para verlo registrado aquí.",
+  "pages.connections.live.no_data": "No llegan datos. Comprueba que la banda esté puesta y humedecida, y que el sensor esté cerca del teléfono.",
+  "pages.connections.live.ecg_unavailable": "ECG no disponible",
+  "pages.connections.live.na": "N/D"
 }
