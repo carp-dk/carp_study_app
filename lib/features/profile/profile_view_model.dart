@@ -29,9 +29,9 @@ class ProfilePageViewModel extends ViewModel {
   /// signed in; with only this one study there is nothing to return to, so
   /// sign out as well (returns true) and let the router land on login.
   Future<bool> leaveStudy() async {
-    final invitations = bloc.appViewModel.invitationsListViewModel;
-    await invitations.ensureInvitationsLoaded();
-    final signOut = invitations.invitations.length <= 1;
+    var invitations = _auth.invitations;
+    if (invitations.isEmpty) invitations = await _auth.getInvitations().catchError((_) => invitations);
+    final signOut = invitations.length <= 1;
     await (signOut ? bloc.signOutAndLeaveStudy() : bloc.leaveStudy());
     return signOut;
   }

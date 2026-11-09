@@ -23,6 +23,8 @@ class AppBloc extends ChangeNotifier {
   AppState _state = AppState.created;
   final AppViewModel _appViewModel = AppViewModel();
   StreamSubscription<void>? _sessionLostSubscription;
+  StreamSubscription<UserTask>? _userTaskNotificationSubscription;
+  StreamSubscription<String>? _notificationTapSubscription;
 
   /// The resource managers matching the current deployment mode.
   late final ResourceManagerFactory resources = ResourceManagerFactory();
@@ -83,7 +85,9 @@ class AppBloc extends ChangeNotifier {
 
     CarpResourceManager().initialize();
 
-    // The app's own task types (audio, video, health) - their pages live in the UI.
+    // The app's task types (audio, video, health) - after Sensing(), whose
+    // health package registers its own factory for the health type.
+    Sensing();
     AppTaskController().registerUserTaskFactory(AppUserTaskFactory());
 
     // Lost session mid-study: sign out and let the router redirect to login.
@@ -139,6 +143,7 @@ class AppBloc extends ChangeNotifier {
     appViewModel.init(study.controller!);
 
     messages.start();
+    _listenToNotifications();
 
     info('Study configuration done.');
 
@@ -148,13 +153,31 @@ class AppBloc extends ChangeNotifier {
     await study.start();
   }
 
+  /// Open the task page when a task notification is tapped - until [leaveStudy].
+  /// Other notifications (announcements) carry the route to open as payload.
+  void _listenToNotifications() {
+    _userTaskNotificationSubscription ??= AppTaskController().userTaskEvents.listen((userTask) {
+      if (userTask.state == UserTaskState.notified) {
+        userTask.onStart();
+        if (userTask.hasWidget) _rootNavigatorKey.currentContext?.push('${Routes.task}/${userTask.id}');
+      }
+    });
+    _notificationTapSubscription ??= SmartPhoneClientManager().notificationManager.notificationTaps.listen(
+      (route) => _rootNavigatorKey.currentContext?.push(route),
+    );
+  }
+
   /// Stop sensing and wipe the study from the phone - data is not recoverable.
   Future<void> leaveStudy() async {
     info('Leaving study ${study.study}');
 
-    // clear the UI data models and message polling
+    // clear the UI data models, message polling, and notification handling
     appViewModel.clear();
     messages.stop();
+    await _userTaskNotificationSubscription?.cancel();
+    _userTaskNotificationSubscription = null;
+    await _notificationTapSubscription?.cancel();
+    _notificationTapSubscription = null;
 
     // stop sensing - including in background - and remove all deployment info
     await BackgroundSensingService().disconnect();

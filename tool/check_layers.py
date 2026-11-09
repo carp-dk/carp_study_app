@@ -1,7 +1,10 @@
 """Fails if a layer uses a class from a layer it must not (#621).
 
 core and shared never use features or app; core never uses shared;
-a feature never uses another feature. Run: python3 tool/check_layers.py
+a feature never uses another feature, nor `appViewModel` (app's view models).
+ponytail: lexical - sees class names only, not functions/getters. The analyzer
+takes over once files are imports instead of parts (#620).
+Run: python3 tool/check_layers.py
 """
 import os, re, sys
 
@@ -30,5 +33,9 @@ for path, src in files.items():
     for name, dst in defs.items():
         if not allowed(layer(path), dst) and re.search(rf'\b{name}\b', code):
             bad.append(f'{path}: uses {name} from {dst}')
+    if layer(path) != 'app' and re.search(r'\bappViewModel\b', code):
+        bad.append(f'{path}: uses appViewModel from app')
+    if layer(path) in ('core', 'shared') and re.search(r'\bbloc\b', code):
+        bad.append(f'{path}: uses bloc from app')
 print('\n'.join(sorted(bad)) or 'layers ok')
 sys.exit(1 if bad else 0)

@@ -2,7 +2,8 @@ part of carp_study_app;
 
 class LoginPage extends StatefulWidget {
   final LoginViewModel model;
-  const LoginPage({required this.model, super.key});
+  final InvitationsViewModel invitations;
+  const LoginPage({required this.model, required this.invitations, super.key});
 
   @override
   State<LoginPage> createState() => _LoginPageState();
@@ -87,7 +88,7 @@ class _LoginPageState extends State<LoginPage> {
     final result = await widget.model.signIn();
     if (!mounted) return;
     if (result == SignInResult.success) {
-      final invitations = bloc.appViewModel.invitationsListViewModel;
+      final invitations = widget.invitations;
       await invitations.loadInvitations();
       if (!mounted) return;
       context.go(invitations.landingRoute);

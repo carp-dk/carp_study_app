@@ -134,7 +134,8 @@ class CarpAppState extends State<CarpStudyApp> {
       GoRoute(
         path: Routes.login,
         parentNavigatorKey: _rootNavigatorKey,
-        builder: (context, state) => LoginPage(model: bloc.appViewModel.loginViewModel),
+        builder: (context, state) =>
+            LoginPage(model: bloc.appViewModel.loginViewModel, invitations: bloc.appViewModel.invitationsListViewModel),
         routes: [
           GoRoute(
             path: 'join',
@@ -142,7 +143,10 @@ class CarpAppState extends State<CarpStudyApp> {
             pageBuilder: (context, state) => CustomTransitionPage(
               key: state.pageKey,
               fullscreenDialog: true,
-              child: CodeSignInPage(model: bloc.appViewModel.loginViewModel),
+              child: CodeSignInPage(
+                model: bloc.appViewModel.loginViewModel,
+                invitations: bloc.appViewModel.invitationsListViewModel,
+              ),
               transitionsBuilder: slideUpAnimation,
             ),
           ),
@@ -151,7 +155,10 @@ class CarpAppState extends State<CarpStudyApp> {
       GoRoute(
         path: '${Routes.message}/:messageId',
         parentNavigatorKey: _rootNavigatorKey,
-        builder: (context, state) => MessageDetailsPage(messageId: state.pathParameters['messageId'] ?? ''),
+        builder: (context, state) => MessageDetailsPage(
+          model: bloc.appViewModel.studyPageViewModel,
+          messageId: state.pathParameters['messageId'] ?? '',
+        ),
       ),
       GoRoute(
         path: Routes.invitations,
@@ -179,35 +186,17 @@ class CarpAppState extends State<CarpStudyApp> {
 
   AppState _previousBlocState = bloc.state;
   String? _previousDeploymentId = bloc.study.study?.studyDeploymentId;
-  final List<StreamSubscription<Object>> _notificationTaps = [];
 
   @override
   void initState() {
     super.initState();
     bloc.addListener(_onAppStateChanged);
-    _openTappedNotifications();
   }
 
   @override
   void dispose() {
     bloc.removeListener(_onAppStateChanged);
-    for (final subscription in _notificationTaps) {
-      subscription.cancel();
-    }
     super.dispose();
-  }
-
-  /// A tapped task notification opens its task. Other notifications (e.g.
-  /// announcements) carry the route to open as their payload.
-  void _openTappedNotifications() {
-    _notificationTaps
-      ..add(
-        AppTaskController().userTaskEvents.where((task) => task.state == UserTaskState.notified).listen((task) {
-          task.onStart();
-          if (task.hasWidget) _router.push('${Routes.task}/${task.id}');
-        }),
-      )
-      ..add(SmartPhoneClientManager().notificationManager.notificationTaps.listen(_router.push));
   }
 
   /// Re-load translations when a study is set or configured - both add new ones.

@@ -8,7 +8,8 @@ part of carp_study_app;
 /// the live backdrop. Scans are only acted on while the QR tab is selected.
 class CodeSignInPage extends StatefulWidget {
   final LoginViewModel model;
-  const CodeSignInPage({required this.model, super.key});
+  final InvitationsViewModel invitations;
+  const CodeSignInPage({required this.model, required this.invitations, super.key});
 
   @override
   State<CodeSignInPage> createState() => _CodeSignInPageState();
@@ -49,7 +50,7 @@ class _CodeSignInPageState extends State<CodeSignInPage> {
   /// Complete the sign-in flow after a successful authentication. `go`
   /// replaces the whole stack, so this page is gone along with the login page.
   Future<void> _onSignedIn() async {
-    final invitations = bloc.appViewModel.invitationsListViewModel;
+    final invitations = widget.invitations;
     await invitations.loadInvitations();
     if (!mounted) return;
     context.go(invitations.landingRoute);

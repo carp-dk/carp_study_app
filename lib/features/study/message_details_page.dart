@@ -4,14 +4,15 @@ part of carp_study_app;
 ///
 /// Pushed full-screen on the root navigator, in the design 2.0 card style.
 class MessageDetailsPage extends StatelessWidget {
+  final StudyPageViewModel model;
   final String messageId;
 
-  const MessageDetailsPage({super.key, required this.messageId});
+  const MessageDetailsPage({super.key, required this.model, required this.messageId});
 
   @override
   Widget build(BuildContext context) {
     final locale = RPLocalizations.of(context)!;
-    final message = bloc.appViewModel.studyPageViewModel.messageById(messageId);
+    final message = model.messageById(messageId);
     final subTitle = message.subTitle ?? '';
     final body = message.message ?? '';
     final hasImage = message.image != null && message.image!.isNotEmpty;
