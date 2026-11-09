@@ -42,6 +42,31 @@ const _$ActivityTypeEnumMap = {
   ActivityType.UNKNOWN: 'UNKNOWN',
 };
 
+HourlyHeartRate _$HourlyHeartRateFromJson(Map<String, dynamic> json) => HourlyHeartRate()
+  ..hourlyHeartRate = (json['hourlyHeartRate'] as Map<String, dynamic>).map(
+    (k, e) => MapEntry(k, HeartRateMinMaxPrHour.fromJson(e as Map<String, dynamic>)),
+  )
+  ..dailyHeartRate = (json['dailyHeartRate'] as Map<String, dynamic>).map(
+    (k, e) => MapEntry(k, HeartRateMinMaxPrHour.fromJson(e as Map<String, dynamic>)),
+  )
+  ..maxHeartRate = (json['maxHeartRate'] as num?)?.toDouble()
+  ..minHeartRate = (json['minHeartRate'] as num?)?.toDouble();
+
+Map<String, dynamic> _$HourlyHeartRateToJson(HourlyHeartRate instance) => <String, dynamic>{
+  'hourlyHeartRate': instance.hourlyHeartRate,
+  'dailyHeartRate': instance.dailyHeartRate,
+  'maxHeartRate': ?instance.maxHeartRate,
+  'minHeartRate': ?instance.minHeartRate,
+};
+
+HeartRateMinMaxPrHour _$HeartRateMinMaxPrHourFromJson(Map<String, dynamic> json) =>
+    HeartRateMinMaxPrHour((json['min'] as num?)?.toDouble(), (json['max'] as num?)?.toDouble());
+
+Map<String, dynamic> _$HeartRateMinMaxPrHourToJson(HeartRateMinMaxPrHour instance) => <String, dynamic>{
+  'min': ?instance.min,
+  'max': ?instance.max,
+};
+
 WeeklyMobility _$WeeklyMobilityFromJson(Map<String, dynamic> json) => WeeklyMobility()
   ..dailyMobility = (json['dailyMobility'] as Map<String, dynamic>).map(
     (k, e) => MapEntry(k, DailyMobility.fromJson(e as Map<String, dynamic>)),
@@ -78,28 +103,3 @@ WeeklySteps _$WeeklyStepsFromJson(Map<String, dynamic> json) =>
     WeeklySteps()..dailySteps = Map<String, int>.from(json['dailySteps'] as Map);
 
 Map<String, dynamic> _$WeeklyStepsToJson(WeeklySteps instance) => <String, dynamic>{'dailySteps': instance.dailySteps};
-
-HourlyHeartRate _$HourlyHeartRateFromJson(Map<String, dynamic> json) => HourlyHeartRate()
-  ..hourlyHeartRate = (json['hourlyHeartRate'] as Map<String, dynamic>).map(
-    (k, e) => MapEntry(k, HeartRateMinMaxPrHour.fromJson(e as Map<String, dynamic>)),
-  )
-  ..dailyHeartRate = (json['dailyHeartRate'] as Map<String, dynamic>).map(
-    (k, e) => MapEntry(k, HeartRateMinMaxPrHour.fromJson(e as Map<String, dynamic>)),
-  )
-  ..maxHeartRate = (json['maxHeartRate'] as num?)?.toDouble()
-  ..minHeartRate = (json['minHeartRate'] as num?)?.toDouble();
-
-Map<String, dynamic> _$HourlyHeartRateToJson(HourlyHeartRate instance) => <String, dynamic>{
-  'hourlyHeartRate': instance.hourlyHeartRate,
-  'dailyHeartRate': instance.dailyHeartRate,
-  'maxHeartRate': ?instance.maxHeartRate,
-  'minHeartRate': ?instance.minHeartRate,
-};
-
-HeartRateMinMaxPrHour _$HeartRateMinMaxPrHourFromJson(Map<String, dynamic> json) =>
-    HeartRateMinMaxPrHour((json['min'] as num?)?.toDouble(), (json['max'] as num?)?.toDouble());
-
-Map<String, dynamic> _$HeartRateMinMaxPrHourToJson(HeartRateMinMaxPrHour instance) => <String, dynamic>{
-  'min': ?instance.min,
-  'max': ?instance.max,
-};

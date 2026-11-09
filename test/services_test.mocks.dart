@@ -71,6 +71,15 @@ class MockBackend extends _i1.Mock implements _i4.Backend {
           as bool);
 
   @override
+  _i5.Stream<void> get sessionLost =>
+      (super.noSuchMethod(
+            Invocation.getter(#sessionLost),
+            returnValue: _i5.Stream<void>.empty(),
+            returnValueForMissingStub: _i5.Stream<void>.empty(),
+          )
+          as _i5.Stream<void>);
+
+  @override
   set study(_i2.SmartphoneStudy? study) =>
       super.noSuchMethod(Invocation.setter(#study, study), returnValueForMissingStub: null);
 
@@ -200,6 +209,15 @@ class MockAuthService extends _i1.Mock implements _i4.AuthService {
             returnValueForMissingStub: <_i3.ActiveParticipationInvitation>[],
           )
           as List<_i3.ActiveParticipationInvitation>);
+
+  @override
+  _i5.Stream<void> get sessionLost =>
+      (super.noSuchMethod(
+            Invocation.getter(#sessionLost),
+            returnValue: _i5.Stream<void>.empty(),
+            returnValueForMissingStub: _i5.Stream<void>.empty(),
+          )
+          as _i5.Stream<void>);
 
   @override
   _i5.Future<void> initialize() =>
