@@ -27,21 +27,6 @@ class _BluetoothConnectionPageState extends State<BluetoothConnectionPage> {
   initState() {
     super.initState();
     FlutterBluePlus.startScan();
-    unawaited(_loadSystemDevices());
-  }
-
-  Future<void> _loadSystemDevices() async {
-    try {
-      // iOS only returns connected devices for the services asked for: Movesense and heart rate.
-      final devices = await FlutterBluePlus.systemDevices([
-        Guid('61353090-8231-49cc-b57a-886370740041'),
-        Guid('fdf3'),
-        Guid('180d'),
-      ]);
-      if (mounted) setState(() => _systemDevices = devices);
-    } catch (error) {
-      debug('Could not list connected Bluetooth devices: $error');
-    }
   }
 
   @override
@@ -54,10 +39,6 @@ class _BluetoothConnectionPageState extends State<BluetoothConnectionPage> {
   }
 
   BluetoothDevice? selectedDevice;
-
-  /// Sensors iOS is already connected to, e.g. reconnected by their SDK after a restart.
-  /// They stop advertising, so the scan alone never lists them.
-  List<BluetoothDevice> _systemDevices = [];
   bool showAllDevices = false;
 
   @override
@@ -295,9 +276,9 @@ class _BluetoothConnectionPageState extends State<BluetoothConnectionPage> {
             builder: (context, snapshot) {
               // Only show devices whose name contains this type's prefix, so
               // the wrong device can't be picked. "Show all" is the escape hatch.
-              final results = {...snapshot.data!.map((r) => r.device), ..._systemDevices}.where((device) {
+              final results = snapshot.data!.where((r) {
                 // Skip nameless devices - they can't be identified or paired.
-                final name = device.platformName;
+                final name = r.device.platformName;
                 if (name.isEmpty) return false;
                 if (showAllDevices || prefix == null) return true;
                 return name.toLowerCase().contains(prefix);
@@ -316,12 +297,12 @@ class _BluetoothConnectionPageState extends State<BluetoothConnectionPage> {
               return ListView(
                 padding: const EdgeInsets.symmetric(vertical: 8),
                 children: [
-                  for (final device in results)
+                  for (final r in results)
                     _deviceTile(
                       icon: Icons.monitor_heart,
-                      name: device.platformName,
-                      selected: selectedDevice?.remoteId == device.remoteId,
-                      onTap: () => setState(() => selectedDevice = device),
+                      name: r.device.platformName,
+                      selected: selectedDevice?.remoteId == r.device.remoteId,
+                      onTap: () => setState(() => selectedDevice = r.device),
                     ),
                 ],
               );
@@ -485,11 +466,7 @@ class _BluetoothConnectionPageState extends State<BluetoothConnectionPage> {
     return ListView(
       padding: const EdgeInsets.symmetric(vertical: 16),
       children: [
-        // Show the data coming in where we can, so the participant sees it works.
-        if (DeviceLiveMonitor.supports(widget.device.deviceManager))
-          DeviceLiveMonitor(device: widget.device)
-        else
-          _connectedDevicesMock(locale),
+        _connectedDevicesMock(locale),
         const SizedBox(height: 32),
         Text.rich(
           TextSpan(
