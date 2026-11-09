@@ -85,7 +85,6 @@ part 'core/backend/resource_manager_factory.dart';
 part 'core/sensing/background_sensing_service.dart';
 part 'core/sensing/sensing.dart';
 part 'core/services/auth_service.dart';
-part 'core/services/consent_pdf.dart';
 part 'core/services/consent_service.dart';
 part 'core/services/data_stream_query_service.dart';
 part 'core/services/message_service.dart';
@@ -117,6 +116,7 @@ part 'features/onboarding/logout_message.dart';
 part 'features/onboarding/qr_to_carp_morph.dart';
 
 part 'features/study/connections_status_card.dart';
+part 'features/study/consent_pdf.dart';
 part 'features/study/home_page.dart';
 part 'features/study/home_view_model.dart';
 part 'features/study/message_details_page.dart';

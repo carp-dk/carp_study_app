@@ -310,7 +310,7 @@ void main() {
       expect(await consent.hasSignedConsent(study), isTrue);
     });
 
-    test('signedConsentBytes returns the signed consent as a readable PDF', () async {
+    test('the signed consent renders as a readable PDF', () async {
       final study = SmartphoneStudy(studyDeploymentId: 'dep-1', deviceRoleName: 'phone');
       when(backend.getInformedConsentByRole('dep-1', null)).thenAnswer(
         (_) async => InformedConsentInput(
@@ -330,12 +330,11 @@ void main() {
         ),
       );
 
-      final bytes = await consent.signedConsentBytes(study);
+      final bytes = await consentPdf((await consent.signedConsent(study))!);
 
       // This is the file the save dialog writes, so it has to be a PDF the
       // participant can open, with the consent they signed inside it.
-      expect(bytes, isNotNull);
-      expect(utf8.decode(bytes!.sublist(0, 4)), '%PDF');
+      expect(utf8.decode(bytes.sublist(0, 4)), '%PDF');
       final text = _pdfText(bytes);
       expect(text, contains('Study Consent'));
       expect(text, contains('What this study does.'));
@@ -356,10 +355,9 @@ void main() {
             InformedConsentInput(userId: '42', name: 'jdoe', consent: 'I agree', signatureImage: png.toString()),
       );
 
-      final bytes = await consent.signedConsentBytes(study);
+      final bytes = await consentPdf((await consent.signedConsent(study))!);
 
-      expect(bytes, isNotNull);
-      expect(String.fromCharCodes(bytes!), contains('/Image'));
+      expect(String.fromCharCodes(bytes), contains('/Image'));
     });
 
     test('a consent signed against a newer RP with unknown section types still renders', () async {
@@ -399,10 +397,9 @@ void main() {
         ),
       );
 
-      final bytes = await consent.signedConsentBytes(study);
+      final bytes = await consentPdf((await consent.signedConsent(study))!);
 
-      expect(bytes, isNotNull);
-      final text = _pdfText(bytes!);
+      final text = _pdfText(bytes);
       expect(text, isNot(contains('could not be displayed')));
       expect(text, contains('Activity Recognition'));
       expect(text, contains('We track your movement.'));
@@ -423,26 +420,25 @@ void main() {
         ),
       );
 
-      final bytes = await consent.signedConsentBytes(study);
+      final bytes = await consentPdf((await consent.signedConsent(study))!);
 
-      expect(bytes, isNotNull);
-      final text = _pdfText(bytes!);
+      final text = _pdfText(bytes);
       expect(text, isNot(contains('137')));
       expect(text, contains('could not be displayed'));
     });
 
-    test('signedConsentBytes is null when nothing is signed', () async {
+    test('signedConsent is null when nothing is signed', () async {
       final study = SmartphoneStudy(studyDeploymentId: 'dep-1', deviceRoleName: 'phone');
       when(backend.getInformedConsentByRole('dep-1', null)).thenAnswer((_) async => null);
 
-      expect(await consent.signedConsentBytes(study), isNull);
+      expect(await consent.signedConsent(study), isNull);
     });
 
-    test('signedConsentBytes is null when the backend cannot be reached', () async {
+    test('signedConsent is null when the backend cannot be reached', () async {
       final study = SmartphoneStudy(studyDeploymentId: 'dep-1', deviceRoleName: 'phone');
       when(backend.getInformedConsentByRole('dep-1', null)).thenAnswer((_) async => throw Exception('offline'));
 
-      expect(await consent.signedConsentBytes(study), isNull);
+      expect(await consent.signedConsent(study), isNull);
     });
   });
 

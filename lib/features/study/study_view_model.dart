@@ -75,7 +75,10 @@ class StudyPageViewModel extends ViewModel {
   /// The signed informed consent, as the bytes to save to a file.
   ///
   /// Null when no signed consent exists (e.g. local deployments).
-  Future<Uint8List?> informedConsentBytes() => _consent.signedConsentBytes(_study.study);
+  Future<Uint8List?> informedConsentBytes() async {
+    final consent = await _consent.signedConsent(_study.study);
+    return consent == null ? null : consentPdf(consent);
+  }
 
   String get piTitle => _study.deployment?.responsible?.title ?? '';
   String get piName => _study.deployment?.responsible?.name ?? '';
