@@ -64,7 +64,7 @@ class DeviceLiveMonitor extends StatefulWidget {
   State<DeviceLiveMonitor> createState() => _DeviceLiveMonitorState();
 }
 
-enum _LiveStatus { waiting, live, silent }
+enum _LiveStatus { connecting, live, silent }
 
 class _DeviceLiveMonitorState extends State<DeviceLiveMonitor> with TickerProviderStateMixin {
   static const _green = Color(0xff67CE67);
@@ -92,7 +92,7 @@ class _DeviceLiveMonitorState extends State<DeviceLiveMonitor> with TickerProvid
 
   _LiveStatus get _status {
     if (_quietSeconds > _silentAfterSeconds) return _LiveStatus.silent;
-    return _hasData ? _LiveStatus.live : _LiveStatus.waiting;
+    return _hasData ? _LiveStatus.live : _LiveStatus.connecting;
   }
 
   bool get _hrStale => _hrAgeSeconds > _silentAfterSeconds;
@@ -219,11 +219,17 @@ class _DeviceLiveMonitorState extends State<DeviceLiveMonitor> with TickerProvid
                     style: TextStyle(color: Colors.white.withValues(alpha: 0.6), fontWeight: FontWeight.w600),
                   ),
                   const Spacer(),
-                  _statusPill(t('status.${status.name}'), switch (status) {
-                    _LiveStatus.live => _green,
-                    _LiveStatus.waiting => Colors.white54,
-                    _LiveStatus.silent => const Color(0xffEB4B62),
-                  }),
+                  _statusPill(
+                    switch (status) {
+                      _LiveStatus.connecting => locale.translate('pages.connections.status.connecting'),
+                      _ => t('status.${status.name}'),
+                    },
+                    switch (status) {
+                      _LiveStatus.live => _green,
+                      _LiveStatus.connecting => Colors.white54,
+                      _LiveStatus.silent => const Color(0xffEB4B62),
+                    },
+                  ),
                 ],
               ),
               const SizedBox(height: 16),
