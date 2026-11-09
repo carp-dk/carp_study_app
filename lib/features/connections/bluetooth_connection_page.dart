@@ -466,7 +466,10 @@ class _BluetoothConnectionPageState extends State<BluetoothConnectionPage> {
     return ListView(
       padding: const EdgeInsets.symmetric(vertical: 16),
       children: [
-        _connectedDevicesMock(locale),
+        // Show it working: the live heart rate when the sensor has one, else where it now appears.
+        DeviceLiveMonitor.supports(widget.device.deviceManager)
+            ? DeviceLiveMonitor(device: widget.device)
+            : _connectedDevicesMock(locale),
         const SizedBox(height: 32),
         Text.rich(
           TextSpan(
