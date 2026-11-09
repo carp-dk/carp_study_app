@@ -15,8 +15,8 @@ enum DeploymentMode {
   dev,
 }
 
-/// App-wide configuration from `--dart-define` variables `deployment-mode`
-/// and `debug-level`, e.g. `flutter run --dart-define=deployment-mode=dev`.
+/// App-wide configuration from `--dart-define` variables `deployment-mode`,
+/// `debug-level` and `skip-consent`, e.g. `flutter run --dart-define=deployment-mode=dev`.
 /// (`String.fromEnvironment` only reads them in a const context.)
 abstract class AppConfig {
   /// What kind of deployment are we running?
@@ -32,6 +32,10 @@ abstract class AppConfig {
   static DebugLevel debugLevel = DebugLevel.values.firstWhere(
     (level) => level.name == const String.fromEnvironment('debug-level', defaultValue: 'info'),
   );
+
+  /// Skip the informed consent flow, e.g. `--dart-define=skip-consent=true`.
+  /// Local mode only - a study on CAWS always asks for consent.
+  static bool get skipConsent => deploymentMode == DeploymentMode.local && const bool.fromEnvironment('skip-consent');
 
   /// The localization (language) of this app.
   static RPLocalizations? localization;

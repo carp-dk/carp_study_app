@@ -15,6 +15,21 @@
       "flutterMode": "debug"
     },
     {
+      // release mode with the local study, skipping informed consent - real-speed device testing
+      "name": "LOCAL (release, skip consent) - carp-studies-app",
+      "request": "launch",
+      "type": "dart",
+      "toolArgs": [
+        "--dart-define",
+        "deployment-mode=local",
+        "--dart-define",
+        "debug-level=info",
+        "--dart-define",
+        "skip-consent=true"
+      ],
+      "flutterMode": "release"
+    },
+    {
       // debug mode using the DEV CAWS instance
       "name": "DEV - carp-studies-app",
       "request": "launch",
