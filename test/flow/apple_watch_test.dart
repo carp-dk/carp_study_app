@@ -10,7 +10,7 @@ void main() {
     await flow.signConsent();
     await flow.pumpUntil(() => bloc.study.isRunning, 'sensing to start');
     List<String> devices() => [for (final d in bloc.study.deploymentDevices) deviceTypeName(d.deviceType)];
-    const watch = 'pages.connections.type.apple_watch.name';
+    const watch = 'Apple Watch';
 
     debugDefaultTargetPlatformOverride = TargetPlatform.android;
     expect(devices(), isNot(contains(watch)));

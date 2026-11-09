@@ -75,7 +75,6 @@ part 'app/carp_study_app.dart';
 part 'app/user_task_factory.dart';
 
 part 'core/routes.dart';
-part 'core/sensing/device_names.dart';
 part 'core/backend/backend.dart';
 part 'core/backend/carp_backend.dart';
 part 'core/backend/local_backend.dart';
@@ -98,6 +97,7 @@ part 'core/util/app_config.dart';
 part 'core/util/app_log.dart';
 part 'core/util/util.dart';
 
+part 'shared/device_names.dart';
 part 'shared/view_model.dart';
 part 'shared/widgets/carp_app_bar.dart';
 part 'shared/widgets/error_page.dart';
