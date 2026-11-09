@@ -78,7 +78,7 @@ class CarpAppState extends State<CarpStudyApp> {
             ),
           ),
           // /study is a legacy alias for the Home tab.
-          GoRoute(path: StudyPage.route, parentNavigatorKey: _shellNavigatorKey, redirect: (_, _) => HomePage.route),
+          GoRoute(path: '/study', parentNavigatorKey: _shellNavigatorKey, redirect: (_, _) => HomePage.route),
           GoRoute(
             path: StatisticsPage.route,
             parentNavigatorKey: _shellNavigatorKey,

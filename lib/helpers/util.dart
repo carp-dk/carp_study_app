@@ -6,10 +6,6 @@ extension MeasurementTime on Measurement {
   DateTime get sensorTime => DateTime.fromMicrosecondsSinceEpoch(sensorStartTime);
 }
 
-extension StringExtension on String {
-  String truncateTo(int maxLength) => (length <= maxLength) ? this : '${substring(0, maxLength)}...';
-}
-
 extension Humanize on Duration {
   String humanize(RPLocalizations locale) {
     // Convert the difference into a human-readable format and round up

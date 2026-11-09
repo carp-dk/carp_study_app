@@ -1,6 +1,6 @@
 part of carp_study_app;
 
-/// View model for [StudyPage] and [StudyAboutPage] - study description,
+/// View model for [HomePage] and [StudyAboutPage] - study description,
 /// deployment status, and published messages, incl. pull-to-refresh.
 class StudyPageViewModel extends ViewModel {
   StudyPageViewModel({
