@@ -1,10 +1,5 @@
 part of carp_study_app;
 
-// Consts, because the icon maps below are const lookups without a BuildContext.
-const Color _statusSuccess = Color(0xff67CE67);
-const Color _statusError = Color(0xffEB4B62);
-const Color _appleWatchColor = Color(0xff3260A4);
-
 /// View model for [ConnectionListPage] - its devices and services as view models.
 class ConnectionListPageViewModel extends ViewModel {
   ConnectionListPageViewModel({StudyService? studyService}) : _studyService = studyService;
@@ -132,21 +127,12 @@ class ConnectionViewModel extends ViewModel {
       ? (deviceManager as HardwareDeviceManager).batteryEvents
       : const Stream.empty();
 
-  /// The icon for this type of device.
-  Icon? get icon => _deviceTypeIcon[type!];
-
   /// A brand logo shown instead of [icon], if this type of device has one.
   String? get iconImage => switch (type) {
     MovesenseDevice.DEVICE_TYPE => 'assets/icons/movesense_logo.png',
     HealthService.DEVICE_TYPE => healthPlatformIcon,
     _ => null,
   };
-
-  /// The icon or string for the status of this hardware device.
-  dynamic get getDeviceStatusIcon => _deviceStatusIcon[status];
-
-  /// The icon or string for the status of service.
-  dynamic get getServiceStatusIcon => _serviceStatusIcon[status];
 
   /// The name for the status of device.
   String? get statusText => _deviceStatusText[status];
@@ -229,39 +215,6 @@ const Map<String, String> _deviceTypeDescription = {
   MovesenseDevice.DEVICE_TYPE: "pages.connections.type.movesense.description",
   AppleWatchDevice.DEVICE_TYPE: "pages.connections.type.apple_watch.description",
   HealthService.DEVICE_TYPE: "pages.connections.type.health.description",
-};
-
-const Map<String, Icon> _deviceTypeIcon = {
-  Smartphone.DEVICE_TYPE: Icon(Icons.phone_android, size: 30, color: _statusSuccess),
-  WeatherService.DEVICE_TYPE: Icon(Icons.wb_cloudy, color: Color(0xff2192C9)),
-  AirQualityService.DEVICE_TYPE: Icon(Icons.air, color: Color(0xff81CFFA)),
-  LocationService.DEVICE_TYPE: Icon(Icons.location_on, color: _statusSuccess),
-  PolarDevice.DEVICE_TYPE: Icon(Icons.monitor_heart, size: 30, color: _statusError),
-  MovesenseDevice.DEVICE_TYPE: Icon(Icons.circle, size: 30, color: Color(0xff646363)),
-  AppleWatchDevice.DEVICE_TYPE: Icon(Icons.watch, size: 30, color: _appleWatchColor),
-  HealthService.DEVICE_TYPE: Icon(Icons.favorite_rounded, size: 30, color: _statusError),
-};
-
-const Map<DeviceStatus, dynamic> _deviceStatusIcon = {
-  DeviceStatus.configured: "pages.connections.status.action.connect",
-  DeviceStatus.connecting: Icon(Icons.bluetooth_searching_rounded, color: Color(0xff3260A4), size: 30),
-  DeviceStatus.reconnected: Icon(Icons.bluetooth_searching_rounded, color: Color(0xff3260A4), size: 30),
-  DeviceStatus.connected: Icon(Icons.bluetooth_rounded, color: _statusSuccess, size: 30),
-  DeviceStatus.disconnecting: Icon(Icons.bluetooth_searching_rounded, color: Color(0xff3260A4), size: 30),
-  DeviceStatus.disconnected: "pages.connections.status.action.connect",
-  DeviceStatus.paired: "pages.connections.status.action.connect",
-  DeviceStatus.unknown: Icon(Icons.error_outline, color: _statusError, size: 30),
-};
-
-const Map<DeviceStatus, dynamic> _serviceStatusIcon = {
-  DeviceStatus.configured: "pages.connections.status.action.connect",
-  DeviceStatus.connecting: Icon(Icons.sensors_off_rounded, color: _statusSuccess, size: 30),
-  DeviceStatus.reconnected: Icon(Icons.sensors_off_rounded, color: _statusSuccess, size: 30),
-  DeviceStatus.connected: Icon(Icons.sensors_rounded, color: _statusSuccess, size: 30),
-  DeviceStatus.disconnecting: Icon(Icons.sensors_off_rounded, color: _statusSuccess, size: 30),
-  DeviceStatus.disconnected: "pages.connections.status.action.connect",
-  DeviceStatus.paired: "pages.connections.status.action.connect",
-  DeviceStatus.unknown: Icon(Icons.error_outline, color: _statusError, size: 30),
 };
 
 const Map<DeviceStatus, String> _deviceStatusText = {

@@ -61,7 +61,7 @@ class StudyPageViewModel extends ViewModel {
   String get title => _study.deployment?.studyDescription?.title ?? 'Unnamed';
   String get description => _study.deployment?.studyDescription?.description ?? '';
   String get purpose => _study.deployment?.studyDescription?.purpose ?? '';
-  Image get image => Image.asset('assets/images/exercise.png');
+  String get imagePath => 'assets/images/exercise.png';
   String? get userID => _study.study?.participantId;
   String get studyDeploymentId => _study.deployment?.studyDeploymentId ?? '';
   String get responsibleName => _study.deployment?.studyDescription?.responsible?.name ?? '';
@@ -106,22 +106,6 @@ class StudyPageViewModel extends ViewModel {
         timestamp: DateTime.now(),
         image: './assets/images/kids.png',
       );
-
-  /// Get the image based on [imagePath]. Can be both an asset and a network
-  /// image. See [Message.imagePath].
-  ///
-  /// If [imagePath] is null, a random image is returned.
-  Image getMessageImage(String? imagePath) {
-    Image image;
-    imagePath ??= 'assets/images/messages/img_${Random(10).nextInt(5) + 1}.png';
-
-    if (imagePath.startsWith('http')) {
-      image = Image.network(imagePath, fit: BoxFit.fitHeight);
-    } else {
-      image = Image.asset(imagePath, fit: BoxFit.fitHeight);
-    }
-    return image;
-  }
 
   static const dummyID = '00000000-0000-0000-0000-000000000000';
   Message get studyDescriptionMessage => Message(

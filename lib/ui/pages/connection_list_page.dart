@@ -1,5 +1,49 @@
 part of carp_study_app;
 
+const Color _statusSuccess = Color(0xff67CE67);
+const Color _statusError = Color(0xffEB4B62);
+const Color _appleWatchColor = Color(0xff3260A4);
+
+const Map<String, Icon> _deviceTypeIcons = {
+  Smartphone.DEVICE_TYPE: Icon(Icons.phone_android, size: 30, color: _statusSuccess),
+  WeatherService.DEVICE_TYPE: Icon(Icons.wb_cloudy, color: Color(0xff2192C9)),
+  AirQualityService.DEVICE_TYPE: Icon(Icons.air, color: Color(0xff81CFFA)),
+  LocationService.DEVICE_TYPE: Icon(Icons.location_on, color: _statusSuccess),
+  PolarDevice.DEVICE_TYPE: Icon(Icons.monitor_heart, size: 30, color: _statusError),
+  MovesenseDevice.DEVICE_TYPE: Icon(Icons.circle, size: 30, color: Color(0xff646363)),
+  AppleWatchDevice.DEVICE_TYPE: Icon(Icons.watch, size: 30, color: _appleWatchColor),
+  HealthService.DEVICE_TYPE: Icon(Icons.favorite_rounded, size: 30, color: _statusError),
+};
+
+const Map<DeviceStatus, dynamic> _deviceStatusIcons = {
+  DeviceStatus.configured: "pages.connections.status.action.connect",
+  DeviceStatus.connecting: Icon(Icons.bluetooth_searching_rounded, color: Color(0xff3260A4), size: 30),
+  DeviceStatus.reconnected: Icon(Icons.bluetooth_searching_rounded, color: Color(0xff3260A4), size: 30),
+  DeviceStatus.connected: Icon(Icons.bluetooth_rounded, color: _statusSuccess, size: 30),
+  DeviceStatus.disconnecting: Icon(Icons.bluetooth_searching_rounded, color: Color(0xff3260A4), size: 30),
+  DeviceStatus.disconnected: "pages.connections.status.action.connect",
+  DeviceStatus.paired: "pages.connections.status.action.connect",
+  DeviceStatus.unknown: Icon(Icons.error_outline, color: _statusError, size: 30),
+};
+
+const Map<DeviceStatus, dynamic> _serviceStatusIcons = {
+  DeviceStatus.configured: "pages.connections.status.action.connect",
+  DeviceStatus.connecting: Icon(Icons.sensors_off_rounded, color: _statusSuccess, size: 30),
+  DeviceStatus.reconnected: Icon(Icons.sensors_off_rounded, color: _statusSuccess, size: 30),
+  DeviceStatus.connected: Icon(Icons.sensors_rounded, color: _statusSuccess, size: 30),
+  DeviceStatus.disconnecting: Icon(Icons.sensors_off_rounded, color: _statusSuccess, size: 30),
+  DeviceStatus.disconnected: "pages.connections.status.action.connect",
+  DeviceStatus.paired: "pages.connections.status.action.connect",
+  DeviceStatus.unknown: Icon(Icons.error_outline, color: _statusError, size: 30),
+};
+
+/// How a connection is drawn: its type icon, and its status as an icon or a connect-pill label key.
+extension ConnectionIcons on ConnectionViewModel {
+  Icon get icon => _deviceTypeIcons[type]!;
+  Object? get deviceStatusIcon => _deviceStatusIcons[status];
+  Object? get serviceStatusIcon => _serviceStatusIcons[status];
+}
+
 /// The Connections page: the phone, then hardware devices, then services.
 class ConnectionListPage extends StatefulWidget {
   static const String route = '/connections';
@@ -100,7 +144,7 @@ class ConnectionListPageState extends State<ConnectionListPage> {
             child: StudiesMaterial(
               backgroundColor: Colors.grey.shade50,
               child: _cardListBuilder(
-                leading: _smartphoneDevice[index].icon!,
+                leading: _smartphoneDevice[index].icon,
                 title: (
                   "${_smartphoneDevice[index].phoneInfo["model"]!} "
                       "- ${_smartphoneDevice[index].phoneInfo["version"]!}",
@@ -129,7 +173,7 @@ class ConnectionListPageState extends State<ConnectionListPage> {
               backgroundColor: Colors.grey.shade50,
               child: _cardListBuilder(
                 enableFeedback: true,
-                leading: device.icon!,
+                leading: device.icon,
                 leadingImage: device.iconImage,
                 title: (locale.translate(device.typeName), device.batteryLevel),
                 subtitle: _watchHint(locale, device) ?? device.name,
@@ -144,13 +188,12 @@ class ConnectionListPageState extends State<ConnectionListPage> {
                     : device.status == DeviceStatus.connected || device.status == DeviceStatus.connecting
                     ? null
                     : () async => await _hardwareDeviceClicked(device),
-                trailing: device.getDeviceStatusIcon is Icon
-                    ? device.getDeviceStatusIcon as Icon
-                    : _connectPill(
-                        locale.translate(
-                          device.getDeviceStatusIcon as String? ?? "pages.connections.status.action.connect",
-                        ),
-                      ),
+                trailing: switch (device.deviceStatusIcon) {
+                  Icon icon => icon,
+                  final label => _connectPill(
+                    locale.translate(label as String? ?? "pages.connections.status.action.connect"),
+                  ),
+                },
               ),
             ),
           ),
@@ -170,14 +213,15 @@ class ConnectionListPageState extends State<ConnectionListPage> {
           service.statusEvents,
           DeviceStatus.unknown,
           () => _cardListBuilder(
-            leading: service.icon!,
+            leading: service.icon,
             leadingImage: service.iconImage,
             title: (locale.translate(service.typeName), null),
             subtitle: null,
             onTap: () async => await _serviceClicked(service),
-            trailing: service.getServiceStatusIcon is String
-                ? _connectPill(locale.translate(service.getServiceStatusIcon as String))
-                : service.getServiceStatusIcon as Icon,
+            trailing: switch (service.serviceStatusIcon) {
+              String label => _connectPill(locale.translate(label)),
+              final icon => icon as Icon,
+            },
           ),
         );
       }),

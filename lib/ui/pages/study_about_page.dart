@@ -45,7 +45,11 @@ class StudyAboutPage extends StatelessWidget {
                             child: SizedBox(
                               width: double.infinity,
                               height: 180,
-                              child: FittedBox(fit: BoxFit.cover, clipBehavior: Clip.hardEdge, child: model.image),
+                              child: FittedBox(
+                                fit: BoxFit.cover,
+                                clipBehavior: Clip.hardEdge,
+                                child: Image.asset(model.imagePath),
+                              ),
                             ),
                           ),
                           const SizedBox(height: 16),

@@ -50,7 +50,7 @@ class MessageDetailsPage extends StatelessWidget {
                             child: FittedBox(
                               fit: BoxFit.cover,
                               clipBehavior: Clip.hardEdge,
-                              child: bloc.appViewModel.studyPageViewModel.getMessageImage(message.image),
+                              child: _messageImage(message.image!),
                             ),
                           ),
                         Padding(
@@ -140,3 +140,7 @@ class MessageDetailsPage extends StatelessWidget {
     );
   }
 }
+
+/// A message image - an asset path or a network URL. See [Message.image].
+Widget _messageImage(String path) =>
+    path.startsWith('http') ? Image.network(path, fit: BoxFit.fitHeight) : Image.asset(path, fit: BoxFit.fitHeight);
