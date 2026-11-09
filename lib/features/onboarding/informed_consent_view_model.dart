@@ -1,4 +1,12 @@
-part of carp_study_app;
+import 'dart:async';
+import 'package:flutter/foundation.dart';
+import 'package:flutter/material.dart';
+import 'package:carp_mobile_sensing/carp_mobile_sensing.dart';
+import 'package:research_package/research_package.dart';
+import 'package:carp_study_app/core/util/app_config.dart';
+import 'package:carp_study_app/features/onboarding/informed_consent_page.dart';
+import 'package:carp_study_app/shared/view_model.dart';
+import 'package:carp_study_app/main.dart';
 
 /// View model for [InformedConsentPage] - the document, and accept/reject.
 class InformedConsentViewModel extends ViewModel {

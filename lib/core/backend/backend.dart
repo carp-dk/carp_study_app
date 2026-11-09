@@ -1,4 +1,11 @@
-part of carp_study_app;
+import 'dart:async';
+import 'package:carp_core/carp_core.dart' hide Smartphone;
+import 'package:carp_mobile_sensing/carp_mobile_sensing.dart';
+import 'package:carp_webservices/carp_auth/carp_auth.dart';
+import 'package:research_package/research_package.dart';
+import 'package:carp_study_app/core/backend/carp_backend.dart';
+import 'package:carp_study_app/core/backend/local_backend.dart';
+import 'package:carp_study_app/core/util/app_config.dart';
 
 /// Where the study comes from: sign-in, invitations and informed consent.
 /// [CarpBackend] talks to CAWS; [LocalBackend] serves the files in `assets/carp`.

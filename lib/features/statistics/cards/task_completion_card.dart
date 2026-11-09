@@ -1,4 +1,12 @@
-part of carp_study_app;
+import 'dart:collection';
+import 'dart:math';
+import 'package:flutter/material.dart';
+import 'package:fl_chart/fl_chart.dart';
+import 'package:intl/intl.dart';
+import 'package:research_package/research_package.dart';
+import 'package:carp_study_app/features/statistics/cards/study_progress_data_model.dart';
+import 'package:carp_study_app/features/statistics/chart_helpers.dart';
+import 'package:carp_study_app/shared/widgets/studies_material.dart';
 
 /// How many tasks the user completed on each of the last two weeks' days, as a
 /// bar per day. Tapping a bar selects it and reports that day above the chart.

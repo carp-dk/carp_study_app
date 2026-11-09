@@ -1,4 +1,8 @@
-part of carp_study_app;
+import 'dart:async';
+import 'package:flutter/foundation.dart';
+import 'package:permission_handler/permission_handler.dart';
+import 'package:carp_mobile_sensing/carp_mobile_sensing.dart';
+import 'package:carp_study_app/core/util/app_config.dart';
 
 /// Keeps data collection running while the app is in the background.
 /// Not part of the deployment - the user connects to it, the app resumes it.

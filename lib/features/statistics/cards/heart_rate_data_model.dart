@@ -1,4 +1,17 @@
-part of carp_study_app;
+import 'dart:async';
+import 'dart:collection';
+import 'dart:math';
+import 'package:json_annotation/json_annotation.dart';
+import 'package:carp_core/carp_core.dart' hide Smartphone;
+import 'package:carp_mobile_sensing/carp_mobile_sensing.dart';
+import 'package:carp_polar_package/carp_polar_package.dart';
+import 'package:carp_health_package/health_package.dart';
+import 'package:carp_movesense_package/carp_movesense_package.dart';
+import 'package:carp_aware_package/carp_aware_package.dart';
+import 'package:carp_study_app/core/util/util.dart';
+import 'package:carp_study_app/shared/view_model.dart';
+
+part 'heart_rate_data_model.g.dart';
 
 /// One card per heart rate sensor, identified by its data type namespace -
 /// readings from different sensors are never merged.

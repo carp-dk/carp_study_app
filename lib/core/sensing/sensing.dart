@@ -1,11 +1,23 @@
+import 'dart:async';
+import 'package:carp_core/carp_core.dart' hide Smartphone;
+import 'package:carp_mobile_sensing/carp_mobile_sensing.dart';
+import 'package:carp_audio_package/media.dart';
+import 'package:carp_connectivity_package/connectivity.dart' show ConnectivitySamplingPackage;
+import 'package:carp_context_package/carp_context_package.dart';
+import 'package:carp_survey_package/survey.dart';
+import 'package:carp_backend/carp_backend.dart';
+import 'package:carp_polar_package/carp_polar_package.dart';
+import 'package:carp_health_package/health_package.dart';
+import 'package:carp_movesense_package/carp_movesense_package.dart';
+import 'package:carp_aware_package/carp_aware_package.dart';
+import 'package:carp_study_app/core/sensing/background_sensing_service.dart';
+
 /*
  * Copyright 2025 Copenhagen Research Platform (CARP) at the
  * Technical University of Denmark (DTU).
  * Use of this source code is governed by a MIT-style license that can be
  * found in the LICENSE file.
  */
-
-part of carp_study_app;
 
 /// Registers sampling packages, data managers and task factories. Owns no study.
 class Sensing {

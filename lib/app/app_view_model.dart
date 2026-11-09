@@ -1,4 +1,15 @@
-part of carp_study_app;
+import 'package:carp_mobile_sensing/carp_mobile_sensing.dart';
+import 'package:carp_study_app/features/connections/connection_view_model.dart';
+import 'package:carp_study_app/features/onboarding/informed_consent_view_model.dart';
+import 'package:carp_study_app/features/onboarding/invitations_view_model.dart';
+import 'package:carp_study_app/features/onboarding/login_view_model.dart';
+import 'package:carp_study_app/features/profile/profile_view_model.dart';
+import 'package:carp_study_app/features/statistics/statistics_view_model.dart';
+import 'package:carp_study_app/features/study/home_view_model.dart';
+import 'package:carp_study_app/features/study/study_view_model.dart';
+import 'package:carp_study_app/features/tasks/participant_data_view_model.dart';
+import 'package:carp_study_app/features/tasks/task_list_view_model.dart';
+import 'package:carp_study_app/shared/view_model.dart';
 
 /// The root view model - owns one instance of every page view model and
 /// forwards [init], [clear], and [dispose] to them.

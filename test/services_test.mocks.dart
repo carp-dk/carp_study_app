@@ -7,9 +7,12 @@ import 'dart:async' as _i5;
 
 import 'package:carp_core/carp_core.dart' as _i3;
 import 'package:carp_mobile_sensing/carp_mobile_sensing.dart' as _i2;
-import 'package:carp_study_app/main.dart' as _i4;
+import 'package:carp_study_app/core/backend/backend.dart' as _i4;
+import 'package:carp_study_app/core/services/auth_service.dart' as _i7;
+import 'package:carp_study_app/core/services/study_service.dart' as _i10;
+import 'package:carp_study_app/core/services/system_info_service.dart' as _i9;
 import 'package:mockito/mockito.dart' as _i1;
-import 'package:mockito/src/dummies.dart' as _i7;
+import 'package:mockito/src/dummies.dart' as _i8;
 import 'package:research_package/research_package.dart' as _i6;
 
 // ignore_for_file: type=lint
@@ -163,7 +166,7 @@ class MockBackend extends _i1.Mock implements _i4.Backend {
 /// A class which mocks [AuthService].
 ///
 /// See the documentation for Mockito's code generation for more information.
-class MockAuthService extends _i1.Mock implements _i4.AuthService {
+class MockAuthService extends _i1.Mock implements _i7.AuthService {
   @override
   bool get isAuthenticated =>
       (super.noSuchMethod(Invocation.getter(#isAuthenticated), returnValue: false, returnValueForMissingStub: false)
@@ -178,8 +181,8 @@ class MockAuthService extends _i1.Mock implements _i4.AuthService {
   String get username =>
       (super.noSuchMethod(
             Invocation.getter(#username),
-            returnValue: _i7.dummyValue<String>(this, Invocation.getter(#username)),
-            returnValueForMissingStub: _i7.dummyValue<String>(this, Invocation.getter(#username)),
+            returnValue: _i8.dummyValue<String>(this, Invocation.getter(#username)),
+            returnValueForMissingStub: _i8.dummyValue<String>(this, Invocation.getter(#username)),
           )
           as String);
 
@@ -187,8 +190,8 @@ class MockAuthService extends _i1.Mock implements _i4.AuthService {
   String get friendlyUsername =>
       (super.noSuchMethod(
             Invocation.getter(#friendlyUsername),
-            returnValue: _i7.dummyValue<String>(this, Invocation.getter(#friendlyUsername)),
-            returnValueForMissingStub: _i7.dummyValue<String>(this, Invocation.getter(#friendlyUsername)),
+            returnValue: _i8.dummyValue<String>(this, Invocation.getter(#friendlyUsername)),
+            returnValueForMissingStub: _i8.dummyValue<String>(this, Invocation.getter(#friendlyUsername)),
           )
           as String);
 
@@ -281,7 +284,7 @@ class MockAuthService extends _i1.Mock implements _i4.AuthService {
 /// A class which mocks [SystemInfoService].
 ///
 /// See the documentation for Mockito's code generation for more information.
-class MockSystemInfoService extends _i1.Mock implements _i4.SystemInfoService {
+class MockSystemInfoService extends _i1.Mock implements _i9.SystemInfoService {
   @override
   _i5.Future<bool> checkConnectivity() =>
       (super.noSuchMethod(
@@ -336,8 +339,8 @@ class MockUserTask extends _i1.Mock implements _i2.UserTask {
   String get id =>
       (super.noSuchMethod(
             Invocation.getter(#id),
-            returnValue: _i7.dummyValue<String>(this, Invocation.getter(#id)),
-            returnValueForMissingStub: _i7.dummyValue<String>(this, Invocation.getter(#id)),
+            returnValue: _i8.dummyValue<String>(this, Invocation.getter(#id)),
+            returnValueForMissingStub: _i8.dummyValue<String>(this, Invocation.getter(#id)),
           )
           as String);
 
@@ -345,8 +348,8 @@ class MockUserTask extends _i1.Mock implements _i2.UserTask {
   String get type =>
       (super.noSuchMethod(
             Invocation.getter(#type),
-            returnValue: _i7.dummyValue<String>(this, Invocation.getter(#type)),
-            returnValueForMissingStub: _i7.dummyValue<String>(this, Invocation.getter(#type)),
+            returnValue: _i8.dummyValue<String>(this, Invocation.getter(#type)),
+            returnValueForMissingStub: _i8.dummyValue<String>(this, Invocation.getter(#type)),
           )
           as String);
 
@@ -354,8 +357,8 @@ class MockUserTask extends _i1.Mock implements _i2.UserTask {
   String get name =>
       (super.noSuchMethod(
             Invocation.getter(#name),
-            returnValue: _i7.dummyValue<String>(this, Invocation.getter(#name)),
-            returnValueForMissingStub: _i7.dummyValue<String>(this, Invocation.getter(#name)),
+            returnValue: _i8.dummyValue<String>(this, Invocation.getter(#name)),
+            returnValueForMissingStub: _i8.dummyValue<String>(this, Invocation.getter(#name)),
           )
           as String);
 
@@ -363,8 +366,8 @@ class MockUserTask extends _i1.Mock implements _i2.UserTask {
   String get title =>
       (super.noSuchMethod(
             Invocation.getter(#title),
-            returnValue: _i7.dummyValue<String>(this, Invocation.getter(#title)),
-            returnValueForMissingStub: _i7.dummyValue<String>(this, Invocation.getter(#title)),
+            returnValue: _i8.dummyValue<String>(this, Invocation.getter(#title)),
+            returnValueForMissingStub: _i8.dummyValue<String>(this, Invocation.getter(#title)),
           )
           as String);
 
@@ -372,8 +375,8 @@ class MockUserTask extends _i1.Mock implements _i2.UserTask {
   String get description =>
       (super.noSuchMethod(
             Invocation.getter(#description),
-            returnValue: _i7.dummyValue<String>(this, Invocation.getter(#description)),
-            returnValueForMissingStub: _i7.dummyValue<String>(this, Invocation.getter(#description)),
+            returnValue: _i8.dummyValue<String>(this, Invocation.getter(#description)),
+            returnValueForMissingStub: _i8.dummyValue<String>(this, Invocation.getter(#description)),
           )
           as String);
 
@@ -381,8 +384,8 @@ class MockUserTask extends _i1.Mock implements _i2.UserTask {
   String get instructions =>
       (super.noSuchMethod(
             Invocation.getter(#instructions),
-            returnValue: _i7.dummyValue<String>(this, Invocation.getter(#instructions)),
-            returnValueForMissingStub: _i7.dummyValue<String>(this, Invocation.getter(#instructions)),
+            returnValue: _i8.dummyValue<String>(this, Invocation.getter(#instructions)),
+            returnValueForMissingStub: _i8.dummyValue<String>(this, Invocation.getter(#instructions)),
           )
           as String);
 
@@ -517,7 +520,7 @@ class MockUserTask extends _i1.Mock implements _i2.UserTask {
 /// A class which mocks [StudyService].
 ///
 /// See the documentation for Mockito's code generation for more information.
-class MockStudyService extends _i1.Mock implements _i4.StudyService {
+class MockStudyService extends _i1.Mock implements _i10.StudyService {
   @override
   _i3.DeploymentService get deploymentService =>
       (super.noSuchMethod(

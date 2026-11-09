@@ -1,4 +1,11 @@
-part of carp_study_app;
+import 'dart:async';
+import 'dart:io';
+import 'package:flutter/material.dart';
+import 'package:camera/camera.dart';
+import 'package:carp_mobile_sensing/carp_mobile_sensing.dart';
+import 'package:research_package/research_package.dart';
+import 'package:carp_study_app/features/tasks/display_picture_page.dart';
+import 'package:carp_study_app/features/tasks/user_tasks.dart';
 
 class CameraPage extends StatefulWidget {
   final VideoUserTask videoUserTask;

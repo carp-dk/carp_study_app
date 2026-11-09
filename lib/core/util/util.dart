@@ -1,4 +1,5 @@
-part of carp_study_app;
+import 'package:carp_core/carp_core.dart' hide Smartphone;
+import 'package:research_package/research_package.dart';
 
 extension MeasurementTime on Measurement {
   /// When this measurement was taken, as local time - bucket by this,

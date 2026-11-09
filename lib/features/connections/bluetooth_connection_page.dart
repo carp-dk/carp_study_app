@@ -1,4 +1,18 @@
-part of carp_study_app;
+import 'dart:async';
+import 'dart:io';
+import 'package:flutter/gestures.dart';
+import 'package:flutter/material.dart';
+import 'package:go_router/go_router.dart';
+import 'package:flutter_blue_plus/flutter_blue_plus.dart';
+import 'package:open_settings_plus/open_settings_plus.dart';
+import 'package:open_settings_plus/core/open_settings_plus.dart';
+import 'package:carp_mobile_sensing/carp_mobile_sensing.dart';
+import 'package:carp_polar_package/carp_polar_package.dart';
+import 'package:research_package/research_package.dart';
+import 'package:carp_movesense_package/carp_movesense_package.dart';
+import 'package:carp_study_app/core/settings/local_settings.dart';
+import 'package:carp_study_app/features/connections/connection_view_model.dart';
+import 'package:carp_study_app/features/connections/live_data_page.dart';
 
 /// State of Bluetooth connection UI.
 enum CurrentStep { scan, instructions, done }

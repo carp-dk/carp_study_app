@@ -1,4 +1,12 @@
-part of carp_study_app;
+import 'dart:async';
+import 'dart:io';
+import 'package:flutter/material.dart';
+import 'package:camera/camera.dart';
+import 'package:video_player/video_player.dart';
+import 'package:research_package/research_package.dart';
+import 'package:carp_study_app/features/tasks/camera_page.dart';
+import 'package:carp_study_app/features/tasks/user_tasks.dart';
+import 'package:carp_study_app/shared/widgets/carp_app_bar.dart';
 
 class DisplayPicturePage extends StatefulWidget {
   final XFile file;

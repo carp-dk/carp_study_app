@@ -1,4 +1,11 @@
-part of carp_study_app;
+import 'dart:async';
+import 'dart:convert';
+import 'dart:ui' as ui;
+import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
+import 'package:carp_mobile_sensing/carp_mobile_sensing.dart';
+import 'package:carp_backend/carp_backend.dart';
+import 'package:research_package/research_package.dart';
 
 /// An assets-based resource manager for consent, localization, messages, and
 /// protocol - JSON files under `assets/carp`, following the "CARP Study App

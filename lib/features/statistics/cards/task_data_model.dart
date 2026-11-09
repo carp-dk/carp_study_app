@@ -1,4 +1,5 @@
-part of carp_study_app;
+import 'package:carp_mobile_sensing/carp_mobile_sensing.dart';
+import 'package:carp_study_app/shared/view_model.dart';
 
 /// View model for the task card widgets ([TaskCardWidget]) -
 /// counts tasks done, grouped by task title.

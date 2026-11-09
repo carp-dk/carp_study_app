@@ -1,4 +1,9 @@
-part of carp_study_app;
+import 'dart:async';
+import 'package:carp_core/carp_core.dart' hide Smartphone;
+import 'package:carp_mobile_sensing/carp_mobile_sensing.dart';
+import 'package:carp_backend/carp_backend.dart';
+import 'package:research_package/research_package.dart';
+import 'package:carp_study_app/core/backend/backend.dart';
 
 /// The consent document and signed consent in CAWS - policy is the view model's.
 class ConsentService {

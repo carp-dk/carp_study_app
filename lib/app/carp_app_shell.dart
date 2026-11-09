@@ -1,4 +1,9 @@
-part of carp_study_app;
+import 'package:flutter/material.dart';
+import 'package:go_router/go_router.dart';
+import 'package:research_package/research_package.dart';
+import 'package:carp_study_app/core/routes.dart';
+import 'package:carp_study_app/features/study/home_view_model.dart';
+import 'package:carp_study_app/shared/widgets/carp_app_bar.dart';
 
 /// The fixed app bar and bottom navigation bar, with the current tab between them -
 /// only the tab transitions. The router gates what reaches it, so by here the

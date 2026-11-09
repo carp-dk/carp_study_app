@@ -1,4 +1,14 @@
-part of carp_study_app;
+import 'dart:async';
+import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
+import 'package:go_router/go_router.dart';
+import 'package:package_info_plus/package_info_plus.dart';
+import 'package:research_package/research_package.dart';
+import 'package:carp_study_app/core/routes.dart';
+import 'package:carp_study_app/features/profile/anonymous_card.dart';
+import 'package:carp_study_app/features/profile/profile_view_model.dart';
+import 'package:carp_study_app/shared/widgets/enable_connection_dialog.dart';
+import 'package:carp_study_app/shared/widgets/studies_material.dart';
 
 class ProfilePage extends StatefulWidget {
   final ProfilePageViewModel model;

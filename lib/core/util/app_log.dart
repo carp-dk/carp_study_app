@@ -1,4 +1,5 @@
-part of carp_study_app;
+import 'package:flutter/foundation.dart';
+import 'package:flutter/material.dart';
 
 /// Tag prefixed to every app-specific log line - filter with
 /// `flutter logs | grep CARP_STUDY_APP`.

@@ -1,4 +1,5 @@
-part of carp_study_app;
+import 'package:flutter/material.dart';
+import 'package:carp_backend/carp_backend.dart';
 
 /// How a message type is rendered - [IconData], so callers decide colour/size.
 extension MessageTypeUI on MessageType {

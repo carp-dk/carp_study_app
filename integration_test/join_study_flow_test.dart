@@ -15,6 +15,16 @@ import 'package:go_router/go_router.dart';
 import 'package:integration_test/integration_test.dart';
 import 'package:research_package/research_package.dart';
 
+import 'package:carp_study_app/app/app_bloc.dart';
+import 'package:carp_study_app/app/carp_study_app.dart';
+import 'package:carp_study_app/core/routes.dart';
+import 'package:carp_study_app/core/sensing/background_sensing_service.dart';
+import 'package:carp_study_app/core/settings/local_settings.dart';
+import 'package:carp_study_app/core/util/app_config.dart';
+import 'package:carp_study_app/features/onboarding/informed_consent_page.dart';
+import 'package:carp_study_app/features/onboarding/login_page.dart';
+import 'package:carp_study_app/features/profile/profile_page.dart';
+import 'package:carp_study_app/features/study/home_page.dart';
 import 'package:carp_study_app/main.dart';
 
 /// Mock the platform channels a simulator cannot serve: OS permission

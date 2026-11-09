@@ -1,4 +1,10 @@
-part of carp_study_app;
+import 'package:flutter/material.dart';
+import 'package:go_router/go_router.dart';
+import 'package:research_package/research_package.dart';
+import 'package:carp_study_app/core/routes.dart';
+import 'package:carp_study_app/features/study/home_view_model.dart';
+import 'package:carp_study_app/shared/device_names.dart';
+import 'package:carp_study_app/shared/widgets/studies_material.dart';
 
 /// Home card summarising the connection state of all data sources.
 // ponytail: labels hardcoded EN to match the rest of the static home page; i18n later.

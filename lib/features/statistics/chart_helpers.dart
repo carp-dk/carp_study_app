@@ -1,4 +1,8 @@
-part of carp_study_app;
+import 'dart:collection';
+import 'package:flutter/material.dart';
+import 'package:fl_chart/fl_chart.dart';
+import 'package:intl/intl.dart';
+import 'package:research_package/research_package.dart';
 
 const _weekdayKeys = ['mon', 'tue', 'wed', 'thu', 'fri', 'sat', 'sun'];
 

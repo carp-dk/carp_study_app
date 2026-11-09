@@ -1,9 +1,21 @@
-part of carp_study_app;
+import 'dart:async';
+import 'dart:io';
+import 'package:flutter/material.dart';
+import 'package:carp_core/carp_core.dart' hide Smartphone;
+import 'package:carp_mobile_sensing/carp_mobile_sensing.dart';
+import 'package:carp_backend/carp_backend.dart';
+import 'package:carp_study_app/core/sensing/background_sensing_service.dart';
+import 'package:carp_study_app/core/services/message_service.dart';
+import 'package:carp_study_app/core/services/study_service.dart';
+import 'package:carp_study_app/core/services/system_info_service.dart';
+import 'package:carp_study_app/features/study/home_page.dart';
+import 'package:carp_study_app/shared/view_model.dart';
+import 'package:carp_study_app/main.dart';
 
 /// The 3-state connection summary shown on the home page.
 enum HomeConnectionState { all, partial, none }
 
-/// View model for [HomePage] and [CarpAppShell] - everything the home tab shows.
+/// View model for [HomePage] and the app shell - everything the home tab shows.
 class HomePageViewModel extends ViewModel {
   HomePageViewModel({SystemInfoService? systemInfoService, StudyService? studyService, MessageService? messageService})
     : _systemInfoService = systemInfoService,

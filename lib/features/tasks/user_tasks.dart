@@ -1,4 +1,12 @@
-part of carp_study_app;
+import 'dart:async';
+import 'package:flutter/material.dart';
+import 'package:camera/camera.dart';
+import 'package:carp_core/carp_core.dart' hide Smartphone;
+import 'package:carp_mobile_sensing/carp_mobile_sensing.dart';
+import 'package:carp_audio_package/media.dart';
+import 'package:carp_study_app/features/tasks/audio_task_page.dart';
+import 'package:carp_study_app/features/tasks/camera_task_page.dart';
+import 'package:carp_study_app/main.dart';
 
 /// A user task handling audio recordings - [onRecordStart] also starts the
 /// background sensing task.

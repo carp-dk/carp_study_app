@@ -1,4 +1,18 @@
-part of carp_study_app;
+import 'dart:async';
+import 'package:flutter/material.dart';
+import 'package:go_router/go_router.dart';
+import 'package:intl/intl.dart';
+import 'package:carp_core/carp_core.dart' hide Smartphone;
+import 'package:carp_mobile_sensing/carp_mobile_sensing.dart';
+import 'package:carp_audio_package/media.dart';
+import 'package:carp_context_package/carp_context_package.dart';
+import 'package:carp_survey_package/survey.dart';
+import 'package:research_package/research_package.dart';
+import 'package:carp_study_app/core/routes.dart';
+import 'package:carp_study_app/core/util/util.dart';
+import 'package:carp_study_app/features/tasks/task_list_view_model.dart';
+import 'package:carp_study_app/shared/widgets/carp_app_bar.dart';
+import 'package:carp_study_app/shared/widgets/studies_material.dart';
 
 /// The "Tasks" tab (design 2.0): a segmented Pending / Completed switch over a
 /// list of task cards.

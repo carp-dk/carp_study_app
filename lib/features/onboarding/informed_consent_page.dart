@@ -1,4 +1,11 @@
-part of carp_study_app;
+import 'dart:async';
+import 'package:flutter/material.dart';
+import 'package:go_router/go_router.dart';
+import 'package:carp_mobile_sensing/carp_mobile_sensing.dart';
+import 'package:research_package/research_package.dart';
+import 'package:carp_study_app/core/routes.dart';
+import 'package:carp_study_app/features/onboarding/informed_consent_view_model.dart';
+import 'package:carp_study_app/shared/widgets/error_page.dart';
 
 /// The consent document, for the user to read and sign.
 ///

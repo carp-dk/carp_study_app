@@ -1,4 +1,16 @@
-part of carp_study_app;
+import 'dart:async';
+import 'dart:io';
+import 'package:flutter/material.dart';
+import 'package:url_launcher/url_launcher.dart';
+import 'package:go_router/go_router.dart';
+import 'package:file_picker/file_picker.dart';
+import 'package:open_filex/open_filex.dart';
+import 'package:path_provider/path_provider.dart';
+import 'package:carp_mobile_sensing/carp_mobile_sensing.dart';
+import 'package:research_package/research_package.dart';
+import 'package:carp_study_app/core/routes.dart';
+import 'package:carp_study_app/features/study/study_view_model.dart';
+import 'package:carp_study_app/shared/widgets/studies_material.dart';
 
 /// The "About Study" screen (design 2.0): study image, title, full
 /// description with a website link, the study roles, and the study purpose.

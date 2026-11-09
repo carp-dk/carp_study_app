@@ -1,4 +1,11 @@
-part of carp_study_app;
+import 'dart:io';
+import 'package:flutter/material.dart';
+import 'package:go_router/go_router.dart';
+import 'package:open_settings_plus/open_settings_plus.dart';
+import 'package:open_settings_plus/core/open_settings_plus.dart';
+import 'package:research_package/research_package.dart';
+import 'package:carp_study_app/features/connections/connection_view_model.dart';
+import 'package:carp_study_app/shared/widgets/dialog_title.dart';
 
 class EnableBluetoothDialog extends StatelessWidget {
   final ConnectionViewModel device;

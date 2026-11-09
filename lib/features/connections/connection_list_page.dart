@@ -1,14 +1,43 @@
-part of carp_study_app;
+import 'dart:async';
+import 'dart:collection';
+import 'dart:io';
+import 'package:flutter/material.dart';
+import 'package:timeago/timeago.dart' as timeago;
+import 'package:flutter_blue_plus/flutter_blue_plus.dart';
+import 'package:permission_handler/permission_handler.dart';
+import 'package:open_settings_plus/open_settings_plus.dart';
+import 'package:open_settings_plus/core/open_settings_plus.dart';
+import 'package:carp_mobile_sensing/carp_mobile_sensing.dart';
+import 'package:carp_context_package/carp_context_package.dart';
+import 'package:carp_polar_package/carp_polar_package.dart';
+import 'package:research_package/research_package.dart';
+import 'package:carp_health_package/health_package.dart';
+import 'package:carp_movesense_package/carp_movesense_package.dart';
+import 'package:carp_aware_package/carp_aware_package.dart';
+import 'package:carp_study_app/core/sensing/background_sensing_service.dart';
+import 'package:carp_study_app/core/settings/local_settings.dart';
+import 'package:carp_study_app/core/util/app_config.dart';
+import 'package:carp_study_app/features/connections/apple_watch_connect_page.dart';
+import 'package:carp_study_app/features/connections/battery_icon.dart';
+import 'package:carp_study_app/features/connections/bluetooth_connection_page.dart';
+import 'package:carp_study_app/features/connections/connection_view_model.dart';
+import 'package:carp_study_app/features/connections/enable_bluetooth_dialog.dart';
+import 'package:carp_study_app/features/connections/health_service_connect_page.dart';
+import 'package:carp_study_app/features/connections/list_title.dart';
+import 'package:carp_study_app/features/connections/live_data_page.dart';
+import 'package:carp_study_app/shared/widgets/carp_app_bar.dart';
+import 'package:carp_study_app/shared/widgets/studies_material.dart';
+import 'package:carp_study_app/main.dart';
 
-const Color _statusSuccess = Color(0xff67CE67);
+const Color statusSuccess = Color(0xff67CE67);
 const Color _statusError = Color(0xffEB4B62);
 const Color _appleWatchColor = Color(0xff3260A4);
 
 const Map<String, Icon> _deviceTypeIcons = {
-  Smartphone.DEVICE_TYPE: Icon(Icons.phone_android, size: 30, color: _statusSuccess),
+  Smartphone.DEVICE_TYPE: Icon(Icons.phone_android, size: 30, color: statusSuccess),
   WeatherService.DEVICE_TYPE: Icon(Icons.wb_cloudy, color: Color(0xff2192C9)),
   AirQualityService.DEVICE_TYPE: Icon(Icons.air, color: Color(0xff81CFFA)),
-  LocationService.DEVICE_TYPE: Icon(Icons.location_on, color: _statusSuccess),
+  LocationService.DEVICE_TYPE: Icon(Icons.location_on, color: statusSuccess),
   PolarDevice.DEVICE_TYPE: Icon(Icons.monitor_heart, size: 30, color: _statusError),
   MovesenseDevice.DEVICE_TYPE: Icon(Icons.circle, size: 30, color: Color(0xff646363)),
   AppleWatchDevice.DEVICE_TYPE: Icon(Icons.watch, size: 30, color: _appleWatchColor),
@@ -19,7 +48,7 @@ const Map<DeviceStatus, dynamic> _deviceStatusIcons = {
   DeviceStatus.configured: "pages.connections.status.action.connect",
   DeviceStatus.connecting: Icon(Icons.bluetooth_searching_rounded, color: Color(0xff3260A4), size: 30),
   DeviceStatus.reconnected: Icon(Icons.bluetooth_searching_rounded, color: Color(0xff3260A4), size: 30),
-  DeviceStatus.connected: Icon(Icons.bluetooth_rounded, color: _statusSuccess, size: 30),
+  DeviceStatus.connected: Icon(Icons.bluetooth_rounded, color: statusSuccess, size: 30),
   DeviceStatus.disconnecting: Icon(Icons.bluetooth_searching_rounded, color: Color(0xff3260A4), size: 30),
   DeviceStatus.disconnected: "pages.connections.status.action.connect",
   DeviceStatus.paired: "pages.connections.status.action.connect",
@@ -28,10 +57,10 @@ const Map<DeviceStatus, dynamic> _deviceStatusIcons = {
 
 const Map<DeviceStatus, dynamic> _serviceStatusIcons = {
   DeviceStatus.configured: "pages.connections.status.action.connect",
-  DeviceStatus.connecting: Icon(Icons.sensors_off_rounded, color: _statusSuccess, size: 30),
-  DeviceStatus.reconnected: Icon(Icons.sensors_off_rounded, color: _statusSuccess, size: 30),
-  DeviceStatus.connected: Icon(Icons.sensors_rounded, color: _statusSuccess, size: 30),
-  DeviceStatus.disconnecting: Icon(Icons.sensors_off_rounded, color: _statusSuccess, size: 30),
+  DeviceStatus.connecting: Icon(Icons.sensors_off_rounded, color: statusSuccess, size: 30),
+  DeviceStatus.reconnected: Icon(Icons.sensors_off_rounded, color: statusSuccess, size: 30),
+  DeviceStatus.connected: Icon(Icons.sensors_rounded, color: statusSuccess, size: 30),
+  DeviceStatus.disconnecting: Icon(Icons.sensors_off_rounded, color: statusSuccess, size: 30),
   DeviceStatus.disconnected: "pages.connections.status.action.connect",
   DeviceStatus.paired: "pages.connections.status.action.connect",
   DeviceStatus.unknown: Icon(Icons.error_outline, color: _statusError, size: 30),
@@ -236,14 +265,14 @@ class ConnectionListPageState extends State<ConnectionListPage> {
           child: StudiesMaterial(
             backgroundColor: Colors.grey.shade50,
             hasBorder: true,
-            borderColor: connected ? _statusSuccess : Theme.of(context).colorScheme.primary,
+            borderColor: connected ? statusSuccess : Theme.of(context).colorScheme.primary,
             child: _cardListBuilder(
               leading: const Icon(Icons.autorenew_rounded, size: 30, color: Color(0xff3260A4)),
               title: (locale.translate('pages.connections.type.background.name'), null),
               subtitle: locale.translate('pages.connections.type.background.description'),
               onTap: connected ? null : _backgroundSensingClicked,
               trailing: connected
-                  ? const Icon(Icons.sensors_rounded, color: _statusSuccess, size: 30)
+                  ? const Icon(Icons.sensors_rounded, color: statusSuccess, size: 30)
                   : _connectPill(locale.translate('pages.connections.status.action.connect')),
             ),
           ),

@@ -1,4 +1,13 @@
-part of carp_study_app;
+import 'dart:async';
+import 'package:json_annotation/json_annotation.dart';
+import 'package:intl/intl.dart';
+import 'package:carp_core/carp_core.dart' hide Smartphone;
+import 'package:carp_mobile_sensing/carp_mobile_sensing.dart';
+import 'package:carp_context_package/carp_context_package.dart';
+import 'package:carp_study_app/core/util/util.dart';
+import 'package:carp_study_app/shared/view_model.dart';
+
+part 'activity_data_model.g.dart';
 
 class ActivityCardViewModel extends SerializableViewModel<WeeklyActivities> {
   Measurement _lastActivity = Measurement.fromData(Activity(type: ActivityType.STILL, confidence: 100));

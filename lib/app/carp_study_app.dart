@@ -1,6 +1,33 @@
-part of carp_study_app;
+import 'dart:async';
+import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
+import 'package:flutter_localizations/flutter_localizations.dart';
+import 'package:go_router/go_router.dart';
+import 'package:intl/intl.dart';
+import 'package:carp_mobile_sensing/carp_mobile_sensing.dart';
+import 'package:research_package/research_package.dart';
+import 'package:carp_themes_package/carp_themes_package.dart';
+import 'package:carp_study_app/app/app_bloc.dart';
+import 'package:carp_study_app/app/carp_app_shell.dart';
+import 'package:carp_study_app/core/routes.dart';
+import 'package:carp_study_app/core/util/app_config.dart';
+import 'package:carp_study_app/features/connections/connection_list_page.dart';
+import 'package:carp_study_app/features/onboarding/code_sign_in_page.dart';
+import 'package:carp_study_app/features/onboarding/informed_consent_page.dart';
+import 'package:carp_study_app/features/onboarding/invitation_details_page.dart';
+import 'package:carp_study_app/features/onboarding/invitation_list_page.dart';
+import 'package:carp_study_app/features/onboarding/login_page.dart';
+import 'package:carp_study_app/features/profile/profile_page.dart';
+import 'package:carp_study_app/features/statistics/statistics_page.dart';
+import 'package:carp_study_app/features/study/home_page.dart';
+import 'package:carp_study_app/features/study/message_details_page.dart';
+import 'package:carp_study_app/features/study/study_about_page.dart';
+import 'package:carp_study_app/features/tasks/participant_data_page.dart';
+import 'package:carp_study_app/features/tasks/task_list_page.dart';
+import 'package:carp_study_app/shared/widgets/error_page.dart';
+import 'package:carp_study_app/main.dart';
 
-final _rootNavigatorKey = GlobalKey<NavigatorState>();
+final rootNavigatorKey = GlobalKey<NavigatorState>();
 final _shellNavigatorKey = GlobalKey<NavigatorState>();
 
 class CarpStudyApp extends StatefulWidget {
@@ -23,7 +50,7 @@ class CarpAppState extends State<CarpStudyApp> {
   // State-driven routing: a bloc change refreshes the router, which re-redirects.
   final GoRouter _router = GoRouter(
     initialLocation: Routes.root,
-    navigatorKey: _rootNavigatorKey,
+    navigatorKey: rootNavigatorKey,
     refreshListenable: bloc,
     errorBuilder: (context, state) => const ErrorPage(),
     redirect: (context, state) async {
@@ -99,7 +126,7 @@ class CarpAppState extends State<CarpStudyApp> {
       // Profile slides in full-screen over the shell, so: root navigator.
       GoRoute(
         path: Routes.profile,
-        parentNavigatorKey: _rootNavigatorKey,
+        parentNavigatorKey: rootNavigatorKey,
         pageBuilder: (context, state) => CustomTransitionPage(
           key: state.pageKey,
           child: ProfilePage(bloc.appViewModel.profilePageViewModel),
@@ -109,22 +136,22 @@ class CarpAppState extends State<CarpStudyApp> {
       // Consent is not a tab - it replaces the whole app until it is signed.
       GoRoute(
         path: Routes.consent,
-        parentNavigatorKey: _rootNavigatorKey,
+        parentNavigatorKey: rootNavigatorKey,
         builder: (context, state) => InformedConsentPage(model: bloc.appViewModel.informedConsentViewModel),
       ),
       GoRoute(
         path: Routes.studyAbout,
-        parentNavigatorKey: _rootNavigatorKey,
+        parentNavigatorKey: rootNavigatorKey,
         builder: (context, state) => StudyAboutPage(model: bloc.appViewModel.studyPageViewModel),
       ),
       GoRoute(
         path: Routes.participantData,
-        parentNavigatorKey: _rootNavigatorKey,
+        parentNavigatorKey: rootNavigatorKey,
         builder: (context, state) => ParticipantDataPage(model: bloc.appViewModel.participantDataPageViewModel),
       ),
       GoRoute(
         path: '${Routes.task}/:taskId',
-        parentNavigatorKey: _rootNavigatorKey,
+        parentNavigatorKey: rootNavigatorKey,
         builder: (context, state) {
           final taskId = state.pathParameters['taskId'] ?? '';
           final task = AppTaskController().getUserTask(taskId);
@@ -133,13 +160,13 @@ class CarpAppState extends State<CarpStudyApp> {
       ),
       GoRoute(
         path: Routes.login,
-        parentNavigatorKey: _rootNavigatorKey,
+        parentNavigatorKey: rootNavigatorKey,
         builder: (context, state) =>
             LoginPage(model: bloc.appViewModel.loginViewModel, invitations: bloc.appViewModel.invitationsListViewModel),
         routes: [
           GoRoute(
             path: 'join',
-            parentNavigatorKey: _rootNavigatorKey,
+            parentNavigatorKey: rootNavigatorKey,
             pageBuilder: (context, state) => CustomTransitionPage(
               key: state.pageKey,
               fullscreenDialog: true,
@@ -154,7 +181,7 @@ class CarpAppState extends State<CarpStudyApp> {
       ),
       GoRoute(
         path: '${Routes.message}/:messageId',
-        parentNavigatorKey: _rootNavigatorKey,
+        parentNavigatorKey: rootNavigatorKey,
         builder: (context, state) => MessageDetailsPage(
           model: bloc.appViewModel.studyPageViewModel,
           messageId: state.pathParameters['messageId'] ?? '',
@@ -162,12 +189,12 @@ class CarpAppState extends State<CarpStudyApp> {
       ),
       GoRoute(
         path: Routes.invitations,
-        parentNavigatorKey: _rootNavigatorKey,
+        parentNavigatorKey: rootNavigatorKey,
         builder: (context, state) => InvitationListPage(model: bloc.appViewModel.invitationsListViewModel),
         routes: [
           GoRoute(
             path: ':invitationId',
-            parentNavigatorKey: _rootNavigatorKey,
+            parentNavigatorKey: rootNavigatorKey,
             builder: (context, state) => InvitationDetailsPage(
               model: bloc.appViewModel.invitationsListViewModel,
               invitationId: state.pathParameters['invitationId'] ?? '',

@@ -1,4 +1,7 @@
-part of carp_study_app;
+import 'dart:async';
+import 'package:carp_core/carp_core.dart' hide Smartphone;
+import 'package:carp_webservices/carp_services/carp_services.dart';
+import 'package:carp_study_app/shared/view_model.dart';
 
 class MeasurementsCardViewModel extends ViewModel {
   final Map<String, int> _samplingTable = {};

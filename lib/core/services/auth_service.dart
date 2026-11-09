@@ -1,4 +1,9 @@
-part of carp_study_app;
+import 'dart:async';
+import 'package:carp_core/carp_core.dart' hide Smartphone;
+import 'package:carp_mobile_sensing/carp_mobile_sensing.dart';
+import 'package:carp_webservices/carp_auth/carp_auth.dart';
+import 'package:carp_study_app/core/backend/backend.dart';
+import 'package:carp_study_app/core/settings/local_settings.dart';
 
 /// User identity and authentication, wrapping the [Backend] (CAWS or local)
 /// so the rest of the app does not depend on where the study comes from.

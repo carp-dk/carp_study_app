@@ -1,4 +1,8 @@
-part of carp_study_app;
+import 'package:flutter/material.dart';
+import 'package:go_router/go_router.dart';
+import 'package:research_package/research_package.dart';
+import 'package:carp_study_app/core/routes.dart';
+import 'package:carp_study_app/features/onboarding/invitations_view_model.dart';
 
 class InvitationDetailsPage extends StatelessWidget {
   final String invitationId;

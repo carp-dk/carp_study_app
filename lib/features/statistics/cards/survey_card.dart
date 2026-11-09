@@ -1,4 +1,9 @@
-part of carp_study_app;
+import 'dart:collection';
+import 'package:flutter/material.dart';
+import 'package:fl_chart/fl_chart.dart';
+import 'package:research_package/research_package.dart';
+import 'package:carp_study_app/features/statistics/cards/task_data_model.dart';
+import 'package:carp_study_app/shared/widgets/studies_material.dart';
 
 const List<Color> kChartColors = <Color>[
   Color(0xFF7FC9E3),
