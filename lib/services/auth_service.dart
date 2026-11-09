@@ -68,4 +68,7 @@ class AuthService {
 
   /// Sign out from CAWS and erase all local authentication information.
   Future<void> signOut() => _backend.signOut();
+
+  /// Fires when the signed-in session is lost - the app then signs out.
+  Stream<void> get sessionLost => _backend.sessionLost;
 }

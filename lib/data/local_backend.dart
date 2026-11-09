@@ -25,6 +25,9 @@ class LocalBackend implements Backend {
   bool get isAuthenticated => _user != null;
 
   @override
+  Stream<void> get sessionLost => const Stream.empty();
+
+  @override
   CarpUser? get user => _user;
 
   @override

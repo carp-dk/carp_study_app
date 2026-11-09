@@ -12,7 +12,7 @@ class ResourceLocalizationLoader implements LocalizationLoader {
 
     // Study-specific translations only exist once a study is selected -
     // the CARP resource manager needs the study deployment id to look them up.
-    if (!bloc.study.hasStudy) return translations;
+    if (LocalSettings().study == null) return translations;
 
     try {
       translations = await localizationManager.getLocalizations(locale) ?? {};

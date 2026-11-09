@@ -102,7 +102,8 @@ class HomePageViewModel extends ViewModel {
   }
 
   /// Deploy the study - this page is the first shown once consent is in place.
-  Future<void> configureStudy() => bloc.tryConfigureStudy();
+  /// Returns false if it failed.
+  Future<bool> configureStudy() => bloc.tryConfigureStudy();
 
   @override
   void init(SmartphoneStudyController ctrl) {

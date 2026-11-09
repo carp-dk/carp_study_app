@@ -38,7 +38,7 @@ void main() {
 
       // tryConfigureStudy swallows the error (no caller can handle it), so
       // the state is the only signal the study page has to stop spinning.
-      await bloc.tryConfigureStudy();
+      expect(await bloc.tryConfigureStudy(), isFalse, reason: 'the home page shows the setup error on false');
       expect(bloc.configurationFailed, isTrue);
 
       // Starting a retry moves to `configuring` so the loader shows again.

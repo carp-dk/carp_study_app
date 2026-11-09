@@ -28,9 +28,6 @@ class Sensing {
 
     // Needed in LOCAL too - a local protocol may still upload to CAWS.
     DataManagerRegistry().register(CarpDataManagerFactory());
-
-    // register the special-purpose audio user task factory
-    AppTaskController().registerUserTaskFactory(AppUserTaskFactory());
   }
 
   /// Register the devices and configure the client manager with [deploymentService].

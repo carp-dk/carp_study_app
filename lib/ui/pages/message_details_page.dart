@@ -4,7 +4,7 @@ part of carp_study_app;
 ///
 /// Pushed full-screen on the root navigator, in the design 2.0 card style.
 class MessageDetailsPage extends StatelessWidget {
-  static const String route = '/message';
+  static const String route = MessageService.linkPath;
   final String messageId;
 
   const MessageDetailsPage({super.key, required this.messageId});

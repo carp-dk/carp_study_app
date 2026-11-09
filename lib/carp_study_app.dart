@@ -182,17 +182,35 @@ class CarpAppState extends State<CarpStudyApp> {
 
   AppState _previousBlocState = bloc.state;
   String? _previousDeploymentId = bloc.study.study?.studyDeploymentId;
+  final List<StreamSubscription<Object>> _notificationTaps = [];
 
   @override
   void initState() {
     super.initState();
     bloc.addListener(_onAppStateChanged);
+    _openTappedNotifications();
   }
 
   @override
   void dispose() {
     bloc.removeListener(_onAppStateChanged);
+    for (final subscription in _notificationTaps) {
+      subscription.cancel();
+    }
     super.dispose();
+  }
+
+  /// A tapped task notification opens its task. Other notifications (e.g.
+  /// announcements) carry the route to open as their payload.
+  void _openTappedNotifications() {
+    _notificationTaps
+      ..add(
+        AppTaskController().userTaskEvents.where((task) => task.state == UserTaskState.notified).listen((task) {
+          task.onStart();
+          if (task.hasWidget) _router.push('/task/${task.id}');
+        }),
+      )
+      ..add(SmartPhoneClientManager().notificationManager.notificationTaps.listen(_router.push));
   }
 
   /// Re-load translations when a study is set or configured - both add new ones.
@@ -216,7 +234,6 @@ class CarpAppState extends State<CarpStudyApp> {
       SystemChrome.setSystemUIOverlayStyle(SystemUiOverlayStyle(statusBarColor: Colors.transparent));
     });
     return MaterialApp.router(
-      scaffoldMessengerKey: bloc.scaffoldKey,
       supportedLocales: const [Locale('en'), Locale('da'), Locale('es')],
       localizationsDelegates: [
         // Research Package translations

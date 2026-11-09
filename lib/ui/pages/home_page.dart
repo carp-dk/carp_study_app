@@ -14,7 +14,13 @@ class _HomePageState extends State<HomePage> {
   @override
   void initState() {
     super.initState();
-    unawaited(widget.model.configureStudy());
+    unawaited(_configureStudy());
+  }
+
+  Future<void> _configureStudy() async {
+    if (await model.configureStudy() || !mounted) return;
+    final locale = RPLocalizations.of(context)!;
+    ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text(locale.translate('pages.home.setup_failed'))));
   }
 
   HomePageViewModel get model => widget.model;

@@ -29,6 +29,10 @@ class MessageService {
   /// The data sent on the stream is the number of available messages.
   Stream<int> get stream => _streamController.stream;
 
+  /// The deep link that opens message [id] - used as the notification payload.
+  static String link(String id) => '$linkPath/$id';
+  static const String linkPath = '/message';
+
   /// The message with the given [id], or null if not found.
   Message? byId(String id) => _messages.where((message) => message.id == id).firstOrNull;
 
@@ -71,7 +75,7 @@ class MessageService {
         await _notifications.createNotification(
           title: message.title ?? 'New announcement',
           body: message.subTitle ?? message.message,
-          payload: '${MessageDetailsPage.route}/${message.id}',
+          payload: link(message.id),
         );
       } catch (error) {
         warning('Could not create a notification for message ${message.id} - $error');

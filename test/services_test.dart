@@ -190,7 +190,7 @@ void main() {
       manager.toReturn = [message('a', DateTime(2024, 1, 1)), message('b', DateTime(2025, 1, 1))];
       await service.refresh();
       expect(notifications.titles, ['message-b']);
-      expect(notifications.payloads, ['${MessageDetailsPage.route}/b'], reason: 'tapping opens the announcement');
+      expect(notifications.payloads, [MessageService.link('b')], reason: 'tapping opens the announcement');
 
       await service.refresh();
       expect(notifications.titles, ['message-b'], reason: 'an already seen message must not notify again');

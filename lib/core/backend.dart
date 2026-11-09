@@ -30,6 +30,9 @@ abstract class Backend {
   /// Sign out and erase all authentication information.
   Future<void> signOut();
 
+  /// Fires when the signed-in session is lost, e.g. a token refresh failed.
+  Stream<void> get sessionLost;
+
   /// The active invitations for this user.
   Future<List<ActiveParticipationInvitation>> getInvitations();
 
