@@ -4,7 +4,6 @@ part of carp_study_app;
 ///
 /// Pushed full-screen on the root navigator, in the design 2.0 card style.
 class MessageDetailsPage extends StatelessWidget {
-  static const String route = MessageService.linkPath;
   final String messageId;
 
   const MessageDetailsPage({super.key, required this.messageId});
@@ -26,7 +25,7 @@ class MessageDetailsPage extends StatelessWidget {
             Padding(
               padding: const EdgeInsets.fromLTRB(8, 8, 16, 8),
               child: TextButton.icon(
-                onPressed: () => context.canPop() ? context.pop() : context.go(CarpAppState.homeRoute),
+                onPressed: () => context.canPop() ? context.pop() : context.go(Routes.root),
                 icon: Icon(Icons.arrow_back_ios, size: 18, color: Theme.of(context).colorScheme.primary),
                 label: Text(
                   locale.translate('app_home.nav_bar_item.home'),

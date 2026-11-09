@@ -48,7 +48,7 @@ class CarpAppShellState extends State<CarpAppShell> {
 
   // Stopped while on a disabled tab - go back home.
   void _leaveDisabledTab() {
-    if (mounted && _isDisabled(_calculateSelectedIndex(context))) context.go(HomePage.route);
+    if (mounted && _isDisabled(_calculateSelectedIndex(context))) context.go(Routes.home);
   }
 
   Widget _navigationBar(BuildContext context, RPLocalizations locale) => BottomNavigationBar(
@@ -83,16 +83,16 @@ class CarpAppShellState extends State<CarpAppShell> {
 
   static int _calculateSelectedIndex(BuildContext context) {
     final String location = GoRouterState.of(context).matchedLocation;
-    if (location.startsWith(HomePage.route)) {
+    if (location.startsWith(Routes.home)) {
       return 0;
     }
-    if (location.startsWith(TaskListPage.route)) {
+    if (location.startsWith(Routes.tasks)) {
       return 1;
     }
-    if (location.startsWith(StatisticsPage.route)) {
+    if (location.startsWith(Routes.statistics)) {
       return 2;
     }
-    if (location.startsWith(ConnectionListPage.route)) {
+    if (location.startsWith(Routes.connections)) {
       return 3;
     }
     return -1;
@@ -101,19 +101,19 @@ class CarpAppShellState extends State<CarpAppShell> {
   void _onItemTapped(int index, BuildContext context) {
     switch (index) {
       case 0:
-        context.go(HomePage.route);
+        context.go(Routes.home);
         break;
       case 1:
-        context.go(TaskListPage.route);
+        context.go(Routes.tasks);
         break;
       case 2:
-        context.go(StatisticsPage.route);
+        context.go(Routes.statistics);
         break;
       case 3:
-        context.go(ConnectionListPage.route);
+        context.go(Routes.connections);
         break;
       case -1:
-        context.go(CarpAppState.homeRoute);
+        context.go(Routes.root);
         break;
     }
   }

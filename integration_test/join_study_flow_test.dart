@@ -161,7 +161,7 @@ void main() {
       );
       expect(await bloc.consent.hasSignedConsent(bloc.study.study), isTrue);
       // Leave the login page as it does after sign-in; the router takes it from there.
-      GoRouter.of(tester.element(find.byType(LoginPage))).go(CarpAppState.homeRoute);
+      GoRouter.of(tester.element(find.byType(LoginPage))).go(Routes.root);
 
       await pumpUntil(tester, () => bloc.isConfigured, reason: 'study configuration to complete');
       expect(bloc.study.isDeployed, isTrue);

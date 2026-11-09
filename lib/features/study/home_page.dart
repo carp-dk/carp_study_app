@@ -2,7 +2,6 @@ part of carp_study_app;
 
 /// The landing tab - shown once consent is in place, so it deploys the study.
 class HomePage extends StatefulWidget {
-  static const String route = '/home';
   final HomePageViewModel model;
   const HomePage({required this.model, super.key});
 
@@ -134,7 +133,7 @@ class _HomePageState extends State<HomePage> {
         ],
       ),
       linkLabel: 'View Statistics',
-      onLink: () => context.go(StatisticsPage.route),
+      onLink: () => context.go(Routes.statistics),
       margin: const EdgeInsets.only(left: 16, right: 6, bottom: 16),
     );
   }
@@ -165,7 +164,7 @@ class _HomePageState extends State<HomePage> {
         children: [count(model.taskCompleted, 'Completed'), count(model.taskPending, 'Pending')],
       ),
       linkLabel: 'Complete Tasks',
-      onLink: () => context.go(TaskListPage.route),
+      onLink: () => context.go(Routes.tasks),
       margin: const EdgeInsets.only(left: 6, right: 16, bottom: 16),
     );
   }
@@ -234,7 +233,7 @@ class _HomePageState extends State<HomePage> {
     return StudiesMaterial(
       backgroundColor: Colors.grey.shade50,
       child: InkWell(
-        onTap: () => context.push('${MessageDetailsPage.route}/${message.id}'),
+        onTap: () => context.push('${Routes.message}/${message.id}'),
         child: Padding(
           padding: const EdgeInsets.all(16),
           child: Column(
@@ -384,7 +383,7 @@ class StudyAboutCard extends StatelessWidget {
             ),
             const SizedBox(height: 8),
             InkWell(
-              onTap: () => context.push(StudyAboutPage.route),
+              onTap: () => context.push(Routes.studyAbout),
               child: Row(
                 mainAxisSize: MainAxisSize.min,
                 children: [

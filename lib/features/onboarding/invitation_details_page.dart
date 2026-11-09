@@ -1,7 +1,6 @@
 part of carp_study_app;
 
 class InvitationDetailsPage extends StatelessWidget {
-  static const String route = InvitationListPage.route;
   final String invitationId;
   final InvitationsViewModel model;
 
@@ -31,7 +30,7 @@ class InvitationDetailsPage extends StatelessWidget {
                   if (model.invitations.length > 1)
                     IconButton(
                       icon: const Icon(Icons.arrow_back_ios_new),
-                      onPressed: () => context.canPop() ? context.pop() : context.go(InvitationListPage.route),
+                      onPressed: () => context.canPop() ? context.pop() : context.go(Routes.invitations),
                     )
                   else
                     const SizedBox(width: 12),
@@ -103,7 +102,7 @@ class InvitationDetailsPage extends StatelessWidget {
                   // brings the user back to the invitation list.
                   onPressed: () {
                     model.accept(invitation);
-                    context.go(HomePage.route);
+                    context.go(Routes.home);
                   },
                   child: Text(
                     locale.translate("invitation.accept_invite"),

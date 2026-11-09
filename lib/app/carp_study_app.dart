@@ -17,15 +17,12 @@ class CarpStudyApp extends StatefulWidget {
 }
 
 class CarpAppState extends State<CarpStudyApp> {
-  /// The landing page once the onboarding process is done.
-  static const String homeRoute = '/';
-
   /// Reload language translations and re-build the entire app.
   void reloadLocale() => setState(() => rpLocalizationsDelegate.reload());
 
   // State-driven routing: a bloc change refreshes the router, which re-redirects.
   final GoRouter _router = GoRouter(
-    initialLocation: homeRoute,
+    initialLocation: Routes.root,
     navigatorKey: _rootNavigatorKey,
     refreshListenable: bloc,
     errorBuilder: (context, state) => const ErrorPage(),
@@ -34,19 +31,19 @@ class CarpAppState extends State<CarpStudyApp> {
 
       // 1) Not authenticated → login page (or its join-a-study sub page).
       if (!bloc.auth.isAuthenticated) {
-        return loc.startsWith(LoginPage.route) ? null : LoginPage.route;
+        return loc.startsWith(Routes.login) ? null : Routes.login;
       }
 
       // 2) No study → the invitation list (or its details page).
       if (!bloc.study.hasStudy) {
-        return loc.startsWith(InvitationListPage.route) ? null : InvitationListPage.route;
+        return loc.startsWith(Routes.invitations) ? null : Routes.invitations;
       }
 
       // 3) Consent not signed → the consent document. A redirect replaces the
       // location, so - unlike a push - a router refresh cannot replay it.
       final needsSigning = await bloc.appViewModel.informedConsentViewModel.needsSigning();
-      if (needsSigning) return InformedConsentPage.route;
-      if (loc == InformedConsentPage.route) return homeRoute;
+      if (needsSigning) return Routes.consent;
+      if (loc == Routes.consent) return Routes.root;
 
       // 4) Fully onboarded.
       return null;
@@ -58,9 +55,9 @@ class CarpAppState extends State<CarpStudyApp> {
             CarpAppShell(model: bloc.appViewModel.homePageViewModel, child: child),
         routes: [
           // Just a landing slot - the redirect above moves the user on.
-          GoRoute(path: homeRoute, parentNavigatorKey: _shellNavigatorKey, redirect: (_, _) => HomePage.route),
+          GoRoute(path: Routes.root, parentNavigatorKey: _shellNavigatorKey, redirect: (_, _) => Routes.home),
           GoRoute(
-            path: HomePage.route,
+            path: Routes.home,
             parentNavigatorKey: _shellNavigatorKey,
             pageBuilder: (context, state) => CustomTransitionPage(
               key: state.pageKey,
@@ -69,7 +66,7 @@ class CarpAppState extends State<CarpStudyApp> {
             ),
           ),
           GoRoute(
-            path: TaskListPage.route,
+            path: Routes.tasks,
             parentNavigatorKey: _shellNavigatorKey,
             pageBuilder: (context, state) => CustomTransitionPage(
               key: state.pageKey,
@@ -78,9 +75,9 @@ class CarpAppState extends State<CarpStudyApp> {
             ),
           ),
           // /study is a legacy alias for the Home tab.
-          GoRoute(path: '/study', parentNavigatorKey: _shellNavigatorKey, redirect: (_, _) => HomePage.route),
+          GoRoute(path: '/study', parentNavigatorKey: _shellNavigatorKey, redirect: (_, _) => Routes.home),
           GoRoute(
-            path: StatisticsPage.route,
+            path: Routes.statistics,
             parentNavigatorKey: _shellNavigatorKey,
             pageBuilder: (context, state) => CustomTransitionPage(
               key: state.pageKey,
@@ -89,7 +86,7 @@ class CarpAppState extends State<CarpStudyApp> {
             ),
           ),
           GoRoute(
-            path: ConnectionListPage.route,
+            path: Routes.connections,
             parentNavigatorKey: _shellNavigatorKey,
             pageBuilder: (context, state) => CustomTransitionPage(
               key: state.pageKey,
@@ -101,7 +98,7 @@ class CarpAppState extends State<CarpStudyApp> {
       ),
       // Profile slides in full-screen over the shell, so: root navigator.
       GoRoute(
-        path: ProfilePage.route,
+        path: Routes.profile,
         parentNavigatorKey: _rootNavigatorKey,
         pageBuilder: (context, state) => CustomTransitionPage(
           key: state.pageKey,
@@ -111,22 +108,22 @@ class CarpAppState extends State<CarpStudyApp> {
       ),
       // Consent is not a tab - it replaces the whole app until it is signed.
       GoRoute(
-        path: InformedConsentPage.route,
+        path: Routes.consent,
         parentNavigatorKey: _rootNavigatorKey,
         builder: (context, state) => InformedConsentPage(model: bloc.appViewModel.informedConsentViewModel),
       ),
       GoRoute(
-        path: StudyAboutPage.route,
+        path: Routes.studyAbout,
         parentNavigatorKey: _rootNavigatorKey,
         builder: (context, state) => StudyAboutPage(model: bloc.appViewModel.studyPageViewModel),
       ),
       GoRoute(
-        path: ParticipantDataPage.route,
+        path: Routes.participantData,
         parentNavigatorKey: _rootNavigatorKey,
         builder: (context, state) => ParticipantDataPage(model: bloc.appViewModel.participantDataPageViewModel),
       ),
       GoRoute(
-        path: '/task/:taskId',
+        path: '${Routes.task}/:taskId',
         parentNavigatorKey: _rootNavigatorKey,
         builder: (context, state) {
           final taskId = state.pathParameters['taskId'] ?? '';
@@ -135,7 +132,7 @@ class CarpAppState extends State<CarpStudyApp> {
         },
       ),
       GoRoute(
-        path: LoginPage.route,
+        path: Routes.login,
         parentNavigatorKey: _rootNavigatorKey,
         builder: (context, state) => LoginPage(model: bloc.appViewModel.loginViewModel),
         routes: [
@@ -152,12 +149,12 @@ class CarpAppState extends State<CarpStudyApp> {
         ],
       ),
       GoRoute(
-        path: '${MessageDetailsPage.route}/:messageId',
+        path: '${Routes.message}/:messageId',
         parentNavigatorKey: _rootNavigatorKey,
         builder: (context, state) => MessageDetailsPage(messageId: state.pathParameters['messageId'] ?? ''),
       ),
       GoRoute(
-        path: InvitationListPage.route,
+        path: Routes.invitations,
         parentNavigatorKey: _rootNavigatorKey,
         builder: (context, state) => InvitationListPage(model: bloc.appViewModel.invitationsListViewModel),
         routes: [
@@ -207,7 +204,7 @@ class CarpAppState extends State<CarpStudyApp> {
       ..add(
         AppTaskController().userTaskEvents.where((task) => task.state == UserTaskState.notified).listen((task) {
           task.onStart();
-          if (task.hasWidget) _router.push('/task/${task.id}');
+          if (task.hasWidget) _router.push('${Routes.task}/${task.id}');
         }),
       )
       ..add(SmartPhoneClientManager().notificationManager.notificationTaps.listen(_router.push));

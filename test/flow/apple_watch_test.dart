@@ -9,7 +9,7 @@ void main() {
     addTearDown(() => debugDefaultTargetPlatformOverride = null);
     await flow.signConsent();
     await flow.pumpUntil(() => bloc.study.isRunning, 'sensing to start');
-    List<String> devices() => [for (final d in bloc.study.deploymentDevices) d.typeName];
+    List<String> devices() => [for (final d in bloc.study.deploymentDevices) deviceTypeName(d.deviceType)];
     const watch = 'pages.connections.type.apple_watch.name';
 
     debugDefaultTargetPlatformOverride = TargetPlatform.android;
@@ -19,7 +19,7 @@ void main() {
     expect(devices(), contains(watch));
 
     // The Connections page needs Bluetooth, which the host lacks - open what its watch card opens.
-    final device = bloc.study.deploymentDevices.singleWhere((d) => d.typeName == watch);
+    final device = ConnectionViewModel(bloc.study.deploymentDevices.whereType<AppleWatchDeviceManager>().single);
     Navigator.of(
       tester.element(find.byType(HomePage)),
     ).push(MaterialPageRoute<void>(builder: (_) => AppleWatchConnectPage(device: device)));

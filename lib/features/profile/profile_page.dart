@@ -1,7 +1,6 @@
 part of carp_study_app;
 
 class ProfilePage extends StatefulWidget {
-  static const String route = '/profile';
   final ProfilePageViewModel model;
   const ProfilePage(this.model, {super.key});
 
@@ -98,7 +97,7 @@ class ProfilePageState extends State<ProfilePage> {
                     iconColor: Theme.of(context).colorScheme.primary,
                     title: locale.translate('pages.profile.study_details'),
                     hasChevron: true,
-                    onTap: () => context.push(StudyAboutPage.route),
+                    onTap: () => context.push(Routes.studyAbout),
                   ),
                   const SizedBox(height: 8),
                   _actionCard(
@@ -229,7 +228,7 @@ class ProfilePageState extends State<ProfilePage> {
     contentKey: 'pages.profile.log_out.confirmation',
     onConfirmed: () async {
       await widget.model.signOutAndLeaveStudy();
-      if (mounted) context.go(CarpAppState.homeRoute);
+      if (mounted) context.go(Routes.root);
     },
   );
 
@@ -238,7 +237,7 @@ class ProfilePageState extends State<ProfilePage> {
     contentKey: 'pages.profile.leave_study.confirmation',
     onConfirmed: () async {
       final signedOut = await widget.model.leaveStudy();
-      if (mounted) context.go(signedOut ? LoginPage.route : InvitationListPage.route);
+      if (mounted) context.go(signedOut ? Routes.login : Routes.invitations);
     },
   );
 

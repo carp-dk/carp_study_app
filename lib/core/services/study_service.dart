@@ -147,7 +147,7 @@ class StudyService {
   ///
   /// Note that not all available devices on this phone may be used in the
   /// current deployment.
-  Iterable<ConnectionViewModel> get deploymentDevices => deployment == null
+  Iterable<DeviceManager> get deploymentDevices => deployment == null
       ? []
       : SmartPhoneClientManager().deviceController.devices.values
             .where((manager) => deployment!.devices.any((device) => device.type == manager.deviceType))
@@ -155,8 +155,7 @@ class StudyService {
             .where(
               (manager) =>
                   manager.deviceType != AppleWatchDevice.DEVICE_TYPE || defaultTargetPlatform == TargetPlatform.iOS,
-            )
-            .map((manager) => ConnectionViewModel(manager));
+            );
 
   /// Does this [deployment] have any measures (besides app tasks)?
   bool hasMeasures() => (deployment == null)

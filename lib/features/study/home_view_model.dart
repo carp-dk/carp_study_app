@@ -19,7 +19,7 @@ class HomePageViewModel extends ViewModel {
 
   bool _healthConnectPromptPending = false;
   bool _appUpdateAvailable = false;
-  List<ConnectionViewModel> _connectionSources = const [];
+  List<DeviceManager> _connectionSources = const [];
   final List<StreamSubscription<DeviceStatus>> _deviceSubs = [];
   StreamSubscription<UserTask>? _userTaskSub;
   StreamSubscription<int>? _messageSub;
@@ -85,8 +85,8 @@ class HomePageViewModel extends ViewModel {
   Future<void> openAppStore() => _system.openAppStore();
 
   /// The connectable data sources of this deployment (everything but the phone).
-  List<ConnectionViewModel> get connectionSources => _connectionSources;
-  bool isSourceActive(ConnectionViewModel d) => d.status == DeviceStatus.connected;
+  List<DeviceManager> get connectionSources => _connectionSources;
+  bool isSourceActive(DeviceManager d) => d.status == DeviceStatus.connected;
 
   /// Background sensing counts too - without it, data only flows in foreground.
   bool get hasBackgroundSensing => BackgroundSensingService().isSupported;
@@ -145,9 +145,8 @@ class HomePageViewModel extends ViewModel {
   }
 
   void _syncSources() {
-    final sources = _study.deploymentDevices.where((d) => d.deviceManager is! SmartphoneDeviceManager).toList();
+    final sources = _study.deploymentDevices.where((d) => d is! SmartphoneDeviceManager).toList();
     _cancelDeviceSubs();
-    // The durable manager stream, not the per-call ConnectionViewModel wrappers.
     for (final s in sources) {
       _deviceSubs.add(s.statusEvents.listen((_) => notifyListeners()));
     }

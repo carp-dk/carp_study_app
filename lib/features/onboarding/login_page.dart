@@ -1,7 +1,6 @@
 part of carp_study_app;
 
 class LoginPage extends StatefulWidget {
-  static const String route = '/login';
   final LoginViewModel model;
   const LoginPage({required this.model, super.key});
 
@@ -47,7 +46,7 @@ class _LoginPageState extends State<LoginPage> {
                             title: locale.translate('pages.login.invited.code.title'),
                             hint: locale.translate('pages.login.invited.code.hint'),
                             primary: true,
-                            onTap: () => context.push(CodeSignInPage.route),
+                            onTap: () => context.push(Routes.codeSignIn),
                           ),
                           const SizedBox(height: 12),
                           _ChoiceCard(

@@ -196,7 +196,7 @@ class Flow {
       await invitations.loadInvitations();
       invitations.accept(invitations.invitations.single);
     });
-    _router!.go(CarpAppState.homeRoute);
+    _router!.go(Routes.root);
     await tester.pump();
   }
 

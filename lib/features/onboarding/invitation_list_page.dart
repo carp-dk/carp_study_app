@@ -1,7 +1,6 @@
 part of carp_study_app;
 
 class InvitationListPage extends StatefulWidget {
-  static const String route = '/invitations';
   final InvitationsViewModel model;
   const InvitationListPage({super.key, required this.model});
 
@@ -95,7 +94,7 @@ class InvitationMaterial extends StatelessWidget {
       child: InkWell(
         borderRadius: BorderRadius.circular(12.0),
         onTap: () {
-          context.push('${InvitationDetailsPage.route}/${invitation.studyDeploymentId}');
+          context.push('${Routes.invitations}/${invitation.studyDeploymentId}');
         },
         child: Padding(
           padding: const EdgeInsets.all(14.0),

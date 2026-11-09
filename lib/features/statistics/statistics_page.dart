@@ -1,7 +1,6 @@
 part of carp_study_app;
 
 class StatisticsPage extends StatefulWidget {
-  static const String route = '/data';
   final StatisticsViewModel model;
   const StatisticsPage(this.model, {super.key});
 

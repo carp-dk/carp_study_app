@@ -9,18 +9,19 @@ class ConnectionListPageViewModel extends ViewModel {
 
   /// The smartphone (primary) device of this deployment.
   List<ConnectionViewModel> get smartphoneDevice =>
-      _study.deploymentDevices.where((device) => device.deviceManager is SmartphoneDeviceManager).toList();
+      _devices.where((device) => device.deviceManager is SmartphoneDeviceManager).toList();
 
   /// The hardware devices (connected devices) of this deployment.
-  List<ConnectionViewModel> get hardwareDevices => _study.deploymentDevices
+  List<ConnectionViewModel> get hardwareDevices => _devices
       .where(
         (device) => device.deviceManager is HardwareDeviceManager && device.deviceManager is! SmartphoneDeviceManager,
       )
       .toList();
 
   /// The services of this deployment.
-  List<ConnectionViewModel> get services =>
-      _study.deploymentDevices.where((device) => device.deviceManager is ServiceManager).toList();
+  List<ConnectionViewModel> get services => _devices.where((device) => device.deviceManager is ServiceManager).toList();
+
+  Iterable<ConnectionViewModel> get _devices => _study.deploymentDevices.map(ConnectionViewModel.new);
 }
 
 /// One device row: name, icon and status of a [DeviceManager]; connects it.
@@ -31,7 +32,7 @@ class ConnectionViewModel extends ViewModel {
   final List<StreamSubscription<dynamic>> _subscriptions = [];
 
   // Bridge device updates into notifications - only while listened to, since
-  // `deploymentDevices` builds these per call.
+  // `ConnectionListPageViewModel` builds these per call.
   @override
   void addListener(VoidCallback listener) {
     super.addListener(listener);
@@ -71,9 +72,7 @@ class ConnectionViewModel extends ViewModel {
   String? get type => deviceManager.deviceType;
 
   /// A printer-friendly name for this [type] of device.
-  String get typeName => type == HealthService.DEVICE_TYPE
-      ? healthPlatformName
-      : _deviceTypeName[type!] ?? 'pages.connections.type.unknown.name';
+  String get typeName => deviceTypeName(type);
 
   /// The status of this device.
   DeviceStatus get status => deviceManager.status;
@@ -179,10 +178,6 @@ class ConnectionViewModel extends ViewModel {
   }
 }
 
-/// Health data lives in Apple Health on iOS and Health Connect on Android.
-/// App names are not translated - translate() returns them unchanged.
-String get healthPlatformName => Platform.isIOS ? 'Apple Health' : 'Health Connect';
-
 /// A health data type from the protocol as a label, using its 'health.type.TYPE'
 /// translation if there is one, e.g. BODY_FAT_PERCENTAGE -> 'Body fat percentage'.
 String healthDataTypeLabel(RPLocalizations locale, HealthDataType type) {
@@ -195,16 +190,6 @@ String healthDataTypeLabel(RPLocalizations locale, HealthDataType type) {
 
 String get healthPlatformIcon =>
     Platform.isIOS ? 'assets/instructions/apple_health_icon.png' : 'assets/instructions/google_health_connect_icon.png';
-
-const Map<String, String> _deviceTypeName = {
-  Smartphone.DEVICE_TYPE: "pages.connections.type.smartphone.name",
-  WeatherService.DEVICE_TYPE: "pages.connections.type.weather.name",
-  AirQualityService.DEVICE_TYPE: "pages.connections.type.air_quality.name",
-  LocationService.DEVICE_TYPE: "pages.connections.type.location.name",
-  PolarDevice.DEVICE_TYPE: "pages.connections.type.polar.name",
-  MovesenseDevice.DEVICE_TYPE: "pages.connections.type.movesense.name",
-  AppleWatchDevice.DEVICE_TYPE: "pages.connections.type.apple_watch.name",
-};
 
 const Map<String, String> _deviceTypeDescription = {
   Smartphone.DEVICE_TYPE: "pages.connections.type.smartphone.description",

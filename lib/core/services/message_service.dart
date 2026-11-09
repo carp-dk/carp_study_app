@@ -30,8 +30,7 @@ class MessageService {
   Stream<int> get stream => _streamController.stream;
 
   /// The deep link that opens message [id] - used as the notification payload.
-  static String link(String id) => '$linkPath/$id';
-  static const String linkPath = '/message';
+  static String link(String id) => '${Routes.message}/$id';
 
   /// The message with the given [id], or null if not found.
   Message? byId(String id) => _messages.where((message) => message.id == id).firstOrNull;

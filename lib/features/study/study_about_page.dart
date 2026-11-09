@@ -6,7 +6,6 @@ part of carp_study_app;
 /// Pushed full-screen on the root navigator (outside the app shell).
 // ponytail: static labels hardcoded EN like the rest of design 2.0; i18n later.
 class StudyAboutPage extends StatelessWidget {
-  static const String route = '/study_about';
   final StudyPageViewModel model;
   StudyAboutPage({super.key, required this.model});
 
@@ -21,7 +20,7 @@ class StudyAboutPage extends StatelessWidget {
             Padding(
               padding: const EdgeInsets.fromLTRB(8, 8, 16, 8),
               child: TextButton.icon(
-                onPressed: () => context.canPop() ? context.pop() : context.go(HomePage.route),
+                onPressed: () => context.canPop() ? context.pop() : context.go(Routes.home),
                 icon: Icon(Icons.arrow_back_ios, size: 18, color: Theme.of(context).colorScheme.primary),
                 label: Text(
                   locale.translate('app_home.nav_bar_item.home'),

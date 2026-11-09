@@ -115,10 +115,10 @@ class _ConnectionsStatusCardState extends State<ConnectionsStatusCard> {
             model.isBackgroundSensingActive,
           ),
         for (final d in model.connectionSources)
-          _sourceRow(context, locale.translate(d.typeName), model.isSourceActive(d)),
+          _sourceRow(context, locale.translate(deviceTypeName(d.deviceType)), model.isSourceActive(d)),
         Divider(height: 1, color: Colors.grey.shade200),
         InkWell(
-          onTap: () => context.go(ConnectionListPage.route),
+          onTap: () => context.go(Routes.connections),
           child: Padding(
             padding: const EdgeInsets.all(16),
             child: Row(

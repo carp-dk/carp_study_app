@@ -7,8 +7,6 @@ part of carp_study_app;
 /// QR/code switch float on top of it, and the code tab is a frosted sheet over
 /// the live backdrop. Scans are only acted on while the QR tab is selected.
 class CodeSignInPage extends StatefulWidget {
-  static const String route = '/login/join';
-
   final LoginViewModel model;
   const CodeSignInPage({required this.model, super.key});
 

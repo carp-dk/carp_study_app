@@ -3,7 +3,6 @@ part of carp_study_app;
 enum ParticipantStep { presentTypes, address, diagnosis, fullName, phoneNumber, socialSecurityNumber, review }
 
 class ParticipantDataPage extends StatefulWidget {
-  static const String route = '/participant_data';
   final ParticipantDataPageViewModel model;
   const ParticipantDataPage({super.key, required this.model});
 

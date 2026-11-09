@@ -6,7 +6,6 @@ part of carp_study_app;
 /// finishes - so it is given this page's route to pop, and the redirect decides
 /// where that lands.
 class InformedConsentPage extends StatefulWidget {
-  static const String route = '/consent';
   final InformedConsentViewModel model;
 
   const InformedConsentPage({required this.model, super.key});
@@ -32,7 +31,7 @@ class _InformedConsentPageState extends State<InformedConsentPage> {
     try {
       await widget.model.accept(result);
       // Consent is given, so the redirect now sends this route to the app.
-      if (mounted) context.go(CarpAppState.homeRoute);
+      if (mounted) context.go(Routes.root);
     } catch (error) {
       // Never reached CAWS, so the user is not consented - say so and leave.
       warning('$runtimeType - could not record informed consent - $error');

@@ -3,7 +3,6 @@ part of carp_study_app;
 /// The "Tasks" tab (design 2.0): a segmented Pending / Completed switch over a
 /// list of task cards.
 class TaskListPage extends StatefulWidget {
-  static const String route = '/tasks';
   final TaskListPageViewModel model;
   const TaskListPage({super.key, required this.model});
 
@@ -223,7 +222,7 @@ class TaskListPageState extends State<TaskListPage> with TickerProviderStateMixi
                 onPressed: userTask.state == UserTaskState.started
                     ? null
                     : () {
-                        if (widget.model.startUserTask(userTask)) context.push('/task/${userTask.id}');
+                        if (widget.model.startUserTask(userTask)) context.push('${Routes.task}/${userTask.id}');
                       },
                 child: Text(locale.translate('pages.task_list.start')),
               ),
@@ -238,7 +237,7 @@ class TaskListPageState extends State<TaskListPage> with TickerProviderStateMixi
     final accent = taskTypeColors["ExpectedParticipantData"]!;
     return _card(
       accent: accent,
-      onTap: () => context.push(ParticipantDataPage.route),
+      onTap: () => context.push(Routes.participantData),
       children: [
         Row(
           children: [

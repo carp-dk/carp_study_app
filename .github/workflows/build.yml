@@ -46,6 +46,9 @@ jobs:
       - name: Verify formatting
         run: dart format --output=none --set-exit-if-changed lib/** test/**
 
+      - name: Check layer dependencies (app -> features -> shared -> core)
+        run: python3 tool/check_layers.py
+
       - name: Analyze project source
         run: flutter analyze --no-fatal-infos --no-fatal-warnings lib/ test/
 

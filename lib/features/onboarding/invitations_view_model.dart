@@ -24,9 +24,8 @@ class InvitationsViewModel extends ViewModel {
 
   /// The route to land on after authenticating: the single invitation's
   /// detail if there is exactly one, otherwise the list.
-  String get landingRoute => invitations.length == 1
-      ? '${InvitationDetailsPage.route}/${invitations.first.studyDeploymentId}'
-      : InvitationListPage.route;
+  String get landingRoute =>
+      invitations.length == 1 ? '${Routes.invitations}/${invitations.first.studyDeploymentId}' : Routes.invitations;
 
   /// Load / refresh the list of invitations from CAWS. Always hits the
   /// backend - used for sign-in and pull-to-refresh.

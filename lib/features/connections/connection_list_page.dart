@@ -46,7 +46,6 @@ extension ConnectionIcons on ConnectionViewModel {
 
 /// The Connections page: the phone, then hardware devices, then services.
 class ConnectionListPage extends StatefulWidget {
-  static const String route = '/connections';
   final ConnectionListPageViewModel model;
   const ConnectionListPage({required this.model, super.key});
 

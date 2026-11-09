@@ -72,9 +72,10 @@ part 'app/app_bloc.dart';
 part 'app/app_view_model.dart';
 part 'app/carp_app_shell.dart';
 part 'app/carp_study_app.dart';
-part 'app/error_page.dart';
 part 'app/user_task_factory.dart';
 
+part 'core/routes.dart';
+part 'core/sensing/device_names.dart';
 part 'core/backend/backend.dart';
 part 'core/backend/carp_backend.dart';
 part 'core/backend/local_backend.dart';
@@ -99,6 +100,7 @@ part 'core/util/util.dart';
 
 part 'shared/view_model.dart';
 part 'shared/widgets/carp_app_bar.dart';
+part 'shared/widgets/error_page.dart';
 part 'shared/widgets/dialog_title.dart';
 part 'shared/widgets/enable_connection_dialog.dart';
 part 'shared/widgets/studies_material.dart';
