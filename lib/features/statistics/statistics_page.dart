@@ -38,11 +38,7 @@ class _StatisticsPageState extends State<StatisticsPage> {
             child: ListView(
               physics: const AlwaysScrollableScrollPhysics(),
               padding: const EdgeInsets.only(bottom: 24),
-              children: [
-                const CarpAppBar(hasProfileIcon: true),
-                CarpPageTitle(locale.translate('pages.data_viz.title')),
-                ..._sections(locale),
-              ],
+              children: [CarpPageTitle(locale.translate('pages.data_viz.title')), ..._sections(locale)],
             ),
           ),
         ),

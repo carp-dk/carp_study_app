@@ -1,7 +1,8 @@
 part of carp_study_app;
 
-/// The bottom navigation bar and the current tab - the router gates what
-/// reaches it, so by here the user is signed in, has a study, and has consented.
+/// The fixed app bar and bottom navigation bar, with the current tab between them -
+/// only the tab transitions. The router gates what reaches it, so by here the
+/// user is signed in, has a study, and has consented.
 class CarpAppShell extends StatefulWidget {
   final HomePageViewModel model;
   final Widget child;
@@ -17,7 +18,14 @@ class CarpAppShellState extends State<CarpAppShell> {
     RPLocalizations locale = RPLocalizations.of(context)!;
 
     return Scaffold(
-      body: SafeArea(child: widget.child),
+      body: SafeArea(
+        child: Column(
+          children: [
+            const CarpAppBar(hasProfileIcon: true),
+            Expanded(child: widget.child),
+          ],
+        ),
+      ),
       // Nothing to show until the study loads, so keep the tabs inert and dimmed.
       bottomNavigationBar: ListenableBuilder(
         listenable: widget.model,

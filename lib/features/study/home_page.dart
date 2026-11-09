@@ -33,7 +33,6 @@ class _HomePageState extends State<HomePage> {
           builder: (context, _) => ListView(
             padding: const EdgeInsets.only(bottom: 24),
             children: [
-              const CarpAppBar(hasProfileIcon: true),
               if (!model.isLoaded)
                 _skeleton()
               else ...[
