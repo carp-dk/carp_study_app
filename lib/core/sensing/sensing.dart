@@ -1,4 +1,6 @@
 import 'dart:async';
+import 'dart:convert';
+import 'package:flutter/foundation.dart';
 import 'package:carp_core/carp_core.dart' hide Smartphone;
 import 'package:carp_mobile_sensing/carp_mobile_sensing.dart';
 import 'package:carp_audio_package/media.dart';
@@ -66,6 +68,35 @@ class Sensing {
     // Resumes background sensing if the user already connected to it.
     await BackgroundSensingService().refresh();
 
+    if (kDebugMode) SmartPhoneClientManager().measurements.listen(_logUnencodable);
+
     info('$runtimeType initialized');
+  }
+
+  /// Debug only: CAMS stores every measurement with `jsonEncode`. When that fails,
+  /// log the data type and the JSON path of the bad value (e.g. a NaN double).
+  void _logUnencodable(Measurement measurement) {
+    try {
+      jsonEncode(measurement);
+    } catch (error) {
+      warning(
+        '$runtimeType - cannot JSON encode ${measurement.dataType} measurement: $error\n'
+        '  bad values: ${badJsonValues(measurement.toJson(), r'$').join(', ')}',
+      );
+    }
+  }
+
+  /// JSON paths of the values [jsonEncode] rejects: NaN/Infinity, or objects without a toJson.
+  @visibleForTesting
+  static List<String> badJsonValues(Object? value, String path) {
+    if (value == null || value is String || value is bool || value is int) return [];
+    if (value is double) return value.isFinite ? [] : ['$path = $value'];
+    if (value is Map) return [for (final e in value.entries) ...badJsonValues(e.value, '$path.${e.key}')];
+    if (value is List) return [for (var i = 0; i < value.length; i++) ...badJsonValues(value[i], '$path[$i]')];
+    try {
+      return badJsonValues((value as dynamic).toJson(), path);
+    } catch (_) {
+      return ['$path = ${value.runtimeType} (no toJson)'];
+    }
   }
 }
