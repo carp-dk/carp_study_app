@@ -316,11 +316,12 @@ packages:
   carp_backend:
     dependency: "direct main"
     description:
-      name: carp_backend
-      sha256: c3c2cb3dbb1ea8ba6f23a74ad00084033264d6d9d0625fff8a90382338fd9cc3
-      url: "https://pub.dev"
-    source: hosted
-    version: "2.1.1"
+      path: "backends/carp_backend"
+      ref: "chore/carp-backend-research-package-4"
+      resolved-ref: bc40cfe380087149206d9a1a957db12c43212e4c
+      url: "https://github.com/carp-dk/carp.sensing-flutter.git"
+    source: git
+    version: "2.1.2"
   carp_connectivity_package:
     dependency: "direct main"
     description:
@@ -389,10 +390,10 @@ packages:
     dependency: "direct main"
     description:
       name: carp_survey_package
-      sha256: "8b21e4a79530e0da9f7c42be0dc98c3fef5be5cfffc210e9e78bbf588bceee6e"
+      sha256: "0577a781598a5afd11498435106c89fb3af21a099f9d42978867f8a755446dc2"
       url: "https://pub.dev"
     source: hosted
-    version: "2.1.1"
+    version: "2.1.2"
   carp_themes_package:
     dependency: "direct main"
     description:
@@ -461,10 +462,10 @@ packages:
     dependency: "direct main"
     description:
       name: cognition_package
-      sha256: "33ca1a5882a6630d045afbdb389c443051462b6312775946fed8fb274ba39dfd"
+      sha256: cbed45f680e51e2d2c04ad4d87a81932427d43bf41c2817525f5ae10c2e403f3
       url: "https://pub.dev"
     source: hosted
-    version: "1.9.2"
+    version: "1.10.1"
   collection:
     dependency: transitive
     description:
@@ -1864,10 +1865,10 @@ packages:
     dependency: "direct main"
     description:
       name: research_package
-      sha256: c3ec95285e1c007e27cc4e400b725c0b775b7bbe9767ade2b26447bad45befec
+      sha256: "151345f336cdaa978e3a99b57547b93b0ddefa9f8662f5d99f5640b07c6628fd"
       url: "https://pub.dev"
     source: hosted
-    version: "3.2.0"
+    version: "4.0.0"
   retry:
     dependency: transitive
     description:
