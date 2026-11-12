@@ -1,3 +1,9 @@
+## Unreleased
+
+* carp_core 3.0.0, carp_mobile_sensing 3.0.0, carp_webservices 5.0.0, carp_backend 3.0.0 and the 3.x sampling packages (carp.sensing-flutter #671, #672)
+* the informed consent is stored as JSON and decoded in `ConsentService`; the home page listens to `Study.events`
+* drops the temporary `carp_backend` git override (#659)
+
 ## 5.1.0
 
 * Apple Watch uses `carp_aware_package` 1.1.0; Connections is iOS-only

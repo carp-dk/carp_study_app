@@ -80,20 +80,20 @@ class _FakeNotificationManager implements NotificationManager {
 }
 
 class _FakeConsentManager extends InformedConsentManager {
-  RPOrderedTask? document;
+  Map<String, dynamic>? document;
   bool? lastRefresh;
 
   @override
-  RPOrderedTask? get informedConsent => document;
+  Map<String, dynamic>? get informedConsent => document;
 
   @override
-  Future<RPOrderedTask?> getConsentDocument({bool refresh = false}) async {
+  Future<Map<String, dynamic>?> getConsentDocument({bool refresh = false}) async {
     lastRefresh = refresh;
     return document;
   }
 
   @override
-  Future<bool> setConsentDocument(RPOrderedTask informedConsent) async => true;
+  Future<bool> setConsentDocument(Map<String, dynamic> informedConsent) async => true;
 
   @override
   Future<bool> deleteConsentDocument() async => true;
@@ -287,6 +287,9 @@ void main() {
     test('getDocument delegates to the consent manager', () async {
       expect(await consent.getDocument(refresh: true), isNull);
       expect(manager.lastRefresh, isTrue);
+
+      manager.document = RPOrderedTask(identifier: 'consent', steps: []).toJson();
+      expect((await consent.getDocument())?.identifier, 'consent');
     });
 
     test('hasSignedConsent is false without a study, without asking the backend', () async {

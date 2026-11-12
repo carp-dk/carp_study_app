@@ -13,21 +13,21 @@ dependencies:
   flutter:
     sdk: flutter
 
-  carp_serializable: ^3.0.0
-  carp_core: ^2.2.2
-  carp_mobile_sensing: ^2.5.1
-  carp_context_package: ^2.1.1
-  carp_connectivity_package: ^2.2.1
-  carp_survey_package: ^2.1.2
-  carp_audio_package: ^2.1.0
-  carp_polar_package: ^2.1.0
-  carp_health_package: ^4.1.1
-  carp_movesense_package: ^4.0.0
-  carp_aware_package: ^1.1.0 # iOS only, needs the CARPWatch watchOS target
+  carp_serializable: ^3.0.1
+  carp_core: ^3.0.0
+  carp_mobile_sensing: ^3.0.0
+  carp_context_package: ^2.3.0
+  carp_connectivity_package: ^2.3.0
+  carp_survey_package: ^3.0.0
+  carp_audio_package: ^2.2.0
+  carp_polar_package: ^2.2.0
+  carp_health_package: ^4.2.0
+  carp_movesense_package: ^4.1.0
+  carp_aware_package: ^1.2.0 # iOS only, needs the CARPWatch watchOS target
   carp_themes_package: ^0.2.1
 
-  carp_webservices: ^4.4.3
-  carp_backend: ^2.1.1
+  carp_webservices: ^5.0.0
+  carp_backend: ^3.0.0
 
   research_package: ^4.0.0
   cognition_package: ^1.10.1
@@ -66,12 +66,6 @@ dependencies:
   mobile_scanner: ^7.4.2
 
 dependency_overrides:
-  # ponytail: until carp_backend 2.1.2 (research_package ^4) is on pub.dev - carp.sensing-flutter#659
-  carp_backend:
-    git:
-      url: https://github.com/carp-dk/carp.sensing-flutter.git
-      ref: chore/carp-backend-research-package-4
-      path: backends/carp_backend
   # carp_themes_package:
   #   path: ../carp_themes_package
 
