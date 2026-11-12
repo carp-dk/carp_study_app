@@ -44,12 +44,13 @@ When using CAWS, deployment mode can be set to either `dev`, `test`, or `product
 
 ```
 lib/
-  main.dart, carp_study_app.dart   app entry, routing (go_router) and localization
-  core/        AppBloc (app state), Backend (CarpBackend for CAWS, LocalBackend for local mode), sensing
-  data/        local mode: LocalBackend, LocalResourceManager (reads assets/carp), LocalSettings
-  services/    auth, study, consent, messages, background sensing
-  view_models/ one per page
-  ui/          pages, cards, tasks and widgets
+  main.dart    entry point; every file is a `part` of it (imports come next, #620)
+  app/         the shell: AppBloc (app state), routing, CarpStudyApp, AppViewModel, the user-task factory
+  core/        no widgets - backend (CAWS + local mode), sensing, services, settings, util
+  shared/      widgets and the ViewModel base used by more than one feature
+  features/    onboarding, study (Home), tasks, statistics, connections, profile -
+               each holds its pages, view models and widgets; imports only core/ and shared/
+tool/check_layers.py   CI check of those rules
 assets/
   lang/        the app's own UI translations (en, da, es) - update all three when adding a key
   carp/        your local study (see above, gitignored)

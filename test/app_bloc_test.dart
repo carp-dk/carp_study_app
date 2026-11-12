@@ -1,3 +1,4 @@
+import 'package:carp_health_package/health_package.dart';
 import 'package:cognition_package/cognition_package.dart';
 import 'package:research_package/research_package.dart';
 
@@ -11,6 +12,15 @@ void main() {
     CognitionPackage.ensureInitialized();
     await initTestSettings();
     AppConfig.deploymentMode = DeploymentMode.local;
+  });
+
+  test('initialize registers the app task factory after the health package', () async {
+    await AppBloc().initialize();
+    final task = await AppTaskController().enqueue(
+      AppTaskExecutor()..initialize(HealthAppTask(types: [HealthDataType.STEPS])),
+      sendNotification: false,
+    );
+    expect(task, isA<HealthConnectUserTask>(), reason: 'the health package would create a page-less HealthUserTask');
   });
 
   group('AppBloc.configureStudy', () {
@@ -38,7 +48,7 @@ void main() {
 
       // tryConfigureStudy swallows the error (no caller can handle it), so
       // the state is the only signal the study page has to stop spinning.
-      await bloc.tryConfigureStudy();
+      expect(await bloc.tryConfigureStudy(), isFalse, reason: 'the home page shows the setup error on false');
       expect(bloc.configurationFailed, isTrue);
 
       // Starting a retry moves to `configuring` so the loader shows again.

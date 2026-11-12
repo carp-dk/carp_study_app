@@ -1,0 +1,428 @@
+part of carp_study_app;
+
+/// The "Tasks" tab (design 2.0): a segmented Pending / Completed switch over a
+/// list of task cards.
+class TaskListPage extends StatefulWidget {
+  final TaskListPageViewModel model;
+  const TaskListPage({super.key, required this.model});
+
+  @override
+  TaskListPageState createState() => TaskListPageState();
+}
+
+class TaskListPageState extends State<TaskListPage> with TickerProviderStateMixin {
+  late TabController _tabController;
+  late Timer _expiryTicker;
+
+  @override
+  void initState() {
+    super.initState();
+    _tabController = TabController(length: 2, vsync: this);
+    widget.model.addListener(_onModelChanged);
+    widget.model.checkParticipantData();
+
+    _tabController.addListener(() {
+      setState(() {});
+    });
+    // Keep the "time remaining" chips counting down while the page is open.
+    _expiryTicker = Timer.periodic(const Duration(minutes: 1), (_) => setState(() {}));
+  }
+
+  @override
+  void dispose() {
+    _expiryTicker.cancel();
+    widget.model.removeListener(_onModelChanged);
+    _tabController.dispose();
+    super.dispose();
+  }
+
+  void _onModelChanged() {
+    if (!mounted) return;
+
+    final autoCompleted = widget.model.autoCompletedTask;
+    if (autoCompleted != null) {
+      widget.model.autoCompletedTaskShown();
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(
+          backgroundColor: Colors.grey.shade900,
+          content: Text(RPLocalizations.of(context)!.translate('Done!')),
+          behavior: SnackBarBehavior.floating,
+          shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
+          duration: const Duration(seconds: 1),
+        ),
+      );
+    }
+
+    setState(() {});
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    final locale = RPLocalizations.of(context)!;
+    return Scaffold(
+      body: SafeArea(
+        child: Column(
+          children: [
+            CarpPageTitle(locale.translate('pages.task_list.title')),
+            Expanded(
+              child: StreamBuilder<UserTask>(
+                stream: widget.model.userTaskEvents,
+                builder: (context, snapshot) {
+                  final pending = widget.model.pendingTasks;
+                  final completed = widget.model.completedTasks;
+                  final showing = _tabController.index == 0 ? pending : completed;
+                  final showParticipantData = _tabController.index == 0 && widget.model.showParticipantDataCard;
+
+                  return Column(
+                    children: [
+                      _segmentedControl(locale, pending.length, completed.length),
+                      Expanded(
+                        child: showing.isEmpty && !showParticipantData
+                            ? _emptyState(locale)
+                            : ListView(
+                                padding: const EdgeInsets.only(bottom: 16),
+                                children: [
+                                  if (showParticipantData) _participantDataCard(),
+                                  for (final task in showing) _taskCard(context, task),
+                                ],
+                              ),
+                      ),
+                    ],
+                  );
+                },
+              ),
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+
+  /// The Pending / Completed switch: a pill track with the selected segment
+  /// lifted out in white.
+  Widget _segmentedControl(RPLocalizations locale, int pending, int completed) => Container(
+    margin: const EdgeInsets.only(left: 40, right: 40, bottom: 16),
+    padding: const EdgeInsets.all(4),
+    decoration: BoxDecoration(color: Colors.grey.shade200, borderRadius: BorderRadius.circular(12)),
+    child: TabBar(
+      controller: _tabController,
+      labelPadding: EdgeInsets.zero,
+      dividerColor: Colors.transparent,
+      indicatorSize: TabBarIndicatorSize.tab,
+      splashBorderRadius: BorderRadius.circular(8),
+      indicator: ShapeDecoration(
+        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(8)),
+        color: Colors.white,
+        shadows: [BoxShadow(color: Colors.black.withValues(alpha: 0.06), blurRadius: 6, offset: const Offset(0, 2))],
+      ),
+      tabs: [
+        _tab(locale.translate('pages.task_list.pending'), pending, 0),
+        _tab(locale.translate('pages.task_list.completed'), completed, 1),
+      ],
+    ),
+  );
+
+  /// One segment of the Pending / Completed switch, with a count badge.
+  Widget _tab(String label, int count, int index) {
+    final selected = _tabController.index == index;
+    return Tab(
+      height: 40,
+      child: Row(
+        mainAxisAlignment: MainAxisAlignment.center,
+        children: [
+          Flexible(
+            child: Text(
+              label,
+              overflow: TextOverflow.ellipsis,
+              style: Theme.of(
+                context,
+              ).textTheme.labelMedium!.copyWith(color: selected ? Colors.grey.shade900 : Colors.grey.shade600),
+            ),
+          ),
+          const SizedBox(width: 6),
+          Container(
+            padding: const EdgeInsets.symmetric(horizontal: 7, vertical: 2),
+            decoration: BoxDecoration(
+              color: selected ? Theme.of(context).colorScheme.primary.withValues(alpha: 0.12) : Colors.grey.shade300,
+              borderRadius: BorderRadius.circular(100),
+            ),
+            child: Text(
+              '$count',
+              style: Theme.of(context).textTheme.labelSmall!.copyWith(
+                color: selected ? Theme.of(context).colorScheme.primary : Colors.grey.shade600,
+              ),
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+
+  /// A task card, in either tab - the state decides the accent colour, the
+  /// badge and which meta chips are shown.
+  Widget _taskCard(BuildContext context, UserTask userTask) {
+    final locale = RPLocalizations.of(context)!;
+    final done = userTask.state == UserTaskState.done;
+    final accent = done
+        ? const Color(0xff006398)
+        : taskTypeColors[userTask.type] ?? Theme.of(context).colorScheme.primary;
+    final description = locale.translate(userTask.description);
+    final (expiry, urgent) = _expiry(locale, userTask);
+
+    return _card(
+      accent: accent,
+      children: [
+        Row(
+          children: [
+            _taskBadgeIcon(userTask, accent),
+            const SizedBox(width: 6),
+            Expanded(
+              child: Text(
+                userTask.type[0].toUpperCase() + userTask.type.substring(1),
+                overflow: TextOverflow.ellipsis,
+                style: Theme.of(context).textTheme.labelMedium!.copyWith(color: accent, fontWeight: FontWeight.w700),
+              ),
+            ),
+            if (!done && expiry.isNotEmpty)
+              _chip(Icons.alarm, expiry, urgent ? const Color(0xffF57C00) : Colors.grey.shade500, filled: urgent),
+            if (done && userTask.doneTime != null)
+              Text(
+                DateFormat('MMM d, yyyy').format(userTask.doneTime!),
+                style: Theme.of(context).textTheme.labelSmall!.copyWith(color: Colors.grey.shade500),
+              ),
+          ],
+        ),
+        const SizedBox(height: 8),
+        Text(locale.translate(userTask.title), style: Theme.of(context).textTheme.labelLarge!),
+        if (!done && description.isNotEmpty) ...[
+          const SizedBox(height: 4),
+          Text(
+            description,
+            maxLines: 5,
+            overflow: TextOverflow.ellipsis,
+            style: Theme.of(context).textTheme.labelMedium!.copyWith(color: Colors.grey.shade600),
+          ),
+        ],
+        if (!done) ...[
+          const SizedBox(height: 12),
+          Row(
+            crossAxisAlignment: CrossAxisAlignment.center,
+            children: [
+              Expanded(child: _chip(Icons.schedule, _estimatedTime(locale, userTask), Colors.grey.shade500)),
+              FilledButton(
+                style: FilledButton.styleFrom(
+                  padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 8),
+                  minimumSize: const Size(0, 0),
+                  tapTargetSize: MaterialTapTargetSize.shrinkWrap,
+                ),
+                // Disabled while the task is running - starting it again is a
+                // no-op, but a tap on a task with its own page would push that
+                // page a second time.
+                onPressed: userTask.state == UserTaskState.started
+                    ? null
+                    : () {
+                        if (widget.model.startUserTask(userTask)) context.push('${Routes.task}/${userTask.id}');
+                      },
+                child: Text(locale.translate('pages.task_list.start')),
+              ),
+            ],
+          ),
+        ],
+      ],
+    );
+  }
+
+  Widget _participantDataCard() {
+    final accent = taskTypeColors["ExpectedParticipantData"]!;
+    return _card(
+      accent: accent,
+      onTap: () => context.push(Routes.participantData),
+      children: [
+        Row(
+          children: [
+            Icon(taskTypeIcons["ExpectedParticipantData"]!.icon, color: accent, size: 18),
+            const SizedBox(width: 6),
+            Expanded(
+              child: Text(
+                "Input Data",
+                style: Theme.of(context).textTheme.labelMedium!.copyWith(color: accent, fontWeight: FontWeight.w700),
+              ),
+            ),
+            Icon(Icons.chevron_right, size: 20, color: Colors.grey.shade400),
+          ],
+        ),
+        const SizedBox(height: 8),
+        Text("Participant Data", style: Theme.of(context).textTheme.labelLarge!),
+        const SizedBox(height: 4),
+        Text(
+          "Fill in the required participant data to continue with the study.",
+          style: Theme.of(context).textTheme.labelMedium!.copyWith(color: Colors.grey.shade600),
+        ),
+      ],
+    );
+  }
+
+  /// The shared card shell: a coloured accent bar down the left edge and the
+  /// content column beside it.
+  Widget _card({required Color accent, required List<Widget> children, VoidCallback? onTap}) {
+    return StudiesMaterial(
+      backgroundColor: Colors.grey.shade50,
+      child: InkWell(
+        onTap: onTap,
+        child: IntrinsicHeight(
+          child: Row(
+            crossAxisAlignment: CrossAxisAlignment.stretch,
+            children: [
+              Container(
+                width: 4,
+                decoration: BoxDecoration(
+                  color: accent,
+                  borderRadius: const BorderRadius.horizontal(left: Radius.circular(12)),
+                ),
+              ),
+              Expanded(
+                child: Padding(
+                  padding: const EdgeInsets.all(16),
+                  child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: children),
+                ),
+              ),
+            ],
+          ),
+        ),
+      ),
+    );
+  }
+
+  /// A small icon + label chip, outlined by default and tinted when [filled].
+  Widget _chip(IconData icon, String label, Color color, {bool filled = false}) => Container(
+    padding: EdgeInsets.symmetric(horizontal: filled ? 8 : 0, vertical: filled ? 4 : 0),
+    decoration: filled
+        ? BoxDecoration(color: color.withValues(alpha: 0.12), borderRadius: BorderRadius.circular(100))
+        : null,
+    child: Row(
+      mainAxisSize: MainAxisSize.min,
+      children: [
+        Icon(icon, size: 14, color: color),
+        const SizedBox(width: 4),
+        Text(label, style: Theme.of(context).textTheme.labelSmall!.copyWith(color: color)),
+      ],
+    ),
+  );
+
+  /// The icon for [userTask], or a spinner while it is running.
+  Widget _taskBadgeIcon(UserTask userTask, Color accent) {
+    return StreamBuilder(
+      stream: userTask.stateEvents,
+      initialData: userTask.state,
+      builder: (context, snapshot) {
+        if (userTask.state == UserTaskState.started) {
+          return SizedBox(width: 16, height: 16, child: CircularProgressIndicator(strokeWidth: 2.5, color: accent));
+        }
+        final icon = taskTypeIcons[userTask.type]?.icon ?? Icons.assignment;
+        return Icon(userTask.state == UserTaskState.done ? Icons.check : icon, color: accent, size: 20);
+      },
+    );
+  }
+
+  /// How long [userTask] takes, or that it completes on its own.
+  String _estimatedTime(RPLocalizations locale, UserTask userTask) => userTask.task.minutesToComplete != null
+      ? '${locale.translate('pages.task_list.task.estimated_time')} ${userTask.task.minutesToComplete} min'
+      : locale.translate('pages.task_list.task.auto_complete');
+
+  /// The humanized time left on [userTask], and whether that is under a day.
+  (String, bool) _expiry(RPLocalizations locale, UserTask userTask) {
+    final expiresIn = userTask.expiresIn;
+    if (expiresIn == null) return ('', false);
+    if (expiresIn.isNegative) {
+      // Kept on the queue so it still counts in the statistics.
+      if (userTask.state != UserTaskState.done && userTask.state != UserTaskState.expired) {
+        userTask.onExpired(dequeue: false);
+      }
+      return ('', false);
+    }
+    return (expiresIn.humanize(locale), expiresIn.inHours < 24);
+  }
+
+  Widget _emptyState(RPLocalizations locale) {
+    return Padding(
+      padding: const EdgeInsets.fromLTRB(32, 48, 32, 48),
+      child: Column(
+        mainAxisAlignment: MainAxisAlignment.center,
+        children: [
+          Container(
+            width: 64,
+            height: 64,
+            decoration: BoxDecoration(
+              color: Theme.of(context).colorScheme.primary.withValues(alpha: 0.1),
+              borderRadius: BorderRadius.circular(20),
+            ),
+            child: Icon(
+              _tabController.index == 0 ? Icons.playlist_add_check : Icons.history,
+              color: Theme.of(context).colorScheme.primary,
+              size: 28,
+            ),
+          ),
+          const SizedBox(height: 16),
+          Text(
+            locale.translate("pages.task_list.no_tasks"),
+            style: Theme.of(context).textTheme.labelMedium!.copyWith(color: Colors.grey.shade600),
+            textAlign: TextAlign.center,
+          ),
+        ],
+      ),
+    );
+  }
+
+  static Map<String, Icon> taskTypeIcons = {
+    AppTask.SURVEY_TYPE: const Icon(Icons.workspaces, color: Color(0xff3A82F7)),
+    AppTask.COGNITIVE_ASSESSMENT_TYPE: const Icon(Icons.psychology, color: Color(0xffB25FEA)),
+    AppTask.AUDIO_TYPE: const Icon(Icons.hearing, color: Color(0xff67CE67)),
+    AppTask.VIDEO_TYPE: const Icon(Icons.videocam, color: Color(0xff81CFFA)),
+    AppTask.IMAGE_TYPE: const Icon(Icons.image, color: Color(0xffF8D100)),
+    AppTask.HEALTH_ASSESSMENT_TYPE: const Icon(Icons.favorite_rounded, color: Color(0xffEB4B62)),
+    AppTask.SENSING_TYPE: const Icon(Icons.sensors, color: Color(0xffA1616A)),
+    "ExpectedParticipantData": const Icon(Icons.dataset, color: Color(0xffA1616A)),
+  };
+
+  static Map<String, Color> taskTypeColors = {
+    AppTask.SURVEY_TYPE: Color(0xff3A82F7),
+    AppTask.COGNITIVE_ASSESSMENT_TYPE: const Color(0xffB25FEA),
+    AppTask.AUDIO_TYPE: Color(0xff67CE67),
+    AppTask.VIDEO_TYPE: const Color(0xff81CFFA),
+    AppTask.IMAGE_TYPE: const Color(0xffF8D100),
+    AppTask.HEALTH_ASSESSMENT_TYPE: Color(0xffEB4B62),
+    AppTask.SENSING_TYPE: const Color(0xffA1616A),
+    "ExpectedParticipantData": Color(0xffA1616A),
+  };
+
+  static Map<String, Icon> measureTypeIcons = {
+    DeviceSamplingPackage.FREE_MEMORY: const Icon(Icons.memory, color: Color(0xffDADADA)),
+    DeviceSamplingPackage.DEVICE_INFORMATION: const Icon(Icons.phone_android, color: Color(0xffDADADA)),
+    DeviceSamplingPackage.BATTERY_STATE: const Icon(Icons.battery_charging_full, color: Color(0xff67CE67)),
+    CarpDataTypes.STEP_COUNT: const Icon(Icons.directions_walk, color: Color(0xffB25FEA)),
+    SensorSamplingPackage.ACCELERATION: const Icon(Icons.adb, color: Color(0xffDADADA)),
+    SensorSamplingPackage.ROTATION: const Icon(Icons.adb, color: Color(0xffDADADA)),
+    SensorSamplingPackage.AMBIENT_LIGHT: const Icon(Icons.highlight, color: Color(0xffF8D100)),
+    MediaSamplingPackage.AUDIO: const Icon(Icons.mic, color: Color(0xff67CE67)),
+    MediaSamplingPackage.NOISE: const Icon(Icons.hearing, color: Color(0xffF8D100)),
+    MediaSamplingPackage.VIDEO: const Icon(Icons.videocam, color: Color(0xff81CFFA)),
+    MediaSamplingPackage.IMAGE: const Icon(Icons.image, color: Color(0xffF8D100)),
+    DeviceSamplingPackage.SCREEN_EVENT: const Icon(Icons.screen_lock_portrait, color: Color(0xffB25FEA)),
+    ContextSamplingPackage.LOCATION: const Icon(Icons.location_searching, color: Color(0xff4F6432)),
+    ContextSamplingPackage.ACTIVITY: const Icon(Icons.local_fire_department, color: Color(0xffEC6330)),
+    ContextSamplingPackage.WEATHER: const Icon(Icons.cloud, color: Color(0xff81CFFA)),
+    ContextSamplingPackage.AIR_QUALITY: const Icon(Icons.air, color: Color(0xffB2B2B2)),
+    ContextSamplingPackage.GEOFENCE: const Icon(Icons.location_on, color: Color(0xff4F6432)),
+    ContextSamplingPackage.MOBILITY: const Icon(Icons.location_on, color: Color(0xffEC6330)),
+    SurveySamplingPackage.SURVEY: const Icon(Icons.workspaces, color: Color(0xffEC6330)),
+  };
+
+  static Map<UserTaskState, Icon> get taskStateIcon => {
+    UserTaskState.initialized: const Icon(Icons.stream, color: Color(0xffF8D100)),
+    UserTaskState.enqueued: const Icon(Icons.notifications, color: Color(0xffF8D100)),
+    UserTaskState.dequeued: const Icon(Icons.stop, color: Color(0xffF8D100)),
+    UserTaskState.started: const Icon(Icons.play_arrow, color: Color(0xffDADADA)),
+    UserTaskState.canceled: const Icon(Icons.pause, color: Color(0xffDADADA)),
+    UserTaskState.done: const Icon(Icons.check, color: Color(0xff67CE67)),
+  };
+}

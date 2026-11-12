@@ -243,7 +243,7 @@ void main() {
       when(auth.getInvitations()).thenAnswer((_) async => [invitation('dep-1')]);
       await model.loadInvitations();
 
-      expect(model.landingRoute, '${InvitationDetailsPage.route}/dep-1');
+      expect(model.landingRoute, '${Routes.invitations}/dep-1');
     });
 
     test('getInvitation tells apart two deployments of one study', () async {
@@ -260,11 +260,11 @@ void main() {
     test('landingRoute targets the list for zero or multiple invitations', () async {
       when(auth.getInvitations()).thenAnswer((_) async => []);
       await model.loadInvitations();
-      expect(model.landingRoute, InvitationListPage.route);
+      expect(model.landingRoute, Routes.invitations);
 
       when(auth.getInvitations()).thenAnswer((_) async => [invitation('a'), invitation('b')]);
       await model.loadInvitations();
-      expect(model.landingRoute, InvitationListPage.route);
+      expect(model.landingRoute, Routes.invitations);
     });
 
     test('ensureInvitationsLoaded loads once; loadInvitations always refreshes', () async {

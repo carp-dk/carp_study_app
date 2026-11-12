@@ -1,0 +1,216 @@
+part of carp_study_app;
+
+/// Single owner of the study running on this phone: descriptor, deployment,
+/// and sensing runtime. [LocalSettings] and CAWS copies are seeded from [study].
+class StudyService {
+  StudyService({ResourceManagerFactory? resources}) : _resources = resources ?? ResourceManagerFactory();
+
+  final ResourceManagerFactory _resources;
+  SmartphoneStudyController? _controller;
+  StudyDeploymentStatus? _status;
+
+  /// The deployment service used in this app, selected by the deployment mode.
+  DeploymentService get deploymentService =>
+      AppConfig.deploymentMode == DeploymentMode.local ? SmartphoneDeploymentService() : CarpDeploymentService();
+
+  /// The study running on this phone, typically set based on an invitation.
+  /// Returns null if no study has been selected (yet).
+  SmartphoneStudy? get study => LocalSettings().study;
+
+  /// Set the active [study], saving it in [LocalSettings] and seeding the backend with it.
+  set study(SmartphoneStudy? study) {
+    if (study == null) return;
+    LocalSettings().study = study;
+    Backend().study = study;
+  }
+
+  /// Has a study been selected on this phone (i.e., an invitation accepted)?
+  ///
+  /// Note that this does NOT imply that the study deployment has succeeded -
+  /// see [isDeployed] for that.
+  bool get hasStudy => study != null;
+
+  /// Has the study deployment succeeded on this phone, i.e. has the device
+  /// deployment been received and validated?
+  bool get isDeployed => deployment != null;
+
+  /// The study runtime controller for the current study.
+  /// Only available after the study has been added via [configure].
+  SmartphoneStudyController? get controller => _controller;
+
+  /// The deployment running on this phone.
+  /// Returns null if the study has not (yet) been deployed.
+  SmartphoneDeployment? get deployment => _controller?.deployment;
+
+  /// When was this study deployed on this phone.
+  DateTime? get studyStartTimestamp => deployment?.deployed;
+
+  Set<ExpectedParticipantData?> get expectedParticipantData => deployment?.expectedParticipantData ?? {};
+
+  /// Refresh and return the status of the current study deployment from the
+  /// deployment service. Returns null if no study has been deployed.
+  /// Goes through the client manager so a stopped deployment also stops sensing.
+  Future<StudyDeploymentStatus?> refreshDeploymentStatus() async {
+    final running = _controller?.study;
+    if (running != null) return _status = await SmartPhoneClientManager().getStudyDeploymentStatus(running);
+    final id = study?.studyDeploymentId;
+    return id != null ? _status = await deploymentService.getStudyDeploymentStatus(id) : null;
+  }
+
+  /// The last known status of the study deployment, without contacting the
+  /// deployment service. Use [refreshDeploymentStatus] to refresh it.
+  StudyDeploymentStatus? get cachedDeploymentStatus => _controller?.deploymentStatus ?? _status;
+
+  /// Initialize sensing and deploy the [study] on this phone.
+  ///
+  /// Throws if no study is set, or if deployment does not succeed - in which
+  /// case it is safe to call this method again (e.g., once back online).
+  Future<void> configure() async {
+    if (study == null) throw StateError('No study set - cannot configure a study deployment.');
+
+    final status = await addStudy(study!);
+
+    if (!isDeployed) throw StateError('Study deployment did not succeed - status: $status.');
+  }
+
+  /// Add the [study] to the client manager and deploy it.
+  Future<StudyStatus?> addStudy(SmartphoneStudy study) async {
+    assert(
+      SmartPhoneClientManager().isConfigured,
+      'The client manager is not yet configured. Call Sensing().initialize() before adding a study.',
+    );
+
+    // CAMS restores earlier studies on start - only the active one may run.
+    for (final old
+        in SmartPhoneClientManager().studies.where((s) => s.studyDeploymentId != study.studyDeploymentId).toList()) {
+      await SmartPhoneClientManager().removeStudy(old.studyDeploymentId, old.deviceRoleName);
+    }
+
+    await SmartPhoneClientManager().addStudy(study);
+    return await tryDeployment();
+  }
+
+  /// Try to deploy the current study.
+  ///
+  /// Note that if the study has already been deployed on this phone it has
+  /// been cached locally and the local version will be used pr. default.
+  /// If not deployed before the study deployment will be fetched from the
+  /// deployment service. Returns null if no study has been selected yet.
+  Future<StudyStatus?> tryDeployment() async {
+    if (study == null) return null;
+
+    final status = await SmartPhoneClientManager().tryDeployment(study!.studyDeploymentId, study!.deviceRoleName);
+    _controller = SmartPhoneClientManager().getStudyController(study!);
+    translateProtocol();
+
+    info('$runtimeType - Study added, deployment id: ${study!.studyDeploymentId}');
+    return status;
+  }
+
+  /// Is sensing running, i.e. has the study executor been resumed?
+  bool get isRunning => (_controller != null) && _controller!.executor.state == ExecutorState.Resumed;
+
+  /// Start sensing, if the study is deployed and not permanently stopped.
+  Future<void> start() async {
+    final controller = _controller;
+    if (controller == null ||
+        !isDeployed ||
+        controller.study.deploymentStatus?.status == StudyDeploymentStatusTypes.Stopped) {
+      warning(
+        '$runtimeType - Cannot start sensing - the study is not deployed '
+        '(status: ${controller?.study.status}).',
+      );
+      return;
+    }
+
+    // The controller initializes its executor asynchronously after the device
+    // deployment is received, and resume() before that is silently ignored -
+    // so wait for the executor to be ready.
+    const retryDelay = Duration(milliseconds: 100);
+    var waited = Duration.zero;
+    while (controller.executor.state == ExecutorState.Created && waited < const Duration(seconds: 30)) {
+      await Future<void>.delayed(retryDelay);
+      waited += retryDelay;
+    }
+    if (controller.executor.state == ExecutorState.Created) {
+      warning('$runtimeType - Cannot start sensing - the study executor was never initialized.');
+      return;
+    }
+
+    if (!isRunning) controller.resume();
+  }
+
+  /// Add [measurement] to the stream of collected measurements.
+  void addMeasurement(Measurement measurement) => _controller?.executor.addMeasurement(measurement);
+
+  /// The list of all devices used in the current deployment.
+  ///
+  /// Note that not all available devices on this phone may be used in the
+  /// current deployment.
+  Iterable<DeviceManager> get deploymentDevices => deployment == null
+      ? []
+      : SmartPhoneClientManager().deviceController.devices.values
+            .where((manager) => deployment!.devices.any((device) => device.type == manager.deviceType))
+            // The Apple Watch needs an iPhone - hide it elsewhere.
+            .where(
+              (manager) =>
+                  manager.deviceType != AppleWatchDevice.DEVICE_TYPE || defaultTargetPlatform == TargetPlatform.iOS,
+            );
+
+  /// Does this [deployment] have any measures (besides app tasks)?
+  bool hasMeasures() => (deployment == null)
+      ? false
+      : (deployment!.measures.any(
+          (measure) =>
+              (measure.type != AppTask.VIDEO_TYPE &&
+              measure.type != AppTask.IMAGE_TYPE &&
+              measure.type != AppTask.AUDIO_TYPE &&
+              measure.type != AppTask.SURVEY_TYPE),
+        ));
+
+  /// Does this [deployment] have the measure of type [type]?
+  bool hasMeasure(String type) => deployment?.measures.any((measure) => measure.type == type) ?? false;
+
+  /// Does this [deployment] have any user tasks?
+  bool hasUserTasks() => (deployment == null) ? false : deployment!.tasks.whereType<AppTask>().isNotEmpty;
+
+  /// Translate the title and description of all [AppTask]s in the current
+  /// deployment using [AppConfig.localization].
+  void translateProtocol([RPLocalizations? localization]) {
+    AppConfig.localization ??= localization;
+
+    // Fast out if no localization
+    if (AppConfig.localization == null) return;
+
+    // Fast out, if not deployed or no protocol.
+    if (!(study?.isDeployed ?? false) || deployment == null) return;
+
+    for (var task in deployment!.tasks) {
+      if (task is AppTask) {
+        task.title = AppConfig.localization!.translate(task.title);
+        task.description = AppConfig.localization!.translate(task.description);
+      }
+    }
+
+    info("$runtimeType - Study protocol translated to locale '${AppConfig.localization!.locale}'");
+  }
+
+  /// Get the participant data for the current deployment.
+  Future<List<ParticipantData>> getParticipantDataListFromDeployment() async => (deployment == null)
+      ? []
+      : await _resources.participationService.getParticipantDataList([deployment!.studyDeploymentId]);
+
+  /// Set the participant [data] for the current study.
+  void setParticipantData(Map<String, Data> data) =>
+      _resources.participationService.setParticipantData(study!.studyDeploymentId, data, study!.participantRoleName);
+
+  /// Stop sensing and remove all study deployment information from this phone.
+  Future<void> remove() async {
+    if (study != null) {
+      await SmartPhoneClientManager().removeStudy(study!.studyDeploymentId, study!.deviceRoleName);
+    }
+    _controller = null;
+    _status = null;
+    await LocalSettings().eraseStudyDeployment();
+  }
+}

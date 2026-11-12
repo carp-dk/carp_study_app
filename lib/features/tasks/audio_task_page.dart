@@ -1,0 +1,117 @@
+part of carp_study_app;
+
+class AudioTaskPage extends StatefulWidget {
+  final AudioUserTask? audioUserTask;
+  const AudioTaskPage({super.key, this.audioUserTask});
+
+  @override
+  AudioTaskPageState createState() => AudioTaskPageState();
+}
+
+class AudioTaskPageState extends State<AudioTaskPage> {
+  @override
+  Widget build(BuildContext context) {
+    RPLocalizations locale = RPLocalizations.of(context)!;
+    return Scaffold(
+      body: SafeArea(
+        child: PopScope(
+          canPop: true,
+          child: Scaffold(
+            body: Container(
+              padding: const EdgeInsets.symmetric(horizontal: 15),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.center,
+                children: [
+                  Row(
+                    children: [
+                      const CarpAppBar(hasProfileIcon: false),
+                      Spacer(),
+                      IconButton(
+                        color: Colors.grey.shade900,
+                        onPressed: () {
+                          _showCancelConfirmationDialog();
+                        },
+                        icon: const Icon(Icons.close, size: 30),
+                      ),
+                    ],
+                  ),
+                  Padding(
+                    padding: const EdgeInsets.symmetric(vertical: 30),
+                    child: const Image(image: AssetImage('assets/icons/audio.png'), width: 220, height: 220),
+                  ),
+                  Padding(
+                    padding: const EdgeInsets.symmetric(vertical: 12),
+                    child: Text(
+                      locale.translate(widget.audioUserTask!.title),
+                      style: Theme.of(context).textTheme.titleLarge!,
+                    ),
+                  ),
+                  Padding(
+                    padding: const EdgeInsets.symmetric(vertical: 12, horizontal: 20),
+                    child: Text(
+                      '${locale.translate(widget.audioUserTask!.description)}\n\n'
+                      '${locale.translate('pages.audio_task.play')}',
+                      style: Theme.of(context).textTheme.labelLarge!,
+                    ),
+                  ),
+                  Padding(
+                    padding: const EdgeInsets.symmetric(vertical: 30),
+                    child: Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                      children: [
+                        TextButton(
+                          onPressed: () {
+                            widget.audioUserTask!.onCancel();
+                            Navigator.pop(context);
+                          },
+                          child: Text(locale.translate("Cancel")),
+                        ),
+                        FilledButton(
+                          onPressed: () => Navigator.push(
+                            context,
+                            MaterialPageRoute<void>(
+                              builder: (context) => AudioPage(audioUserTask: widget.audioUserTask),
+                            ),
+                          ),
+                          child: Text(locale.translate("next")),
+                        ),
+                      ],
+                    ),
+                  ),
+                ],
+              ),
+            ),
+          ),
+        ),
+      ),
+    );
+  }
+
+  Future<void> _showCancelConfirmationDialog() {
+    RPLocalizations locale = RPLocalizations.of(context)!;
+
+    return showDialog(
+      context: context,
+      barrierDismissible: false,
+      builder: (BuildContext context) {
+        return AlertDialog(
+          title: Text(locale.translate("pages.audio_task.discard")),
+          actions: <Widget>[
+            TextButton(
+              child: Text(locale.translate("NO")),
+              onPressed: () {
+                context.pop();
+              },
+            ),
+            TextButton(
+              child: Text(locale.translate("YES")),
+              onPressed: () {
+                context.pushReplacement(Routes.root);
+              },
+            ),
+          ],
+        );
+      },
+    );
+  }
+}

@@ -4,7 +4,7 @@ import 'package:flutter_test/flutter_test.dart';
 
 void main() {
   test('study startup does not request all permissions', () {
-    final sensing = File('lib/core/sensing.dart').readAsStringSync();
+    final sensing = File('lib/core/sensing/sensing.dart').readAsStringSync();
     expect(sensing, contains('askForPermissions: false,'));
   });
 

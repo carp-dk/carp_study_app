@@ -56,17 +56,17 @@ Widget consentApp(InformedConsentViewModel model, {Listenable? refresh}) => Mate
     GlobalWidgetsLocalizations.delegate,
   ],
   routerConfig: GoRouter(
-    initialLocation: InformedConsentPage.route,
+    initialLocation: Routes.consent,
     refreshListenable: refresh ?? ChangeNotifier(),
     redirect: (context, state) async {
       // The app's consent gate, in the one form that matters here.
-      if (await model.needsSigning()) return InformedConsentPage.route;
-      if (state.matchedLocation == InformedConsentPage.route) return '/home';
+      if (await model.needsSigning()) return Routes.consent;
+      if (state.matchedLocation == Routes.consent) return '/home';
       return null;
     },
     routes: [
       GoRoute(
-        path: InformedConsentPage.route,
+        path: Routes.consent,
         builder: (context, state) => InformedConsentPage(model: model),
       ),
       GoRoute(path: '/home', builder: (context, state) => const Text('home')),
