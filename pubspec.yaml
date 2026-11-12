@@ -18,7 +18,7 @@ dependencies:
   carp_mobile_sensing: ^2.5.1
   carp_context_package: ^2.1.1
   carp_connectivity_package: ^2.2.1
-  carp_survey_package: ^2.1.1
+  carp_survey_package: ^2.1.2
   carp_audio_package: ^2.1.0
   carp_polar_package: ^2.1.0
   carp_health_package: ^4.1.1
@@ -29,8 +29,8 @@ dependencies:
   carp_webservices: ^4.4.3
   carp_backend: ^2.1.1
 
-  research_package: ^3.2.0
-  cognition_package: ^1.9.2 # 1.9.2: Flanker NaN crash fix
+  research_package: ^4.0.0
+  cognition_package: ^1.10.1
 
   url_launcher: ^6.1.5
   timeago: ^3.1.0
@@ -66,6 +66,12 @@ dependencies:
   mobile_scanner: ^7.4.2
 
 dependency_overrides:
+  # ponytail: until carp_backend 2.1.2 (research_package ^4) is on pub.dev - carp.sensing-flutter#659
+  carp_backend:
+    git:
+      url: https://github.com/carp-dk/carp.sensing-flutter.git
+      ref: chore/carp-backend-research-package-4
+      path: backends/carp_backend
   # carp_themes_package:
   #   path: ../carp_themes_package
 

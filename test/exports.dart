@@ -20,6 +20,7 @@ export 'package:carp_study_app/core/services/auth_service.dart';
 export 'package:carp_study_app/core/services/consent_service.dart';
 export 'package:carp_study_app/core/services/data_stream_query_service.dart';
 export 'package:carp_study_app/core/services/message_service.dart';
+export 'package:carp_study_app/core/services/permission_requester.dart';
 export 'package:carp_study_app/core/services/study_service.dart';
 export 'package:carp_study_app/core/services/system_info_service.dart';
 export 'package:carp_study_app/core/settings/local_settings.dart';
