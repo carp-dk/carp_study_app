@@ -11,6 +11,7 @@ import 'package:carp_movesense_package/carp_movesense_package.dart';
 import 'package:carp_study_app/features/connections/carp_sphere_morph.dart';
 import 'package:carp_study_app/features/connections/connection_view_model.dart';
 import 'package:carp_study_app/main.dart';
+import 'package:carp_study_app/shared/widgets/studies_material.dart';
 
 /// Live data from a connected Movesense or Polar sensor, so the participant sees it works.
 class DeviceLiveDataPage extends StatelessWidget {
@@ -79,7 +80,7 @@ class DeviceLiveMonitor extends StatefulWidget {
 enum _LiveStatus { connecting, live, silent }
 
 class _DeviceLiveMonitorState extends State<DeviceLiveMonitor> with TickerProviderStateMixin {
-  static const _green = Color(0xff67CE67);
+  static const _green = Color(0xff2E9E4F);
   static const _silentAfterSeconds = 5;
 
   late final bool _isMovesense = widget.device.deviceManager is MovesenseDeviceManager;
@@ -207,80 +208,87 @@ class _DeviceLiveMonitorState extends State<DeviceLiveMonitor> with TickerProvid
     return Column(
       crossAxisAlignment: CrossAxisAlignment.stretch,
       children: [
-        Container(
-          padding: const EdgeInsets.all(16),
-          decoration: BoxDecoration(color: const Color(0xff101814), borderRadius: BorderRadius.circular(20)),
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.stretch,
-            children: [
-              Row(
-                crossAxisAlignment: CrossAxisAlignment.center,
-                children: [
-                  ScaleTransition(
-                    scale: _heart.drive(Tween(begin: 1.3, end: 1.0).chain(CurveTween(curve: Curves.easeOut))),
-                    child: const Icon(Icons.favorite, color: CarpSphereMorph.red, size: 36),
-                  ),
-                  const SizedBox(width: 12),
-                  Text(
-                    (_hrStale ? null : _bpm)?.round().toString() ?? t('na'),
-                    style: const TextStyle(color: Colors.white, fontSize: 52, fontWeight: FontWeight.w700, height: 1),
-                  ),
-                  const SizedBox(width: 6),
-                  Text(
-                    locale.translate('cards.heartrate.bpm'),
-                    style: TextStyle(color: Colors.white.withValues(alpha: 0.6), fontWeight: FontWeight.w600),
-                  ),
-                  const Spacer(),
-                  _statusPill(
-                    switch (status) {
-                      _LiveStatus.connecting => locale.translate('pages.connections.status.connecting'),
-                      _ => t('status.${status.name}'),
-                    },
-                    switch (status) {
-                      _LiveStatus.live => _green,
-                      _LiveStatus.connecting => Colors.white54,
-                      _LiveStatus.silent => const Color(0xffEB4B62),
-                    },
-                  ),
-                ],
-              ),
-              const SizedBox(height: 16),
-              SizedBox(
-                height: 140,
-                child: Stack(
-                  fit: StackFit.expand,
+        StudiesMaterial(
+          margin: EdgeInsets.zero,
+          child: Padding(
+            padding: const EdgeInsets.all(16),
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.stretch,
+              children: [
+                Row(
+                  crossAxisAlignment: CrossAxisAlignment.center,
                   children: [
-                    CustomPaint(painter: _EcgPainter(_ecg, _green)),
-                    if (_ecg.isEmpty)
-                      Center(
-                        child: Text(
-                          t(_ecgUnavailable ? 'ecg_unavailable' : 'status.waiting'),
-                          style: TextStyle(color: Colors.white.withValues(alpha: 0.5)),
-                        ),
-                      ),
-                  ],
-                ),
-              ),
-              const SizedBox(height: 12),
-              Row(
-                children: [
-                  Expanded(child: _stat(t('rr'), _hrStale || _rr == null ? t('na') : '$_rr ms')),
-                  if (_isMovesense) ...[
+                    ScaleTransition(
+                      scale: _heart.drive(Tween(begin: 1.3, end: 1.0).chain(CurveTween(curve: Curves.easeOut))),
+                      child: const Icon(Icons.favorite, color: CarpSphereMorph.red, size: 36),
+                    ),
                     const SizedBox(width: 12),
-                    Expanded(
-                      child: AnimatedBuilder(
-                        animation: _tapFlash,
-                        builder: (context, _) => _stat(
-                          t('taps'),
-                          '$_taps',
-                          highlight: Color.lerp(_green.withValues(alpha: 0.5), Colors.transparent, _tapFlash.value),
-                        ),
+                    Text(
+                      (_hrStale ? null : _bpm)?.round().toString() ?? t('na'),
+                      style: TextStyle(
+                        color: Colors.grey.shade900,
+                        fontSize: 52,
+                        fontWeight: FontWeight.w700,
+                        height: 1,
                       ),
                     ),
+                    const SizedBox(width: 6),
+                    Text(
+                      locale.translate('cards.heartrate.bpm'),
+                      style: TextStyle(color: Colors.grey.shade600, fontWeight: FontWeight.w600),
+                    ),
+                    const Spacer(),
+                    _statusPill(
+                      switch (status) {
+                        _LiveStatus.connecting => locale.translate('pages.connections.status.connecting'),
+                        _ => t('status.${status.name}'),
+                      },
+                      switch (status) {
+                        _LiveStatus.live => _green,
+                        _LiveStatus.connecting => Colors.grey.shade600,
+                        _LiveStatus.silent => const Color(0xffEB4B62),
+                      },
+                    ),
                   ],
-                ],
-              ),
-            ],
+                ),
+                const SizedBox(height: 16),
+                SizedBox(
+                  height: 140,
+                  child: Stack(
+                    fit: StackFit.expand,
+                    children: [
+                      CustomPaint(painter: _EcgPainter(_ecg, _green)),
+                      if (_ecg.isEmpty)
+                        Center(
+                          child: Text(
+                            t(_ecgUnavailable ? 'ecg_unavailable' : 'status.waiting'),
+                            style: TextStyle(color: Colors.grey.shade600),
+                          ),
+                        ),
+                    ],
+                  ),
+                ),
+                const SizedBox(height: 12),
+                Row(
+                  children: [
+                    Expanded(child: _stat(t('rr'), _hrStale || _rr == null ? t('na') : '$_rr ms')),
+                    if (_isMovesense) ...[
+                      const SizedBox(width: 12),
+                      Expanded(
+                        child: AnimatedBuilder(
+                          animation: _tapFlash,
+                          builder: (context, _) => _stat(
+                            t('taps'),
+                            '$_taps',
+                            highlight: Color.lerp(_green.withValues(alpha: 0.5), Colors.transparent, _tapFlash.value),
+                          ),
+                        ),
+                      ),
+                    ],
+                  ],
+                ),
+              ],
+            ),
           ),
         ),
         const SizedBox(height: 12),
@@ -318,17 +326,17 @@ class _DeviceLiveMonitorState extends State<DeviceLiveMonitor> with TickerProvid
     padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 10),
     decoration: BoxDecoration(
       color: highlight ?? Colors.transparent,
-      border: Border.all(color: Colors.white12),
+      border: Border.all(color: Colors.grey.shade200),
       borderRadius: BorderRadius.circular(12),
     ),
     child: Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        Text(label, style: TextStyle(color: Colors.white.withValues(alpha: 0.6), fontSize: 12)),
+        Text(label, style: TextStyle(color: Colors.grey.shade600, fontSize: 12)),
         const SizedBox(height: 2),
         Text(
           value,
-          style: const TextStyle(color: Colors.white, fontSize: 20, fontWeight: FontWeight.w600),
+          style: TextStyle(color: Colors.grey.shade900, fontSize: 20, fontWeight: FontWeight.w600),
         ),
       ],
     ),
@@ -391,7 +399,7 @@ class _EcgPainter extends CustomPainter {
   @override
   void paint(Canvas canvas, Size size) {
     final grid = Paint()
-      ..color = Colors.white.withValues(alpha: 0.06)
+      ..color = Colors.black.withValues(alpha: 0.06)
       ..strokeWidth = 1;
     for (var x = 0.0; x <= size.width; x += size.width / 20) {
       canvas.drawLine(Offset(x, 0), Offset(x, size.height), grid);
