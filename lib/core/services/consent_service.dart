@@ -13,7 +13,10 @@ class ConsentService {
   final Backend _backend;
 
   /// Get the informed consent document for this study, or null if it has none.
-  Future<RPOrderedTask?> getDocument({bool refresh = false}) => _manager.getConsentDocument(refresh: refresh);
+  Future<RPOrderedTask?> getDocument({bool refresh = false}) async {
+    final json = await _manager.getConsentDocument(refresh: refresh);
+    return json == null ? null : RPOrderedTask.fromJson(json);
+  }
 
   /// The signed consent for [study], or null when nothing is signed or the
   /// backend cannot be reached - the user is then asked to sign again.

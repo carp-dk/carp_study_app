@@ -4,7 +4,6 @@ import 'package:json_annotation/json_annotation.dart';
 import 'package:intl/intl.dart';
 import 'package:carp_core/carp_core.dart' hide Smartphone;
 import 'package:carp_mobile_sensing/carp_mobile_sensing.dart';
-import 'package:carp_webservices/carp_services/carp_services.dart';
 import 'package:carp_study_app/core/util/util.dart';
 import 'package:carp_study_app/shared/view_model.dart';
 
