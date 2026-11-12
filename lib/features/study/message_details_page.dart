@@ -1,4 +1,13 @@
-part of carp_study_app;
+import 'package:flutter/material.dart';
+import 'package:url_launcher/url_launcher.dart';
+import 'package:go_router/go_router.dart';
+import 'package:carp_mobile_sensing/carp_mobile_sensing.dart';
+import 'package:carp_backend/carp_backend.dart';
+import 'package:research_package/research_package.dart';
+import 'package:carp_study_app/core/routes.dart';
+import 'package:carp_study_app/features/study/message_type_icon.dart';
+import 'package:carp_study_app/features/study/study_view_model.dart';
+import 'package:carp_study_app/shared/widgets/studies_material.dart';
 
 /// The details screen for a [Message] (announcement / news / article).
 ///

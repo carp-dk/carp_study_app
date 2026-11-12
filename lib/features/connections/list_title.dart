@@ -1,4 +1,6 @@
-part of carp_study_app;
+import 'package:flutter/material.dart';
+import 'package:research_package/research_package.dart';
+import 'package:carp_study_app/shared/widgets/carp_app_bar.dart';
 
 enum ConnectionsPageTypes { phone, services, devices }
 

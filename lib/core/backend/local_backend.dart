@@ -1,4 +1,16 @@
-part of carp_study_app;
+import 'dart:async';
+import 'dart:collection';
+import 'package:flutter/material.dart';
+import 'package:carp_serializable/carp_serializable.dart';
+import 'package:carp_core/carp_core.dart' hide Smartphone;
+import 'package:carp_mobile_sensing/carp_mobile_sensing.dart';
+import 'package:carp_webservices/carp_auth/carp_auth.dart';
+import 'package:research_package/research_package.dart';
+import 'package:carp_study_app/core/backend/backend.dart';
+import 'package:carp_study_app/core/backend/local_resource_manager.dart';
+import 'package:carp_study_app/core/sensing/sensing.dart';
+import 'package:carp_study_app/core/settings/local_settings.dart';
+import 'package:carp_study_app/core/util/app_config.dart';
 
 /// The [Backend] for local mode - same flow as CAWS, but nothing leaves the phone.
 ///

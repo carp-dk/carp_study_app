@@ -1,4 +1,11 @@
-part of carp_study_app;
+import 'dart:async';
+import 'package:carp_mobile_sensing/carp_mobile_sensing.dart';
+import 'package:carp_study_app/core/services/auth_service.dart';
+import 'package:carp_study_app/core/services/study_service.dart';
+import 'package:carp_study_app/core/services/system_info_service.dart';
+import 'package:carp_study_app/features/profile/profile_page.dart';
+import 'package:carp_study_app/shared/view_model.dart';
+import 'package:carp_study_app/main.dart';
 
 /// View model for [ProfilePage] - user and study identity; handles leaving
 /// the study and signing out.

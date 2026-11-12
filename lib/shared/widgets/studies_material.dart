@@ -1,4 +1,4 @@
-part of carp_study_app;
+import 'package:flutter/material.dart';
 
 /// A [Card] for this app that makes all cards looks the same.
 class StudiesMaterial extends StatelessWidget {

@@ -461,10 +461,10 @@ packages:
     dependency: "direct main"
     description:
       name: cognition_package
-      sha256: c55c5af02ced4817701e54dba822c51021218093e138155ad77a446dc1c9364c
+      sha256: "33ca1a5882a6630d045afbdb389c443051462b6312775946fed8fb274ba39dfd"
       url: "https://pub.dev"
     source: hosted
-    version: "1.9.1"
+    version: "1.9.2"
   collection:
     dependency: transitive
     description:

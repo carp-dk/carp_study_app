@@ -1,4 +1,7 @@
-part of carp_study_app;
+import 'package:json_annotation/json_annotation.dart';
+import 'package:carp_core/carp_core.dart' hide Smartphone;
+
+part 'participant.g.dart';
 
 /// A participant in a study, populated from a study invitation and saved
 /// across app restart.

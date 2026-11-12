@@ -1,4 +1,4 @@
-part of carp_study_app;
+import 'package:flutter/material.dart';
 
 class BatteryPercentage extends StatelessWidget {
   const BatteryPercentage({super.key, required this.batteryLevel, this.scale = 1.0})

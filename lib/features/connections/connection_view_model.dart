@@ -1,4 +1,22 @@
-part of carp_study_app;
+import 'dart:async';
+import 'dart:io';
+import 'package:flutter/foundation.dart';
+import 'package:flutter/material.dart';
+import 'package:flutter/scheduler.dart';
+import 'package:flutter/services.dart';
+import 'package:flutter_blue_plus/flutter_blue_plus.dart';
+import 'package:carp_mobile_sensing/carp_mobile_sensing.dart';
+import 'package:carp_context_package/carp_context_package.dart';
+import 'package:carp_polar_package/carp_polar_package.dart';
+import 'package:research_package/research_package.dart';
+import 'package:carp_health_package/health_package.dart';
+import 'package:carp_movesense_package/carp_movesense_package.dart';
+import 'package:carp_aware_package/carp_aware_package.dart';
+import 'package:carp_study_app/core/services/study_service.dart';
+import 'package:carp_study_app/features/connections/connection_list_page.dart';
+import 'package:carp_study_app/shared/device_names.dart';
+import 'package:carp_study_app/shared/view_model.dart';
+import 'package:carp_study_app/main.dart';
 
 /// View model for [ConnectionListPage] - its devices and services as view models.
 class ConnectionListPageViewModel extends ViewModel {

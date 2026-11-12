@@ -1,4 +1,8 @@
-part of carp_study_app;
+import 'package:flutter/material.dart';
+import 'package:open_settings_plus/open_settings_plus.dart';
+import 'package:open_settings_plus/core/open_settings_plus.dart';
+import 'package:research_package/research_package.dart';
+import 'package:carp_study_app/shared/widgets/dialog_title.dart';
 
 class EnableInternetConnectionDialog extends StatelessWidget {
   const EnableInternetConnectionDialog({super.key});

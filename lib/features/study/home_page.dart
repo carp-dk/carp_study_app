@@ -1,4 +1,18 @@
-part of carp_study_app;
+import 'dart:async';
+import 'package:flutter/material.dart';
+import 'package:timeago/timeago.dart' as timeago;
+import 'package:go_router/go_router.dart';
+import 'package:shimmer/shimmer.dart';
+import 'package:carp_core/carp_core.dart' hide Smartphone;
+import 'package:carp_backend/carp_backend.dart';
+import 'package:research_package/research_package.dart';
+import 'package:carp_study_app/core/routes.dart';
+import 'package:carp_study_app/core/sensing/background_sensing_service.dart';
+import 'package:carp_study_app/features/study/connections_status_card.dart';
+import 'package:carp_study_app/features/study/home_view_model.dart';
+import 'package:carp_study_app/features/study/message_type_icon.dart';
+import 'package:carp_study_app/shared/widgets/carp_app_bar.dart';
+import 'package:carp_study_app/shared/widgets/studies_material.dart';
 
 /// The landing tab - shown once consent is in place, so it deploys the study.
 class HomePage extends StatefulWidget {

@@ -1,4 +1,6 @@
-part of carp_study_app;
+import 'package:flutter/material.dart';
+import 'package:go_router/go_router.dart';
+import 'package:research_package/research_package.dart';
 
 class LogoutMessage extends StatelessWidget {
   const LogoutMessage({super.key});

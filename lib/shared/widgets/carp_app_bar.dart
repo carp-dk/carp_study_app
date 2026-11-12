@@ -1,4 +1,7 @@
-part of carp_study_app;
+import 'package:flutter/material.dart';
+import 'package:go_router/go_router.dart';
+import 'package:flutter_svg/flutter_svg.dart';
+import 'package:carp_study_app/core/routes.dart';
 
 /// The page title shown under the [CarpAppBar] on every shell tab, so all
 /// tabs share the same title font and padding.

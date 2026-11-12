@@ -1,4 +1,6 @@
-part of carp_study_app;
+import 'dart:async';
+import 'package:carp_core/carp_core.dart' hide Smartphone;
+import 'package:carp_study_app/core/util/app_config.dart';
 
 /// A local [ParticipationService] that does not connect to any backend.
 /// This is used when running in [DeploymentMode.local].

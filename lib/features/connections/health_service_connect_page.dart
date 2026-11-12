@@ -1,4 +1,12 @@
-part of carp_study_app;
+import 'dart:io';
+import 'package:flutter/material.dart';
+import 'package:carp_mobile_sensing/carp_mobile_sensing.dart';
+import 'package:research_package/research_package.dart';
+import 'package:carp_health_package/health_package.dart';
+import 'package:carp_study_app/features/connections/connection_list_page.dart';
+import 'package:carp_study_app/features/connections/connection_view_model.dart';
+import 'package:carp_study_app/shared/device_names.dart';
+import 'package:carp_study_app/shared/widgets/carp_app_bar.dart';
 
 /// Connects to Apple Health / Health Connect - from the Connections page, or
 /// for a protocol health [userTask], which then collects its health data.

@@ -1,4 +1,15 @@
-part of carp_study_app;
+import 'dart:async';
+import 'package:carp_serializable/carp_serializable.dart';
+import 'package:carp_core/carp_core.dart' hide Smartphone;
+import 'package:carp_mobile_sensing/carp_mobile_sensing.dart';
+import 'package:carp_webservices/carp_services/carp_services.dart';
+import 'package:carp_webservices/carp_auth/carp_auth.dart';
+import 'package:research_package/research_package.dart';
+import 'package:cognition_package/cognition_package.dart';
+import 'package:carp_study_app/core/backend/backend.dart';
+import 'package:carp_study_app/core/settings/local_settings.dart';
+import 'package:carp_study_app/core/settings/participant.dart';
+import 'package:carp_study_app/core/util/app_config.dart';
 
 /// Connection to the CAWS backend: the CAWS [app], authentication, study IDs,
 /// and informed consent upload. Singleton via `CarpBackend()`.

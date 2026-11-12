@@ -1,4 +1,14 @@
-part of carp_study_app;
+import 'dart:async';
+import 'package:flutter/foundation.dart';
+import 'package:carp_core/carp_core.dart' hide Smartphone;
+import 'package:carp_mobile_sensing/carp_mobile_sensing.dart';
+import 'package:carp_webservices/carp_services/carp_services.dart';
+import 'package:research_package/research_package.dart';
+import 'package:carp_aware_package/carp_aware_package.dart';
+import 'package:carp_study_app/core/backend/backend.dart';
+import 'package:carp_study_app/core/backend/resource_manager_factory.dart';
+import 'package:carp_study_app/core/settings/local_settings.dart';
+import 'package:carp_study_app/core/util/app_config.dart';
 
 /// Single owner of the study running on this phone: descriptor, deployment,
 /// and sensing runtime. [LocalSettings] and CAWS copies are seeded from [study].

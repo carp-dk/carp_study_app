@@ -1,4 +1,8 @@
-part of carp_study_app;
+import 'dart:async';
+import 'package:carp_mobile_sensing/carp_mobile_sensing.dart';
+import 'package:carp_study_app/features/statistics/cards/study_progress_card.dart';
+import 'package:carp_study_app/features/statistics/cards/task_completion_card.dart';
+import 'package:carp_study_app/shared/view_model.dart';
 
 /// View model for the [StudyProgressCardWidget] and [TaskCompletionCard].
 class StudyProgressCardViewModel extends ViewModel {

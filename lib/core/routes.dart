@@ -1,5 +1,3 @@
-part of carp_study_app;
-
 /// Every route path in the app - pages and notification deep links link by these,
 /// never by another feature's page class.
 abstract final class Routes {

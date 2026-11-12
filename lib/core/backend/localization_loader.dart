@@ -1,4 +1,9 @@
-part of carp_study_app;
+import 'dart:async';
+import 'package:flutter/material.dart';
+import 'package:carp_mobile_sensing/carp_mobile_sensing.dart';
+import 'package:carp_backend/carp_backend.dart';
+import 'package:research_package/research_package.dart';
+import 'package:carp_study_app/core/settings/local_settings.dart';
 
 /// A [LocalizationLoader] that knows how to load localizations from a
 /// [LocalizationManager].

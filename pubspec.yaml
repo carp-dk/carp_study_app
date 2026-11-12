@@ -30,7 +30,7 @@ dependencies:
   carp_backend: ^2.1.1
 
   research_package: ^3.2.0
-  cognition_package: ^1.9.1
+  cognition_package: ^1.9.2 # 1.9.2: Flanker NaN crash fix
 
   url_launcher: ^6.1.5
   timeago: ^3.1.0

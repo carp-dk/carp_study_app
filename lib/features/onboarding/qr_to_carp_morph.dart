@@ -1,4 +1,6 @@
-part of carp_study_app;
+import 'dart:async';
+import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 
 /// Morphs a stylised QR code into the CARP mark.
 ///

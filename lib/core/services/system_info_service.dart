@@ -1,4 +1,13 @@
-part of carp_study_app;
+import 'dart:async';
+import 'dart:io';
+import 'package:app_version_update/data/models/app_version_result.dart';
+import 'package:url_launcher/url_launcher.dart';
+import 'package:connectivity_plus/connectivity_plus.dart';
+import 'package:appcheck/appcheck.dart';
+import 'package:package_info_plus/package_info_plus.dart';
+import 'package:app_version_update/app_version_update.dart';
+import 'package:carp_mobile_sensing/carp_mobile_sensing.dart';
+import 'package:carp_study_app/core/settings/local_settings.dart';
 
 /// Device- and platform-level checks: connectivity, installed apps, and
 /// app-store updates.

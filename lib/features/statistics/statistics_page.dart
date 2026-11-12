@@ -1,4 +1,17 @@
-part of carp_study_app;
+import 'package:flutter/material.dart';
+import 'package:research_package/research_package.dart';
+import 'package:carp_study_app/features/statistics/cards/activity_card.dart';
+import 'package:carp_study_app/features/statistics/cards/distance_card.dart';
+import 'package:carp_study_app/features/statistics/cards/heart_rate_card.dart';
+import 'package:carp_study_app/features/statistics/cards/mobility_card.dart';
+import 'package:carp_study_app/features/statistics/cards/sleep_card.dart';
+import 'package:carp_study_app/features/statistics/cards/steps_card.dart';
+import 'package:carp_study_app/features/statistics/cards/study_progress_card.dart';
+import 'package:carp_study_app/features/statistics/cards/survey_card.dart';
+import 'package:carp_study_app/features/statistics/cards/task_completion_card.dart';
+import 'package:carp_study_app/features/statistics/statistics_view_model.dart';
+import 'package:carp_study_app/shared/device_names.dart';
+import 'package:carp_study_app/shared/widgets/carp_app_bar.dart';
 
 class StatisticsPage extends StatefulWidget {
   final StatisticsViewModel model;

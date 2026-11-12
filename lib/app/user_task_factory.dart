@@ -1,4 +1,6 @@
-part of carp_study_app;
+import 'package:carp_mobile_sensing/carp_mobile_sensing.dart';
+import 'package:carp_study_app/features/connections/health_connect_user_task.dart';
+import 'package:carp_study_app/features/tasks/user_tasks.dart';
 
 /// A [UserTaskFactory] that can handle the user tasks in this app.
 class AppUserTaskFactory implements UserTaskFactory {

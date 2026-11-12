@@ -1,4 +1,14 @@
-part of carp_study_app;
+import 'dart:async';
+import 'package:flutter/material.dart';
+import 'package:json_annotation/json_annotation.dart';
+import 'package:intl/intl.dart';
+import 'package:carp_core/carp_core.dart' hide Smartphone;
+import 'package:carp_mobile_sensing/carp_mobile_sensing.dart';
+import 'package:carp_webservices/carp_services/carp_services.dart';
+import 'package:carp_study_app/core/util/util.dart';
+import 'package:carp_study_app/shared/view_model.dart';
+
+part 'steps_data_model.g.dart';
 
 class StepsCardViewModel extends SerializableViewModel<WeeklySteps> {
   int? _lastStep;

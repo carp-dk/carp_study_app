@@ -1,4 +1,9 @@
-part of carp_study_app;
+import 'dart:async';
+import 'package:carp_mobile_sensing/carp_mobile_sensing.dart';
+import 'package:carp_study_app/core/services/study_service.dart';
+import 'package:carp_study_app/features/tasks/task_list_page.dart';
+import 'package:carp_study_app/shared/view_model.dart';
+import 'package:carp_study_app/main.dart';
 
 /// View model for [TaskListPage] - the user tasks to show; starts tasks and
 /// auto-completes background ones once they have run.

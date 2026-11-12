@@ -1,4 +1,10 @@
-part of carp_study_app;
+import 'dart:async';
+import 'package:carp_core/carp_core.dart' hide Smartphone;
+import 'package:carp_mobile_sensing/carp_mobile_sensing.dart';
+import 'package:carp_webservices/carp_services/carp_services.dart';
+import 'package:carp_study_app/core/backend/carp_backend.dart';
+import 'package:carp_study_app/core/settings/local_settings.dart';
+import 'package:carp_study_app/core/util/util.dart';
 
 /// Fetches raw measurements from CAWS for the trailing week, for the
 /// Statistics page to backfill its cards with.

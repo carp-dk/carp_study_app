@@ -1,4 +1,20 @@
-part of carp_study_app;
+import 'dart:async';
+import 'package:flutter/foundation.dart';
+import 'package:flutter/services.dart';
+import 'package:carp_core/carp_core.dart' hide Smartphone;
+import 'package:carp_mobile_sensing/carp_mobile_sensing.dart';
+import 'package:carp_backend/carp_backend.dart';
+import 'package:carp_study_app/core/backend/carp_backend.dart';
+import 'package:carp_study_app/core/services/auth_service.dart';
+import 'package:carp_study_app/core/services/consent_service.dart';
+import 'package:carp_study_app/core/services/message_service.dart';
+import 'package:carp_study_app/core/services/study_service.dart';
+import 'package:carp_study_app/core/services/system_info_service.dart';
+import 'package:carp_study_app/features/study/consent_pdf.dart';
+import 'package:carp_study_app/features/study/home_page.dart';
+import 'package:carp_study_app/features/study/study_about_page.dart';
+import 'package:carp_study_app/shared/view_model.dart';
+import 'package:carp_study_app/main.dart';
 
 /// View model for [HomePage] and [StudyAboutPage] - study description,
 /// deployment status, and published messages, incl. pull-to-refresh.

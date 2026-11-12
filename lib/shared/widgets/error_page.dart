@@ -1,4 +1,6 @@
-part of carp_study_app;
+import 'package:flutter/material.dart';
+import 'package:go_router/go_router.dart';
+import 'package:carp_study_app/core/routes.dart';
 
 class ErrorPage extends StatelessWidget {
   const ErrorPage({super.key});

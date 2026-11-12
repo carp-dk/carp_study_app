@@ -1,4 +1,5 @@
-part of carp_study_app;
+import 'package:flutter/material.dart';
+import 'package:research_package/research_package.dart';
 
 class AnonymousCard extends StatelessWidget {
   const AnonymousCard({super.key});

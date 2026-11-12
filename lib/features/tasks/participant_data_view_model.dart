@@ -1,4 +1,8 @@
-part of carp_study_app;
+import 'package:flutter/material.dart';
+import 'package:carp_core/carp_core.dart' hide Smartphone;
+import 'package:carp_study_app/features/tasks/participant_data_page.dart';
+import 'package:carp_study_app/shared/view_model.dart';
+import 'package:carp_study_app/main.dart';
 
 /// View model for [ParticipantDataPage] - the participant data the study
 /// expects, written back to the deployment when filled in.
@@ -8,39 +12,39 @@ class ParticipantDataPageViewModel extends ViewModel {
   /// Save the participant [data] for the current study.
   void setParticipantData(Map<String, Data> data) => bloc.study.setParticipantData(data);
 
-  late TextEditingController _address1Controller;
-  late TextEditingController _address2Controller;
-  late TextEditingController _streetController;
-  late TextEditingController _postalCodeController;
-  late TextEditingController _countryController;
+  late TextEditingController address1Controller;
+  late TextEditingController address2Controller;
+  late TextEditingController streetController;
+  late TextEditingController postalCodeController;
+  late TextEditingController countryController;
 
-  late TextEditingController _effectiveDateController;
-  late TextEditingController _diagnosisDescriptionController;
-  late TextEditingController _icd11CodeController;
-  late TextEditingController _conclusionController;
+  late TextEditingController effectiveDateController;
+  late TextEditingController diagnosisDescriptionController;
+  late TextEditingController icd11CodeController;
+  late TextEditingController conclusionController;
 
-  late TextEditingController _firstNameController;
-  late TextEditingController _middleNameController;
-  late TextEditingController _lastNameController;
+  late TextEditingController firstNameController;
+  late TextEditingController middleNameController;
+  late TextEditingController lastNameController;
 
-  late TextEditingController _phoneNumberCodeController;
-  late TextEditingController _phoneNumberController;
+  late TextEditingController phoneNumberCodeController;
+  late TextEditingController phoneNumberController;
 
-  late TextEditingController _ssnCountryController;
-  late TextEditingController _ssnController;
+  late TextEditingController ssnCountryController;
+  late TextEditingController ssnController;
 
-  late FocusNode _address1FocusNode;
-  late FocusNode _address2FocusNode;
-  late FocusNode _streetFocusNode;
-  late FocusNode _postalCodeFocusNode;
-  late FocusNode _countryFocusNode;
-  late FocusNode _effectiveDateFocusNode;
-  late FocusNode _diagnosisDescriptionFocusNode;
-  late FocusNode _icd11CodeFocusNode;
-  late FocusNode _conclusionFocusNode;
-  late FocusNode _firstNameFocusNode;
-  late FocusNode _middleNameFocusNode;
-  late FocusNode _lastNameFocusNode;
+  late FocusNode address1FocusNode;
+  late FocusNode address2FocusNode;
+  late FocusNode streetFocusNode;
+  late FocusNode postalCodeFocusNode;
+  late FocusNode countryFocusNode;
+  late FocusNode effectiveDateFocusNode;
+  late FocusNode diagnosisDescriptionFocusNode;
+  late FocusNode icd11CodeFocusNode;
+  late FocusNode conclusionFocusNode;
+  late FocusNode firstNameFocusNode;
+  late FocusNode middleNameFocusNode;
+  late FocusNode lastNameFocusNode;
 
   late StepField address1Field;
   late StepField address2Field;
@@ -57,5 +61,5 @@ class ParticipantDataPageViewModel extends ViewModel {
   late StepField phoneNumberField;
   late StepField ssnField;
 
-  late Set<TextEditingController> _nonOptionalControllers;
+  late Set<TextEditingController> nonOptionalControllers;
 }

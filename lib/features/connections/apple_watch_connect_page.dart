@@ -1,4 +1,13 @@
-part of carp_study_app;
+import 'dart:async';
+import 'package:flutter/material.dart';
+import 'package:url_launcher/url_launcher.dart';
+import 'package:intl/intl.dart';
+import 'package:carp_mobile_sensing/carp_mobile_sensing.dart';
+import 'package:research_package/research_package.dart';
+import 'package:carp_aware_package/carp_aware_package.dart';
+import 'package:carp_study_app/features/connections/carp_sphere_morph.dart';
+import 'package:carp_study_app/features/connections/connection_list_page.dart';
+import 'package:carp_study_app/features/connections/connection_view_model.dart';
 
 /// Step-by-step Apple Watch setup: pair, install CARP on the watch, open it,
 /// and watch the data come in. Each step is checked against the live
@@ -305,7 +314,7 @@ class _AppleWatchConnectPageState extends State<AppleWatchConnectPage> {
           width: 24,
           height: 24,
           child: ok
-              ? const Icon(Icons.check_circle, color: _statusSuccess)
+              ? const Icon(Icons.check_circle, color: statusSuccess)
               : const Padding(padding: EdgeInsets.all(3), child: CircularProgressIndicator(strokeWidth: 2)),
         ),
         const SizedBox(width: 12),

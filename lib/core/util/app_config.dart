@@ -1,4 +1,6 @@
-part of carp_study_app;
+import 'package:flutter/foundation.dart';
+import 'package:carp_mobile_sensing/carp_mobile_sensing.dart';
+import 'package:research_package/research_package.dart';
 
 /// How to deploy a study.
 enum DeploymentMode {

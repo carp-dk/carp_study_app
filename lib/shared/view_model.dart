@@ -1,4 +1,5 @@
-part of carp_study_app;
+import 'package:flutter/material.dart';
+import 'package:carp_mobile_sensing/carp_mobile_sensing.dart';
 
 /// Base view model - a [ChangeNotifier] that notifies its listeners
 /// (incl. [ListenableBuilder] widgets) when changed.

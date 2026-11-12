@@ -1,4 +1,12 @@
-part of carp_study_app;
+import 'dart:collection';
+import 'dart:math';
+import 'package:flutter/material.dart';
+import 'package:fl_chart/fl_chart.dart';
+import 'package:carp_context_package/carp_context_package.dart';
+import 'package:research_package/research_package.dart';
+import 'package:carp_study_app/features/statistics/cards/activity_data_model.dart';
+import 'package:carp_study_app/features/statistics/chart_helpers.dart';
+import 'package:carp_study_app/shared/widgets/studies_material.dart';
 
 class ActivityCard extends StatefulWidget {
   final ActivityCardViewModel model;

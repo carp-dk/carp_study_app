@@ -1,4 +1,16 @@
-part of carp_study_app;
+import 'dart:async';
+import 'dart:collection';
+import 'dart:math';
+import 'package:flutter/material.dart';
+import 'package:flutter/scheduler.dart';
+import 'package:carp_core/carp_core.dart' hide Smartphone;
+import 'package:carp_mobile_sensing/carp_mobile_sensing.dart';
+import 'package:carp_polar_package/carp_polar_package.dart';
+import 'package:research_package/research_package.dart';
+import 'package:carp_movesense_package/carp_movesense_package.dart';
+import 'package:carp_study_app/features/connections/carp_sphere_morph.dart';
+import 'package:carp_study_app/features/connections/connection_view_model.dart';
+import 'package:carp_study_app/main.dart';
 
 /// Live data from a connected Movesense or Polar sensor, so the participant sees it works.
 class DeviceLiveDataPage extends StatelessWidget {

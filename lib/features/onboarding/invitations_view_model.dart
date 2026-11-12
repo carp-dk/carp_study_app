@@ -1,4 +1,13 @@
-part of carp_study_app;
+import 'dart:async';
+import 'dart:collection';
+import 'package:carp_core/carp_core.dart' hide Smartphone;
+import 'package:carp_mobile_sensing/carp_mobile_sensing.dart';
+import 'package:carp_study_app/core/routes.dart';
+import 'package:carp_study_app/core/services/auth_service.dart';
+import 'package:carp_study_app/features/onboarding/invitation_details_page.dart';
+import 'package:carp_study_app/features/onboarding/invitation_list_page.dart';
+import 'package:carp_study_app/shared/view_model.dart';
+import 'package:carp_study_app/main.dart';
 
 /// View model for [InvitationListPage] and [InvitationDetailsPage] - the
 /// invitations fetched from CAWS; accepts one as the app's active study.

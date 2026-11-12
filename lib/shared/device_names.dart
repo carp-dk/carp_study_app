@@ -1,4 +1,10 @@
-part of carp_study_app;
+import 'dart:io';
+import 'package:carp_mobile_sensing/carp_mobile_sensing.dart';
+import 'package:carp_context_package/carp_context_package.dart';
+import 'package:carp_polar_package/carp_polar_package.dart';
+import 'package:carp_health_package/health_package.dart';
+import 'package:carp_movesense_package/carp_movesense_package.dart';
+import 'package:carp_aware_package/carp_aware_package.dart';
 
 /// Health data lives in Apple Health on iOS and Health Connect on Android.
 String get healthPlatformName => Platform.isIOS ? 'Apple Health' : 'Health Connect';

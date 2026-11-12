@@ -1,4 +1,5 @@
-part of carp_study_app;
+import 'dart:math';
+import 'package:flutter/material.dart';
 
 /// What [CarpSphereMorph] shows. The watch app draws the same thing.
 enum CarpMorphMode {

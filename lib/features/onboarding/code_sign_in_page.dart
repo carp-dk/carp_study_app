@@ -1,4 +1,15 @@
-part of carp_study_app;
+import 'dart:async';
+import 'dart:collection';
+import 'dart:math';
+import 'dart:ui' as ui;
+import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
+import 'package:go_router/go_router.dart';
+import 'package:mobile_scanner/mobile_scanner.dart';
+import 'package:research_package/research_package.dart';
+import 'package:carp_study_app/features/onboarding/invitations_view_model.dart';
+import 'package:carp_study_app/features/onboarding/login_view_model.dart';
+import 'package:carp_study_app/features/onboarding/qr_to_carp_morph.dart';
 
 /// Anonymous sign-in: either scan the QR code of a study invitation, or type
 /// in the short code printed next to it.

@@ -1,4 +1,11 @@
-part of carp_study_app;
+import 'package:flutter/material.dart';
+import 'package:go_router/go_router.dart';
+import 'package:carp_core/carp_core.dart' hide Smartphone;
+import 'package:research_package/research_package.dart';
+import 'package:carp_study_app/core/routes.dart';
+import 'package:carp_study_app/features/onboarding/invitations_view_model.dart';
+import 'package:carp_study_app/shared/widgets/carp_app_bar.dart';
+import 'package:carp_study_app/shared/widgets/studies_material.dart';
 
 class InvitationListPage extends StatefulWidget {
   final InvitationsViewModel model;

@@ -1,4 +1,25 @@
-part of carp_study_app;
+import 'dart:async';
+import 'package:flutter/foundation.dart';
+import 'package:flutter/material.dart';
+import 'package:go_router/go_router.dart';
+import 'package:carp_core/carp_core.dart' hide Smartphone;
+import 'package:carp_mobile_sensing/carp_mobile_sensing.dart';
+import 'package:carp_backend/carp_backend.dart';
+import 'package:carp_study_app/app/app_view_model.dart';
+import 'package:carp_study_app/app/carp_study_app.dart';
+import 'package:carp_study_app/app/user_task_factory.dart';
+import 'package:carp_study_app/core/backend/resource_manager_factory.dart';
+import 'package:carp_study_app/core/routes.dart';
+import 'package:carp_study_app/core/sensing/background_sensing_service.dart';
+import 'package:carp_study_app/core/sensing/sensing.dart';
+import 'package:carp_study_app/core/services/auth_service.dart';
+import 'package:carp_study_app/core/services/consent_service.dart';
+import 'package:carp_study_app/core/services/message_service.dart';
+import 'package:carp_study_app/core/services/study_service.dart';
+import 'package:carp_study_app/core/services/system_info_service.dart';
+import 'package:carp_study_app/core/settings/local_settings.dart';
+import 'package:carp_study_app/core/settings/participant.dart';
+import 'package:carp_study_app/core/util/app_config.dart';
 
 /// The [AppBloc] state, ordered by progress - a state implies the ones before it.
 enum AppState {
@@ -159,11 +180,11 @@ class AppBloc extends ChangeNotifier {
     _userTaskNotificationSubscription ??= AppTaskController().userTaskEvents.listen((userTask) {
       if (userTask.state == UserTaskState.notified) {
         userTask.onStart();
-        if (userTask.hasWidget) _rootNavigatorKey.currentContext?.push('${Routes.task}/${userTask.id}');
+        if (userTask.hasWidget) rootNavigatorKey.currentContext?.push('${Routes.task}/${userTask.id}');
       }
     });
     _notificationTapSubscription ??= SmartPhoneClientManager().notificationManager.notificationTaps.listen(
-      (route) => _rootNavigatorKey.currentContext?.push(route),
+      (route) => rootNavigatorKey.currentContext?.push(route),
     );
   }
 

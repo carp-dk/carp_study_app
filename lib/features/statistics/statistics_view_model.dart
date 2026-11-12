@@ -1,4 +1,25 @@
-part of carp_study_app;
+import 'dart:async';
+import 'package:carp_core/carp_core.dart' hide Smartphone;
+import 'package:carp_mobile_sensing/carp_mobile_sensing.dart';
+import 'package:carp_audio_package/media.dart';
+import 'package:carp_context_package/carp_context_package.dart';
+import 'package:carp_polar_package/carp_polar_package.dart';
+import 'package:carp_health_package/health_package.dart';
+import 'package:carp_movesense_package/carp_movesense_package.dart';
+import 'package:carp_aware_package/carp_aware_package.dart';
+import 'package:carp_study_app/core/services/data_stream_query_service.dart';
+import 'package:carp_study_app/core/services/study_service.dart';
+import 'package:carp_study_app/features/statistics/cards/activity_data_model.dart';
+import 'package:carp_study_app/features/statistics/cards/heart_rate_data_model.dart';
+import 'package:carp_study_app/features/statistics/cards/measurements_data_model.dart';
+import 'package:carp_study_app/features/statistics/cards/mobility_data_model.dart';
+import 'package:carp_study_app/features/statistics/cards/sleep_data_model.dart';
+import 'package:carp_study_app/features/statistics/cards/steps_data_model.dart';
+import 'package:carp_study_app/features/statistics/cards/study_progress_data_model.dart';
+import 'package:carp_study_app/features/statistics/cards/task_data_model.dart';
+import 'package:carp_study_app/features/statistics/statistics_page.dart';
+import 'package:carp_study_app/shared/view_model.dart';
+import 'package:carp_study_app/main.dart';
 
 /// View model for [StatisticsPage] - which measures the deployment collects,
 /// plus one view model per card. The page only lays the results out.

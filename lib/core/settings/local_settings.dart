@@ -1,4 +1,9 @@
-part of carp_study_app;
+import 'dart:async';
+import 'dart:convert';
+import 'package:carp_mobile_sensing/carp_mobile_sensing.dart';
+import 'package:carp_webservices/carp_auth/carp_auth.dart';
+import 'package:carp_study_app/core/settings/participant.dart';
+import 'package:carp_study_app/core/util/app_config.dart';
 
 /// Stores settings across app restart: [user], [participant], and [study].
 /// In local mode they are kept in memory only, so every run starts fresh.
@@ -53,7 +58,7 @@ class LocalSettings {
   /// study by using a specific device.
   ///
   /// The [participant] is typically set based on an invitation set in the
-  /// [AppBloc.setStudyInvitation] method.
+  /// `AppBloc.setStudyInvitation` method.
   Participant? get participant {
     if (_participant == null) {
       String? userString = _settings?.preferences?.getString(participantKey);
