@@ -73,6 +73,11 @@ void main() {
 
     await Backend().signOut();
     expect(await ConsentService(LocalResourceManager()).hasSignedConsent(study), isFalse);
+
+    // After a restart the study is restored from CAMS' database - its consent was signed.
+    await PersistenceService().saveStudy(study);
+    expect(await ConsentService(LocalResourceManager()).hasSignedConsent(study), isTrue);
+    await PersistenceService().removeStudy(study);
   });
 
   test('nothing is written to shared preferences', () async {

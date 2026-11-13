@@ -31,7 +31,11 @@ class LocalBackend implements Backend {
 
   @override
   // Sensing registers the device types (location, Polar, ...) the protocol needs to deserialize.
-  Future<void> initialize() async => Sensing();
+  // The database holds the deployed studies that count as consent signed.
+  Future<void> initialize() async {
+    Sensing();
+    await PersistenceService().init();
+  }
 
   @override
   bool get isAuthenticated => _user != null;
@@ -115,6 +119,10 @@ class LocalBackend implements Backend {
   }
 
   @override
-  Future<InformedConsentInput?> getInformedConsentByRole(String studyDeploymentId, String? role) async =>
-      _consents[studyDeploymentId];
+  Future<InformedConsentInput?> getInformedConsentByRole(String studyDeploymentId, String? role) async {
+    if (_consents[studyDeploymentId] case final consent?) return consent;
+    // A stored study means consent was signed before it - CAMS only adds the study after.
+    final deployed = (await PersistenceService().getAllStudies()).any((s) => s.studyDeploymentId == studyDeploymentId);
+    return deployed ? InformedConsentInput(userId: _user?.id ?? '', name: '', consent: '', signatureImage: '') : null;
+  }
 }
