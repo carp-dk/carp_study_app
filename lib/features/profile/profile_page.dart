@@ -116,6 +116,13 @@ class ProfilePageState extends State<ProfilePage> {
                     title: locale.translate('pages.profile.leave_study'),
                     onTap: _showLeaveStudyConfirmationDialog,
                   ),
+                  if (widget.model.isLocal)
+                    _actionCard(
+                      icon: Icons.delete_forever,
+                      iconColor: const Color(0xffEB4B62),
+                      title: locale.translate('pages.profile.reset_local_data'),
+                      onTap: _showResetLocalDataConfirmationDialog,
+                    ),
                   _actionCard(
                     icon: Icons.power_settings_new,
                     iconColor: const Color(0xffEB4B62),
@@ -248,6 +255,15 @@ class ProfilePageState extends State<ProfilePage> {
     onConfirmed: () async {
       final signedOut = await widget.model.leaveStudy();
       if (mounted) context.go(signedOut ? Routes.login : Routes.invitations);
+    },
+  );
+
+  Future<void> _showResetLocalDataConfirmationDialog() => _confirm(
+    actionKey: 'pages.profile.reset_local_data',
+    contentKey: 'pages.profile.reset_local_data.confirmation',
+    onConfirmed: () async {
+      await widget.model.resetLocalData();
+      if (mounted) context.go(Routes.login);
     },
   );
 

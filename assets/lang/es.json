@@ -96,6 +96,8 @@
   "pages.profile.log_out": "Cerrar sesión",
   "pages.profile.log_out.confirmation": "Estás a punto de cerrar sesión et abandonar el estudio. ¿Estás seguro?",
   "pages.profile.leave_study.confirmation": "Estás a punto de abandonar el estudio. Dejarás de participar en el es estudio. ¿Estás seguro?",
+  "pages.profile.reset_local_data": "Restablecer datos locales",
+  "pages.profile.reset_local_data.confirmation": "Esto abandona el estudio, cierra tu sesión y borra todas las tareas y los datos recopilados en este teléfono. ¿Estás seguro?",
   "announcement": "Anuncio",
   "article": "Articulo",
   "news": "Noticia",

@@ -140,6 +140,8 @@
   "pages.profile.log_out": "Sign Out",
   "pages.profile.log_out.confirmation": "You are about to leave this study and log out. The operating system will open a browser to log you out. Are you sure?",
   "pages.profile.leave_study.confirmation": "You are about to leave the study. You will no longer participate in this study. Are you sure?",
+  "pages.profile.reset_local_data": "Reset local data",
+  "pages.profile.reset_local_data.confirmation": "This leaves the study, signs you out and deletes all tasks and collected data on this phone. Are you sure?",
   "announcements": "Announcements",
   "announcement": "Announcement",
   "article": "Article",
