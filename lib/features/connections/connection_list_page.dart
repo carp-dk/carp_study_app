@@ -212,7 +212,7 @@ class ConnectionListPageState extends State<ConnectionListPage> {
                     ? () => _showLiveData(device)
                     : device.status == DeviceStatus.connected && _isLocal
                     ? () => _showWrittenMeasurements(device)
-                    : device.status == DeviceStatus.connected || device.status == DeviceStatus.connecting
+                    : device.status == DeviceStatus.connected
                     ? null
                     : () async => await _hardwareDeviceClicked(device),
                 trailing: switch (device.deviceStatusIcon) {
@@ -432,6 +432,10 @@ class ConnectionListPageState extends State<ConnectionListPage> {
   }
 
   Future<void> _hardwareDeviceClicked(ConnectionViewModel device) async {
+    if (device.status == DeviceStatus.connecting || device.status == DeviceStatus.reconnected) {
+      if (!await device.deviceManager.disconnect()) return;
+      if (!mounted) return;
+    }
     // Talks to the watch app over WatchConnectivity - no BLE scan.
     if (device.deviceManager is AppleWatchDeviceManager) {
       await Navigator.of(
