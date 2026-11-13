@@ -60,12 +60,15 @@ class LocalBackend implements Backend {
     LocalSettings().isAnonymous = anonymous;
   }
 
+  /// Consents outlive sign-out, so leaving and rejoining doesn't ask again.
   @override
   Future<void> signOut() async {
     _user = null;
     _invitation = null;
-    _consents.clear();
   }
+
+  /// Forget all signed consents - used by Reset local data.
+  void clearConsents() => _consents.clear();
 
   /// The invitation to the local study - deployed on the phone on first request.
   @override

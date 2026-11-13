@@ -56,7 +56,7 @@ void main() {
     expect((await AuthService().getInvitations()).single.studyDeploymentId, study.studyDeploymentId);
   });
 
-  test('signed consent is kept in memory until sign-out', () async {
+  test('signed consent is kept in memory until local data is reset', () async {
     final study = SmartphoneStudy(studyDeploymentId: 'dep-consent', deviceRoleName: 'phone');
     LocalSettings().study = study;
     await Backend().authenticate();
@@ -71,7 +71,12 @@ void main() {
     await ConsentService(LocalResourceManager()).upload(result);
     expect(await ConsentService(LocalResourceManager()).hasSignedConsent(study), isTrue);
 
+    // Leaving signs out - rejoining must not ask again.
     await Backend().signOut();
+    await Backend().authenticate();
+    expect(await ConsentService(LocalResourceManager()).hasSignedConsent(study), isTrue);
+
+    LocalBackend().clearConsents();
     expect(await ConsentService(LocalResourceManager()).hasSignedConsent(study), isFalse);
 
     // After a restart the study is restored from CAMS' database - its consent was signed.
