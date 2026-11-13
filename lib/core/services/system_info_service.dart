@@ -8,6 +8,7 @@ import 'package:package_info_plus/package_info_plus.dart';
 import 'package:app_version_update/app_version_update.dart';
 import 'package:carp_mobile_sensing/carp_mobile_sensing.dart';
 import 'package:carp_study_app/core/settings/local_settings.dart';
+import 'package:carp_study_app/core/util/app_config.dart';
 
 /// Device- and platform-level checks: connectivity, installed apps, and
 /// app-store updates.
@@ -24,8 +25,9 @@ class SystemInfoService {
   /// Any active interface counts as connected. We deliberately do NOT restrict
   /// to wifi/mobile: the iOS Simulator, desktops, and wired setups report
   /// `ethernet`/`vpn`/`other` while still having working internet, so limiting
-  /// to wifi/mobile falsely reports "offline".
+  /// to wifi/mobile falsely reports "offline". Local mode runs offline, so it always counts as connected.
   Future<bool> checkConnectivity() async {
+    if (AppConfig.deploymentMode == DeploymentMode.local) return true;
     final results = await _connectivity.checkConnectivity();
     return results.any((result) => result != ConnectivityResult.none);
   }
