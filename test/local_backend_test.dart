@@ -49,6 +49,11 @@ void main() {
       study.deviceRoleName,
     );
     expect(deployment?.deviceConfiguration.roleName, study.deviceRoleName);
+
+    // A new sign-in (as after a restart) must give the same deployment - not a second study.
+    await Backend().signOut();
+    await Backend().authenticate();
+    expect((await AuthService().getInvitations()).single.studyDeploymentId, study.studyDeploymentId);
   });
 
   test('signed consent is kept in memory until sign-out', () async {

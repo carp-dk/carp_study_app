@@ -78,7 +78,8 @@ class LocalBackend implements Backend {
     final device = protocol.primaryDevices.whereType<Smartphone>().firstOrNull;
     if (device == null) throw StateError('The local protocol has no Smartphone primary device.');
     SmartphoneDeploymentService().thisPhone = device;
-    final status = await SmartphoneDeploymentService().createStudyDeployment(protocol);
+    // One deployment id per protocol - a fresh id each launch makes CAMS restore the old study next to the new one.
+    final status = await SmartphoneDeploymentService().createStudyDeployment(protocol, [], protocol.id);
     final role = protocol.participantRoles?.firstOrNull?.role;
 
     // CAWS sends the invitation text as plain text, but the protocol holds translation
