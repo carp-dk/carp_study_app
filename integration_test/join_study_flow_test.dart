@@ -108,7 +108,8 @@ String _diagnostics() =>
     'bloc.state=${bloc.state}, hasStudy=${bloc.study.hasStudy}, isDeployed=${bloc.study.isDeployed}, '
     'isRunning=${bloc.study.isRunning}, '
     'consentPage=${find.byType(InformedConsentPage).evaluate().isNotEmpty}, '
-    'homePage=${find.byType(HomePage).evaluate().isNotEmpty}';
+    'homePage=${find.byType(HomePage).evaluate().isNotEmpty}, '
+    'location=${rootNavigatorKey.currentContext == null ? null : GoRouter.of(rootNavigatorKey.currentContext!).state.matchedLocation}';
 
 void main() {
   IntegrationTestWidgetsFlutterBinding.ensureInitialized();
@@ -135,7 +136,8 @@ void main() {
       // without --dart-define=deployment-mode=local defaults to production and
       // the test would silently skip. Set before bloc.initialize() reads them.
       AppConfig.deploymentMode = DeploymentMode.local;
-      AppConfig.debugLevel = DebugLevel.debug;
+      // Quiet - the CAMS log floods debugPrint and failure reports get dropped.
+      AppConfig.debugLevel = DebugLevel.none;
 
       mockSimulatorPlatformChannels();
 
@@ -190,18 +192,12 @@ void main() {
       expect(SmartPhoneClientManager().studies, contains(study));
 
       // Profile -> Sign Out -> confirm, as the user does it.
-      await tester.tap(find.byTooltip('Profile'));
-      await pumpUntil(tester, () => find.byType(ProfilePage).evaluate().isNotEmpty, reason: 'profile page');
-      await tester.scrollUntilVisible(find.byIcon(Icons.power_settings_new), 300);
-      await tester.tap(find.byIcon(Icons.power_settings_new));
-      await pumpUntil(tester, () => find.byType(AlertDialog).evaluate().isNotEmpty, reason: 'sign out confirmation');
-      await tester.tap(find.descendant(of: find.byType(AlertDialog), matching: find.byType(TextButton)).last);
+      await tapProfileAction(tester, Icons.power_settings_new);
       await pumpUntil(
         tester,
         () => find.byType(LoginPage).evaluate().isNotEmpty,
         reason: 'login page after signing out',
       );
-
       // Back to the initial state, with nothing of the study left on the phone.
       expect(bloc.state, AppState.initialized);
       expect(bloc.auth.isAuthenticated, isFalse);
@@ -216,12 +212,64 @@ void main() {
         isEmpty,
       );
       expect(await PersistenceService().getStudy(study.studyDeploymentId, study.deviceRoleName), isNull);
-      expect(await bloc.consent.hasSignedConsent(study), isFalse);
+      // Local mode remembers the signed consent until Reset local data.
+      expect(await bloc.consent.hasSignedConsent(study), isTrue);
       // Dequeued tasks are deleted from the database asynchronously.
       for (var i = 0; i < 20 && await persistedTasks(); i++) {
         await tester.pump(const Duration(milliseconds: 250));
       }
       expect(await persistedTasks(), isFalse);
+
+      // Rejoin: straight to the home page, no consent page.
+      await rejoin(tester);
+
+      // Profile -> Leave study: the only invitation, so it signs out.
+      await tapProfileAction(tester, Icons.logout);
+      await pumpUntil(tester, () => find.byType(LoginPage).evaluate().isNotEmpty, reason: 'login page after leaving');
+      expect(bloc.study.hasStudy, isFalse);
+      await rejoin(tester);
+
+      // Profile -> Reset local data: consent is forgotten.
+      await tapProfileAction(tester, Icons.delete_forever);
+      await pumpUntil(tester, () => find.byType(LoginPage).evaluate().isNotEmpty, reason: 'login page after reset');
+      expect(await bloc.consent.hasSignedConsent(study), isFalse);
+      expect(await PersistenceService().getStudy(study.studyDeploymentId, study.deviceRoleName), isNull);
     },
   );
+}
+
+/// Sign in and accept the invitation again - with consent already signed the
+/// app must go to the home page without showing the consent page.
+Future<void> rejoin(WidgetTester tester) async {
+  // Let the shell's exit transition finish, as a user would.
+  final settled = DateTime.now().add(const Duration(seconds: 2));
+  await pumpUntil(tester, () => DateTime.now().isAfter(settled));
+  await bloc.auth.authenticate();
+  final invitations = bloc.appViewModel.invitationsListViewModel;
+  await invitations.loadInvitations();
+  invitations.accept(invitations.invitations.single);
+  GoRouter.of(tester.element(find.byType(LoginPage))).go(Routes.root);
+  var consentShown = false;
+  await pumpUntil(tester, () {
+    consentShown |= find.byType(InformedConsentPage).evaluate().isNotEmpty;
+    return find.byType(HomePage).evaluate().isNotEmpty && bloc.study.isRunning;
+  }, reason: 'home page after rejoining');
+  debugPrint('rejoin: consentShown=$consentShown');
+  expect(consentShown, isFalse, reason: 'consent asked again on rejoin');
+}
+
+/// Profile -> the action with [icon] -> confirm.
+Future<void> tapProfileAction(WidgetTester tester, IconData icon) async {
+  await tester.tap(find.byTooltip('Profile'));
+  await pumpUntil(tester, () => find.byType(ProfilePage).evaluate().isNotEmpty, reason: 'profile page');
+  final profile = find.byType(ProfilePage).last;
+  final action = find.descendant(of: profile, matching: find.byIcon(icon));
+  await tester.scrollUntilVisible(
+    action,
+    300,
+    scrollable: find.descendant(of: profile, matching: find.byType(Scrollable)).first,
+  );
+  await tester.tap(action);
+  await pumpUntil(tester, () => find.byType(AlertDialog).evaluate().isNotEmpty, reason: 'confirmation dialog');
+  await tester.tap(find.descendant(of: find.byType(AlertDialog), matching: find.byType(TextButton)).last);
 }
