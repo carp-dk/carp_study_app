@@ -5,6 +5,9 @@
 // Run on a simulator or device with:
 //
 //   flutter test integration_test
+import 'dart:convert';
+
+import 'package:carp_core/carp_core.dart' show Measurement, CarpDataTypes;
 import 'package:carp_mobile_sensing/carp_mobile_sensing.dart';
 import 'package:carp_backend/carp_backend.dart';
 import 'package:cognition_package/cognition_package.dart';
@@ -185,6 +188,7 @@ void main() {
       await pumpUntil(tester, () => find.byType(HomePage).evaluate().isNotEmpty, reason: 'home page to be shown');
 
       final study = bloc.study.study!;
+      await expectMeasurementsStored(tester, study.studyDeploymentId);
       bool isOurs(String? deploymentId) => deploymentId == study.studyDeploymentId;
       Future<bool> persistedTasks() async =>
           (await PersistenceService().getUserTasks()).any((t) => isOurs(t.studyDeploymentId));
@@ -236,6 +240,35 @@ void main() {
       expect(await PersistenceService().getStudy(study.studyDeploymentId, study.deviceRoleName), isNull);
     },
   );
+}
+
+/// Local mode stores measurements in SQLite: wait for the first rows, then check
+/// every row is for this deployment and parses back to the type it was stored as.
+Future<void> expectMeasurementsStored(WidgetTester tester, String deploymentId) async {
+  final manager = bloc.study.controller!.dataManager;
+  expect(manager, isA<SQLiteDataManager>(), reason: 'local mode must store data in SQLite');
+  final db = (manager as SQLiteDataManager).database!;
+  var rows = <Map<String, Object?>>[];
+  final end = DateTime.now().add(const Duration(seconds: 30));
+  while (DateTime.now().isBefore(end)) {
+    await tester.runAsync(() async => rows = await db.query(SQLiteDataManager.MEASUREMENT_TABLE_NAME));
+    if (rows.any((r) => r[SQLiteDataManager.DATATYPE_COLUMN] == DeviceSamplingPackage.DEVICE_INFORMATION)) break;
+    await tester.pump(const Duration(milliseconds: 500));
+  }
+  final counts = <Object?, int>{};
+  for (final row in rows) {
+    counts.update(row[SQLiteDataManager.DATATYPE_COLUMN], (n) => n + 1, ifAbsent: () => 1);
+    expect(row[SQLiteDataManager.DEPLOYMENT_ID_COLUMN], deploymentId);
+    final measurement = Measurement.fromJson(
+      jsonDecode(row[SQLiteDataManager.MEASUREMENT_COLUMN]! as String) as Map<String, dynamic>,
+    );
+    expect(measurement.dataType.toString(), row[SQLiteDataManager.DATATYPE_COLUMN]);
+    if (row[SQLiteDataManager.DATATYPE_COLUMN] == CarpDataTypes.ERROR) {
+      debugPrint('stored error: ${row[SQLiteDataManager.MEASUREMENT_COLUMN]}');
+    }
+  }
+  debugPrint('stored: apiLevel=${bloc.study.deployment?.protocolApiLevel} $counts');
+  expect(counts, contains(DeviceSamplingPackage.DEVICE_INFORMATION));
 }
 
 /// Sign in and accept the invitation again - with consent already signed the
