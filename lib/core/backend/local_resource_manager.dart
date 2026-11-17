@@ -23,7 +23,7 @@ class LocalResourceManager
   static final String basePath = 'assets/carp';
 
   final Map<String, Map<String, String>> _translations = {};
-  RPOrderedTask? _informedConsent;
+  Map<String, dynamic>? _informedConsent;
   final Map<String, Message> _messages = {};
   SmartphoneStudyProtocol? _protocol;
 
@@ -40,15 +40,14 @@ class LocalResourceManager
   // INFORMED CONSENT
 
   @override
-  RPOrderedTask? get informedConsent => _informedConsent;
+  Map<String, dynamic>? get informedConsent => _informedConsent;
 
   @override
-  Future<RPOrderedTask?> getConsentDocument({bool refresh = false}) async {
+  Future<Map<String, dynamic>?> getConsentDocument({bool refresh = false}) async {
     if (_informedConsent == null) {
       try {
         var jsonString = await rootBundle.loadString('$basePath/resources/consent.json');
-        Map<String, dynamic> jsonMap = json.decode(jsonString) as Map<String, dynamic>;
-        _informedConsent = RPOrderedTask.fromJson(jsonMap);
+        _informedConsent = json.decode(jsonString) as Map<String, dynamic>;
       } catch (error) {
         warning(
           "$runtimeType - Could not load a local informed consent. "
@@ -60,7 +59,7 @@ class LocalResourceManager
   }
 
   @override
-  Future<bool> setConsentDocument(RPOrderedTask informedConsent) async {
+  Future<bool> setConsentDocument(Map<String, dynamic> informedConsent) async {
     _informedConsent = informedConsent;
     return true;
   }

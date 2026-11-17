@@ -35,6 +35,7 @@ class HomePageViewModel extends ViewModel {
   final List<StreamSubscription<DeviceStatus>> _deviceSubs = [];
   StreamSubscription<UserTask>? _userTaskSub;
   StreamSubscription<int>? _messageSub;
+  StreamSubscription<StudyStatusEvent>? _studySub;
   bool _blocAttached = false;
   AppLifecycleListener? _lifecycle;
   Timer? _statusPoll;
@@ -124,7 +125,8 @@ class HomePageViewModel extends ViewModel {
     _syncSources();
     _userTaskSub = AppTaskController().userTaskEvents.listen((_) => notifyListeners());
     // e.g. Stopped, found by a refresh on another page
-    ctrl.study.addListener(notifyListeners);
+    _studySub?.cancel();
+    _studySub = ctrl.study.events.listen((_) => notifyListeners());
     _messageSub = _messages.stream.listen((_) => notifyListeners());
     unawaited(_checkHealthConnectInstallation());
     unawaited(_checkAppUpdate());
@@ -191,7 +193,7 @@ class HomePageViewModel extends ViewModel {
 
   @override
   void clear() {
-    controller?.study.removeListener(notifyListeners);
+    _studySub?.cancel();
     _statusPoll?.cancel();
     _cancelDeviceSubs();
     _connectionSources = const [];
@@ -203,7 +205,7 @@ class HomePageViewModel extends ViewModel {
   @override
   void dispose() {
     if (_blocAttached) bloc.removeListener(_syncSources);
-    controller?.study.removeListener(notifyListeners);
+    _studySub?.cancel();
     _lifecycle?.dispose();
     _statusPoll?.cancel();
     _cancelDeviceSubs();

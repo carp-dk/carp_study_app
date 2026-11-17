@@ -141,6 +141,10 @@ class Flow {
         }
       }
       if (handler != null) return handler(message);
+      // Pigeon host APIs (e.g. activity_recognition_flutter): an empty success reply.
+      if (channel.startsWith('dev.flutter.pigeon.') && channel.contains('HostApi.')) {
+        return Future.value(const StandardMessageCodec().encodeMessage(<Object?>[null]));
+      }
       const codec = StandardMethodCodec();
       final MethodCall call;
       try {
