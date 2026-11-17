@@ -125,6 +125,11 @@ void main() {
     });
   });
 
+  test('local mode never needs internet', () async {
+    // No connectivity plugin in tests - it would throw if asked.
+    expect(await SystemInfoService().checkConnectivity(), isTrue);
+  });
+
   group('MessageService', () {
     Message message(String id, DateTime timestamp) => Message(id: id, title: 'message-$id', timestamp: timestamp);
 

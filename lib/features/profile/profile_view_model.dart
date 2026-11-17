@@ -1,8 +1,10 @@
 import 'dart:async';
 import 'package:carp_mobile_sensing/carp_mobile_sensing.dart';
+import 'package:carp_study_app/core/backend/local_backend.dart';
 import 'package:carp_study_app/core/services/auth_service.dart';
 import 'package:carp_study_app/core/services/study_service.dart';
 import 'package:carp_study_app/core/services/system_info_service.dart';
+import 'package:carp_study_app/core/util/app_config.dart';
 import 'package:carp_study_app/features/profile/profile_page.dart';
 import 'package:carp_study_app/shared/view_model.dart';
 import 'package:carp_study_app/main.dart';
@@ -41,6 +43,22 @@ class ProfilePageViewModel extends ViewModel {
     final signOut = invitations.length <= 1;
     await (signOut ? bloc.signOutAndLeaveStudy() : bloc.leaveStudy());
     return signOut;
+  }
+
+  /// Local mode only - offers [resetLocalData].
+  bool get isLocal => AppConfig.deploymentMode == DeploymentMode.local;
+
+  /// Local mode only: sign out, leave the study and wipe the task queue and
+  /// collected measurements - the app starts over as after a fresh install.
+  Future<void> resetLocalData() async {
+    final dataManager = _study.controller?.dataManager;
+    await bloc.signOutAndLeaveStudy();
+    LocalBackend().clearConsents();
+    for (final s in SmartPhoneClientManager().studies.toList()) {
+      await SmartPhoneClientManager().removeStudy(s.studyDeploymentId, s.deviceRoleName);
+    }
+    await PersistenceService().removeUserTasks();
+    if (dataManager is SQLiteDataManager) await dataManager.database?.delete(SQLiteDataManager.MEASUREMENT_TABLE_NAME);
   }
 
   String get userId => _auth.user?.id ?? _study.study?.participantId ?? '';

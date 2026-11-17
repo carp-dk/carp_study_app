@@ -234,6 +234,46 @@ void main() {
     });
   });
 
+  group('StatisticsViewModel.refresh', () {
+    test('re-opening the Data tab within the cooldown does not refetch; clear() resets it', () async {
+      final phone = Smartphone(roleName: Smartphone.DEFAULT_ROLE_NAME);
+      final protocol = StudyProtocol(ownerId: 'owner', name: 'p')
+        ..addPrimaryDevice(phone)
+        ..addTaskControl(
+          ImmediateTrigger(),
+          BackgroundTask(
+            name: 'steps',
+            measures: [Measure(type: SensorSamplingPackage.STEP_COUNT)],
+          ),
+          phone,
+        );
+      final service = MockStudyService();
+      when(service.deployment).thenReturn(
+        SmartphoneDeployment.fromPrimaryDeviceDeployment(
+          deployment: PrimaryDeviceDeployment(
+            deviceConfiguration: phone,
+            registration: SmartphoneRegistration(deviceId: 'phone'),
+            tasks: protocol.tasks,
+            triggers: protocol.triggers,
+            taskControls: protocol.taskControls,
+          ),
+        ),
+      );
+      when(service.hasMeasure(SensorSamplingPackage.STEP_COUNT)).thenReturn(true);
+      final query = _CountingQueryService();
+      final model = StatisticsViewModel(studyService: service, queryService: query)
+        ..init(MockSmartphoneStudyController());
+
+      await model.refresh();
+      await model.refresh();
+      expect(query.calls, 1);
+
+      model.clear();
+      await model.refresh();
+      expect(query.calls, 2);
+    });
+  });
+
   group('StatisticsViewModel.rolesFor', () {
     // Data streams are keyed by the task control's target device, so the
     // fetch must query the same roles the SDK uploaded under - the phone,
@@ -296,3 +336,13 @@ Measurement _polarHr(int bpm, DateTime at) => Measurement.fromData(
 );
 
 int _micros(DateTime dateTime) => dateTime.microsecondsSinceEpoch;
+
+/// Counts fetches; returns no data.
+class _CountingQueryService extends DataStreamQueryService {
+  int calls = 0;
+  @override
+  Future<List<Measurement>?> fetch(String dataType, String deviceRoleName) async {
+    calls++;
+    return [];
+  }
+}

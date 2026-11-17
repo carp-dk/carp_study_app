@@ -4,11 +4,12 @@ import 'package:package_info_plus/package_info_plus.dart';
 import 'package:path_provider_platform_interface/path_provider_platform_interface.dart';
 import 'package:plugin_platform_interface/plugin_platform_interface.dart';
 import 'package:shared_preferences/shared_preferences.dart';
+import 'package:sqflite_common_ffi/sqflite_ffi.dart';
 
 import 'exports.dart';
 
 /// Initialize CAMS [Settings] for unit tests by mocking the platform
-/// channels it depends on (shared preferences, package info, paths).
+/// channels it depends on (shared preferences, package info, paths, SQLite).
 Future<void> initTestSettings() async {
   TestWidgetsFlutterBinding.ensureInitialized();
 
@@ -21,6 +22,10 @@ Future<void> initTestSettings() async {
     buildSignature: '',
   );
   PathProviderPlatform.instance = FakePathProviderPlatform();
+  // The local backend opens CAMS' study database on initialize.
+  sqfliteFfiInit();
+  databaseFactory = databaseFactoryFfiNoIsolate;
+  await databaseFactory.setDatabasesPath(FakePathProviderPlatform._tempPath);
 
   await Settings().init();
 }

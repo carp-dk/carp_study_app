@@ -31,7 +31,11 @@ class LocalBackend implements Backend {
 
   @override
   // Sensing registers the device types (location, Polar, ...) the protocol needs to deserialize.
-  Future<void> initialize() async => Sensing();
+  // The database holds the deployed studies that count as consent signed.
+  Future<void> initialize() async {
+    Sensing();
+    await PersistenceService().init();
+  }
 
   @override
   bool get isAuthenticated => _user != null;
@@ -56,12 +60,15 @@ class LocalBackend implements Backend {
     LocalSettings().isAnonymous = anonymous;
   }
 
+  /// Consents outlive sign-out, so leaving and rejoining doesn't ask again.
   @override
   Future<void> signOut() async {
     _user = null;
     _invitation = null;
-    _consents.clear();
   }
+
+  /// Forget all signed consents - used by Reset local data.
+  void clearConsents() => _consents.clear();
 
   /// The invitation to the local study - deployed on the phone on first request.
   @override
@@ -78,7 +85,8 @@ class LocalBackend implements Backend {
     final device = protocol.primaryDevices.whereType<Smartphone>().firstOrNull;
     if (device == null) throw StateError('The local protocol has no Smartphone primary device.');
     SmartphoneDeploymentService().thisPhone = device;
-    final status = await SmartphoneDeploymentService().createStudyDeployment(protocol);
+    // One deployment id per protocol - a fresh id each launch makes CAMS restore the old study next to the new one.
+    final status = await SmartphoneDeploymentService().createStudyDeployment(protocol, [], protocol.id);
     final role = protocol.participantRoles?.firstOrNull?.role;
 
     // CAWS sends the invitation text as plain text, but the protocol holds translation
@@ -114,6 +122,10 @@ class LocalBackend implements Backend {
   }
 
   @override
-  Future<InformedConsentInput?> getInformedConsentByRole(String studyDeploymentId, String? role) async =>
-      _consents[studyDeploymentId];
+  Future<InformedConsentInput?> getInformedConsentByRole(String studyDeploymentId, String? role) async {
+    if (_consents[studyDeploymentId] case final consent?) return consent;
+    // A stored study means consent was signed before it - CAMS only adds the study after.
+    final deployed = (await PersistenceService().getAllStudies()).any((s) => s.studyDeploymentId == studyDeploymentId);
+    return deployed ? InformedConsentInput(userId: _user?.id ?? '', name: '', consent: '', signatureImage: '') : null;
+  }
 }

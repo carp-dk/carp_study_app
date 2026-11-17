@@ -93,6 +93,10 @@ class StatisticsViewModel extends ViewModel {
   final DataStreamQueryService _queryService;
 
   bool _isRefreshing = false;
+  DateTime? _lastRefresh;
+
+  /// Re-opening the Data tab within this window doesn't refetch from CAWS.
+  static const refreshCooldown = Duration(minutes: 1);
 
   /// A stream of [UserTask]s as they are generated.
   Stream<UserTask> get userTaskEvents => AppTaskController().userTaskEvents;
@@ -135,10 +139,13 @@ class StatisticsViewModel extends ViewModel {
   }
 
   /// Fetch the last 7 days from CAWS and recompute the cards. Best-effort:
-  /// a failed fetch leaves existing card data untouched. No-op while running.
+  /// a failed fetch leaves existing card data untouched. No-op while running
+  /// or within [refreshCooldown] of the last refresh.
   Future<void> refresh() async {
-    if (_isRefreshing) return;
+    final now = DateTime.now();
+    if (_isRefreshing || (_lastRefresh != null && now.difference(_lastRefresh!) < refreshCooldown)) return;
     _isRefreshing = true;
+    _lastRefresh = now;
 
     try {
       await Future.wait([
@@ -199,6 +206,7 @@ class StatisticsViewModel extends ViewModel {
     _videoCardDataModel.clear();
     _imageCardDataModel.clear();
     _studyProgressCardDataModel.clear();
+    _lastRefresh = null;
 
     super.clear();
   }

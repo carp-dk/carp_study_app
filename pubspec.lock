@@ -365,10 +365,10 @@ packages:
     dependency: "direct main"
     description:
       name: carp_mobile_sensing
-      sha256: "23d474b71f4e294412f6cc32bc3ccb4a96ec2cf568deec5cfe48412dad5b4489"
+      sha256: ca2399f841d7b3d097e75ce85a476be34b8c9b1fb6e77a16dffa33df51e6ddbe
       url: "https://pub.dev"
     source: hosted
-    version: "3.0.0"
+    version: "3.0.1"
   carp_movesense_package:
     dependency: "direct main"
     description:
