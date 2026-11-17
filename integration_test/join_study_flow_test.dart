@@ -194,6 +194,7 @@ void main() {
           (await PersistenceService().getUserTasks()).any((t) => isOurs(t.studyDeploymentId));
       expect(await PersistenceService().getStudy(study.studyDeploymentId, study.deviceRoleName), isNotNull);
       expect(SmartPhoneClientManager().studies, contains(study));
+      final taskCount = AppTaskController().userTasks.length;
 
       // Profile -> Sign Out -> confirm, as the user does it.
       await tapProfileAction(tester, Icons.power_settings_new);
@@ -226,6 +227,10 @@ void main() {
 
       // Rejoin: straight to the home page, no consent page.
       await rejoin(tester);
+      // The re-added study must not also run the old, cached executors.
+      final enqueued = DateTime.now().add(const Duration(seconds: 3));
+      await pumpUntil(tester, () => DateTime.now().isAfter(enqueued));
+      expect(AppTaskController().userTasks.length, taskCount, reason: 'tasks enqueued twice after rejoin');
 
       // Profile -> Leave study: the only invitation, so it signs out.
       await tapProfileAction(tester, Icons.logout);
