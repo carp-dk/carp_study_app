@@ -269,8 +269,8 @@ class CarpAppState extends State<CarpStudyApp> {
         GlobalWidgetsLocalizations.delegate,
       ],
       localeResolutionCallback: (locale, supportedLocales) {
-        // Norwegian phones report 'no' or 'nn' as well as 'nb'.
-        final code = const {'no', 'nn'}.contains(locale?.languageCode) ? 'nb' : locale?.languageCode;
+        // Only Bokmål is translated - Nynorsk (nn) readers get it rather than English.
+        final code = locale?.languageCode == 'nn' ? 'nb' : locale?.languageCode;
         for (var supportedLocale in supportedLocales) {
           if (supportedLocale.languageCode == code) {
             Intl.defaultLocale = supportedLocale.languageCode;
