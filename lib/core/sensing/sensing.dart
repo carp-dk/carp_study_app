@@ -1,7 +1,6 @@
 import 'dart:async';
 import 'dart:convert';
 import 'package:flutter/foundation.dart';
-import 'package:carp_serializable/carp_serializable.dart';
 import 'package:carp_core/carp_core.dart' hide Smartphone;
 import 'package:carp_mobile_sensing/carp_mobile_sensing.dart';
 import 'package:carp_audio_package/media.dart';
@@ -43,15 +42,6 @@ class Sensing {
 
     // Needed in LOCAL too - a local protocol may still upload to CAWS.
     DataManagerRegistry().register(CarpDataManagerFactory());
-
-    // ponytail: carp_core 3.0.1 does not register these CAWS input types - drop once it does.
-    FromJsonFactory().registerAll([
-      NoteInput(note: ''),
-      EducationalDegreeInput(level: IscedLevel.ISCED_0),
-      OnboardingResearcherInput(researcherId: '', researcherName: ''),
-      PreferredLanguageInput(languageCode: ''),
-      OccupationInput(),
-    ]);
   }
 
   /// Register the devices and configure the client manager with [deploymentService].

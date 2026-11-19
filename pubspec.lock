@@ -349,10 +349,10 @@ packages:
     dependency: "direct main"
     description:
       name: carp_core
-      sha256: "82cbd1a2a325c611954e972b7e2231d9bb7fcdf67bde2c69d25becd5a435fabd"
+      sha256: c0c532e9a9482df1f3194db0259376afdcd9c835239f2a957dc479099c5a71c4
       url: "https://pub.dev"
     source: hosted
-    version: "3.0.1"
+    version: "3.0.2"
   carp_health_package:
     dependency: "direct main"
     description:
