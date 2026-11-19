@@ -78,7 +78,7 @@ class CameraTaskPageState extends State<CameraTaskPage> {
                                     onPressed: () {
                                       Navigator.pop(context);
                                     },
-                                    child: Text(locale.translate("Cancel")),
+                                    child: Text(locale.translate("cancel")),
                                   ),
                                   FilledButton(
                                     onPressed: () => Navigator.push(

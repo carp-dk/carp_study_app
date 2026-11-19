@@ -82,7 +82,7 @@ class StudyAboutPage extends StatelessWidget {
                               mainAxisSize: MainAxisSize.min,
                               children: [
                                 Text(
-                                  'Go to study website',
+                                  locale.translate('pages.profile.study_website'),
                                   style: Theme.of(context).textTheme.labelMedium!.copyWith(
                                     color: Theme.of(context).colorScheme.primary,
                                     decoration: TextDecoration.underline,

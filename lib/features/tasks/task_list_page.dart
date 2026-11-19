@@ -59,7 +59,7 @@ class TaskListPageState extends State<TaskListPage> with TickerProviderStateMixi
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(
           backgroundColor: Colors.grey.shade900,
-          content: Text(RPLocalizations.of(context)!.translate('Done!')),
+          content: Text(RPLocalizations.of(context)!.translate('done')),
           behavior: SnackBarBehavior.floating,
           shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
           duration: const Duration(seconds: 1),
@@ -258,7 +258,7 @@ class TaskListPageState extends State<TaskListPage> with TickerProviderStateMixi
             const SizedBox(width: 6),
             Expanded(
               child: Text(
-                "Input Data",
+                RPLocalizations.of(context)!.translate('tasks.participant_data.card.type'),
                 style: Theme.of(context).textTheme.labelMedium!.copyWith(color: accent, fontWeight: FontWeight.w700),
               ),
             ),
@@ -266,10 +266,13 @@ class TaskListPageState extends State<TaskListPage> with TickerProviderStateMixi
           ],
         ),
         const SizedBox(height: 8),
-        Text("Participant Data", style: Theme.of(context).textTheme.labelLarge!),
+        Text(
+          RPLocalizations.of(context)!.translate('tasks.participant_data.card.title'),
+          style: Theme.of(context).textTheme.labelLarge!,
+        ),
         const SizedBox(height: 4),
         Text(
-          "Fill in the required participant data to continue with the study.",
+          RPLocalizations.of(context)!.translate('tasks.participant_data.card.description'),
           style: Theme.of(context).textTheme.labelMedium!.copyWith(color: Colors.grey.shade600),
         ),
       ],
