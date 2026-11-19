@@ -55,6 +55,10 @@ class StudyService {
   /// When was this study deployed on this phone.
   DateTime? get studyStartTimestamp => deployment?.deployed;
 
+  /// The available user tasks of the current study - never a left or other study's.
+  List<UserTask> get userTasks =>
+      AppTaskController().userTaskQueue.where((task) => task.studyDeploymentId == study?.studyDeploymentId).toList();
+
   Set<ExpectedParticipantData?> get expectedParticipantData => deployment?.expectedParticipantData ?? {};
 
   /// Refresh and return the status of the current study deployment from the
@@ -211,7 +215,7 @@ class StudyService {
       : await _resources.participationService.getParticipantDataList([deployment!.studyDeploymentId]);
 
   /// Set the participant [data] for the current study.
-  void setParticipantData(Map<String, Data> data) =>
+  Future<ParticipantData> setParticipantData(Map<String, Data> data) =>
       _resources.participationService.setParticipantData(study!.studyDeploymentId, data, study!.participantRoleName);
 
   /// Stop sensing and remove all study deployment information from this phone.

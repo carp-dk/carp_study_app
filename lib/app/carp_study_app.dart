@@ -4,7 +4,6 @@ import 'package:flutter/services.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:go_router/go_router.dart';
 import 'package:intl/intl.dart';
-import 'package:carp_mobile_sensing/carp_mobile_sensing.dart';
 import 'package:research_package/research_package.dart';
 import 'package:carp_themes_package/carp_themes_package.dart';
 import 'package:carp_study_app/app/app_bloc.dart';
@@ -154,7 +153,7 @@ class CarpAppState extends State<CarpStudyApp> {
         parentNavigatorKey: rootNavigatorKey,
         builder: (context, state) {
           final taskId = state.pathParameters['taskId'] ?? '';
-          final task = AppTaskController().getUserTask(taskId);
+          final task = bloc.study.userTasks.where((task) => task.id == taskId).firstOrNull;
           return task?.widget ?? const ErrorPage();
         },
       ),
