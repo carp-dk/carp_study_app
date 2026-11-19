@@ -21,7 +21,15 @@
 		<key>CFBundleLocalizations</key>
 		<array>
 			<string>en</string>
-			<string>Danish</string>
+			<string>da</string>
+			<string>sv</string>
+			<string>nb</string>
+			<string>fi</string>
+			<string>de</string>
+			<string>fr</string>
+			<string>it</string>
+			<string>es</string>
+			<string>pt</string>
 		</array>
 		<key>CFBundleName</key>
 		<string>carp_study_app</string>

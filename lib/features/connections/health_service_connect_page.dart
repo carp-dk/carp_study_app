@@ -49,18 +49,6 @@ class HealthServiceConnectPage extends StatelessWidget {
                     child: Column(
                       mainAxisAlignment: MainAxisAlignment.center,
                       children: [
-                        Expanded(
-                          child: Center(
-                            child: Image.asset(
-                              Platform.isAndroid
-                                  ? 'assets/instructions/google_health_connect_preview.png'
-                                  : 'assets/instructions/apple_health_preview.png',
-                              fit: BoxFit.contain,
-                              width: double.infinity,
-                            ),
-                          ),
-                        ),
-                        const SizedBox(height: 20),
                         // Name next to the logo, as Apple's HealthKit guidelines require.
                         Row(
                           mainAxisAlignment: MainAxisAlignment.center,
@@ -73,39 +61,12 @@ class HealthServiceConnectPage extends StatelessWidget {
                         const SizedBox(height: 20),
                         _dataDisclosure(context, locale),
                         const SizedBox(height: 20),
-                        Text.rich(
-                          TextSpan(
-                            children: [
-                              TextSpan(
-                                text: "${locale.translate("pages.connections.type.health.instructions.page2.part1")} ",
-                                style: Theme.of(context).textTheme.titleLarge!,
-                              ),
-                              TextSpan(
-                                text:
-                                    "${Platform.isAndroid ? locale.translate("pages.connections.type.health.instructions.page2.android.allow_all") : locale.translate("pages.connections.type.health.instructions.page2.ios.turn_on_all")} ",
-                                style: Theme.of(context).textTheme.titleLarge!.copyWith(
-                                  color: Theme.of(context).colorScheme.primary, // Change to desired color
-                                ),
-                              ),
-                              TextSpan(
-                                text: "${locale.translate("pages.connections.type.health.instructions.page2.part2")} ",
-                                style: Theme.of(context).textTheme.titleLarge!,
-                              ),
-                              TextSpan(
-                                text: "${locale.translate("pages.connections.type.health.instructions.page2.allow")} ",
-                                style: Theme.of(context).textTheme.titleLarge!.copyWith(
-                                  color: Theme.of(context).colorScheme.primary, // Change to desired color
-                                ),
-                              ),
-                              TextSpan(
-                                text: Platform.isAndroid
-                                    ? locale.translate("pages.connections.type.health.instructions.page2.part3.android")
-                                    : locale.translate("pages.connections.type.health.instructions.page2.part3.ios"),
-                                style: Theme.of(context).textTheme.titleLarge!,
-                              ),
-                            ],
-                          ),
-                          textAlign: TextAlign.center,
+                        // Only explain the permission sheet if access is not granted yet.
+                        FutureBuilder<bool>(
+                          future: _manager.hasHealthPermissions(_types),
+                          builder: (context, granted) => granted.data == false
+                              ? _permissionInstructions(context, locale)
+                              : const SizedBox.shrink(),
                         ),
                         const SizedBox(height: 30),
                       ],
@@ -116,51 +77,88 @@ class HealthServiceConnectPage extends StatelessWidget {
             ),
           ),
         ),
-        bottomNavigationBar: Padding(
-          padding: const EdgeInsets.symmetric(vertical: 26),
-          child: Row(
-            mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-            children: [
-              TextButton(
-                child: const Text("Cancel"),
-                onPressed: () {
-                  Navigator.pop(context);
-                },
-              ),
-              FilledButton(
-                child: const Text("Next"),
-                onPressed: () async {
-                  final manager = _manager;
-                  await manager.requestPermissions();
-                  await manager.connect();
-                  // Already connected skips the check in connect() - the task may add new types.
-                  final granted = manager.isConnected && await manager.hasPermissions();
-
-                  if (granted && userTask != null) {
-                    // The health probe fetches the data and pauses itself when done.
-                    userTask!.backgroundTaskExecutor.resume();
-                    userTask!.onDone();
-                  }
-
-                  if (!context.mounted) return;
-                  // If access still isn't granted (e.g. permanently denied, so the
-                  // system sheet no longer appears), guide the user to grant it.
-                  if (!granted) {
-                    await showPermissionDeniedDialog(
-                      context,
-                      'pages.connections.type.health.access_denied.message',
-                      image: 'assets/instructions/health_permission_allow_all.png',
-                    );
-                  }
-                  if (context.mounted) Navigator.pop(context);
-                },
-              ),
-            ],
-          ),
-        ),
+        bottomNavigationBar: _buttons(context, locale),
       ),
     );
   }
+
+  Widget _permissionInstructions(BuildContext context, RPLocalizations locale) => Text.rich(
+    TextSpan(
+      children: [
+        TextSpan(
+          text: "${locale.translate("pages.connections.type.health.instructions.page2.part1")} ",
+          style: Theme.of(context).textTheme.titleLarge!,
+        ),
+        TextSpan(
+          text:
+              "${Platform.isAndroid ? locale.translate("pages.connections.type.health.instructions.page2.android.allow_all") : locale.translate("pages.connections.type.health.instructions.page2.ios.turn_on_all")} ",
+          style: Theme.of(context).textTheme.titleLarge!.copyWith(
+            color: Theme.of(context).colorScheme.primary, // Change to desired color
+          ),
+        ),
+        TextSpan(
+          text: "${locale.translate("pages.connections.type.health.instructions.page2.part2")} ",
+          style: Theme.of(context).textTheme.titleLarge!,
+        ),
+        TextSpan(
+          text: "${locale.translate("pages.connections.type.health.instructions.page2.allow")} ",
+          style: Theme.of(context).textTheme.titleLarge!.copyWith(
+            color: Theme.of(context).colorScheme.primary, // Change to desired color
+          ),
+        ),
+        TextSpan(
+          text: Platform.isAndroid
+              ? locale.translate("pages.connections.type.health.instructions.page2.part3.android")
+              : locale.translate("pages.connections.type.health.instructions.page2.part3.ios"),
+          style: Theme.of(context).textTheme.titleLarge!,
+        ),
+      ],
+    ),
+    textAlign: TextAlign.center,
+  );
+
+  Widget _buttons(BuildContext context, RPLocalizations locale) => Padding(
+    padding: const EdgeInsets.symmetric(vertical: 26),
+    child: Row(
+      mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+      children: [
+        TextButton(
+          child: Text(locale.translate("cancel")),
+          onPressed: () {
+            Navigator.pop(context);
+          },
+        ),
+        FilledButton(
+          child: Text(locale.translate("next")),
+          onPressed: () async {
+            final manager = _manager;
+            await manager.requestPermissions();
+            await manager.connect();
+            // Already connected skips the check in connect() - the task may add new types.
+            final granted = manager.isConnected && await manager.hasPermissions();
+
+            if (granted && userTask != null) {
+              // The health probe fetches the data and pauses itself when done.
+              userTask!.backgroundTaskExecutor.resume();
+              userTask!.onDone();
+            }
+
+            if (!context.mounted) return;
+            // If access still isn't granted (e.g. permanently denied, so the
+            // system sheet no longer appears), guide the user to grant it.
+            if (!granted) {
+              await showPermissionDeniedDialog(
+                context,
+                'pages.connections.type.health.access_denied.message',
+                image: 'assets/instructions/health_permission_allow_all.png',
+              );
+            }
+            if (context.mounted) Navigator.pop(context);
+          },
+        ),
+      ],
+    ),
+  );
 
   Widget _dataDisclosure(BuildContext context, RPLocalizations locale) {
     return Container(
@@ -180,14 +178,16 @@ class HealthServiceConnectPage extends StatelessWidget {
                   locale.translate("pages.connections.type.health.instructions.data.title"),
                   style: Theme.of(context).textTheme.labelLarge!,
                 ),
-                for (final type in _types)
-                  Padding(
-                    padding: const EdgeInsets.only(top: 6),
-                    child: Text(
-                      '•  ${healthDataTypeLabel(locale, type)}',
-                      style: Theme.of(context).textTheme.labelMedium!,
-                    ),
-                  ),
+                const SizedBox(height: 6),
+                Text(
+                  {
+                    for (final type in _types)
+                      type.name.startsWith('SLEEP_')
+                          ? locale.translate('cards.sleep.title')
+                          : healthDataTypeLabel(locale, type),
+                  }.join(', '),
+                  style: Theme.of(context).textTheme.labelMedium!,
+                ),
               ],
             ),
           ),

@@ -526,6 +526,25 @@ void main() {
       expect(await service.tryDeployment(), isNull);
     });
 
+    test('userTasks only lists the current study\'s tasks (#733)', () async {
+      Future<void> enqueue(String id) => AppTaskController().enqueue(
+        AppTaskExecutor()..initialize(
+          AppTask(type: AppTask.SENSING_TYPE),
+          SmartphoneDeployment(
+            studyDeploymentId: id,
+            deviceConfiguration: Smartphone(),
+            registration: DefaultDeviceRegistration(),
+          ),
+        ),
+        triggerTime: DateTime(2020),
+        sendNotification: false,
+      );
+      await enqueue('dep-a');
+      await enqueue('dep-b');
+      service.study = SmartphoneStudy(studyDeploymentId: 'dep-a', deviceRoleName: 'phone');
+      expect(service.userTasks.map((task) => task.studyDeploymentId).toSet(), {'dep-a'});
+    });
+
     test('setting the study persists it and hasStudy reflects it', () {
       service.study = SmartphoneStudy(studyDeploymentId: 'dep-2', deviceRoleName: 'phone');
 

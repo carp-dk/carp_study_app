@@ -102,7 +102,7 @@ class StatisticsViewModel extends ViewModel {
   Stream<UserTask> get userTaskEvents => AppTaskController().userTaskEvents;
 
   /// The number of tasks completed so far.
-  int get taskCompleted => AppTaskController().userTaskQueue.where((task) => task.state == UserTaskState.done).length;
+  int get taskCompleted => _study.userTasks.where((task) => task.state == UserTaskState.done).length;
 
   @override
   void init(SmartphoneStudyController ctrl) {

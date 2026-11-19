@@ -54,9 +54,9 @@ class _HomePageState extends State<HomePage> {
                 if (!model.isStopped) AppUpdateCard(model: model),
                 StudyAboutCard(model: model),
                 if (!model.isStopped) ...[
-                  CarpSectionTitle('Connections'),
+                  CarpSectionTitle(RPLocalizations.of(context)!.translate('app_home.nav_bar_item.connections')),
                   ConnectionsStatusCard(model: model),
-                  CarpSectionTitle('Your progress'),
+                  CarpSectionTitle(RPLocalizations.of(context)!.translate('pages.home.your_progress')),
                   IntrinsicHeight(
                     child: Row(
                       crossAxisAlignment: CrossAxisAlignment.stretch,
@@ -68,7 +68,7 @@ class _HomePageState extends State<HomePage> {
                   ),
                 ],
                 if (model.messages.isNotEmpty) ...[
-                  CarpSectionTitle('Feeds'),
+                  CarpSectionTitle(RPLocalizations.of(context)!.translate('pages.home.feeds')),
                   for (final message in model.messages) _feedCard(context, message),
                 ],
               ],
@@ -125,7 +125,7 @@ class _HomePageState extends State<HomePage> {
       context,
       icon: Icons.calendar_today_outlined,
       iconColor: Theme.of(context).colorScheme.primary,
-      label: 'Active Days in Study',
+      label: RPLocalizations.of(context)!.translate('pages.home.active_days'),
       value: Text(
         '${model.activeDaysInStudy}',
         style: Theme.of(context).textTheme.displaySmall!.copyWith(color: Colors.grey.shade900, fontSize: 28),
@@ -145,7 +145,7 @@ class _HomePageState extends State<HomePage> {
             ),
         ],
       ),
-      linkLabel: 'View Statistics',
+      linkLabel: RPLocalizations.of(context)!.translate('pages.home.view_statistics'),
       onLink: () => context.go(Routes.statistics),
       margin: const EdgeInsets.only(left: 16, right: 6, bottom: 16),
     );
@@ -171,12 +171,15 @@ class _HomePageState extends State<HomePage> {
       context,
       icon: Icons.task_alt,
       iconColor: const Color(0xffF57C00),
-      label: 'Task status',
+      label: RPLocalizations.of(context)!.translate('pages.home.task_status'),
       value: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
-        children: [count(model.taskCompleted, 'Completed'), count(model.taskPending, 'Pending')],
+        children: [
+          count(model.taskCompleted, RPLocalizations.of(context)!.translate('pages.task_list.completed')),
+          count(model.taskPending, RPLocalizations.of(context)!.translate('pages.task_list.pending')),
+        ],
       ),
-      linkLabel: 'Complete Tasks',
+      linkLabel: RPLocalizations.of(context)!.translate('pages.home.complete_tasks'),
       onLink: () => context.go(Routes.tasks),
       margin: const EdgeInsets.only(left: 6, right: 16, bottom: 16),
     );
@@ -332,7 +335,7 @@ class AppUpdateCard extends StatelessWidget {
                 visualDensity: VisualDensity.compact,
                 padding: const EdgeInsets.symmetric(horizontal: 20),
               ),
-              child: const Text('Get'),
+              child: Text(RPLocalizations.of(context)!.translate('get')),
             ),
           ],
         ),
@@ -347,10 +350,10 @@ class StudyAboutCard extends StatelessWidget {
   const StudyAboutCard({required this.model, super.key});
 
   static const Map<StudyDeploymentStatusTypes, (Color, String)> _status = {
-    StudyDeploymentStatusTypes.Invited: (Color(0xFFF59E0B), 'INVITED'),
-    StudyDeploymentStatusTypes.DeployingDevices: (Color(0xFFF59E0B), 'DEPLOYING'),
-    StudyDeploymentStatusTypes.Running: (Color(0xFF22C55E), 'RUNNING'),
-    StudyDeploymentStatusTypes.Stopped: (Color(0xFFF43F5E), 'STOPPED'),
+    StudyDeploymentStatusTypes.Invited: (Color(0xFFF59E0B), 'pages.home.status.invited'),
+    StudyDeploymentStatusTypes.DeployingDevices: (Color(0xFFF59E0B), 'pages.home.status.deploying'),
+    StudyDeploymentStatusTypes.Running: (Color(0xFF22C55E), 'pages.home.status.running'),
+    StudyDeploymentStatusTypes.Stopped: (Color(0xFFF43F5E), 'pages.home.status.stopped'),
   };
 
   @override
@@ -401,7 +404,7 @@ class StudyAboutCard extends StatelessWidget {
                 mainAxisSize: MainAxisSize.min,
                 children: [
                   Text(
-                    'About the study',
+                    RPLocalizations.of(context)!.translate('pages.home.about_study'),
                     style: Theme.of(context).textTheme.labelMedium!.copyWith(
                       color: Colors.white,
                       decoration: TextDecoration.underline,
@@ -430,7 +433,10 @@ class StudyAboutCard extends StatelessWidget {
         children: [
           Icon(Icons.circle, size: 8, color: dot),
           const SizedBox(width: 6),
-          Text(label, style: Theme.of(context).textTheme.labelSmall!.copyWith(color: Colors.white)),
+          Text(
+            RPLocalizations.of(context)!.translate(label),
+            style: Theme.of(context).textTheme.labelSmall!.copyWith(color: Colors.white),
+          ),
         ],
       ),
     );

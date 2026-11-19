@@ -1,6 +1,7 @@
 import 'dart:async';
 import 'package:carp_mobile_sensing/carp_mobile_sensing.dart';
 import 'package:carp_study_app/core/services/study_service.dart';
+import 'package:carp_study_app/features/tasks/participant_data_page.dart';
 import 'package:carp_study_app/features/tasks/task_list_page.dart';
 import 'package:carp_study_app/shared/view_model.dart';
 import 'package:carp_study_app/main.dart';
@@ -27,11 +28,19 @@ class TaskListPageViewModel extends ViewModel {
 
   void autoCompletedTaskShown() => _autoCompletedTask = null;
 
-  /// Check whether participant data is still missing, updating
-  /// [showParticipantDataCard].
+  /// Check whether participant data this participant is asked for is still
+  /// missing, updating [showParticipantDataCard].
   Future<void> checkParticipantData() async {
-    final data = await _study.getParticipantDataListFromDeployment();
-    _showParticipantDataCard = data.isEmpty;
+    final role = _study.study?.participantRoleName;
+    final askable = askableParticipantData(_study.expectedParticipantData, role);
+    final given = <String>{
+      for (final data in await _study.getParticipantDataListFromDeployment()) ...[
+        ...data.common.keys.where((type) => data.common[type] != null),
+        for (final roleData in data.roles.where((roleData) => roleData.roleName == role))
+          ...roleData.data.keys.where((type) => roleData.data[type] != null),
+      ],
+    };
+    _showParticipantDataCard = askable.any((type) => !given.contains(type));
     notifyListeners();
   }
 
@@ -76,7 +85,7 @@ class TaskListPageViewModel extends ViewModel {
   }
 
   List<UserTask> get tasks {
-    var tasks = AppTaskController().userTaskQueue;
+    var tasks = _study.userTasks;
     tasks.sort((t1, t2) {
       if (t1.expiresIn != null && t2.expiresIn != null) {
         // sort by expiration date, soonest first
