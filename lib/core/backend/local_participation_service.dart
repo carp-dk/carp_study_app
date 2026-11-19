@@ -15,17 +15,28 @@ class LocalParticipationService implements ParticipationService {
   @override
   Future<List<ActiveParticipationInvitation>> getActiveParticipationInvitations({String? accountId}) async => [];
 
-  @override
-  Future<ParticipantData> getParticipantData(String studyDeploymentId) async =>
-      ParticipantData(studyDeploymentId: studyDeploymentId);
+  // ponytail: in memory, like the local consent - asked again after an app restart.
+  final Map<String, Map<String, Data?>> _data = {};
+
+  /// Forget all participant data - used by Reset local data.
+  void clear() => _data.clear();
 
   @override
-  Future<List<ParticipantData>> getParticipantDataList(List<String> studyDeploymentIds) async => [];
+  Future<ParticipantData> getParticipantData(String studyDeploymentId) async =>
+      ParticipantData(studyDeploymentId: studyDeploymentId, common: {...?_data[studyDeploymentId]});
+
+  @override
+  Future<List<ParticipantData>> getParticipantDataList(List<String> studyDeploymentIds) async => [
+    for (final id in studyDeploymentIds) await getParticipantData(id),
+  ];
 
   @override
   Future<ParticipantData> setParticipantData(
     String studyDeploymentId,
     Map<String, Data> data, [
     String? inputByParticipantRole,
-  ]) async => ParticipantData(studyDeploymentId: studyDeploymentId);
+  ]) async {
+    (_data[studyDeploymentId] ??= {}).addAll(data);
+    return getParticipantData(studyDeploymentId);
+  }
 }

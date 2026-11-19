@@ -250,7 +250,7 @@ class TaskListPageState extends State<TaskListPage> with TickerProviderStateMixi
     final accent = taskTypeColors["ExpectedParticipantData"]!;
     return _card(
       accent: accent,
-      onTap: () => context.push(Routes.participantData),
+      onTap: () => context.push(Routes.participantData).then((_) => widget.model.checkParticipantData()),
       children: [
         Row(
           children: [

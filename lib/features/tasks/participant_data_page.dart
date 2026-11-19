@@ -5,11 +5,82 @@ import 'package:intl_phone_number_input/intl_phone_number_input.dart';
 import 'package:go_router/go_router.dart';
 import 'package:intl/intl.dart';
 import 'package:carp_core/carp_core.dart' hide Smartphone;
+import 'package:carp_mobile_sensing/carp_mobile_sensing.dart' show warning;
 import 'package:research_package/research_package.dart';
 import 'package:carp_study_app/features/tasks/participant_data_view_model.dart';
 import 'package:carp_study_app/shared/widgets/carp_app_bar.dart';
 
-enum ParticipantStep { presentTypes, address, diagnosis, fullName, phoneNumber, socialSecurityNumber, review }
+enum ParticipantStep {
+  presentTypes,
+  address,
+  diagnosis,
+  fullName,
+  phoneNumber,
+  socialSecurityNumber,
+  sex,
+  language,
+  occupation,
+  educationalDegree,
+  review,
+}
+
+/// The step asking for each input data type, by the last part of its name
+/// (e.g. 'dk.carp.webservices.input.language' -> 'language').
+const participantDataSteps = {
+  "address": ParticipantStep.address,
+  "diagnosis": ParticipantStep.diagnosis,
+  "full_name": ParticipantStep.fullName,
+  "phone_number": ParticipantStep.phoneNumber,
+  "ssn": ParticipantStep.socialSecurityNumber,
+  "sex": ParticipantStep.sex,
+  "language": ParticipantStep.language,
+  "occupation": ParticipantStep.occupation,
+  "educational_degree": ParticipantStep.educationalDegree,
+};
+
+/// The input data types in [expected] that [role] is asked for on this page.
+List<String> askableParticipantData(Iterable<ExpectedParticipantData?> expected, String? role) => [
+  for (final data in expected.nonNulls)
+    if ((data.assignedTo.isAssignedToAll || (data.assignedTo.roleNames?.contains(role) ?? false)) &&
+        participantDataSteps.containsKey(data.attribute?.inputDataType.split('.').last))
+      data.attribute!.inputDataType,
+];
+
+/// Occupations as offered in the CARP portal - sent as is, translated for display.
+const occupations = [
+  'Student',
+  'Employed',
+  'Unemployed',
+  'Retired',
+  'Homemaker',
+  'Engineer',
+  'Researcher',
+  'Healthcare Professional',
+  'Other',
+];
+
+/// Preferred languages, shown in their own language.
+const languages = {
+  'en': 'English',
+  'da': 'Dansk',
+  'sv': 'Svenska',
+  'nb': 'Norsk',
+  'fi': 'Suomi',
+  'de': 'Deutsch',
+  'nl': 'Nederlands',
+  'fr': 'Français',
+  'it': 'Italiano',
+  'es': 'Español',
+  'pt': 'Português',
+  'pl': 'Polski',
+  'uk': 'Українська',
+  'tr': 'Türkçe',
+  'ar': 'العربية',
+  'hi': 'हिन्दी',
+  'zh': '中文',
+  'ja': '日本語',
+  'ko': '한국어',
+};
 
 class ParticipantDataPage extends StatefulWidget {
   final ParticipantDataPageViewModel model;
@@ -30,22 +101,27 @@ class ParticipantDataPageState extends State<ParticipantDataPage> {
   /// and the review step at the end.
   final List<ParticipantStep> _includedSteps = [ParticipantStep.presentTypes];
 
-  final Map<String, ParticipantStep> _stepMap = {
-    "address": ParticipantStep.address,
-    "diagnosis": ParticipantStep.diagnosis,
-    "full_name": ParticipantStep.fullName,
-    "phone_number": ParticipantStep.phoneNumber,
-    "ssn": ParticipantStep.socialSecurityNumber,
-  };
+  /// The expected input data type each included step sets.
+  final Map<ParticipantStep, String> _stepType = {};
 
-  final Map<ParticipantStep, String> participantStepDescriptions = {
-    ParticipantStep.address: 'Address',
-    ParticipantStep.diagnosis: 'Diagnosis',
-    ParticipantStep.fullName: 'Full Name',
-    ParticipantStep.phoneNumber: 'Phone Number',
-    ParticipantStep.socialSecurityNumber: 'Social Security Number',
-    ParticipantStep.review: 'Review',
+  /// The single or multiple choice steps - the field shows the chosen
+  /// labels (for review), [_choices] holds the chosen values.
+  final Map<ParticipantStep, StepField> _choiceFields = {
+    ParticipantStep.sex: StepField(title: "tasks.participant_data.sex.title", controller: TextEditingController()),
+    ParticipantStep.language: StepField(
+      title: "tasks.participant_data.language.title",
+      controller: TextEditingController(),
+    ),
+    ParticipantStep.occupation: StepField(
+      title: "tasks.participant_data.occupation.title",
+      controller: TextEditingController(),
+    ),
+    ParticipantStep.educationalDegree: StepField(
+      title: "tasks.participant_data.educational_degree.title",
+      controller: TextEditingController(),
+    ),
   };
+  final Map<ParticipantStep, Set<String>> _choices = {};
 
   @override
   void initState() {
@@ -80,11 +156,10 @@ class ParticipantDataPageState extends State<ParticipantDataPage> {
     widget.model.middleNameFocusNode = FocusNode();
     widget.model.lastNameFocusNode = FocusNode();
 
-    for (final key in _stepMap.keys) {
-      if (widget.model.expectedData.any((dataType) => dataType!.attribute!.inputDataType.contains(key))) {
-        _includedSteps.add(_stepMap[key]!);
-      }
+    for (final type in widget.model.askableData) {
+      _stepType[participantDataSteps[type.split('.').last]!] = type;
     }
+    _includedSteps.addAll(ParticipantStep.values.where(_stepType.containsKey));
 
     /// Always include the review step at the end
     _includedSteps.add(ParticipantStep.review);
@@ -103,6 +178,7 @@ class ParticipantDataPageState extends State<ParticipantDataPage> {
       widget.model.phoneNumberController,
       widget.model.ssnCountryController,
       widget.model.ssnController,
+      for (final field in _choiceFields.values) field.controller,
     };
 
     for (final controller in widget.model.nonOptionalControllers) {
@@ -216,6 +292,9 @@ class ParticipantDataPageState extends State<ParticipantDataPage> {
     widget.model.firstNameFocusNode.dispose();
     widget.model.middleNameFocusNode.dispose();
     widget.model.lastNameFocusNode.dispose();
+    for (final field in _choiceFields.values) {
+      field.controller.dispose();
+    }
 
     super.dispose();
   }
@@ -248,6 +327,12 @@ class ParticipantDataPageState extends State<ParticipantDataPage> {
           break;
         case ParticipantStep.socialSecurityNumber:
           _nextEnabled = widget.model.ssnController.text.isNotEmpty;
+          break;
+        case ParticipantStep.sex:
+        case ParticipantStep.language:
+        case ParticipantStep.occupation:
+        case ParticipantStep.educationalDegree:
+          _nextEnabled = _choiceFields[currentStep]!.controller.text.isNotEmpty;
           break;
         case ParticipantStep.review:
           _nextEnabled = true;
@@ -312,17 +397,20 @@ class ParticipantDataPageState extends State<ParticipantDataPage> {
     );
   }
 
+  Map<ParticipantStep, String> _stepTitles(RPLocalizations locale) => {
+    ParticipantStep.presentTypes: locale.translate("tasks.participant_data.present_data.title"),
+    ParticipantStep.address: locale.translate("tasks.participant_data.address.title"),
+    ParticipantStep.diagnosis: locale.translate("tasks.participant_data.diagnosis.title"),
+    ParticipantStep.fullName: locale.translate("tasks.participant_data.full_name.title"),
+    ParticipantStep.phoneNumber: locale.translate("tasks.participant_data.phone_number.title"),
+    ParticipantStep.socialSecurityNumber: locale.translate("tasks.participant_data.ssn.title"),
+    for (final MapEntry(:key, :value) in _choiceFields.entries) key: locale.translate(value.title),
+    ParticipantStep.review: locale.translate("tasks.participant_data.review.title"),
+  };
+
   /// Builds the title of the dialog based on the current step.
   Widget _buildDialogTitle(RPLocalizations locale) {
-    final stepTitleMap = {
-      ParticipantStep.presentTypes: locale.translate("tasks.participant_data.present_data.title"),
-      ParticipantStep.address: locale.translate("tasks.participant_data.address.title"),
-      ParticipantStep.diagnosis: locale.translate("tasks.participant_data.diagnosis.title"),
-      ParticipantStep.fullName: locale.translate("tasks.participant_data.full_name.title"),
-      ParticipantStep.phoneNumber: locale.translate("tasks.participant_data.phone_number.title"),
-      ParticipantStep.socialSecurityNumber: locale.translate("tasks.participant_data.ssn.title"),
-      ParticipantStep.review: locale.translate("tasks.participant_data.review.title"),
-    };
+    final stepTitleMap = _stepTitles(locale);
     return Padding(
       padding: const EdgeInsets.only(bottom: 16),
       child: Container(
@@ -352,7 +440,7 @@ class ParticipantDataPageState extends State<ParticipantDataPage> {
           _buildPresentTypes(
             _includedSteps
                 .where((step) => step != ParticipantStep.presentTypes && step != ParticipantStep.review)
-                .map((step) => participantStepDescriptions[step])
+                .map((step) => _stepTitles(locale)[step])
                 .toList(),
           ),
         );
@@ -386,6 +474,30 @@ class ParticipantDataPageState extends State<ParticipantDataPage> {
         break;
       case ParticipantStep.socialSecurityNumber:
         fields.add(_buildField(locale, widget.model.ssnField, isCPR: true));
+        break;
+      case ParticipantStep.sex:
+        fields.add(
+          _buildChoices(locale, {for (final sex in Sex.values) sex.name: "tasks.participant_data.sex.${sex.name}"}),
+        );
+        break;
+      case ParticipantStep.language:
+        fields.add(_buildChoices(locale, languages));
+        break;
+      case ParticipantStep.occupation:
+        fields.add(
+          _buildChoices(locale, {
+            for (final occupation in occupations)
+              occupation: "tasks.participant_data.occupation.${occupation.toLowerCase().replaceAll(' ', '_')}",
+          }, multiple: true),
+        );
+        break;
+      case ParticipantStep.educationalDegree:
+        fields.add(
+          _buildChoices(locale, {
+            for (final level in IscedLevel.values)
+              level.name: "tasks.participant_data.educational_degree.${level.name.toLowerCase()}",
+          }),
+        );
         break;
       case ParticipantStep.review:
         fields.add(_buildReviewStep(locale, _allUsedStepFields));
@@ -445,6 +557,40 @@ class ParticipantDataPageState extends State<ParticipantDataPage> {
           ),
         );
       }),
+    );
+  }
+
+  /// The [options] (value -> label key) of the current choice step.
+  Widget _buildChoices(RPLocalizations locale, Map<String, String> options, {bool multiple = false}) {
+    final field = _choiceFields[currentStep]!;
+    final chosen = _choices.putIfAbsent(currentStep, () => {});
+    _allUsedStepFields.add(field);
+
+    void toggle(String value) {
+      if (!multiple) chosen.clear();
+      if (!chosen.remove(value)) chosen.add(value);
+      // Listeners on the controller re-validate and rebuild.
+      field.controller.text = options.entries
+          .where((option) => chosen.contains(option.key))
+          .map((option) => locale.translate(option.value))
+          .join(', ');
+    }
+
+    return Column(
+      children: [
+        for (final MapEntry(key: value, value: label) in options.entries)
+          ListTile(
+            contentPadding: EdgeInsets.zero,
+            selected: chosen.contains(value),
+            leading: Icon(
+              multiple
+                  ? (chosen.contains(value) ? Icons.check_box : Icons.check_box_outline_blank)
+                  : (chosen.contains(value) ? Icons.radio_button_checked : Icons.radio_button_unchecked),
+            ),
+            title: Text(locale.translate(label)),
+            onTap: () => toggle(value),
+          ),
+      ],
     );
   }
 
@@ -612,6 +758,7 @@ class ParticipantDataPageState extends State<ParticipantDataPage> {
                     currentStep = _includedSteps[idx - 1];
                   }
                 });
+                _validateRequiredFields();
               },
               true,
               null,
@@ -619,10 +766,9 @@ class ParticipantDataPageState extends State<ParticipantDataPage> {
             ),
       currentStep.index == ParticipantStep.values.length - 1
           ? buildTranslatedButton(
-              "submit",
-              () {
-                _setParticipantData();
-                context.pop();
+              "done",
+              () async {
+                if (await _setParticipantData() && mounted) context.pop();
               },
               _nextEnabled,
               ElevatedButton.styleFrom(
@@ -640,6 +786,7 @@ class ParticipantDataPageState extends State<ParticipantDataPage> {
                     currentStep = _includedSteps[idx + 1];
                   }
                 });
+                _validateRequiredFields();
               },
               currentStep == ParticipantStep.presentTypes ? true : _nextEnabled,
               ElevatedButton.styleFrom(
@@ -654,59 +801,68 @@ class ParticipantDataPageState extends State<ParticipantDataPage> {
   // This method can be used to set the participant data
   // if needed before submitting.
   // Currently, it is called when the "Submit" button is pressed.
-  void _setParticipantData() {
+  /// Saves the answers. Returns false (and tells the participant) if that failed.
+  Future<bool> _setParticipantData() async {
     final Map<String, Data> participantData = {};
+    String chosen(ParticipantStep step) => _choices[step]!.single;
 
-    final Map<ParticipantStep, Map<String, Data>> participantStepToDataType = {
-      ParticipantStep.address: {
-        InputType.ADDRESS: AddressInput(
-          address1: widget.model.address1Controller.text,
-          address2: widget.model.address2Controller.text,
-          street: widget.model.streetController.text,
-          postalCode: widget.model.postalCodeController.text,
-          country: widget.model.countryController.text,
-        ),
-      },
-      ParticipantStep.diagnosis: {
-        InputType.DIAGNOSIS: DiagnosisInput(
-          effectiveDate: widget.model.effectiveDateController.text.isNotEmpty
-              ? DateFormat(
-                  "yyyy-MM-dd'T'HH:mm:ss'Z'",
-                ).parse('${widget.model.effectiveDateController.text}T00:00:00Z').toUtc()
-              : null,
-          diagnosis: widget.model.diagnosisDescriptionController.text,
-          icd11Code: widget.model.icd11CodeController.text,
-          conclusion: widget.model.conclusionController.text,
-        ),
-      },
-      ParticipantStep.fullName: {
-        InputType.FULL_NAME: FullNameInput(
-          firstName: widget.model.firstNameController.text,
-          middleName: widget.model.middleNameController.text,
-          lastName: widget.model.lastNameController.text,
-        ),
-      },
-      ParticipantStep.phoneNumber: {
-        InputType.PHONE_NUMBER: PhoneNumberInput(
-          countryCode: widget.model.phoneNumberCodeController.text,
-          number: widget.model.phoneNumberController.text,
-        ),
-      },
-      ParticipantStep.socialSecurityNumber: {
-        InputType.SSN: SocialSecurityNumberInput(
-          country: widget.model.ssnCountryController.text,
-          socialSecurityNumber: widget.model.ssnController.text,
-        ),
-      },
+    final Map<ParticipantStep, Data Function()> participantStepToData = {
+      ParticipantStep.address: () => AddressInput(
+        address1: widget.model.address1Controller.text,
+        address2: widget.model.address2Controller.text,
+        street: widget.model.streetController.text,
+        postalCode: widget.model.postalCodeController.text,
+        country: widget.model.countryController.text,
+      ),
+      ParticipantStep.diagnosis: () => DiagnosisInput(
+        effectiveDate: widget.model.effectiveDateController.text.isNotEmpty
+            ? DateFormat(
+                "yyyy-MM-dd'T'HH:mm:ss'Z'",
+              ).parse('${widget.model.effectiveDateController.text}T00:00:00Z').toUtc()
+            : null,
+        diagnosis: widget.model.diagnosisDescriptionController.text,
+        icd11Code: widget.model.icd11CodeController.text,
+        conclusion: widget.model.conclusionController.text,
+      ),
+      ParticipantStep.fullName: () => FullNameInput(
+        firstName: widget.model.firstNameController.text,
+        middleName: widget.model.middleNameController.text,
+        lastName: widget.model.lastNameController.text,
+      ),
+      ParticipantStep.phoneNumber: () => PhoneNumberInput(
+        countryCode: widget.model.phoneNumberCodeController.text,
+        number: widget.model.phoneNumberController.text,
+      ),
+      ParticipantStep.socialSecurityNumber: () => SocialSecurityNumberInput(
+        country: widget.model.ssnCountryController.text,
+        socialSecurityNumber: widget.model.ssnController.text,
+      ),
+      ParticipantStep.sex: () => SexInput(value: Sex.values.byName(chosen(ParticipantStep.sex))),
+      ParticipantStep.language: () => PreferredLanguageInput(
+        languageCode: chosen(ParticipantStep.language),
+        displayName: languages[chosen(ParticipantStep.language)],
+      ),
+      ParticipantStep.occupation: () => OccupationInput(roles: _choices[ParticipantStep.occupation]!.toList()),
+      ParticipantStep.educationalDegree: () =>
+          EducationalDegreeInput(level: IscedLevel.values.byName(chosen(ParticipantStep.educationalDegree))),
     };
-    for (final step in _includedSteps) {
-      final dataMap = participantStepToDataType[step];
-      if (dataMap != null) {
-        participantData.addAll(dataMap);
+    try {
+      // Keyed by the type the protocol expects, as the backend only accepts those.
+      for (final MapEntry(key: step, value: type) in _stepType.entries) {
+        participantData[type] = participantStepToData[step]!();
       }
+      await widget.model.setParticipantData(participantData);
+      return true;
+    } catch (error) {
+      // Keep the page and its answers, so the participant can retry.
+      warning('$runtimeType - Could not save participant data: $error');
+      if (mounted) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(content: Text(RPLocalizations.of(context)!.translate('tasks.participant_data.save_failed'))),
+        );
+      }
+      return false;
     }
-
-    widget.model.setParticipantData(participantData);
   }
 
   Future<void> _showCancelConfirmationDialog() {

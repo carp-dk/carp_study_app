@@ -1,6 +1,7 @@
 import 'dart:async';
 import 'package:carp_mobile_sensing/carp_mobile_sensing.dart';
 import 'package:carp_study_app/core/backend/local_backend.dart';
+import 'package:carp_study_app/core/backend/local_participation_service.dart';
 import 'package:carp_study_app/core/services/auth_service.dart';
 import 'package:carp_study_app/core/services/study_service.dart';
 import 'package:carp_study_app/core/services/system_info_service.dart';
@@ -54,6 +55,7 @@ class ProfilePageViewModel extends ViewModel {
     final dataManager = _study.controller?.dataManager;
     await bloc.signOutAndLeaveStudy();
     LocalBackend().clearConsents();
+    LocalParticipationService().clear();
     for (final s in SmartPhoneClientManager().studies.toList()) {
       await SmartPhoneClientManager().removeStudy(s.studyDeploymentId, s.deviceRoleName);
     }
