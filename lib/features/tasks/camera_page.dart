@@ -2,6 +2,7 @@ import 'dart:async';
 import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:camera/camera.dart';
+import 'package:file_picker/file_picker.dart';
 import 'package:carp_mobile_sensing/carp_mobile_sensing.dart';
 import 'package:research_package/research_package.dart';
 import 'package:carp_study_app/features/tasks/display_picture_page.dart';
@@ -91,6 +92,18 @@ class CameraPageState extends State<CameraPage> {
     setState(() {
       capturedImages = File(picture.path);
     });
+  }
+
+  /// Use a picture from the camera roll instead of taking one.
+  void pickFromGallery() async {
+    final picked = await FilePicker.pickFile(type: FileType.image);
+    if (picked == null || !mounted) return;
+    widget.videoUserTask.onPictureCapture(picked.xFile);
+    await Navigator.of(context).push(
+      MaterialPageRoute<void>(
+        builder: (context) => DisplayPicturePage(file: picked.xFile, videoUserTask: widget.videoUserTask),
+      ),
+    );
   }
 
   void startRecording() async {
@@ -187,6 +200,14 @@ class CameraPageState extends State<CameraPage> {
                 child: Row(
                   mainAxisAlignment: MainAxisAlignment.spaceAround,
                   children: [
+                    IconButton(
+                      onPressed: pickFromGallery,
+                      icon: const Icon(
+                        Icons.photo_library_outlined,
+                        color: Colors.white,
+                        shadows: <Shadow>[Shadow(blurRadius: 3.0, color: Colors.black)],
+                      ),
+                    ),
                     IconButton(
                       onPressed: toggleCamera,
                       icon: const Icon(
