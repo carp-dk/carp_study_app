@@ -84,19 +84,28 @@ class TaskListPageState extends State<TaskListPage> with TickerProviderStateMixi
                 builder: (context, snapshot) {
                   final pending = widget.model.pendingTasks;
                   final completed = widget.model.completedTasks;
-                  final showing = _tabController.index == 0 ? pending : completed;
-                  final showParticipantData = _tabController.index == 0 && widget.model.showParticipantDataCard;
+                  final showPendingParticipantData = widget.model.showParticipantDataCard;
+                  final showCompletedParticipantData = widget.model.participantDataCompleted;
+                  final isCompletedTab = _tabController.index == 1;
+                  final showing = isCompletedTab ? completed : pending;
+                  final showParticipantData = isCompletedTab
+                      ? showCompletedParticipantData
+                      : showPendingParticipantData;
 
                   return Column(
                     children: [
-                      _segmentedControl(locale, pending.length, completed.length),
+                      _segmentedControl(
+                        locale,
+                        pending.length + (showPendingParticipantData ? 1 : 0),
+                        completed.length + (showCompletedParticipantData ? 1 : 0),
+                      ),
                       Expanded(
                         child: showing.isEmpty && !showParticipantData
                             ? _emptyState(locale)
                             : ListView(
                                 padding: const EdgeInsets.only(bottom: 16),
                                 children: [
-                                  if (showParticipantData) _participantDataCard(),
+                                  if (showParticipantData) _participantDataCard(done: isCompletedTab),
                                   for (final task in showing) _taskCard(context, task),
                                 ],
                               ),
@@ -246,17 +255,20 @@ class TaskListPageState extends State<TaskListPage> with TickerProviderStateMixi
     );
   }
 
-  Widget _participantDataCard() {
+  Widget _participantDataCard({required bool done}) {
     final locale = RPLocalizations.of(context)!;
-    final accent = taskTypeColors["ExpectedParticipantData"]!;
-    void open() => context.push(Routes.participantData).then((_) => widget.model.checkParticipantData());
+    final accent = done ? const Color(0xff006398) : taskTypeColors["ExpectedParticipantData"]!;
 
     return _card(
       accent: accent,
       children: [
         Row(
           children: [
-            Icon(taskTypeIcons["ExpectedParticipantData"]!.icon, color: accent, size: 18),
+            Icon(
+              done ? Icons.check : taskTypeIcons["ExpectedParticipantData"]!.icon,
+              color: accent,
+              size: done ? 20 : 18,
+            ),
             const SizedBox(width: 6),
             Expanded(
               child: Text(
@@ -268,26 +280,28 @@ class TaskListPageState extends State<TaskListPage> with TickerProviderStateMixi
         ),
         const SizedBox(height: 8),
         Text(locale.translate('tasks.participant_data.card.title'), style: Theme.of(context).textTheme.labelLarge!),
-        const SizedBox(height: 4),
-        Text(
-          locale.translate('tasks.participant_data.card.description'),
-          style: Theme.of(context).textTheme.labelMedium!.copyWith(color: Colors.grey.shade600),
-        ),
-        const SizedBox(height: 12),
-        Row(
-          mainAxisAlignment: MainAxisAlignment.end,
-          children: [
-            FilledButton(
-              style: FilledButton.styleFrom(
-                padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 8),
-                minimumSize: const Size(0, 0),
-                tapTargetSize: MaterialTapTargetSize.shrinkWrap,
+        if (!done) ...[
+          const SizedBox(height: 4),
+          Text(
+            locale.translate('tasks.participant_data.card.description'),
+            style: Theme.of(context).textTheme.labelMedium!.copyWith(color: Colors.grey.shade600),
+          ),
+          const SizedBox(height: 12),
+          Row(
+            mainAxisAlignment: MainAxisAlignment.end,
+            children: [
+              FilledButton(
+                style: FilledButton.styleFrom(
+                  padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 8),
+                  minimumSize: const Size(0, 0),
+                  tapTargetSize: MaterialTapTargetSize.shrinkWrap,
+                ),
+                onPressed: () => context.push(Routes.participantData).then((_) => widget.model.checkParticipantData()),
+                child: Text(locale.translate('pages.task_list.start')),
               ),
-              onPressed: open,
-              child: Text(locale.translate('pages.task_list.start')),
-            ),
-          ],
-        ),
+            ],
+          ),
+        ],
       ],
     );
   }

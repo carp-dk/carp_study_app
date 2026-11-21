@@ -344,6 +344,7 @@ void main() {
       await model.checkParticipantData(); // no deployment - nothing expected
 
       expect(model.showParticipantDataCard, isFalse);
+      expect(model.participantDataCompleted, isFalse);
       expect(notified, isTrue);
     });
 
@@ -386,12 +387,18 @@ void main() {
       ];
       await model.checkParticipantData();
       expect(model.showParticipantDataCard, isTrue);
+      expect(model.participantDataCompleted, isFalse);
 
       data.single.roles.single.data = {
         InputType.OCCUPATION: OccupationInput(roles: ['Student']),
       };
       await model.checkParticipantData();
       expect(model.showParticipantDataCard, isFalse);
+      expect(model.participantDataCompleted, isTrue);
+
+      model.clear();
+      expect(model.showParticipantDataCard, isFalse);
+      expect(model.participantDataCompleted, isFalse);
     });
   });
 

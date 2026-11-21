@@ -15,11 +15,15 @@ class TaskListPageViewModel extends ViewModel {
   StudyService get _study => _studyService ?? bloc.study;
 
   bool _showParticipantDataCard = false;
+  bool _participantDataCompleted = false;
   final Map<String, Timer> _autoCompleteTimers = {};
   UserTask? _autoCompletedTask;
 
-  /// Should the card prompting for participant data be shown?
+  /// Should the pending card prompting for participant data be shown?
   bool get showParticipantDataCard => _showParticipantDataCard;
+
+  /// Whether the protocol asks for participant data and all of it has been provided.
+  bool get participantDataCompleted => _participantDataCompleted;
 
   /// The task most recently auto-completed by [startUserTask], if any.
   /// One-shot - the page calls [autoCompletedTaskShown] once it has shown
@@ -29,10 +33,17 @@ class TaskListPageViewModel extends ViewModel {
   void autoCompletedTaskShown() => _autoCompletedTask = null;
 
   /// Check whether participant data this participant is asked for is still
-  /// missing, updating [showParticipantDataCard].
+  /// missing or already completed, updating [showParticipantDataCard] and
+  /// [participantDataCompleted].
   Future<void> checkParticipantData() async {
     final role = _study.study?.participantRoleName;
     final askable = askableParticipantData(_study.expectedParticipantData, role);
+    if (askable.isEmpty) {
+      _showParticipantDataCard = false;
+      _participantDataCompleted = false;
+      notifyListeners();
+      return;
+    }
     final given = <String>{
       for (final data in await _study.getParticipantDataListFromDeployment()) ...[
         ...data.common.keys.where((type) => data.common[type] != null),
@@ -40,7 +51,9 @@ class TaskListPageViewModel extends ViewModel {
           ...roleData.data.keys.where((type) => roleData.data[type] != null),
       ],
     };
-    _showParticipantDataCard = askable.any((type) => !given.contains(type));
+    final missing = askable.any((type) => !given.contains(type));
+    _showParticipantDataCard = missing;
+    _participantDataCompleted = !missing;
     notifyListeners();
   }
 
@@ -74,6 +87,7 @@ class TaskListPageViewModel extends ViewModel {
   void clear() {
     _cancelAutoCompleteTimers();
     _showParticipantDataCard = false;
+    _participantDataCompleted = false;
     _autoCompletedTask = null;
     super.clear();
   }
