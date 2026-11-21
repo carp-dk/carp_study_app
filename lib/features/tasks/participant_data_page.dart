@@ -8,7 +8,6 @@ import 'package:carp_core/carp_core.dart' hide Smartphone;
 import 'package:carp_mobile_sensing/carp_mobile_sensing.dart' show warning;
 import 'package:research_package/research_package.dart';
 import 'package:carp_study_app/features/tasks/participant_data_view_model.dart';
-import 'package:carp_study_app/shared/widgets/carp_app_bar.dart';
 
 enum ParticipantStep {
   presentTypes,
@@ -96,6 +95,7 @@ class ParticipantDataPageState extends State<ParticipantDataPage> {
   final Set<StepField> _allUsedStepFields = {};
 
   bool _nextEnabled = false;
+  bool _saving = false;
 
   /// Always include the present types step at the beginning
   /// and the review step at the end.
@@ -346,52 +346,79 @@ class ParticipantDataPageState extends State<ParticipantDataPage> {
 
   @override
   Widget build(BuildContext context) {
-    RPLocalizations locale = RPLocalizations.of(context)!;
-    return Scaffold(
-      body: SafeArea(
-        child: Container(
-          padding: const EdgeInsets.all(16.0),
+    final locale = RPLocalizations.of(context)!;
+    return PopScope(
+      canPop: false,
+      onPopInvokedWithResult: (didPop, _) {
+        if (!didPop) _showCancelConfirmationDialog();
+      },
+      child: Scaffold(
+        body: SafeArea(
           child: Column(
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
-              Row(
-                children: [
-                  const CarpAppBar(hasProfileIcon: false),
-                  Spacer(),
-                  IconButton(
-                    color: Colors.grey.shade900,
-                    onPressed: () {
-                      _showCancelConfirmationDialog();
-                    },
-                    icon: const Icon(Icons.close, size: 30),
-                  ),
-                ],
-              ),
+              _buildTopBar(locale),
               Expanded(
                 child: Padding(
-                  padding: const EdgeInsets.symmetric(horizontal: 20.0),
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.stretch,
+                  padding: const EdgeInsets.all(16),
+                  child: ListView(
+                    key: ValueKey(currentStep),
                     children: [
-                      _buildDialogTitle(locale),
-                      Expanded(
-                        child: Padding(
-                          padding: const EdgeInsets.symmetric(vertical: 8),
-                          child: SizedBox(child: _buildStepContent(locale, widget.model.expectedData)),
-                        ),
-                      ),
-                      Padding(
-                        padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 16),
-                        child: Row(
-                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                          children: _buildActionButtons(locale),
-                        ),
-                      ),
+                      _buildStepTitle(locale),
+                      Padding(padding: const EdgeInsets.all(8), child: _buildStepContent(locale)),
                     ],
                   ),
                 ),
               ),
+              Padding(
+                padding: const EdgeInsets.only(left: 15, right: 15, bottom: 10),
+                child: Row(mainAxisAlignment: MainAxisAlignment.spaceBetween, children: _buildActionButtons(locale)),
+              ),
             ],
           ),
+        ),
+      ),
+    );
+  }
+
+  /// Matches Research Package's default [RPUITask] carousel bar: logo, step
+  /// counter ("1 of N"), and primary-coloured close icon.
+  Widget _buildTopBar(RPLocalizations locale) {
+    final stepIndex = _includedSteps.indexOf(currentStep);
+    return Container(
+      color: Theme.of(context).scaffoldBackgroundColor,
+      child: SizedBox(
+        height: AppBar().preferredSize.height,
+        child: Row(
+          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+          children: [
+            Expanded(
+              flex: 5,
+              child: Image.asset(
+                'assets/icons/carp_logo_example.png',
+                package: 'research_package',
+                fit: BoxFit.contain,
+                height: 16,
+              ),
+            ),
+            Expanded(
+              flex: 2,
+              child: Text(
+                '${stepIndex + 1} ${locale.translate('of')} ${_includedSteps.length}',
+                style: Theme.of(context).textTheme.bodyLarge?.copyWith(fontSize: 18),
+                textAlign: TextAlign.center,
+              ),
+            ),
+            Expanded(
+              flex: 5,
+              child: IconButton(
+                padding: const EdgeInsets.only(right: 30),
+                alignment: Alignment.centerRight,
+                icon: Icon(Icons.highlight_off, color: Theme.of(context).colorScheme.primary),
+                onPressed: _showCancelConfirmationDialog,
+              ),
+            ),
+          ],
         ),
       ),
     );
@@ -408,32 +435,21 @@ class ParticipantDataPageState extends State<ParticipantDataPage> {
     ParticipantStep.review: locale.translate("tasks.participant_data.review.title"),
   };
 
-  /// Builds the title of the dialog based on the current step.
-  Widget _buildDialogTitle(RPLocalizations locale) {
-    final stepTitleMap = _stepTitles(locale);
+  /// Matches RP's instruction / question step title styling.
+  Widget _buildStepTitle(RPLocalizations locale) {
+    final title = _stepTitles(locale)[currentStep] ?? '';
+    final style = currentStep == ParticipantStep.presentTypes
+        ? Theme.of(context).textTheme.headlineSmall
+        : Theme.of(context).textTheme.titleLarge;
     return Padding(
-      padding: const EdgeInsets.only(bottom: 16),
-      child: Container(
-        alignment: Alignment.centerLeft,
-        child: Row(
-          mainAxisAlignment: MainAxisAlignment.start,
-          children: [
-            Flexible(
-              child: Text(
-                stepTitleMap[currentStep] ?? '',
-                style: Theme.of(context).textTheme.titleLarge!.copyWith(color: Theme.of(context).primaryColor),
-                textAlign: TextAlign.center,
-              ),
-            ),
-          ],
-        ),
-      ),
+      padding: const EdgeInsets.only(bottom: 24, left: 8, right: 8),
+      child: Text(title, textAlign: TextAlign.left, style: style),
     );
   }
 
-  /// Builds the content of the current step based on the [_includedSteps].
-  Widget _buildStepContent(RPLocalizations locale, Set<ExpectedParticipantData?> expectedData) {
-    List<Widget> fields = [];
+  /// Builds the content of the current step based on [_includedSteps].
+  Widget _buildStepContent(RPLocalizations locale) {
+    final List<Widget> fields = [];
     switch (currentStep) {
       case ParticipantStep.presentTypes:
         fields.add(
@@ -504,23 +520,17 @@ class ParticipantDataPageState extends State<ParticipantDataPage> {
         break;
     }
 
-    return SingleChildScrollView(
-      child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: fields),
-    );
+    return Column(crossAxisAlignment: CrossAxisAlignment.start, children: fields);
   }
 
-  /// Builds the present types section and the review section, displaying the steps that are included
+  /// Displays the list of steps the participant is about to fill in.
   Widget _buildPresentTypes(List<String?> steps) {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: steps.map((step) {
         return Padding(
-          padding: const EdgeInsets.only(bottom: 8.0),
-          child: Text(
-            "\u2022 ${step ?? ''}",
-            textAlign: TextAlign.start,
-            style: const TextStyle(fontSize: 16, fontWeight: FontWeight.w600, letterSpacing: 0.4),
-          ),
+          padding: const EdgeInsets.only(bottom: 12.0),
+          child: Text('• ${step ?? ''}', style: Theme.of(context).textTheme.bodyLarge),
         );
       }).toList(),
     );
@@ -528,47 +538,41 @@ class ParticipantDataPageState extends State<ParticipantDataPage> {
 
   /// Builds the review (last) step, displaying all the fields and their values.
   Widget _buildReviewStep(RPLocalizations locale, Set<StepField> fields) {
+    final entries = fields.toList();
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
-      children: List.generate(fields.length, (index) {
-        final String field = fields.elementAt(index).title;
-        String input = "";
-        if (index < fields.length) {
-          if (fields.elementAt(index).controller == widget.model.phoneNumberController) {
-            input = "${widget.model.phoneNumberCodeController.text} ${fields.elementAt(index).controller.text}";
-          } else if (fields.elementAt(index).controller == widget.model.ssnController) {
-            input = "${widget.model.ssnCountryController.text} ${fields.elementAt(index).controller.text}";
-          } else {
-            input = fields.elementAt(index).controller.text;
-          }
-        }
-
-        return Padding(
-          padding: const EdgeInsets.only(bottom: 16.0),
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              Text(
-                locale.translate(field),
-                style: const TextStyle(fontSize: 16, fontWeight: FontWeight.w600, letterSpacing: 0.4),
-              ),
-              Text(input, style: const TextStyle(fontSize: 16, fontWeight: FontWeight.w600, letterSpacing: 0.4)),
-            ],
+      children: [
+        for (var index = 0; index < entries.length; index++) ...[
+          if (index > 0) const Divider(height: 24),
+          Text(
+            locale.translate(entries[index].title),
+            style: Theme.of(context).textTheme.labelMedium?.copyWith(color: Colors.grey.shade600),
           ),
-        );
-      }),
+          const SizedBox(height: 4),
+          Text(_reviewValue(entries[index]), style: Theme.of(context).textTheme.bodyLarge),
+        ],
+      ],
     );
   }
 
-  /// The [options] (value -> label key) of the current choice step.
+  String _reviewValue(StepField field) {
+    if (field.controller == widget.model.phoneNumberController) {
+      return '${widget.model.phoneNumberCodeController.text} ${field.controller.text}'.trim();
+    }
+    if (field.controller == widget.model.ssnController) {
+      return '${widget.model.ssnCountryController.text} ${field.controller.text}'.trim();
+    }
+    return field.controller.text;
+  }
+
+  /// Matches Research Package's [RPUIChoiceQuestionBody]: hint line, dividers,
+  /// and primary-coloured [Radio] / [Checkbox] rows.
   Widget _buildChoices(RPLocalizations locale, Map<String, String> options, {bool multiple = false}) {
     final field = _choiceFields[currentStep]!;
     final chosen = _choices.putIfAbsent(currentStep, () => {});
     _allUsedStepFields.add(field);
 
-    void toggle(String value) {
-      if (!multiple) chosen.clear();
-      if (!chosen.remove(value)) chosen.add(value);
+    void syncController() {
       // Listeners on the controller re-validate and rebuild.
       field.controller.text = options.entries
           .where((option) => chosen.contains(option.key))
@@ -576,19 +580,66 @@ class ParticipantDataPageState extends State<ParticipantDataPage> {
           .join(', ');
     }
 
-    return Column(
-      children: [
-        for (final MapEntry(key: value, value: label) in options.entries)
-          ListTile(
-            contentPadding: EdgeInsets.zero,
-            selected: chosen.contains(value),
-            leading: Icon(
-              multiple
-                  ? (chosen.contains(value) ? Icons.check_box : Icons.check_box_outline_blank)
-                  : (chosen.contains(value) ? Icons.radio_button_checked : Icons.radio_button_unchecked),
-            ),
-            title: Text(locale.translate(label)),
+    void toggle(String value) {
+      if (!chosen.remove(value)) {
+        if (!multiple) chosen.clear();
+        chosen.add(value);
+      }
+      syncController();
+    }
+
+    final entries = options.entries.toList();
+    final primary = Theme.of(context).colorScheme.primary;
+    final list = ListView.separated(
+      shrinkWrap: true,
+      physics: const NeverScrollableScrollPhysics(),
+      itemCount: entries.length,
+      separatorBuilder: (_, _) => const Divider(height: 1, indent: 16, endIndent: 16),
+      itemBuilder: (context, index) {
+        final MapEntry(key: value, value: label) = entries[index];
+        final selected = chosen.contains(value);
+        return Padding(
+          padding: const EdgeInsets.symmetric(horizontal: 4),
+          child: InkWell(
             onTap: () => toggle(value),
+            child: Row(
+              children: [
+                if (multiple)
+                  Checkbox(value: selected, onChanged: (_) => toggle(value), activeColor: primary)
+                else
+                  Radio<String>(value: value, toggleable: true, activeColor: primary),
+                Expanded(
+                  child: Text(locale.translate(label), style: Theme.of(context).textTheme.bodyLarge, softWrap: true),
+                ),
+              ],
+            ),
+          ),
+        );
+      },
+    );
+
+    return Column(
+      mainAxisSize: MainAxisSize.min,
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        Padding(
+          padding: const EdgeInsets.all(8.0),
+          child: Text('(${locale.translate(multiple ? 'choose_one_or_more_options' : 'choose_one_option')})'),
+        ),
+        if (multiple)
+          list
+        else
+          RadioGroup<String>(
+            groupValue: chosen.firstOrNull,
+            onChanged: (value) {
+              if (value == null) {
+                chosen.clear();
+                syncController();
+              } else {
+                toggle(value);
+              }
+            },
+            child: list,
           ),
       ],
     );
@@ -605,7 +656,6 @@ class ParticipantDataPageState extends State<ParticipantDataPage> {
     bool isThicc = false,
     bool isDatePicker = false,
   }) {
-    _validateRequiredFields();
     _allUsedStepFields.add(stepField);
     if (isPhoneNumber) {
       return InternationalPhoneNumberInput(
@@ -614,10 +664,10 @@ class ParticipantDataPageState extends State<ParticipantDataPage> {
         },
         textFieldController: stepField.controller,
         selectorConfig: SelectorConfig(selectorType: PhoneInputSelectorType.DIALOG, useBottomSheetSafeArea: true),
-        inputDecoration: _buildInputDecoration(locale, stepField, isThicc),
+        inputDecoration: _buildInputDecoration(locale, stepField),
         ignoreBlank: false,
         autoValidateMode: AutovalidateMode.disabled,
-        selectorTextStyle: TextStyle(color: Colors.black),
+        selectorTextStyle: Theme.of(context).textTheme.bodyLarge,
         formatInput: true,
         keyboardType: TextInputType.numberWithOptions(signed: true, decimal: true),
         inputBorder: OutlineInputBorder(),
@@ -633,8 +683,8 @@ class ParticipantDataPageState extends State<ParticipantDataPage> {
                 width: 125,
                 child: Container(
                   decoration: BoxDecoration(
-                    border: Border.all(color: Colors.grey.shade600, width: 1.0),
-                    borderRadius: BorderRadius.circular(16.0),
+                    border: Border.all(color: Theme.of(context).colorScheme.outlineVariant),
+                    borderRadius: BorderRadius.circular(8),
                   ),
                   child: CountryCodePicker(
                     onChanged: (value) {
@@ -656,7 +706,7 @@ class ParticipantDataPageState extends State<ParticipantDataPage> {
             flex: 3,
             child: TextFormField(
               controller: stepField.controller,
-              decoration: _buildInputDecoration(locale, stepField, isThicc),
+              decoration: _buildInputDecoration(locale, stepField),
               keyboardType: TextInputType.number,
             ),
           ),
@@ -671,12 +721,13 @@ class ParticipantDataPageState extends State<ParticipantDataPage> {
             child: TextFormField(
               controller: stepField.controller,
               focusNode: stepField.focusNode,
-              textInputAction: TextInputAction.next,
+              textInputAction: isThicc ? TextInputAction.newline : TextInputAction.next,
               onFieldSubmitted: (_) {
                 if (stepField.nextFocusNode != null) {
                   FocusScope.of(context).requestFocus(stepField.nextFocusNode);
                 }
               },
+              readOnly: isDatePicker,
               onTap: isDatePicker
                   ? () async {
                       DateTime? pickedDate = await showDatePicker(
@@ -690,9 +741,10 @@ class ParticipantDataPageState extends State<ParticipantDataPage> {
                       }
                     }
                   : null,
-              keyboardType: TextInputType.multiline,
+              keyboardType: isThicc ? TextInputType.multiline : TextInputType.text,
+              minLines: isThicc ? 4 : 1,
               maxLines: isThicc ? null : 1,
-              decoration: _buildInputDecoration(locale, stepField, isThicc),
+              decoration: _buildInputDecoration(locale, stepField),
             ),
           ),
         ],
@@ -700,101 +752,68 @@ class ParticipantDataPageState extends State<ParticipantDataPage> {
     }
   }
 
-  InputDecoration _buildInputDecoration(RPLocalizations locale, StepField stepField, bool isThicc) {
+  InputDecoration _buildInputDecoration(RPLocalizations locale, StepField stepField) {
+    final scheme = Theme.of(context).colorScheme;
     return InputDecoration(
       labelText: locale.translate(stepField.title),
       floatingLabelBehavior: FloatingLabelBehavior.always,
       border: OutlineInputBorder(
         borderRadius: BorderRadius.circular(8),
-        borderSide: BorderSide(color: Colors.blue),
+        borderSide: BorderSide(color: scheme.primary),
       ),
       enabledBorder: OutlineInputBorder(
         borderRadius: BorderRadius.circular(8),
-        borderSide: BorderSide(color: Colors.grey.shade300),
+        borderSide: BorderSide(color: scheme.outlineVariant),
       ),
       focusedBorder: OutlineInputBorder(
         borderRadius: BorderRadius.circular(8),
-        borderSide: BorderSide(color: Colors.blue, width: 2),
+        borderSide: BorderSide(color: scheme.primary, width: 2),
       ),
-      contentPadding: EdgeInsets.symmetric(horizontal: 16, vertical: isThicc ? 70 : 12),
+      contentPadding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
     );
   }
 
-  /// Builds the action buttons at the bottom of the page.
-  /// Includes "Cancel", "Previous", "Next", and "Submit" buttons.
-  /// The "Next" button is enabled only if the required fields for the current step are filled.
+  /// Matches Research Package's bottom bar: [OutlinedButton] BACK on the left
+  /// (omitted on step 1) and [ElevatedButton] NEXT / DONE on the right.
   List<Widget> _buildActionButtons(RPLocalizations locale) {
-    Widget buildTranslatedButton(
-      String key,
-      VoidCallback onPressed,
-      bool enabled,
-      ButtonStyle? buttonStyle,
-      TextStyle? buttonTextStyle,
-    ) {
-      return ElevatedButton(
-        onPressed: enabled ? onPressed : null,
-        child: Text(locale.translate(key), style: buttonTextStyle),
-        style: buttonStyle,
-      );
-    }
+    final idx = _includedSteps.indexOf(currentStep);
+    final isFirst = idx == 0;
+    final isLast = idx == _includedSteps.length - 1;
+    final canProceed = isFirst || _nextEnabled;
 
     return [
-      currentStep == ParticipantStep.presentTypes
-          ? buildTranslatedButton(
-              "cancel",
-              () {
-                context.pop();
-              },
-              true,
-              null,
-              null,
-            )
-          : buildTranslatedButton(
-              "previous",
-              () {
-                setState(() {
-                  final idx = _includedSteps.indexOf(currentStep);
-                  if (currentStep.index - 1 >= 0) {
-                    currentStep = _includedSteps[idx - 1];
+      if (isFirst)
+        const SizedBox.shrink()
+      else
+        OutlinedButton(
+          onPressed: () {
+            FocusManager.instance.primaryFocus?.unfocus();
+            setState(() => currentStep = _includedSteps[idx - 1]);
+            _validateRequiredFields();
+          },
+          child: Text(locale.translate('BACK')),
+        ),
+      ElevatedButton(
+        onPressed: !canProceed || _saving
+            ? null
+            : () async {
+                FocusManager.instance.primaryFocus?.unfocus();
+                if (isLast) {
+                  setState(() => _saving = true);
+                  final ok = await _setParticipantData();
+                  if (!mounted) return;
+                  if (ok) {
+                    context.pop();
+                  } else {
+                    setState(() => _saving = false);
                   }
-                });
-                _validateRequiredFields();
+                } else {
+                  setState(() => currentStep = _includedSteps[idx + 1]);
+                  _validateRequiredFields();
+                }
               },
-              true,
-              null,
-              null,
-            ),
-      currentStep.index == ParticipantStep.values.length - 1
-          ? buildTranslatedButton(
-              "done",
-              () async {
-                if (await _setParticipantData() && mounted) context.pop();
-              },
-              _nextEnabled,
-              ElevatedButton.styleFrom(
-                backgroundColor: Theme.of(context).colorScheme.primary,
-                padding: const EdgeInsets.symmetric(horizontal: 30, vertical: 12),
-              ),
-              TextStyle(color: Colors.white),
-            )
-          : buildTranslatedButton(
-              "next",
-              () {
-                setState(() {
-                  final idx = _includedSteps.indexOf(currentStep);
-                  if (currentStep.index + 1 < ParticipantStep.values.length) {
-                    currentStep = _includedSteps[idx + 1];
-                  }
-                });
-                _validateRequiredFields();
-              },
-              currentStep == ParticipantStep.presentTypes ? true : _nextEnabled,
-              ElevatedButton.styleFrom(
-                backgroundColor: Theme.of(context).colorScheme.primary,
-                padding: const EdgeInsets.symmetric(horizontal: 30, vertical: 12),
-              ),
-              TextStyle(color: Colors.white),
-            ),
+        child: Text(locale.translate(isLast ? 'DONE' : 'NEXT')),
+      ),
     ];
   }
 
@@ -866,27 +885,22 @@ class ParticipantDataPageState extends State<ParticipantDataPage> {
   }
 
   Future<void> _showCancelConfirmationDialog() {
-    RPLocalizations locale = RPLocalizations.of(context)!;
+    final locale = RPLocalizations.of(context)!;
 
     return showDialog(
       context: context,
-      barrierDismissible: false,
       builder: (BuildContext context) {
         return AlertDialog(
-          title: Text(locale.translate("pages.audio_task.discard")),
+          title: Text(locale.translate('pages.audio_task.discard')),
+          content: Text(locale.translate('discard_confirmation_body')),
           actions: <Widget>[
-            TextButton(
-              child: Text(locale.translate("NO")),
-              onPressed: () {
-                context.pop();
-              },
-            ),
-            TextButton(
-              child: Text(locale.translate("YES")),
+            OutlinedButton(onPressed: () => context.pop(), child: Text(locale.translate('CANCEL'))),
+            FilledButton(
               onPressed: () {
                 context.pop();
                 context.pop();
               },
+              child: Text(locale.translate('LEAVE')),
             ),
           ],
         );

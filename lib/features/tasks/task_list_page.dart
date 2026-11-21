@@ -247,10 +247,12 @@ class TaskListPageState extends State<TaskListPage> with TickerProviderStateMixi
   }
 
   Widget _participantDataCard() {
+    final locale = RPLocalizations.of(context)!;
     final accent = taskTypeColors["ExpectedParticipantData"]!;
+    void open() => context.push(Routes.participantData).then((_) => widget.model.checkParticipantData());
+
     return _card(
       accent: accent,
-      onTap: () => context.push(Routes.participantData).then((_) => widget.model.checkParticipantData()),
       children: [
         Row(
           children: [
@@ -258,22 +260,33 @@ class TaskListPageState extends State<TaskListPage> with TickerProviderStateMixi
             const SizedBox(width: 6),
             Expanded(
               child: Text(
-                RPLocalizations.of(context)!.translate('tasks.participant_data.card.type'),
+                locale.translate('tasks.participant_data.card.type'),
                 style: Theme.of(context).textTheme.labelMedium!.copyWith(color: accent, fontWeight: FontWeight.w700),
               ),
             ),
-            Icon(Icons.chevron_right, size: 20, color: Colors.grey.shade400),
           ],
         ),
         const SizedBox(height: 8),
-        Text(
-          RPLocalizations.of(context)!.translate('tasks.participant_data.card.title'),
-          style: Theme.of(context).textTheme.labelLarge!,
-        ),
+        Text(locale.translate('tasks.participant_data.card.title'), style: Theme.of(context).textTheme.labelLarge!),
         const SizedBox(height: 4),
         Text(
-          RPLocalizations.of(context)!.translate('tasks.participant_data.card.description'),
+          locale.translate('tasks.participant_data.card.description'),
           style: Theme.of(context).textTheme.labelMedium!.copyWith(color: Colors.grey.shade600),
+        ),
+        const SizedBox(height: 12),
+        Row(
+          mainAxisAlignment: MainAxisAlignment.end,
+          children: [
+            FilledButton(
+              style: FilledButton.styleFrom(
+                padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 8),
+                minimumSize: const Size(0, 0),
+                tapTargetSize: MaterialTapTargetSize.shrinkWrap,
+              ),
+              onPressed: open,
+              child: Text(locale.translate('pages.task_list.start')),
+            ),
+          ],
         ),
       ],
     );
