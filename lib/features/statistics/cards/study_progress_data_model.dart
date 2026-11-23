@@ -3,6 +3,7 @@ import 'package:carp_mobile_sensing/carp_mobile_sensing.dart';
 import 'package:carp_study_app/features/statistics/cards/study_progress_card.dart';
 import 'package:carp_study_app/features/statistics/cards/task_completion_card.dart';
 import 'package:carp_study_app/shared/view_model.dart';
+import 'package:carp_study_app/main.dart';
 
 /// View model for the [StudyProgressCardWidget] and [TaskCompletionCard].
 class StudyProgressCardViewModel extends ViewModel {
@@ -14,7 +15,7 @@ class StudyProgressCardViewModel extends ViewModel {
   /// The number of tasks completed on each of the last [completionHistoryDays]
   /// days, oldest first - a zero for days with nothing done.
   List<int> get recentCompletions => completionsPerDay(
-    AppTaskController().userTaskQueue.where((task) => task.state == UserTaskState.done).map((task) => task.doneTime),
+    bloc.study.userTasks.where((task) => task.state == UserTaskState.done).map((task) => task.doneTime),
   );
 
   /// Bucket [doneTimes] into one count per day for the [completionHistoryDays]

@@ -1,5 +1,6 @@
 import 'package:carp_mobile_sensing/carp_mobile_sensing.dart';
 import 'package:carp_study_app/shared/view_model.dart';
+import 'package:carp_study_app/main.dart';
 
 /// View model for the task card widgets ([TaskCardWidget]) -
 /// counts tasks done, grouped by task title.
@@ -17,19 +18,16 @@ class TaskCardViewModel extends ViewModel {
   Map<String, int> get tasksTable {
     Map<String, int> tasksTable = {};
 
-    AppTaskController().userTaskQueue
-        .where((task) => task.state == UserTaskState.done && task.type == taskType)
-        .forEach((task) {
-          if (!tasksTable.containsKey(task.title)) tasksTable[task.title] = 0;
-          tasksTable[task.title] = tasksTable[task.title]! + 1;
-        });
+    bloc.study.userTasks.where((task) => task.state == UserTaskState.done && task.type == taskType).forEach((task) {
+      if (!tasksTable.containsKey(task.title)) tasksTable[task.title] = 0;
+      tasksTable[task.title] = tasksTable[task.title]! + 1;
+    });
     return tasksTable;
   }
 
   /// The total number of tasks done of type [taskType].
-  int get tasksDone => AppTaskController().userTaskQueue
-      .where((task) => task.state == UserTaskState.done && task.type == taskType)
-      .length;
+  int get tasksDone =>
+      bloc.study.userTasks.where((task) => task.state == UserTaskState.done && task.type == taskType).length;
 
   /// The list of [TaskCount]s done.
   List<TaskCount> get taskCount {

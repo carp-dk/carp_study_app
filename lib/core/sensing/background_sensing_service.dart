@@ -1,6 +1,7 @@
 import 'dart:async';
 import 'package:flutter/foundation.dart';
 import 'package:permission_handler/permission_handler.dart';
+import 'package:carp_context_package/carp_context_package.dart';
 import 'package:carp_mobile_sensing/carp_mobile_sensing.dart';
 import 'package:carp_study_app/core/util/app_config.dart';
 
@@ -52,7 +53,10 @@ class BackgroundSensingService extends ChangeNotifier {
     if (_isAndroid) {
       if (connected && !BackgroundService().isEnabled) connected = await _start();
       // Revoked while running - the exemption is gone, so stop the service too.
-      if (!connected && BackgroundService().isEnabled) await BackgroundService().disable();
+      if (!connected && BackgroundService().isEnabled) {
+        await BackgroundService().disable();
+        if (LocationManager().enabled) await LocationManager().enable();
+      }
     }
 
     if (connected != _isConnected) {
@@ -83,10 +87,14 @@ class BackgroundSensingService extends ChangeNotifier {
 
   Future<bool> _start() async {
     final localization = AppConfig.localization;
-    return await BackgroundService().initialize(
-          notificationTitle: localization?.translate('pages.connections.type.background.name'),
-          notificationText: localization?.translate('pages.connections.type.background.description'),
+    final started =
+        await BackgroundService().initialize(
+          notificationTitle: localization?.translate('notification.background.title'),
+          notificationText: localization?.translate('notification.background.text'),
         ) &&
         await BackgroundService().enable();
+    // Drop the location plugin's duplicate notification if it started first.
+    if (started && LocationManager().enabled) await LocationManager().enable();
+    return started;
   }
 }

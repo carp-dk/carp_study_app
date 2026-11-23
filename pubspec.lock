@@ -13,10 +13,10 @@ packages:
     dependency: transitive
     description:
       name: activity_recognition_flutter
-      sha256: e758161d1db2631fcfa49b650796fc154ee85efd57b13826565a0bc137da3a6b
+      sha256: "81cfcec9f7b0f7dffb9328f90b6d6f4439ba7596383be8d48ae80c5b96bda94b"
       url: "https://pub.dev"
     source: hosted
-    version: "6.1.0"
+    version: "7.0.0"
   air_quality:
     dependency: transitive
     description:
@@ -341,18 +341,18 @@ packages:
     dependency: "direct main"
     description:
       name: carp_context_package
-      sha256: "9de3296b3d24e2f358014906b9dcd16677ffb073608a76d7341872121a83f70a"
+      sha256: "69f932894cd43b3488c3aa34fc71582a49d27ef895c6fd8f0c77dd4ef43fe025"
       url: "https://pub.dev"
     source: hosted
-    version: "2.3.0"
+    version: "3.0.1"
   carp_core:
     dependency: "direct main"
     description:
       name: carp_core
-      sha256: "82cbd1a2a325c611954e972b7e2231d9bb7fcdf67bde2c69d25becd5a435fabd"
+      sha256: c0c532e9a9482df1f3194db0259376afdcd9c835239f2a957dc479099c5a71c4
       url: "https://pub.dev"
     source: hosted
-    version: "3.0.1"
+    version: "3.0.2"
   carp_health_package:
     dependency: "direct main"
     description:
@@ -365,10 +365,10 @@ packages:
     dependency: "direct main"
     description:
       name: carp_mobile_sensing
-      sha256: ca2399f841d7b3d097e75ce85a476be34b8c9b1fb6e77a16dffa33df51e6ddbe
+      sha256: "112821d1ec807799de9bd414647d137e0dfdb24d3c0aa9bde7f5ba123ac78a8d"
       url: "https://pub.dev"
     source: hosted
-    version: "3.0.1"
+    version: "3.0.2"
   carp_movesense_package:
     dependency: "direct main"
     description:

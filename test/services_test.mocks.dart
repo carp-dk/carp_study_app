@@ -55,6 +55,10 @@ class _FakeDeploymentService_5 extends _i1.SmartFake implements _i3.DeploymentSe
   _FakeDeploymentService_5(Object parent, Invocation parentInvocation) : super(parent, parentInvocation);
 }
 
+class _FakeParticipantData_6 extends _i1.SmartFake implements _i3.ParticipantData {
+  _FakeParticipantData_6(Object parent, Invocation parentInvocation) : super(parent, parentInvocation);
+}
+
 /// A class which mocks [Backend].
 ///
 /// See the documentation for Mockito's code generation for more information.
@@ -540,6 +544,15 @@ class MockStudyService extends _i1.Mock implements _i10.StudyService {
           as bool);
 
   @override
+  List<_i2.UserTask> get userTasks =>
+      (super.noSuchMethod(
+            Invocation.getter(#userTasks),
+            returnValue: <_i2.UserTask>[],
+            returnValueForMissingStub: <_i2.UserTask>[],
+          )
+          as List<_i2.UserTask>);
+
+  @override
   Set<_i3.ExpectedParticipantData?> get expectedParticipantData =>
       (super.noSuchMethod(
             Invocation.getter(#expectedParticipantData),
@@ -645,8 +658,17 @@ class MockStudyService extends _i1.Mock implements _i10.StudyService {
           as _i5.Future<List<_i3.ParticipantData>>);
 
   @override
-  void setParticipantData(Map<String, _i3.Data>? data) =>
-      super.noSuchMethod(Invocation.method(#setParticipantData, [data]), returnValueForMissingStub: null);
+  _i5.Future<_i3.ParticipantData> setParticipantData(Map<String, _i3.Data>? data) =>
+      (super.noSuchMethod(
+            Invocation.method(#setParticipantData, [data]),
+            returnValue: _i5.Future<_i3.ParticipantData>.value(
+              _FakeParticipantData_6(this, Invocation.method(#setParticipantData, [data])),
+            ),
+            returnValueForMissingStub: _i5.Future<_i3.ParticipantData>.value(
+              _FakeParticipantData_6(this, Invocation.method(#setParticipantData, [data])),
+            ),
+          )
+          as _i5.Future<_i3.ParticipantData>);
 
   @override
   _i5.Future<void> remove() =>

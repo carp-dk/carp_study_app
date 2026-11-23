@@ -1,5 +1,6 @@
 import 'dart:io';
 import 'package:flutter/material.dart';
+import 'package:carp_study_app/shared/widgets/enable_connection_dialog.dart';
 import 'package:go_router/go_router.dart';
 import 'package:open_settings_plus/open_settings_plus.dart';
 import 'package:open_settings_plus/core/open_settings_plus.dart';
@@ -49,9 +50,7 @@ class EnableBluetoothDialog extends StatelessWidget {
                   Padding(
                     padding: EdgeInsets.symmetric(vertical: 16.0),
                     child: Image(
-                      image: AssetImage(
-                        'assets/instructions/${Localizations.localeOf(context).languageCode}/bluetooth_enable_connections_bar.png',
-                      ),
+                      image: AssetImage('${instructionsPath(context)}/bluetooth_enable_connections_bar.png'),
                     ),
                   ),
                 Text(
@@ -68,7 +67,7 @@ class EnableBluetoothDialog extends StatelessWidget {
             mainAxisAlignment: MainAxisAlignment.end,
             children: [
               TextButton(
-                child: Text('Settings'),
+                child: Text(locale.translate('settings')),
                 onPressed: () {
                   OpenSettingsPlusIOS().bluetooth();
                   context.canPop() ? context.pop() : null;

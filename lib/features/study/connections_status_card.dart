@@ -31,15 +31,18 @@ class _ConnectionsStatusCardState extends State<ConnectionsStatusCard> {
     final active = model.activeSourceCount;
 
     final (accent, icon, title) = switch (model.connectionState) {
-      HomeConnectionState.all => (_green, Icons.sync, 'Connected & sending data'),
-      HomeConnectionState.partial => (_amber, Icons.sync_problem, 'Partially connected'),
-      HomeConnectionState.none => (_rose, Icons.sync_disabled, 'Nothing connected'),
+      HomeConnectionState.all => (_green, Icons.sync, locale.translate('pages.home.connections.all')),
+      HomeConnectionState.partial => (_amber, Icons.sync_problem, locale.translate('pages.home.connections.partial')),
+      HomeConnectionState.none => (_rose, Icons.sync_disabled, locale.translate('pages.home.connections.none')),
     };
 
     final sources = switch (model.connectionState) {
-      HomeConnectionState.all => 'All $total sources active',
-      HomeConnectionState.partial => '$active sources active · ${total - active} inactive',
-      HomeConnectionState.none => 'No sources active',
+      HomeConnectionState.all => locale.translate('pages.home.sources.all', args: {'total': total}),
+      HomeConnectionState.partial => locale.translate(
+        'pages.home.sources.partial',
+        args: {'active': active, 'inactive': total - active},
+      ),
+      HomeConnectionState.none => locale.translate('pages.home.sources.none'),
     };
 
     return StudiesMaterial(
@@ -102,7 +105,7 @@ class _ConnectionsStatusCardState extends State<ConnectionsStatusCard> {
         const SizedBox(width: 8),
         Expanded(child: Text(name, style: Theme.of(context).textTheme.bodyLarge!)),
         Text(
-          active ? 'ON' : 'OFF',
+          RPLocalizations.of(context)!.translate(active ? 'pages.home.source.on' : 'pages.home.source.off'),
           style: Theme.of(context).textTheme.labelMedium!.copyWith(color: active ? _green : Colors.grey.shade500),
         ),
       ],
@@ -130,7 +133,7 @@ class _ConnectionsStatusCardState extends State<ConnectionsStatusCard> {
             child: Row(
               children: [
                 Text(
-                  'Manage in Connections',
+                  RPLocalizations.of(context)!.translate('pages.home.manage_connections'),
                   style: Theme.of(context).textTheme.labelLarge!.copyWith(color: Theme.of(context).colorScheme.primary),
                 ),
                 const SizedBox(width: 4),

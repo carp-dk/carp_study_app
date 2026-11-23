@@ -336,15 +336,69 @@ void main() {
       });
     });
 
-    test('checkParticipantData shows the card when no data is set', () async {
+    test('checkParticipantData hides the card when nothing is expected', () async {
       final model = TaskListPageViewModel(studyService: StudyService());
       var notified = false;
       model.addListener(() => notified = true);
 
-      await model.checkParticipantData(); // no deployment - data list is empty
+      await model.checkParticipantData(); // no deployment - nothing expected
 
-      expect(model.showParticipantDataCard, isTrue);
+      expect(model.showParticipantDataCard, isFalse);
+      expect(model.participantDataCompleted, isFalse);
       expect(notified, isTrue);
+    });
+
+    test('checkParticipantData shows the card until all askable data is set', () async {
+      ExpectedParticipantData expect_(String type, [Set<String>? roles]) => ExpectedParticipantData(
+        attribute: ParticipantAttribute(inputDataType: type),
+        assignedTo: AssignedTo(roleNames: roles),
+      );
+      final study = MockStudyService();
+      when(study.study).thenReturn(
+        SmartphoneStudy(studyDeploymentId: 'd', deviceRoleName: 'Phone', participantRoleName: 'Participant'),
+      );
+      when(study.expectedParticipantData).thenReturn({
+        expect_(InputType.LANGUAGE),
+        expect_(InputType.OCCUPATION, {'Participant'}),
+        expect_(InputType.SEX, {'Caregiver'}), // another role's
+        expect_(InputType.INFORMED_CONSENT), // asked by the consent flow
+      });
+      var data = <ParticipantData>[];
+      when(study.getParticipantDataListFromDeployment()).thenAnswer((_) async => data);
+      final model = TaskListPageViewModel(studyService: study);
+
+      expect(askableParticipantData(study.expectedParticipantData, 'Participant'), [
+        InputType.LANGUAGE,
+        InputType.OCCUPATION,
+      ]);
+
+      // The server lists all expected data - unanswered as null.
+      data = [
+        ParticipantData(
+          studyDeploymentId: 'd',
+          common: {
+            InputType.LANGUAGE: PreferredLanguageInput(languageCode: 'da'),
+            InputType.INFORMED_CONSENT: null,
+          },
+          roles: [
+            RoleData(roleName: 'Participant', data: {InputType.OCCUPATION: null}),
+          ],
+        ),
+      ];
+      await model.checkParticipantData();
+      expect(model.showParticipantDataCard, isTrue);
+      expect(model.participantDataCompleted, isFalse);
+
+      data.single.roles.single.data = {
+        InputType.OCCUPATION: OccupationInput(roles: ['Student']),
+      };
+      await model.checkParticipantData();
+      expect(model.showParticipantDataCard, isFalse);
+      expect(model.participantDataCompleted, isTrue);
+
+      model.clear();
+      expect(model.showParticipantDataCard, isFalse);
+      expect(model.participantDataCompleted, isFalse);
     });
   });
 

@@ -4,7 +4,6 @@ import 'package:flutter/services.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:go_router/go_router.dart';
 import 'package:intl/intl.dart';
-import 'package:carp_mobile_sensing/carp_mobile_sensing.dart';
 import 'package:research_package/research_package.dart';
 import 'package:carp_themes_package/carp_themes_package.dart';
 import 'package:carp_study_app/app/app_bloc.dart';
@@ -154,7 +153,7 @@ class CarpAppState extends State<CarpStudyApp> {
         parentNavigatorKey: rootNavigatorKey,
         builder: (context, state) {
           final taskId = state.pathParameters['taskId'] ?? '';
-          final task = AppTaskController().getUserTask(taskId);
+          final task = bloc.study.userTasks.where((task) => task.id == taskId).firstOrNull;
           return task?.widget ?? const ErrorPage();
         },
       ),
@@ -207,7 +206,7 @@ class CarpAppState extends State<CarpStudyApp> {
   );
 
   /// RP translations: local language assets plus those downloaded from CARP.
-  final RPLocalizationsDelegate rpLocalizationsDelegate = _AppLocalizationsDelegate(
+  final RPLocalizationsDelegate rpLocalizationsDelegate = AppLocalizationsDelegate(
     loaders: [const AssetLocalizationLoader(), bloc.resources.localizationLoader],
   );
 
@@ -247,7 +246,18 @@ class CarpAppState extends State<CarpStudyApp> {
       SystemChrome.setSystemUIOverlayStyle(SystemUiOverlayStyle(statusBarColor: Colors.transparent));
     });
     return MaterialApp.router(
-      supportedLocales: const [Locale('en'), Locale('da'), Locale('es')],
+      supportedLocales: const [
+        Locale('en'),
+        Locale('da'),
+        Locale('sv'),
+        Locale('nb'),
+        Locale('fi'),
+        Locale('de'),
+        Locale('fr'),
+        Locale('it'),
+        Locale('es'),
+        Locale('pt'),
+      ],
       localizationsDelegates: [
         // Research Package translations
         rpLocalizationsDelegate,
@@ -259,8 +269,10 @@ class CarpAppState extends State<CarpStudyApp> {
         GlobalWidgetsLocalizations.delegate,
       ],
       localeResolutionCallback: (locale, supportedLocales) {
+        // Only Bokmål is translated - Nynorsk (nn) readers get it rather than English.
+        final code = locale?.languageCode == 'nn' ? 'nb' : locale?.languageCode;
         for (var supportedLocale in supportedLocales) {
-          if (supportedLocale.languageCode == locale?.languageCode) {
+          if (supportedLocale.languageCode == code) {
             Intl.defaultLocale = supportedLocale.languageCode;
             return supportedLocale;
           }
@@ -277,12 +289,19 @@ class CarpAppState extends State<CarpStudyApp> {
 }
 
 /// Loads the RP translations into [AppConfig], where non-UI layers read them.
-class _AppLocalizationsDelegate extends RPLocalizationsDelegate {
-  _AppLocalizationsDelegate({required super.loaders});
+/// Loads the app's translations, with English for keys missing in a language.
+class AppLocalizationsDelegate extends RPLocalizationsDelegate {
+  AppLocalizationsDelegate({required super.loaders});
 
   @override
   Future<RPLocalizations> load(Locale locale) async {
     final localizations = await super.load(locale);
+    // RP and cognition_package lack most languages - show English rather than raw keys.
+    if (locale.languageCode != 'en') {
+      final english = RPLocalizations(const Locale('en'));
+      await english.load(loaders: [const AssetLocalizationLoader()]);
+      localizations.translations.addAll({...english.translations, ...localizations.translations});
+    }
     AppConfig.localization = localizations;
     return localizations;
   }

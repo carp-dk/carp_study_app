@@ -46,7 +46,7 @@ class ProfilePageState extends State<ProfilePage> {
                   Text(locale.translate("pages.profile.title"), style: Theme.of(context).textTheme.headlineSmall!),
                   IconButton(
                     icon: Icon(Icons.close, color: Theme.of(context).colorScheme.primary, size: 28),
-                    tooltip: locale.translate('Back'),
+                    tooltip: locale.translate('back'),
                     onPressed: () => context.pop(),
                   ),
                 ],

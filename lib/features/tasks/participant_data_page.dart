@@ -5,11 +5,81 @@ import 'package:intl_phone_number_input/intl_phone_number_input.dart';
 import 'package:go_router/go_router.dart';
 import 'package:intl/intl.dart';
 import 'package:carp_core/carp_core.dart' hide Smartphone;
+import 'package:carp_mobile_sensing/carp_mobile_sensing.dart' show warning;
 import 'package:research_package/research_package.dart';
 import 'package:carp_study_app/features/tasks/participant_data_view_model.dart';
-import 'package:carp_study_app/shared/widgets/carp_app_bar.dart';
 
-enum ParticipantStep { presentTypes, address, diagnosis, fullName, phoneNumber, socialSecurityNumber, review }
+enum ParticipantStep {
+  presentTypes,
+  address,
+  diagnosis,
+  fullName,
+  phoneNumber,
+  socialSecurityNumber,
+  sex,
+  language,
+  occupation,
+  educationalDegree,
+  review,
+}
+
+/// The step asking for each input data type, by the last part of its name
+/// (e.g. 'dk.carp.webservices.input.language' -> 'language').
+const participantDataSteps = {
+  "address": ParticipantStep.address,
+  "diagnosis": ParticipantStep.diagnosis,
+  "full_name": ParticipantStep.fullName,
+  "phone_number": ParticipantStep.phoneNumber,
+  "ssn": ParticipantStep.socialSecurityNumber,
+  "sex": ParticipantStep.sex,
+  "language": ParticipantStep.language,
+  "occupation": ParticipantStep.occupation,
+  "educational_degree": ParticipantStep.educationalDegree,
+};
+
+/// The input data types in [expected] that [role] is asked for on this page.
+List<String> askableParticipantData(Iterable<ExpectedParticipantData?> expected, String? role) => [
+  for (final data in expected.nonNulls)
+    if ((data.assignedTo.isAssignedToAll || (data.assignedTo.roleNames?.contains(role) ?? false)) &&
+        participantDataSteps.containsKey(data.attribute?.inputDataType.split('.').last))
+      data.attribute!.inputDataType,
+];
+
+/// Occupations as offered in the CARP portal - sent as is, translated for display.
+const occupations = [
+  'Student',
+  'Employed',
+  'Unemployed',
+  'Retired',
+  'Homemaker',
+  'Engineer',
+  'Researcher',
+  'Healthcare Professional',
+  'Other',
+];
+
+/// Preferred languages, shown in their own language.
+const languages = {
+  'en': 'English',
+  'da': 'Dansk',
+  'sv': 'Svenska',
+  'nb': 'Norsk',
+  'fi': 'Suomi',
+  'de': 'Deutsch',
+  'nl': 'Nederlands',
+  'fr': 'Français',
+  'it': 'Italiano',
+  'es': 'Español',
+  'pt': 'Português',
+  'pl': 'Polski',
+  'uk': 'Українська',
+  'tr': 'Türkçe',
+  'ar': 'العربية',
+  'hi': 'हिन्दी',
+  'zh': '中文',
+  'ja': '日本語',
+  'ko': '한국어',
+};
 
 class ParticipantDataPage extends StatefulWidget {
   final ParticipantDataPageViewModel model;
@@ -25,27 +95,33 @@ class ParticipantDataPageState extends State<ParticipantDataPage> {
   final Set<StepField> _allUsedStepFields = {};
 
   bool _nextEnabled = false;
+  bool _saving = false;
 
   /// Always include the present types step at the beginning
   /// and the review step at the end.
   final List<ParticipantStep> _includedSteps = [ParticipantStep.presentTypes];
 
-  final Map<String, ParticipantStep> _stepMap = {
-    "address": ParticipantStep.address,
-    "diagnosis": ParticipantStep.diagnosis,
-    "full_name": ParticipantStep.fullName,
-    "phone_number": ParticipantStep.phoneNumber,
-    "ssn": ParticipantStep.socialSecurityNumber,
-  };
+  /// The expected input data type each included step sets.
+  final Map<ParticipantStep, String> _stepType = {};
 
-  final Map<ParticipantStep, String> participantStepDescriptions = {
-    ParticipantStep.address: 'Address',
-    ParticipantStep.diagnosis: 'Diagnosis',
-    ParticipantStep.fullName: 'Full Name',
-    ParticipantStep.phoneNumber: 'Phone Number',
-    ParticipantStep.socialSecurityNumber: 'Social Security Number',
-    ParticipantStep.review: 'Review',
+  /// The single or multiple choice steps - the field shows the chosen
+  /// labels (for review), [_choices] holds the chosen values.
+  final Map<ParticipantStep, StepField> _choiceFields = {
+    ParticipantStep.sex: StepField(title: "tasks.participant_data.sex.title", controller: TextEditingController()),
+    ParticipantStep.language: StepField(
+      title: "tasks.participant_data.language.title",
+      controller: TextEditingController(),
+    ),
+    ParticipantStep.occupation: StepField(
+      title: "tasks.participant_data.occupation.title",
+      controller: TextEditingController(),
+    ),
+    ParticipantStep.educationalDegree: StepField(
+      title: "tasks.participant_data.educational_degree.title",
+      controller: TextEditingController(),
+    ),
   };
+  final Map<ParticipantStep, Set<String>> _choices = {};
 
   @override
   void initState() {
@@ -80,11 +156,10 @@ class ParticipantDataPageState extends State<ParticipantDataPage> {
     widget.model.middleNameFocusNode = FocusNode();
     widget.model.lastNameFocusNode = FocusNode();
 
-    for (final key in _stepMap.keys) {
-      if (widget.model.expectedData.any((dataType) => dataType!.attribute!.inputDataType.contains(key))) {
-        _includedSteps.add(_stepMap[key]!);
-      }
+    for (final type in widget.model.askableData) {
+      _stepType[participantDataSteps[type.split('.').last]!] = type;
     }
+    _includedSteps.addAll(ParticipantStep.values.where(_stepType.containsKey));
 
     /// Always include the review step at the end
     _includedSteps.add(ParticipantStep.review);
@@ -103,6 +178,7 @@ class ParticipantDataPageState extends State<ParticipantDataPage> {
       widget.model.phoneNumberController,
       widget.model.ssnCountryController,
       widget.model.ssnController,
+      for (final field in _choiceFields.values) field.controller,
     };
 
     for (final controller in widget.model.nonOptionalControllers) {
@@ -216,6 +292,9 @@ class ParticipantDataPageState extends State<ParticipantDataPage> {
     widget.model.firstNameFocusNode.dispose();
     widget.model.middleNameFocusNode.dispose();
     widget.model.lastNameFocusNode.dispose();
+    for (final field in _choiceFields.values) {
+      field.controller.dispose();
+    }
 
     super.dispose();
   }
@@ -249,6 +328,12 @@ class ParticipantDataPageState extends State<ParticipantDataPage> {
         case ParticipantStep.socialSecurityNumber:
           _nextEnabled = widget.model.ssnController.text.isNotEmpty;
           break;
+        case ParticipantStep.sex:
+        case ParticipantStep.language:
+        case ParticipantStep.occupation:
+        case ParticipantStep.educationalDegree:
+          _nextEnabled = _choiceFields[currentStep]!.controller.text.isNotEmpty;
+          break;
         case ParticipantStep.review:
           _nextEnabled = true;
           break;
@@ -261,49 +346,33 @@ class ParticipantDataPageState extends State<ParticipantDataPage> {
 
   @override
   Widget build(BuildContext context) {
-    RPLocalizations locale = RPLocalizations.of(context)!;
-    return Scaffold(
-      body: SafeArea(
-        child: Container(
-          padding: const EdgeInsets.all(16.0),
+    final locale = RPLocalizations.of(context)!;
+    return PopScope(
+      canPop: false,
+      onPopInvokedWithResult: (didPop, _) {
+        if (!didPop) _showCancelConfirmationDialog();
+      },
+      child: Scaffold(
+        body: SafeArea(
           child: Column(
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
-              Row(
-                children: [
-                  const CarpAppBar(hasProfileIcon: false),
-                  Spacer(),
-                  IconButton(
-                    color: Colors.grey.shade900,
-                    onPressed: () {
-                      _showCancelConfirmationDialog();
-                    },
-                    icon: const Icon(Icons.close, size: 30),
-                  ),
-                ],
-              ),
+              _buildTopBar(locale),
               Expanded(
                 child: Padding(
-                  padding: const EdgeInsets.symmetric(horizontal: 20.0),
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.stretch,
+                  padding: const EdgeInsets.all(16),
+                  child: ListView(
+                    key: ValueKey(currentStep),
                     children: [
-                      _buildDialogTitle(locale),
-                      Expanded(
-                        child: Padding(
-                          padding: const EdgeInsets.symmetric(vertical: 8),
-                          child: SizedBox(child: _buildStepContent(locale, widget.model.expectedData)),
-                        ),
-                      ),
-                      Padding(
-                        padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 16),
-                        child: Row(
-                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                          children: _buildActionButtons(locale),
-                        ),
-                      ),
+                      _buildStepTitle(locale),
+                      Padding(padding: const EdgeInsets.all(8), child: _buildStepContent(locale)),
                     ],
                   ),
                 ),
+              ),
+              Padding(
+                padding: const EdgeInsets.only(left: 15, right: 15, bottom: 10),
+                child: Row(mainAxisAlignment: MainAxisAlignment.spaceBetween, children: _buildActionButtons(locale)),
               ),
             ],
           ),
@@ -312,29 +381,41 @@ class ParticipantDataPageState extends State<ParticipantDataPage> {
     );
   }
 
-  /// Builds the title of the dialog based on the current step.
-  Widget _buildDialogTitle(RPLocalizations locale) {
-    final stepTitleMap = {
-      ParticipantStep.presentTypes: locale.translate("tasks.participant_data.present_data.title"),
-      ParticipantStep.address: locale.translate("tasks.participant_data.address.title"),
-      ParticipantStep.diagnosis: locale.translate("tasks.participant_data.diagnosis.title"),
-      ParticipantStep.fullName: locale.translate("tasks.participant_data.full_name.title"),
-      ParticipantStep.phoneNumber: locale.translate("tasks.participant_data.phone_number.title"),
-      ParticipantStep.socialSecurityNumber: locale.translate("tasks.participant_data.ssn.title"),
-      ParticipantStep.review: locale.translate("tasks.participant_data.review.title"),
-    };
-    return Padding(
-      padding: const EdgeInsets.only(bottom: 16),
-      child: Container(
-        alignment: Alignment.centerLeft,
+  /// Matches Research Package's default [RPUITask] carousel bar: logo, step
+  /// counter ("1 of N"), and primary-coloured close icon.
+  Widget _buildTopBar(RPLocalizations locale) {
+    final stepIndex = _includedSteps.indexOf(currentStep);
+    return Container(
+      color: Theme.of(context).scaffoldBackgroundColor,
+      child: SizedBox(
+        height: AppBar().preferredSize.height,
         child: Row(
-          mainAxisAlignment: MainAxisAlignment.start,
+          mainAxisAlignment: MainAxisAlignment.spaceBetween,
           children: [
-            Flexible(
+            Expanded(
+              flex: 5,
+              child: Image.asset(
+                'assets/icons/carp_logo_example.png',
+                package: 'research_package',
+                fit: BoxFit.contain,
+                height: 16,
+              ),
+            ),
+            Expanded(
+              flex: 2,
               child: Text(
-                stepTitleMap[currentStep] ?? '',
-                style: Theme.of(context).textTheme.titleLarge!.copyWith(color: Theme.of(context).primaryColor),
+                '${stepIndex + 1} ${locale.translate('of')} ${_includedSteps.length}',
+                style: Theme.of(context).textTheme.bodyLarge?.copyWith(fontSize: 18),
                 textAlign: TextAlign.center,
+              ),
+            ),
+            Expanded(
+              flex: 5,
+              child: IconButton(
+                padding: const EdgeInsets.only(right: 30),
+                alignment: Alignment.centerRight,
+                icon: Icon(Icons.highlight_off, color: Theme.of(context).colorScheme.primary),
+                onPressed: _showCancelConfirmationDialog,
               ),
             ),
           ],
@@ -343,16 +424,39 @@ class ParticipantDataPageState extends State<ParticipantDataPage> {
     );
   }
 
-  /// Builds the content of the current step based on the [_includedSteps].
-  Widget _buildStepContent(RPLocalizations locale, Set<ExpectedParticipantData?> expectedData) {
-    List<Widget> fields = [];
+  Map<ParticipantStep, String> _stepTitles(RPLocalizations locale) => {
+    ParticipantStep.presentTypes: locale.translate("tasks.participant_data.present_data.title"),
+    ParticipantStep.address: locale.translate("tasks.participant_data.address.title"),
+    ParticipantStep.diagnosis: locale.translate("tasks.participant_data.diagnosis.title"),
+    ParticipantStep.fullName: locale.translate("tasks.participant_data.full_name.title"),
+    ParticipantStep.phoneNumber: locale.translate("tasks.participant_data.phone_number.title"),
+    ParticipantStep.socialSecurityNumber: locale.translate("tasks.participant_data.ssn.title"),
+    for (final MapEntry(:key, :value) in _choiceFields.entries) key: locale.translate(value.title),
+    ParticipantStep.review: locale.translate("tasks.participant_data.review.title"),
+  };
+
+  /// Matches RP's instruction / question step title styling.
+  Widget _buildStepTitle(RPLocalizations locale) {
+    final title = _stepTitles(locale)[currentStep] ?? '';
+    final style = currentStep == ParticipantStep.presentTypes
+        ? Theme.of(context).textTheme.headlineSmall
+        : Theme.of(context).textTheme.titleLarge;
+    return Padding(
+      padding: const EdgeInsets.only(bottom: 24, left: 8, right: 8),
+      child: Text(title, textAlign: TextAlign.left, style: style),
+    );
+  }
+
+  /// Builds the content of the current step based on [_includedSteps].
+  Widget _buildStepContent(RPLocalizations locale) {
+    final List<Widget> fields = [];
     switch (currentStep) {
       case ParticipantStep.presentTypes:
         fields.add(
           _buildPresentTypes(
             _includedSteps
                 .where((step) => step != ParticipantStep.presentTypes && step != ParticipantStep.review)
-                .map((step) => participantStepDescriptions[step])
+                .map((step) => _stepTitles(locale)[step])
                 .toList(),
           ),
         );
@@ -387,28 +491,46 @@ class ParticipantDataPageState extends State<ParticipantDataPage> {
       case ParticipantStep.socialSecurityNumber:
         fields.add(_buildField(locale, widget.model.ssnField, isCPR: true));
         break;
+      case ParticipantStep.sex:
+        fields.add(
+          _buildChoices(locale, {for (final sex in Sex.values) sex.name: "tasks.participant_data.sex.${sex.name}"}),
+        );
+        break;
+      case ParticipantStep.language:
+        fields.add(_buildChoices(locale, languages));
+        break;
+      case ParticipantStep.occupation:
+        fields.add(
+          _buildChoices(locale, {
+            for (final occupation in occupations)
+              occupation: "tasks.participant_data.occupation.${occupation.toLowerCase().replaceAll(' ', '_')}",
+          }, multiple: true),
+        );
+        break;
+      case ParticipantStep.educationalDegree:
+        fields.add(
+          _buildChoices(locale, {
+            for (final level in IscedLevel.values)
+              level.name: "tasks.participant_data.educational_degree.${level.name.toLowerCase()}",
+          }),
+        );
+        break;
       case ParticipantStep.review:
         fields.add(_buildReviewStep(locale, _allUsedStepFields));
         break;
     }
 
-    return SingleChildScrollView(
-      child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: fields),
-    );
+    return Column(crossAxisAlignment: CrossAxisAlignment.start, children: fields);
   }
 
-  /// Builds the present types section and the review section, displaying the steps that are included
+  /// Displays the list of steps the participant is about to fill in.
   Widget _buildPresentTypes(List<String?> steps) {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: steps.map((step) {
         return Padding(
-          padding: const EdgeInsets.only(bottom: 8.0),
-          child: Text(
-            "\u2022 ${step ?? ''}",
-            textAlign: TextAlign.start,
-            style: const TextStyle(fontSize: 16, fontWeight: FontWeight.w600, letterSpacing: 0.4),
-          ),
+          padding: const EdgeInsets.only(bottom: 12.0),
+          child: Text('• ${step ?? ''}', style: Theme.of(context).textTheme.bodyLarge),
         );
       }).toList(),
     );
@@ -416,35 +538,110 @@ class ParticipantDataPageState extends State<ParticipantDataPage> {
 
   /// Builds the review (last) step, displaying all the fields and their values.
   Widget _buildReviewStep(RPLocalizations locale, Set<StepField> fields) {
+    final entries = fields.toList();
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
-      children: List.generate(fields.length, (index) {
-        final String field = fields.elementAt(index).title;
-        String input = "";
-        if (index < fields.length) {
-          if (fields.elementAt(index).controller == widget.model.phoneNumberController) {
-            input = "${widget.model.phoneNumberCodeController.text} ${fields.elementAt(index).controller.text}";
-          } else if (fields.elementAt(index).controller == widget.model.ssnController) {
-            input = "${widget.model.ssnCountryController.text} ${fields.elementAt(index).controller.text}";
-          } else {
-            input = fields.elementAt(index).controller.text;
-          }
-        }
+      children: [
+        for (var index = 0; index < entries.length; index++) ...[
+          if (index > 0) const Divider(height: 24),
+          Text(
+            locale.translate(entries[index].title),
+            style: Theme.of(context).textTheme.labelMedium?.copyWith(color: Colors.grey.shade600),
+          ),
+          const SizedBox(height: 4),
+          Text(_reviewValue(entries[index]), style: Theme.of(context).textTheme.bodyLarge),
+        ],
+      ],
+    );
+  }
 
+  String _reviewValue(StepField field) {
+    if (field.controller == widget.model.phoneNumberController) {
+      return '${widget.model.phoneNumberCodeController.text} ${field.controller.text}'.trim();
+    }
+    if (field.controller == widget.model.ssnController) {
+      return '${widget.model.ssnCountryController.text} ${field.controller.text}'.trim();
+    }
+    return field.controller.text;
+  }
+
+  /// Matches Research Package's [RPUIChoiceQuestionBody]: hint line, dividers,
+  /// and primary-coloured [Radio] / [Checkbox] rows.
+  Widget _buildChoices(RPLocalizations locale, Map<String, String> options, {bool multiple = false}) {
+    final field = _choiceFields[currentStep]!;
+    final chosen = _choices.putIfAbsent(currentStep, () => {});
+    _allUsedStepFields.add(field);
+
+    void syncController() {
+      // Listeners on the controller re-validate and rebuild.
+      field.controller.text = options.entries
+          .where((option) => chosen.contains(option.key))
+          .map((option) => locale.translate(option.value))
+          .join(', ');
+    }
+
+    void toggle(String value) {
+      if (!chosen.remove(value)) {
+        if (!multiple) chosen.clear();
+        chosen.add(value);
+      }
+      syncController();
+    }
+
+    final entries = options.entries.toList();
+    final primary = Theme.of(context).colorScheme.primary;
+    final list = ListView.separated(
+      shrinkWrap: true,
+      physics: const NeverScrollableScrollPhysics(),
+      itemCount: entries.length,
+      separatorBuilder: (_, _) => const Divider(height: 1, indent: 16, endIndent: 16),
+      itemBuilder: (context, index) {
+        final MapEntry(key: value, value: label) = entries[index];
+        final selected = chosen.contains(value);
         return Padding(
-          padding: const EdgeInsets.only(bottom: 16.0),
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              Text(
-                locale.translate(field),
-                style: const TextStyle(fontSize: 16, fontWeight: FontWeight.w600, letterSpacing: 0.4),
-              ),
-              Text(input, style: const TextStyle(fontSize: 16, fontWeight: FontWeight.w600, letterSpacing: 0.4)),
-            ],
+          padding: const EdgeInsets.symmetric(horizontal: 4),
+          child: InkWell(
+            onTap: () => toggle(value),
+            child: Row(
+              children: [
+                if (multiple)
+                  Checkbox(value: selected, onChanged: (_) => toggle(value), activeColor: primary)
+                else
+                  Radio<String>(value: value, toggleable: true, activeColor: primary),
+                Expanded(
+                  child: Text(locale.translate(label), style: Theme.of(context).textTheme.bodyLarge, softWrap: true),
+                ),
+              ],
+            ),
           ),
         );
-      }),
+      },
+    );
+
+    return Column(
+      mainAxisSize: MainAxisSize.min,
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        Padding(
+          padding: const EdgeInsets.all(8.0),
+          child: Text('(${locale.translate(multiple ? 'choose_one_or_more_options' : 'choose_one_option')})'),
+        ),
+        if (multiple)
+          list
+        else
+          RadioGroup<String>(
+            groupValue: chosen.firstOrNull,
+            onChanged: (value) {
+              if (value == null) {
+                chosen.clear();
+                syncController();
+              } else {
+                toggle(value);
+              }
+            },
+            child: list,
+          ),
+      ],
     );
   }
 
@@ -459,7 +656,6 @@ class ParticipantDataPageState extends State<ParticipantDataPage> {
     bool isThicc = false,
     bool isDatePicker = false,
   }) {
-    _validateRequiredFields();
     _allUsedStepFields.add(stepField);
     if (isPhoneNumber) {
       return InternationalPhoneNumberInput(
@@ -468,10 +664,10 @@ class ParticipantDataPageState extends State<ParticipantDataPage> {
         },
         textFieldController: stepField.controller,
         selectorConfig: SelectorConfig(selectorType: PhoneInputSelectorType.DIALOG, useBottomSheetSafeArea: true),
-        inputDecoration: _buildInputDecoration(locale, stepField, isThicc),
+        inputDecoration: _buildInputDecoration(locale, stepField),
         ignoreBlank: false,
         autoValidateMode: AutovalidateMode.disabled,
-        selectorTextStyle: TextStyle(color: Colors.black),
+        selectorTextStyle: Theme.of(context).textTheme.bodyLarge,
         formatInput: true,
         keyboardType: TextInputType.numberWithOptions(signed: true, decimal: true),
         inputBorder: OutlineInputBorder(),
@@ -487,8 +683,8 @@ class ParticipantDataPageState extends State<ParticipantDataPage> {
                 width: 125,
                 child: Container(
                   decoration: BoxDecoration(
-                    border: Border.all(color: Colors.grey.shade600, width: 1.0),
-                    borderRadius: BorderRadius.circular(16.0),
+                    border: Border.all(color: Theme.of(context).colorScheme.outlineVariant),
+                    borderRadius: BorderRadius.circular(8),
                   ),
                   child: CountryCodePicker(
                     onChanged: (value) {
@@ -510,7 +706,7 @@ class ParticipantDataPageState extends State<ParticipantDataPage> {
             flex: 3,
             child: TextFormField(
               controller: stepField.controller,
-              decoration: _buildInputDecoration(locale, stepField, isThicc),
+              decoration: _buildInputDecoration(locale, stepField),
               keyboardType: TextInputType.number,
             ),
           ),
@@ -525,12 +721,13 @@ class ParticipantDataPageState extends State<ParticipantDataPage> {
             child: TextFormField(
               controller: stepField.controller,
               focusNode: stepField.focusNode,
-              textInputAction: TextInputAction.next,
+              textInputAction: isThicc ? TextInputAction.newline : TextInputAction.next,
               onFieldSubmitted: (_) {
                 if (stepField.nextFocusNode != null) {
                   FocusScope.of(context).requestFocus(stepField.nextFocusNode);
                 }
               },
+              readOnly: isDatePicker,
               onTap: isDatePicker
                   ? () async {
                       DateTime? pickedDate = await showDatePicker(
@@ -544,9 +741,10 @@ class ParticipantDataPageState extends State<ParticipantDataPage> {
                       }
                     }
                   : null,
-              keyboardType: TextInputType.multiline,
+              keyboardType: isThicc ? TextInputType.multiline : TextInputType.text,
+              minLines: isThicc ? 4 : 1,
               maxLines: isThicc ? null : 1,
-              decoration: _buildInputDecoration(locale, stepField, isThicc),
+              decoration: _buildInputDecoration(locale, stepField),
             ),
           ),
         ],
@@ -554,183 +752,155 @@ class ParticipantDataPageState extends State<ParticipantDataPage> {
     }
   }
 
-  InputDecoration _buildInputDecoration(RPLocalizations locale, StepField stepField, bool isThicc) {
+  InputDecoration _buildInputDecoration(RPLocalizations locale, StepField stepField) {
+    final scheme = Theme.of(context).colorScheme;
     return InputDecoration(
       labelText: locale.translate(stepField.title),
       floatingLabelBehavior: FloatingLabelBehavior.always,
       border: OutlineInputBorder(
         borderRadius: BorderRadius.circular(8),
-        borderSide: BorderSide(color: Colors.blue),
+        borderSide: BorderSide(color: scheme.primary),
       ),
       enabledBorder: OutlineInputBorder(
         borderRadius: BorderRadius.circular(8),
-        borderSide: BorderSide(color: Colors.grey.shade300),
+        borderSide: BorderSide(color: scheme.outlineVariant),
       ),
       focusedBorder: OutlineInputBorder(
         borderRadius: BorderRadius.circular(8),
-        borderSide: BorderSide(color: Colors.blue, width: 2),
+        borderSide: BorderSide(color: scheme.primary, width: 2),
       ),
-      contentPadding: EdgeInsets.symmetric(horizontal: 16, vertical: isThicc ? 70 : 12),
+      contentPadding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
     );
   }
 
-  /// Builds the action buttons at the bottom of the page.
-  /// Includes "Cancel", "Previous", "Next", and "Submit" buttons.
-  /// The "Next" button is enabled only if the required fields for the current step are filled.
+  /// Matches Research Package's bottom bar: [OutlinedButton] BACK on the left
+  /// (omitted on step 1) and [ElevatedButton] NEXT / DONE on the right.
   List<Widget> _buildActionButtons(RPLocalizations locale) {
-    Widget buildTranslatedButton(
-      String key,
-      VoidCallback onPressed,
-      bool enabled,
-      ButtonStyle? buttonStyle,
-      TextStyle? buttonTextStyle,
-    ) {
-      return ElevatedButton(
-        onPressed: enabled ? onPressed : null,
-        child: Text(locale.translate(key), style: buttonTextStyle),
-        style: buttonStyle,
-      );
-    }
+    final idx = _includedSteps.indexOf(currentStep);
+    final isFirst = idx == 0;
+    final isLast = idx == _includedSteps.length - 1;
+    final canProceed = isFirst || _nextEnabled;
 
     return [
-      currentStep == ParticipantStep.presentTypes
-          ? buildTranslatedButton(
-              "cancel",
-              () {
-                context.pop();
-              },
-              true,
-              null,
-              null,
-            )
-          : buildTranslatedButton(
-              "previous",
-              () {
-                setState(() {
-                  final idx = _includedSteps.indexOf(currentStep);
-                  if (currentStep.index - 1 >= 0) {
-                    currentStep = _includedSteps[idx - 1];
+      if (isFirst)
+        const SizedBox.shrink()
+      else
+        OutlinedButton(
+          onPressed: () {
+            FocusManager.instance.primaryFocus?.unfocus();
+            setState(() => currentStep = _includedSteps[idx - 1]);
+            _validateRequiredFields();
+          },
+          child: Text(locale.translate('BACK')),
+        ),
+      ElevatedButton(
+        onPressed: !canProceed || _saving
+            ? null
+            : () async {
+                FocusManager.instance.primaryFocus?.unfocus();
+                if (isLast) {
+                  setState(() => _saving = true);
+                  final ok = await _setParticipantData();
+                  if (!mounted) return;
+                  if (ok) {
+                    context.pop();
+                  } else {
+                    setState(() => _saving = false);
                   }
-                });
+                } else {
+                  setState(() => currentStep = _includedSteps[idx + 1]);
+                  _validateRequiredFields();
+                }
               },
-              true,
-              null,
-              null,
-            ),
-      currentStep.index == ParticipantStep.values.length - 1
-          ? buildTranslatedButton(
-              "submit",
-              () {
-                _setParticipantData();
-                context.pop();
-              },
-              _nextEnabled,
-              ElevatedButton.styleFrom(
-                backgroundColor: Theme.of(context).colorScheme.primary,
-                padding: const EdgeInsets.symmetric(horizontal: 30, vertical: 12),
-              ),
-              TextStyle(color: Colors.white),
-            )
-          : buildTranslatedButton(
-              "next",
-              () {
-                setState(() {
-                  final idx = _includedSteps.indexOf(currentStep);
-                  if (currentStep.index + 1 < ParticipantStep.values.length) {
-                    currentStep = _includedSteps[idx + 1];
-                  }
-                });
-              },
-              currentStep == ParticipantStep.presentTypes ? true : _nextEnabled,
-              ElevatedButton.styleFrom(
-                backgroundColor: Theme.of(context).colorScheme.primary,
-                padding: const EdgeInsets.symmetric(horizontal: 30, vertical: 12),
-              ),
-              TextStyle(color: Colors.white),
-            ),
+        child: Text(locale.translate(isLast ? 'DONE' : 'NEXT')),
+      ),
     ];
   }
 
   // This method can be used to set the participant data
   // if needed before submitting.
   // Currently, it is called when the "Submit" button is pressed.
-  void _setParticipantData() {
+  /// Saves the answers. Returns false (and tells the participant) if that failed.
+  Future<bool> _setParticipantData() async {
     final Map<String, Data> participantData = {};
+    String chosen(ParticipantStep step) => _choices[step]!.single;
 
-    final Map<ParticipantStep, Map<String, Data>> participantStepToDataType = {
-      ParticipantStep.address: {
-        InputType.ADDRESS: AddressInput(
-          address1: widget.model.address1Controller.text,
-          address2: widget.model.address2Controller.text,
-          street: widget.model.streetController.text,
-          postalCode: widget.model.postalCodeController.text,
-          country: widget.model.countryController.text,
-        ),
-      },
-      ParticipantStep.diagnosis: {
-        InputType.DIAGNOSIS: DiagnosisInput(
-          effectiveDate: widget.model.effectiveDateController.text.isNotEmpty
-              ? DateFormat(
-                  "yyyy-MM-dd'T'HH:mm:ss'Z'",
-                ).parse('${widget.model.effectiveDateController.text}T00:00:00Z').toUtc()
-              : null,
-          diagnosis: widget.model.diagnosisDescriptionController.text,
-          icd11Code: widget.model.icd11CodeController.text,
-          conclusion: widget.model.conclusionController.text,
-        ),
-      },
-      ParticipantStep.fullName: {
-        InputType.FULL_NAME: FullNameInput(
-          firstName: widget.model.firstNameController.text,
-          middleName: widget.model.middleNameController.text,
-          lastName: widget.model.lastNameController.text,
-        ),
-      },
-      ParticipantStep.phoneNumber: {
-        InputType.PHONE_NUMBER: PhoneNumberInput(
-          countryCode: widget.model.phoneNumberCodeController.text,
-          number: widget.model.phoneNumberController.text,
-        ),
-      },
-      ParticipantStep.socialSecurityNumber: {
-        InputType.SSN: SocialSecurityNumberInput(
-          country: widget.model.ssnCountryController.text,
-          socialSecurityNumber: widget.model.ssnController.text,
-        ),
-      },
+    final Map<ParticipantStep, Data Function()> participantStepToData = {
+      ParticipantStep.address: () => AddressInput(
+        address1: widget.model.address1Controller.text,
+        address2: widget.model.address2Controller.text,
+        street: widget.model.streetController.text,
+        postalCode: widget.model.postalCodeController.text,
+        country: widget.model.countryController.text,
+      ),
+      ParticipantStep.diagnosis: () => DiagnosisInput(
+        effectiveDate: widget.model.effectiveDateController.text.isNotEmpty
+            ? DateFormat(
+                "yyyy-MM-dd'T'HH:mm:ss'Z'",
+              ).parse('${widget.model.effectiveDateController.text}T00:00:00Z').toUtc()
+            : null,
+        diagnosis: widget.model.diagnosisDescriptionController.text,
+        icd11Code: widget.model.icd11CodeController.text,
+        conclusion: widget.model.conclusionController.text,
+      ),
+      ParticipantStep.fullName: () => FullNameInput(
+        firstName: widget.model.firstNameController.text,
+        middleName: widget.model.middleNameController.text,
+        lastName: widget.model.lastNameController.text,
+      ),
+      ParticipantStep.phoneNumber: () => PhoneNumberInput(
+        countryCode: widget.model.phoneNumberCodeController.text,
+        number: widget.model.phoneNumberController.text,
+      ),
+      ParticipantStep.socialSecurityNumber: () => SocialSecurityNumberInput(
+        country: widget.model.ssnCountryController.text,
+        socialSecurityNumber: widget.model.ssnController.text,
+      ),
+      ParticipantStep.sex: () => SexInput(value: Sex.values.byName(chosen(ParticipantStep.sex))),
+      ParticipantStep.language: () => PreferredLanguageInput(
+        languageCode: chosen(ParticipantStep.language),
+        displayName: languages[chosen(ParticipantStep.language)],
+      ),
+      ParticipantStep.occupation: () => OccupationInput(roles: _choices[ParticipantStep.occupation]!.toList()),
+      ParticipantStep.educationalDegree: () =>
+          EducationalDegreeInput(level: IscedLevel.values.byName(chosen(ParticipantStep.educationalDegree))),
     };
-    for (final step in _includedSteps) {
-      final dataMap = participantStepToDataType[step];
-      if (dataMap != null) {
-        participantData.addAll(dataMap);
+    try {
+      // Keyed by the type the protocol expects, as the backend only accepts those.
+      for (final MapEntry(key: step, value: type) in _stepType.entries) {
+        participantData[type] = participantStepToData[step]!();
       }
+      await widget.model.setParticipantData(participantData);
+      return true;
+    } catch (error) {
+      // Keep the page and its answers, so the participant can retry.
+      warning('$runtimeType - Could not save participant data: $error');
+      if (mounted) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(content: Text(RPLocalizations.of(context)!.translate('tasks.participant_data.save_failed'))),
+        );
+      }
+      return false;
     }
-
-    widget.model.setParticipantData(participantData);
   }
 
   Future<void> _showCancelConfirmationDialog() {
-    RPLocalizations locale = RPLocalizations.of(context)!;
+    final locale = RPLocalizations.of(context)!;
 
     return showDialog(
       context: context,
-      barrierDismissible: false,
       builder: (BuildContext context) {
         return AlertDialog(
-          title: Text(locale.translate("pages.audio_task.discard")),
+          title: Text(locale.translate('pages.audio_task.discard')),
+          content: Text(locale.translate('discard_confirmation_body')),
           actions: <Widget>[
-            TextButton(
-              child: Text(locale.translate("NO")),
-              onPressed: () {
-                context.pop();
-              },
-            ),
-            TextButton(
-              child: Text(locale.translate("YES")),
+            OutlinedButton(onPressed: () => context.pop(), child: Text(locale.translate('CANCEL'))),
+            FilledButton(
               onPressed: () {
                 context.pop();
                 context.pop();
               },
+              child: Text(locale.translate('LEAVE')),
             ),
           ],
         );

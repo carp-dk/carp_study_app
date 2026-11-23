@@ -4,6 +4,10 @@ import 'package:open_settings_plus/core/open_settings_plus.dart';
 import 'package:research_package/research_package.dart';
 import 'package:carp_study_app/shared/widgets/dialog_title.dart';
 
+/// The folder of the screenshots in the app's language - only Danish and English exist.
+String instructionsPath(BuildContext context) =>
+    'assets/instructions/${Localizations.localeOf(context).languageCode == 'da' ? 'da' : 'en'}';
+
 class EnableInternetConnectionDialog extends StatelessWidget {
   const EnableInternetConnectionDialog({super.key});
 
@@ -51,11 +55,7 @@ class EnableInternetConnectionDialog extends StatelessWidget {
                 ),
                 Padding(
                   padding: EdgeInsets.symmetric(vertical: 16.0),
-                  child: Image(
-                    image: AssetImage(
-                      'assets/instructions/${Localizations.localeOf(context).languageCode}/enable_wifi_android.png',
-                    ),
-                  ),
+                  child: Image(image: AssetImage('${instructionsPath(context)}/enable_wifi_android.png')),
                 ),
                 Padding(
                   padding: EdgeInsets.symmetric(vertical: 16.0),
@@ -67,11 +67,7 @@ class EnableInternetConnectionDialog extends StatelessWidget {
                 ),
                 Padding(
                   padding: EdgeInsets.symmetric(vertical: 16.0),
-                  child: Image(
-                    image: AssetImage(
-                      'assets/instructions/${Localizations.localeOf(context).languageCode}/enable_mobile_data_android.png',
-                    ),
-                  ),
+                  child: Image(image: AssetImage('${instructionsPath(context)}/enable_mobile_data_android.png')),
                 ),
               ],
             ),
@@ -125,11 +121,7 @@ class EnableInternetConnectionDialog extends StatelessWidget {
                 ),
                 Padding(
                   padding: EdgeInsets.symmetric(vertical: 16.0),
-                  child: Image(
-                    image: AssetImage(
-                      'assets/instructions/${Localizations.localeOf(context).languageCode}/enable_wifi_ios.png',
-                    ),
-                  ),
+                  child: Image(image: AssetImage('${instructionsPath(context)}/enable_wifi_ios.png')),
                 ),
                 Padding(
                   padding: EdgeInsets.symmetric(vertical: 16.0),
@@ -147,11 +139,7 @@ class EnableInternetConnectionDialog extends StatelessWidget {
                 ),
                 Padding(
                   padding: EdgeInsets.symmetric(vertical: 16.0),
-                  child: Image(
-                    image: AssetImage(
-                      'assets/instructions/${Localizations.localeOf(context).languageCode}/enable_mobile_data_ios.png',
-                    ),
-                  ),
+                  child: Image(image: AssetImage('${instructionsPath(context)}/enable_mobile_data_ios.png')),
                 ),
               ],
             ),

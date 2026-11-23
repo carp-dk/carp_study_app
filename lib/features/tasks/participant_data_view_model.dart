@@ -9,8 +9,11 @@ import 'package:carp_study_app/main.dart';
 class ParticipantDataPageViewModel extends ViewModel {
   Set<ExpectedParticipantData?> get expectedData => bloc.study.expectedParticipantData;
 
+  /// The expected input data types this participant is asked for.
+  List<String> get askableData => askableParticipantData(expectedData, bloc.study.study?.participantRoleName);
+
   /// Save the participant [data] for the current study.
-  void setParticipantData(Map<String, Data> data) => bloc.study.setParticipantData(data);
+  Future<void> setParticipantData(Map<String, Data> data) => bloc.study.setParticipantData(data);
 
   late TextEditingController address1Controller;
   late TextEditingController address2Controller;

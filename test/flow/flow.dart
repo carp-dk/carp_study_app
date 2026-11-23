@@ -17,7 +17,7 @@ import '../test_utils.dart';
 
 /// Warnings the host causes - it has no sensors, devices or OS services - plus
 /// known CAMS noise. Any other warning fails the flow.
-const _expectedWarnings = [
+final _expectedWarnings = <Pattern>[
   'Initialize DeviceInfo before creating a Smartphone registration',
   'Local protocol is trying to use a non-local data endpoint',
   'This may be because this probe is not available',
@@ -30,6 +30,9 @@ const _expectedWarnings = [
   // Reaction Time trigger initializes the Reaction Time task a second time.
   'Failed to unregister device',
   'Trying to initialize a AppTaskExecutor',
+  // CAMS 3.0.1 disposes right after an async pause on leave - harmless noise.
+  "in a 'resumed' state.Consider pausing it first.",
+  RegExp(r"Trying to pause a \S+ in a state where this cannot be done - state: 'Disposed'"),
 ];
 
 /// The test font's glyphs are wide squares, so text overflows that fits on a phone.

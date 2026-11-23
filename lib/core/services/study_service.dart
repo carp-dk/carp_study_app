@@ -5,6 +5,7 @@ import 'package:carp_mobile_sensing/carp_mobile_sensing.dart';
 import 'package:carp_webservices/carp_services/carp_services.dart';
 import 'package:research_package/research_package.dart';
 import 'package:carp_aware_package/carp_aware_package.dart';
+import 'package:carp_context_package/carp_context_package.dart';
 import 'package:carp_study_app/core/backend/backend.dart';
 import 'package:carp_study_app/core/backend/resource_manager_factory.dart';
 import 'package:carp_study_app/core/settings/local_settings.dart';
@@ -54,6 +55,10 @@ class StudyService {
 
   /// When was this study deployed on this phone.
   DateTime? get studyStartTimestamp => deployment?.deployed;
+
+  /// The available user tasks of the current study - never a left or other study's.
+  List<UserTask> get userTasks =>
+      AppTaskController().userTaskQueue.where((task) => task.studyDeploymentId == study?.studyDeploymentId).toList();
 
   Set<ExpectedParticipantData?> get expectedParticipantData => deployment?.expectedParticipantData ?? {};
 
@@ -195,14 +200,26 @@ class StudyService {
     // Fast out, if not deployed or no protocol.
     if (!(study?.isDeployed ?? false) || deployment == null) return;
 
+    final locale = AppConfig.localization!;
     for (var task in deployment!.tasks) {
       if (task is AppTask) {
-        task.title = AppConfig.localization!.translate(task.title);
-        task.description = AppConfig.localization!.translate(task.description);
+        task.title = locale.translate(task.title);
+        task.description = locale.translate(task.description);
+      }
+    }
+    // ponytail: on restart with location already granted, CAMS connects LocationService inside
+    // tryDeployment() before this runs; needs a LocationManager notification setter to cover restarts.
+    for (var device in deployment!.connectedDevices) {
+      if (device is LocationService) {
+        device.notificationTitle = locale.translate(device.notificationTitle ?? 'notification.location.title');
+        device.notificationMessage = locale.translate(device.notificationMessage ?? 'notification.location.subtitle');
+        device.notificationDescription = locale.translate(
+          device.notificationDescription ?? 'notification.location.description',
+        );
       }
     }
 
-    info("$runtimeType - Study protocol translated to locale '${AppConfig.localization!.locale}'");
+    info("$runtimeType - Study protocol translated to locale '${locale.locale}'");
   }
 
   /// Get the participant data for the current deployment.
@@ -211,7 +228,7 @@ class StudyService {
       : await _resources.participationService.getParticipantDataList([deployment!.studyDeploymentId]);
 
   /// Set the participant [data] for the current study.
-  void setParticipantData(Map<String, Data> data) =>
+  Future<ParticipantData> setParticipantData(Map<String, Data> data) =>
       _resources.participationService.setParticipantData(study!.studyDeploymentId, data, study!.participantRoleName);
 
   /// Stop sensing and remove all study deployment information from this phone.

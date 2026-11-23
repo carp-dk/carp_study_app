@@ -156,6 +156,7 @@ class AppBloc extends ChangeNotifier {
     notifyListeners();
 
     try {
+      if (study.study == null) throw StateError('No study set - cannot configure a study deployment.');
       // Only once there is a study - this asks for notification permissions.
       await Sensing().initialize(study.deploymentService);
       await study.configure();
@@ -183,7 +184,8 @@ class AppBloc extends ChangeNotifier {
   /// Other notifications (announcements) carry the route to open as payload.
   void _listenToNotifications() {
     _userTaskNotificationSubscription ??= AppTaskController().userTaskEvents.listen((userTask) {
-      if (userTask.state == UserTaskState.notified) {
+      // A left study's task may still notify - only open the current study's tasks.
+      if (userTask.state == UserTaskState.notified && userTask.studyDeploymentId == study.study?.studyDeploymentId) {
         userTask.onStart();
         if (userTask.hasWidget) rootNavigatorKey.currentContext?.push('${Routes.task}/${userTask.id}');
       }
