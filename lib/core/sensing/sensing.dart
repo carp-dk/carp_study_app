@@ -46,6 +46,10 @@ class Sensing {
 
   /// Register the devices and configure the client manager with [deploymentService].
   Future<void> initialize(DeploymentService deploymentService) async {
+    // Resumes background sensing if the user already connected to it
+    // (also after leaving and rejoining a study in the same session).
+    await BackgroundSensingService().refresh();
+
     // The client manager is a singleton and cannot be reconfigured on retry.
     if (SmartPhoneClientManager().isConfigured) return;
 
@@ -64,9 +68,6 @@ class Sensing {
       // Only resumed - the user connects to it themselves the first time.
       enableBackgroundMode: false,
     );
-
-    // Resumes background sensing if the user already connected to it.
-    await BackgroundSensingService().refresh();
 
     if (kDebugMode) SmartPhoneClientManager().measurements.listen(_logUnencodable);
 

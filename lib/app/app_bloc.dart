@@ -156,6 +156,7 @@ class AppBloc extends ChangeNotifier {
     notifyListeners();
 
     try {
+      if (study.study == null) throw StateError('No study set - cannot configure a study deployment.');
       // Only once there is a study - this asks for notification permissions.
       await Sensing().initialize(study.deploymentService);
       await study.configure();
