@@ -1,5 +1,12 @@
-## Unreleased
+## 5.2.0
 
+* Android shows one foreground notification: background sensing takes priority over the location one
+  (carp_mobile_sensing 3.0.2, carp_context_package 3.0.1)
+* participant data page (sex, language, occupation, education) in Research Package style (#734)
+* tasks only show the current study's tasks (#733); image task can pick from the gallery (#750)
+* health permission steps only when needed (#732)
+* sv, nb, fi, de, fr, it and pt translations (#736)
+* AGP 9.0.1 / Gradle 9.1.0
 * carp_core 3.0.0, carp_mobile_sensing 3.0.0, carp_webservices 5.0.0, carp_backend 3.0.0 and the 3.x sampling packages (carp.sensing-flutter #671, #672)
 * the informed consent is stored as JSON and decoded in `ConsentService`; the home page listens to `Study.events`
 * drops the temporary `carp_backend` git override (#659)
