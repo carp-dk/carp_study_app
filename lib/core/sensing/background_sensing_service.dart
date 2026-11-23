@@ -84,8 +84,8 @@ class BackgroundSensingService extends ChangeNotifier {
   Future<bool> _start() async {
     final localization = AppConfig.localization;
     return await BackgroundService().initialize(
-          notificationTitle: localization?.translate('pages.connections.type.background.name'),
-          notificationText: localization?.translate('pages.connections.type.background.description'),
+          notificationTitle: localization?.translate('notification.background.title'),
+          notificationText: localization?.translate('notification.background.text'),
         ) &&
         await BackgroundService().enable();
   }

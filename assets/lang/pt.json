@@ -401,5 +401,10 @@
   "tasks.participant_data.card.description": "Preencha os dados do participante necessários para continuar o estudo.",
   "tasks.participant_data.save_failed": "Não foi possível salvar seus dados. Tente novamente.",
   "pages.error.title": "Erro",
-  "pages.error.go_back": "Voltar"
+  "pages.error.go_back": "Voltar",
+  "notification.background.title": "A recolher dados do estudo",
+  "notification.background.text": "O seu estudo ativo está a recolher dados de sensores e localização em segundo plano. Toque para abrir.",
+  "notification.location.title": "A partilhar localização com o seu estudo",
+  "notification.location.subtitle": "A recolher dados de localização em segundo plano",
+  "notification.location.description": "A localização mantém-se ativa em segundo plano para que o seu estudo possa registar dados de localização e mobilidade."
 }

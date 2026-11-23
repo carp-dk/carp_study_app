@@ -401,5 +401,10 @@
   "tasks.participant_data.card.description": "Renseignez les données du participant requises pour poursuivre l'étude.",
   "tasks.participant_data.save_failed": "Impossible d'enregistrer vos données. Veuillez réessayer.",
   "pages.error.title": "Erreur",
-  "pages.error.go_back": "Retour"
+  "pages.error.go_back": "Retour",
+  "notification.background.title": "Collecte des données de l'étude",
+  "notification.background.text": "Votre étude active collecte des données de capteurs et de localisation en arrière-plan. Appuyez pour ouvrir.",
+  "notification.location.title": "Partage de la position avec votre étude",
+  "notification.location.subtitle": "Collecte des données de localisation en arrière-plan",
+  "notification.location.description": "La localisation reste active en arrière-plan afin que votre étude puisse enregistrer les données de position et de mobilité."
 }

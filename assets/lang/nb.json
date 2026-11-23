@@ -401,5 +401,10 @@
   "tasks.participant_data.card.description": "Fyll inn de påkrevde deltakerdataene for å fortsette i studien.",
   "tasks.participant_data.save_failed": "Kunne ikke lagre dataene dine. Prøv igjen.",
   "pages.error.title": "Feil",
-  "pages.error.go_back": "Gå tilbake"
+  "pages.error.go_back": "Gå tilbake",
+  "notification.background.title": "Samler inn studiedata",
+  "notification.background.text": "Den aktive studien samler inn sensor- og posisjonsdata i bakgrunnen. Trykk for å åpne.",
+  "notification.location.title": "Deler posisjon med studien din",
+  "notification.location.subtitle": "Samler inn posisjonsdata i bakgrunnen",
+  "notification.location.description": "Posisjon holdes aktiv i bakgrunnen slik at studien kan registrere posisjons- og mobilitetsdata."
 }

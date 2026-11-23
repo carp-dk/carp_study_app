@@ -401,5 +401,10 @@
   "tasks.participant_data.card.description": "Täytä vaaditut osallistujatiedot jatkaaksesi tutkimusta.",
   "tasks.participant_data.save_failed": "Tietojasi ei voitu tallentaa. Yritä uudelleen.",
   "pages.error.title": "Virhe",
-  "pages.error.go_back": "Takaisin"
+  "pages.error.go_back": "Takaisin",
+  "notification.background.title": "Tutkimustietojen keruu käynnissä",
+  "notification.background.text": "Aktiivinen tutkimuksesi kerää anturi- ja sijaintitietoja taustalla. Avaa napauttamalla.",
+  "notification.location.title": "Sijainnin jakaminen tutkimukselle",
+  "notification.location.subtitle": "Kerää sijaintitietoja taustalla",
+  "notification.location.description": "Sijainti pysyy aktiivisena taustalla, jotta tutkimuksesi voi tallentaa sijainti- ja liikkumistietoja."
 }

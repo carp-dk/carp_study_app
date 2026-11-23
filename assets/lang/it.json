@@ -401,5 +401,10 @@
   "tasks.participant_data.card.description": "Compila i dati del partecipante richiesti per continuare lo studio.",
   "tasks.participant_data.save_failed": "Impossibile salvare i tuoi dati. Riprova.",
   "pages.error.title": "Errore",
-  "pages.error.go_back": "Torna indietro"
+  "pages.error.go_back": "Torna indietro",
+  "notification.background.title": "Raccolta dei dati dello studio",
+  "notification.background.text": "Il tuo studio attivo sta raccogliendo dati dei sensori e della posizione in background. Tocca per aprire.",
+  "notification.location.title": "Condivisione della posizione con lo studio",
+  "notification.location.subtitle": "Raccolta dei dati di posizione in background",
+  "notification.location.description": "La posizione resta attiva in background per consentire allo studio di registrare dati di posizione e mobilità."
 }

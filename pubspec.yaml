@@ -16,7 +16,7 @@ dependencies:
   carp_serializable: ^3.0.2
   carp_core: ^3.0.2
   carp_mobile_sensing: ^3.0.1
-  carp_context_package: ^2.3.0
+  carp_context_package: ^3.0.0
   carp_connectivity_package: ^2.3.0
   carp_survey_package: ^3.0.0
   carp_audio_package: ^2.2.0

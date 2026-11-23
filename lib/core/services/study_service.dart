@@ -5,6 +5,7 @@ import 'package:carp_mobile_sensing/carp_mobile_sensing.dart';
 import 'package:carp_webservices/carp_services/carp_services.dart';
 import 'package:research_package/research_package.dart';
 import 'package:carp_aware_package/carp_aware_package.dart';
+import 'package:carp_context_package/carp_context_package.dart';
 import 'package:carp_study_app/core/backend/backend.dart';
 import 'package:carp_study_app/core/backend/resource_manager_factory.dart';
 import 'package:carp_study_app/core/settings/local_settings.dart';
@@ -199,14 +200,26 @@ class StudyService {
     // Fast out, if not deployed or no protocol.
     if (!(study?.isDeployed ?? false) || deployment == null) return;
 
+    final locale = AppConfig.localization!;
     for (var task in deployment!.tasks) {
       if (task is AppTask) {
-        task.title = AppConfig.localization!.translate(task.title);
-        task.description = AppConfig.localization!.translate(task.description);
+        task.title = locale.translate(task.title);
+        task.description = locale.translate(task.description);
+      }
+    }
+    // ponytail: on restart with location already granted, CAMS connects LocationService inside
+    // tryDeployment() before this runs; needs a LocationManager notification setter to cover restarts.
+    for (var device in deployment!.connectedDevices) {
+      if (device is LocationService) {
+        device.notificationTitle = locale.translate(device.notificationTitle ?? 'notification.location.title');
+        device.notificationMessage = locale.translate(device.notificationMessage ?? 'notification.location.subtitle');
+        device.notificationDescription = locale.translate(
+          device.notificationDescription ?? 'notification.location.description',
+        );
       }
     }
 
-    info("$runtimeType - Study protocol translated to locale '${AppConfig.localization!.locale}'");
+    info("$runtimeType - Study protocol translated to locale '${locale.locale}'");
   }
 
   /// Get the participant data for the current deployment.

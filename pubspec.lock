@@ -13,10 +13,10 @@ packages:
     dependency: transitive
     description:
       name: activity_recognition_flutter
-      sha256: e758161d1db2631fcfa49b650796fc154ee85efd57b13826565a0bc137da3a6b
+      sha256: "81cfcec9f7b0f7dffb9328f90b6d6f4439ba7596383be8d48ae80c5b96bda94b"
       url: "https://pub.dev"
     source: hosted
-    version: "6.1.0"
+    version: "7.0.0"
   air_quality:
     dependency: transitive
     description:
@@ -341,10 +341,10 @@ packages:
     dependency: "direct main"
     description:
       name: carp_context_package
-      sha256: "9de3296b3d24e2f358014906b9dcd16677ffb073608a76d7341872121a83f70a"
+      sha256: "5cf82e7d7fe92ad32cc8c4106baa7785149b593993089eb6e56873b757e69f0b"
       url: "https://pub.dev"
     source: hosted
-    version: "2.3.0"
+    version: "3.0.0"
   carp_core:
     dependency: "direct main"
     description:

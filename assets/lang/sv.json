@@ -401,5 +401,10 @@
   "tasks.participant_data.card.description": "Fyll i nödvändiga deltagaruppgifter för att fortsätta med studien.",
   "tasks.participant_data.save_failed": "Det gick inte att spara dina uppgifter. Försök igen.",
   "pages.error.title": "Fel",
-  "pages.error.go_back": "Gå tillbaka"
+  "pages.error.go_back": "Gå tillbaka",
+  "notification.background.title": "Samlar in studiedata",
+  "notification.background.text": "Din aktiva studie samlar in sensor- och platsdata i bakgrunden. Tryck för att öppna.",
+  "notification.location.title": "Delar plats med din studie",
+  "notification.location.subtitle": "Samlar in platsdata i bakgrunden",
+  "notification.location.description": "Plats förblir aktiv i bakgrunden så att din studie kan registrera plats- och mobilitetsdata."
 }

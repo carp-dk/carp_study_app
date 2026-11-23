@@ -401,5 +401,10 @@
   "tasks.participant_data.card.description": "Udfyld de påkrævede deltagerdata for at fortsætte i studiet.",
   "tasks.participant_data.save_failed": "Dine data kunne ikke gemmes. Prøv igen.",
   "pages.error.title": "Fejl",
-  "pages.error.go_back": "Gå tilbage"
+  "pages.error.go_back": "Gå tilbage",
+  "notification.background.title": "Indsamler studiedata",
+  "notification.background.text": "Dit aktive studie indsamler sensor- og lokationsdata i baggrunden. Tryk for at åbne.",
+  "notification.location.title": "Deler lokation med dit studie",
+  "notification.location.subtitle": "Indsamler lokationsdata i baggrunden",
+  "notification.location.description": "Lokation forbliver aktiv i baggrunden, så dit studie kan registrere lokations- og mobilitetsdata."
 }

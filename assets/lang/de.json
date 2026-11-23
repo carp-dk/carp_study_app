@@ -401,5 +401,10 @@
   "tasks.participant_data.card.description": "Fülle die erforderlichen Teilnehmerdaten aus, um mit der Studie fortzufahren.",
   "tasks.participant_data.save_failed": "Deine Daten konnten nicht gespeichert werden. Bitte versuche es erneut.",
   "pages.error.title": "Fehler",
-  "pages.error.go_back": "Zurück"
+  "pages.error.go_back": "Zurück",
+  "notification.background.title": "Studiendaten werden erfasst",
+  "notification.background.text": "Deine aktive Studie erfasst Sensor- und Standortdaten im Hintergrund. Zum Öffnen tippen.",
+  "notification.location.title": "Standort wird mit deiner Studie geteilt",
+  "notification.location.subtitle": "Standortdaten werden im Hintergrund erfasst",
+  "notification.location.description": "Der Standort bleibt im Hintergrund aktiv, damit deine Studie Standort- und Mobilitätsdaten aufzeichnen kann."
 }
